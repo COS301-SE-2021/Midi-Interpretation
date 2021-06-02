@@ -1,0 +1,59 @@
+swagger: '2.0'
+info:
+  description: This is the API for the MIDISense System
+  version: 1.0.0
+  title: MIDISense
+host: 'localhost:8080'
+basePath: /api
+tags:
+  - name: display
+    description: Display
+  - name: interpreter
+    description: Interpreter
+  - name: intelligence
+    description: Intelligence
+schemes:
+  - https
+  - http
+paths:
+  /interpreter/parseFile:
+    post:
+      tags:
+        - user
+      summary: Returns parseFile token
+      description: parseFile
+      operationId: parseFile
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: parseFileRequest
+          description: Request for parseFile
+          required: true
+          schema:
+            $ref: '#/definitions/parseFileRequest'
+      responses:
+        '200':
+          description: Login response
+          schema:
+            $ref: '#/definitions/parseFileResponse'
+        '401':
+          description: InvalidFileException
+
+definitions:
+  parseFileRequest:
+    type: object
+    required:
+      - file
+    properties:
+      file:
+        type: array
+        items: integer
+
+  parseFileResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
