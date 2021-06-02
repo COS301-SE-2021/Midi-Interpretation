@@ -1,10 +1,13 @@
 swagger: '2.0'
+
 info:
   description: This is the API for the MIDISense System
   version: 1.0.0
   title: MIDISense
+
 host: 'localhost:8080'
 basePath: /api
+
 tags:
   - name: display
     description: Display
@@ -12,9 +15,11 @@ tags:
     description: Interpreter
   - name: intelligence
     description: Intelligence
+
 schemes:
   - https
   - http
+
 paths:
   /interpreter/parseFile:
     post:
