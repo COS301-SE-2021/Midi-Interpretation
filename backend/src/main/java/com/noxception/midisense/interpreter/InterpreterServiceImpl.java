@@ -4,11 +4,8 @@ import com.noxception.midisense.config.MidiSenseConfiguration;
 import com.noxception.midisense.interpreter.exceptions.InvalidParseException;
 import com.noxception.midisense.interpreter.rrobjects.ParseFileRequest;
 import com.noxception.midisense.interpreter.rrobjects.ParseFileResponse;
-import org.jfugue.midi.MidiFileManager;
-import org.jfugue.pattern.Pattern;
 import org.springframework.stereotype.Service;
 
-import javax.sound.midi.InvalidMidiDataException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,7 +46,7 @@ public class InterpreterServiceImpl implements InterpreterService{
         } catch (IOException e) {
             throw new InvalidParseException("[File System Failure] "+e.getMessage());
         }
-        return new ParseFileResponse(XMLString,staccatoSequence);
+        return new ParseFileResponse(true);
     }
 
     //================================

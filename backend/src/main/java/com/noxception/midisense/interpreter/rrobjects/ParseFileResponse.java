@@ -1,7 +1,18 @@
 package com.noxception.midisense.interpreter.rrobjects;
 
 public class ParseFileResponse {
-    private String XMLString;
+    private boolean success;
+
+    public ParseFileResponse(boolean success) {
+        this.success = success;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    //TODO: THIS IS WHAT I ACTUALLY WANT TO RETURN
+    /*private String XMLString;
     private String staccatoSequence;
 
     public ParseFileResponse(String XMLString, String staccatoSequence) {
@@ -15,6 +26,6 @@ public class ParseFileResponse {
 
     public String getStaccatoSequence() {
         return staccatoSequence;
-    }
+    }*/
 
 }
