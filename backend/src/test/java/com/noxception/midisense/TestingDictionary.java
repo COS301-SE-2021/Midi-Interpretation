@@ -10,8 +10,8 @@ public class TestingDictionary {
     //Interpreter
     public static byte[] interpreter_uploadFile_validFileContents = getValidByteArray();
     public static byte[] interpreter_uploadFile_invalidFileContents = {1,2,3};
-
-
+    public static String interpreter_all_validFileDesignator = "13e5ff63-4a13-4354-b0c0-081165033405";
+    public static String interpreter_all_invalidFileDesignator = "THIS IS INVALID";
 
     //MISC methods
     public static byte[] getValidByteArray(){

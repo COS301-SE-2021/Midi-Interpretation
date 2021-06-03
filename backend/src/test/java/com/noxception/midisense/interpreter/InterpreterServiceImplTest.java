@@ -1,9 +1,9 @@
 package com.noxception.midisense.interpreter;
 
 import com.noxception.midisense.TestingDictionary;
+import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
-import com.noxception.midisense.interpreter.rrobjects.UploadFileRequest;
-import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
+import com.noxception.midisense.interpreter.rrobjects.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +59,50 @@ class InterpreterServiceImplTest {
                     "[Bad Request] No request made");
             assertTrue(thrown.getMessage().contains("[Bad Request] No request made"));
         }
+    }
 
+    @Test
+    public void testInterpretMetreValidFile(){
+        InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        InterpretMetreResponse res = null;
+        try {
+            res = interpreterService.interpretMetre(req);
+            System.out.println(res.getMetre());
+            assertNotEquals(res.getMetre(),null);
+        } catch (InvalidDesignatorException e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Test
+    public void testInterpretTempoValidFile(){
+        InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        InterpretTempoResponse res = null;
+        try {
+            res = interpreterService.interpretTempo(req);
+            System.out.println(res.getTempo());
+            assertNotEquals(res.getTempo(),null);
+        } catch (InvalidDesignatorException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testInterpretMetreInvalidFile(){
+        /*InterpretMetreRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.interpretTempo(req),
+                "[File System Failure]");
+        assertTrue(thrown.getMessage().contains("[File System Failure]"));*/
+    }
+
+    @Test
+    public void testInterpretTempoInvalidFile(){
+        InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.interpretTempo(req),
+                "[File System Failure]");
+        assertTrue(thrown.getMessage().contains("[File System Failure]"));
     }
 
 }

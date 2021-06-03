@@ -1,9 +1,9 @@
 package com.noxception.midisense.interpreter;
 
 import com.noxception.midisense.config.MidiSenseConfiguration;
+import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
-import com.noxception.midisense.interpreter.rrobjects.UploadFileRequest;
-import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
+import com.noxception.midisense.interpreter.rrobjects.*;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.springframework.stereotype.Service;
@@ -31,23 +31,48 @@ public class InterpreterServiceImpl implements InterpreterService{
             UUID fileDesignator = writeFileToStorage(fileContents);
             File sourceFile = new File(generatePath(fileDesignator));
 
-            Pattern pattern = MidiFileManager.loadPatternFromMidi(sourceFile);
-            String staccatoSequence = pattern.toString();
-            System.out.println(staccatoSequence);
-
-
             //return response
             return new UploadFileResponse(fileDesignator);
         } catch (IOException e) {
             //throw exception
-            throw new InvalidUploadException("[File System Failure] ");
-        } catch (InvalidMidiDataException e) {
-            e.printStackTrace();
-            throw new InvalidUploadException("[File System Failure] ");
+            throw new InvalidUploadException("[File System Failure]");
         }
     }
 
-            //TODO: Future code for interpretation
+    @Override
+    public InterpretMetreResponse interpretMetre(InterpretMetreRequest request) throws InvalidDesignatorException {
+        //check to see if there is a valid request object
+        if(request==null) throw new InvalidDesignatorException("[Bad Request] No request made");
+        try {
+            UUID fileDesignator = request.getFileDesignator();
+            File sourceFile = new File(generatePath(fileDesignator));
+            Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
+            //return response
+            return new InterpretMetreResponse("4/4");
+        } catch (IOException e) {
+            throw new InvalidDesignatorException("[File System Failure]");
+        } catch (InvalidMidiDataException e) {
+            throw new InvalidDesignatorException("[MIDI Interpretation Failure]");
+        }
+    }
+
+    @Override
+    public InterpretTempoResponse interpretTempo(InterpretTempoRequest request) throws InvalidDesignatorException {
+        //check to see if there is a valid request object
+        if(request==null) throw new InvalidDesignatorException("[Bad Request] No request made");
+        try {
+            UUID fileDesignator = request.getFileDesignator();
+            File sourceFile = new File(generatePath(fileDesignator));
+            Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
+            return new InterpretTempoResponse("168 bpm");
+        } catch (IOException e) {
+            throw new InvalidDesignatorException("[File System Failure]");
+        } catch (InvalidMidiDataException e) {
+            throw new InvalidDesignatorException("[MIDI Interpretation Failure]");
+        }
+    }
+
+    //TODO: Future code for interpretation
             //translate
             /*Pattern pattern = MidiFileManager.loadPatternFromMidi(sourceFile);
             staccatoSequence = pattern.toString();*/
