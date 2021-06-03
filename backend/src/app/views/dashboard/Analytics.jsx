@@ -15,12 +15,18 @@ import {Breadcrumb, SimpleCard} from "matx";
 import { withStyles } from "@material-ui/styles";
 import {makeStyles} from "@material-ui/core/styles";
 
-
 class Dashboard1 extends Component {
   state = {};
 
   render() {;
-      const classes = makeStyles;
+      const classes = makeStyles(theme => ({
+          button: {
+              margin: theme.spacing(1)
+          },
+          input: {
+              display: "none"
+          }
+      }));
       let { theme } = this.props;
       return (
           <div className="m-sm-30">
@@ -37,7 +43,14 @@ class Dashboard1 extends Component {
               <div className="py-3" />
               <SimpleCard title="Upload Midi File">
                   <label htmlFor="outlined-button-file">
+                      <input
+                          //accept=".md/*"
+                          className={classes.input}
+                          id="outlined-button-file"
+                          type="file"
+                      />
                       <Button
+
                           variant="outlined"
                           component="span"
                           className={classes.button}
