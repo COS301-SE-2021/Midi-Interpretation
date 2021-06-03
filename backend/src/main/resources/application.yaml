@@ -12,33 +12,33 @@ tags:
 
 paths:
 
-  /interpreter/parseFile:
+  /interpreter/uploadFile:
     post:
       summary: "Endpoint for the Create Book use case of the Book subsystem"
       tags:
         - "Interpreter"
-      description: parseFile
-      operationId: parseFile
+      description: uploadFile
+      operationId: uploadFile
       requestBody:
-        description: "Request for parseFile"
+        description: "Request for uploadFile"
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/parseFileRequest'
+              $ref: '#/components/schemas/uploadFileRequest'
       responses:
         '200':
-          description: "Login response"
+          description: "Upload File Response"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/parseFileResponse'
+                $ref: '#/components/schemas/uploadFileResponse'
 
 
 components:
   schemas:
 
-    parseFileRequest:
+    uploadFileRequest:
       description: "Description Here"
       type: object
       properties:
@@ -47,8 +47,8 @@ components:
           items:
             type: integer
 
-    parseFileResponse:
+    uploadFileResponse:
       type: object
       properties:
-        success:
-          type: boolean
+        fileDesignator:
+          type: string
