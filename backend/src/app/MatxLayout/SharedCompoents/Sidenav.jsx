@@ -4,8 +4,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-//import { navigations } from "../../navigations";
-import { navigations } from "../../demoNav";
+import { navigations } from "../../navigations";
 
 import { MatxVerticalNav } from "matx";
 import { setLayoutSettings } from "app/redux/actions/LayoutActions";

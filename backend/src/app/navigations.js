@@ -1,8 +1,9 @@
 export const navigations = [
   {
-    name: "Dashboard",
+    name: "File Upload",
     path: "/dashboard/analytics",
-    icon: "dashboard"
+    icon: "music_note",
+    badge: { value: "demo", color: "secondary" },
   },
   {
     name: "Forms",
@@ -85,7 +86,7 @@ export const navigations = [
   },
   {
     name: "Sessions",
-    icon: "trending_up",
+    icon: "person",
     children: [
       {
         name: "Sign in",
@@ -112,8 +113,7 @@ export const navigations = [
 
   {
     name: "UI Kits",
-    icon: "favorite",
-    badge: { value: "50+", color: "secondary" },
+    icon: "build",
     children: [
       {
         name: "Auto Complete",
@@ -186,11 +186,11 @@ export const navigations = [
         iconText: "T"
       }
     ]
-  },
+  }//,
 
-  {
-    name: "Map",
-    icon: "add_location",
-    path: "/map"
-  }
+  // {
+  //   name: "Map",
+  //   icon: "add_location",
+  //   path: "/map"
+  // }
 ];

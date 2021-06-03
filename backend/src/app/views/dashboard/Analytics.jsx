@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import {Grid, Card, Button, Fab, Icon} from "@material-ui/core";
-import { SimpleCard } from "matx";
+import {Breadcrumb, SimpleCard} from "matx";
 
 
 // import DoughnutChart from "../charts/echarts/Doughnut";
@@ -22,32 +22,50 @@ class Dashboard1 extends Component {
   render() {;
       const classes = makeStyles;
       let { theme } = this.props;
+      return (
+          <div className="m-sm-30">
+              <div className="mb-sm-30">
+                  <Breadcrumb
+                      routeSegments={[
+                          { name: "File Upload" }
+                      ]}
+                  />
+              </div>
+              <SimpleCard title="Prototype User Interface">
 
-    return (
-      <Fragment>
-        <div className="pb-24 pt-7 px-5 bg-primary">
-          <div className="card-title capitalize text-white mb-1 text-white-secondary">
-              New Midi Project
+              </SimpleCard>
+              <div className="py-3" />
+              <SimpleCard title="Upload Midi File">
+                  <label htmlFor="outlined-button-file">
+                      <Button
+                          variant="outlined"
+                          component="span"
+                          className={classes.button}
+                      >
+                          Upload
+                      </Button>
+                  </label>
+              </SimpleCard>
           </div>
-        </div>
-          <SimpleCard>
-              <div className="card-title capitalize text-white mb-1 text-primary">
-                Upload Midi File
-            </div>
-              <br/>
-              <label htmlFor="outlined-button-file">
-                  <Button
-                      variant="outlined"
-                      component="span"
-                      className={classes.button}
-                  >
-                      Upload
-                  </Button>
-              </label>
-          </SimpleCard>
-      </Fragment>
-    );
-  }
+      );
+  };
+  //   return (
+  //     <Fragment>
+  //       <div className="pb-24 pt-7 px-5 bg-primary">
+  //         <div className="card-title capitalize text-white mb-1 text-white-secondary">
+  //             New Midi Project
+  //         </div>
+  //       </div>
+  //         <SimpleCard>
+  //             <div className="card-title capitalize text-white mb-1 text-primary">
+  //               Upload Midi File
+  //           </div>
+  //             <br/>
+  //
+  //         </SimpleCard>
+  //     </Fragment>
+  //   );
+  // }
 }
 
 export default withStyles({}, { withTheme: true })(Dashboard1);
