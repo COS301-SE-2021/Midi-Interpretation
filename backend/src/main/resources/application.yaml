@@ -25,20 +25,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/uploadFileRequest'
+              $ref: '#/components/schemas/interpreterUploadFileRequest'
       responses:
         '200':
           description: "Upload File Response"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/uploadFileResponse'
+                $ref: '#/components/schemas/interpreterUploadFileResponse'
 
 
 components:
   schemas:
 
-    uploadFileRequest:
+    interpreterUploadFileRequest:
       description: "Description Here"
       type: object
       properties:
@@ -47,7 +47,7 @@ components:
           items:
             type: integer
 
-    uploadFileResponse:
+    interpreterUploadFileResponse:
       type: object
       properties:
         fileDesignator:

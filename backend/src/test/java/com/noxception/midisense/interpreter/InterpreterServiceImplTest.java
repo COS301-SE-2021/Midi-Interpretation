@@ -9,6 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.beans.Beans;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class InterpreterServiceImplTest {
 
 
-    //@Autowired
+    //TODO: @Autowired
     InterpreterServiceImpl interpreterService = new InterpreterServiceImpl();
 
     @Test
@@ -29,7 +34,6 @@ class InterpreterServiceImplTest {
             assertEquals(res.getFileDesignator().getClass(), UUID.class);
             assertNotEquals(res.getFileDesignator(), null);
         } catch (InvalidUploadException e) {
-            // Nothing
         }
     }
 
@@ -37,15 +41,10 @@ class InterpreterServiceImplTest {
     public void testUploadFileInvalidFile(){
         byte[] validFileContents = TestingDictionary.interpreter_uploadFile_invalidFileContents;
         UploadFileRequest req = new UploadFileRequest(validFileContents);
-        try {
-            UploadFileResponse res = interpreterService.uploadFile(req);
-        } catch (InvalidUploadException e) {
-
-            InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
-                    ()->interpreterService.uploadFile(req),
-                    "[File System Failure] ");
-            assertTrue(thrown.getMessage().contains("[File System Failure] "));
-        }
+        InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
+                ()->interpreterService.uploadFile(req),
+                "[File System Failure] ");
+        assertTrue(thrown.getMessage().contains("[File System Failure] "));
     }
 
     @Test

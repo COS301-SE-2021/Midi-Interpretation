@@ -4,8 +4,11 @@ import com.noxception.midisense.config.MidiSenseConfiguration;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.UploadFileRequest;
 import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
+import org.jfugue.midi.MidiFileManager;
+import org.jfugue.pattern.Pattern;
 import org.springframework.stereotype.Service;
 
+import javax.sound.midi.InvalidMidiDataException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,10 +31,18 @@ public class InterpreterServiceImpl implements InterpreterService{
             UUID fileDesignator = writeFileToStorage(fileContents);
             File sourceFile = new File(generatePath(fileDesignator));
 
+            Pattern pattern = MidiFileManager.loadPatternFromMidi(sourceFile);
+            String staccatoSequence = pattern.toString();
+            System.out.println(staccatoSequence);
+
+
             //return response
             return new UploadFileResponse(fileDesignator);
         } catch (IOException e) {
             //throw exception
+            throw new InvalidUploadException("[File System Failure] ");
+        } catch (InvalidMidiDataException e) {
+            e.printStackTrace();
             throw new InvalidUploadException("[File System Failure] ");
         }
     }
