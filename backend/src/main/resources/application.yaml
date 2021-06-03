@@ -1,64 +1,54 @@
-swagger: '2.0'
+openapi: 3.0.0
 
 info:
-  description: This is the API for the MIDISense System
   version: 1.0.0
   title: MIDISense
-
-host: 'localhost:8080'
-basePath: /api
+  description: "This is the API for the MIDISense System"
 
 tags:
-  - name: display
-    description: Display
-  - name: interpreter
-    description: Interpreter
-  - name: intelligence
-    description: Intelligence
-
-schemes:
-  - https
-  - http
+  - name: "Display"
+  - name: "Interpreter"
+  - name: "Intelligence"
 
 paths:
+
   /interpreter/parseFile:
     post:
+      summary: "Endpoint for the Create Book use case of the Book subsystem"
       tags:
-        - interpreter
-      summary: Returns parseFile token
+        - "Interpreter"
       description: parseFile
       operationId: parseFile
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: parseFileRequest
-          description: Request for parseFile
-          required: true
-          schema:
-            $ref: '#/definitions/parseFileRequest'
+      requestBody:
+        description: "Request for parseFile"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/parseFileRequest'
       responses:
         '200':
-          description: Login response
-          schema:
-            $ref: '#/definitions/parseFileResponse'
-        '401':
-          description: InvalidFileException
+          description: "Login response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/parseFileResponse'
 
-definitions:
-  parseFileRequest:
-    type: object
-    required:
-      - file
-    properties:
-      file:
-        type: array
-        items: integer
 
-  parseFileResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
+components:
+  schemas:
+
+    parseFileRequest:
+      description: "Description Here"
+      type: object
+      properties:
+        fileContents:
+          type: array
+          items:
+            type: integer
+
+    parseFileResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
