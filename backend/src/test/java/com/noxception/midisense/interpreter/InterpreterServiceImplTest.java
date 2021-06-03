@@ -4,8 +4,20 @@ import com.noxception.midisense.TestingDictionary;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.UploadFileRequest;
 import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.json.JSONException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import java.beans.Beans;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,6 +38,7 @@ class InterpreterServiceImplTest {
             // SOMETHING
         }
         //TODO: ASSERT RESPONSE IS VALID UUID
+        Assertions.assertEquals(req.getFileContents(),validFileContents);
     }
 
     @Test
@@ -37,6 +50,10 @@ class InterpreterServiceImplTest {
         } catch (InvalidUploadException e) {
             // SHOULD DO THIS - TODO: CHANGE TO ASSERTTHROWS
         }
+        assertThatThrownBy(()->interpreterService.uploadFile(req))
+                .isInstanceOf(InvalidUploadException.class)
+                .hasMessageContaining("[File System Failure] ");
+
     }
 
     @Test
@@ -47,6 +64,10 @@ class InterpreterServiceImplTest {
         } catch (InvalidUploadException e) {
             // SHOULD DO THIS TODO: CHANGE TO ASSERTTHROWS
         }
+        assertThatThrownBy(()->interpreterService.uploadFile(req))
+                .isInstanceOf(InvalidUploadException.class)
+                .hasMessageContaining("[Bad Request] No request made");
+
     }
 
 }

@@ -32,7 +32,7 @@ public class InterpreterServiceImpl implements InterpreterService{
             return new UploadFileResponse(fileDesignator);
         } catch (IOException e) {
             //throw exception
-            throw new InvalidUploadException("[File System Failure] "+e.getMessage());
+            throw new InvalidUploadException("[File System Failure] ");
         }
     }
 
