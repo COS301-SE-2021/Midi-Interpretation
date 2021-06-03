@@ -28,8 +28,10 @@ public class InterpreterServiceImpl implements InterpreterService{
             UUID fileDesignator = writeFileToStorage(fileContents);
             File sourceFile = new File(generatePath(fileDesignator));
 
+            //return response
             return new UploadFileResponse(fileDesignator);
         } catch (IOException e) {
+            //throw exception
             throw new InvalidUploadException("[File System Failure] "+e.getMessage());
         }
     }
@@ -50,10 +52,15 @@ public class InterpreterServiceImpl implements InterpreterService{
     //================================
 
     private UUID writeFileToStorage(byte[] fileContents) throws IOException{
+        //generate unique fileDesignator
         UUID fileDesignator = UUID.randomUUID();
         OutputStream os = new FileOutputStream(generatePath(fileDesignator));
+
+        //write file to storage
         os.write(fileContents);
         os.close();
+
+        //return Identifier
         return fileDesignator;
     }
 
@@ -62,6 +69,7 @@ public class InterpreterServiceImpl implements InterpreterService{
     }
 
     private String generatePath(UUID fileDesignator){
+        //generates the path for the unique fileDesignator
         return MidiSenseConfiguration.FILESYSTEMPATH.get()+fileDesignator.toString()+ MidiSenseConfiguration.FILEFORMAT.get();
     }
 
