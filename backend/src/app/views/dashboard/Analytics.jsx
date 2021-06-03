@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import {Grid, Card, Button} from "@material-ui/core";
+import {Grid, Card, Button, Fab, Icon} from "@material-ui/core";
 import { SimpleCard } from "matx";
 
 
@@ -20,28 +20,29 @@ class Dashboard1 extends Component {
   state = {};
 
   render() {;
-      const classes = withStyles(1);
+      const classes = makeStyles;
       let { theme } = this.props;
 
     return (
       <Fragment>
-        <div className="pb-24 pt-7 px-8 bg-primary">
-          <div className="card-title capitalize text-white mb-4 text-white-secondary">
-            MIDI File Upload
+        <div className="pb-24 pt-7 px-18 bg-primary">
+          <div className="card-title capitalize text-white mb-1 text-white-secondary">
+            New Midi Project
           </div>
         </div>
           <SimpleCard>
-            <div className="analytics m-sm-30 mt--18">
-                <label htmlFor="contained-button-file">
-                    <Button
-                        variant="contained"
-                        component="span"
-                        className={classes.button}
-                    >
-                        Upload
-                    </Button>
-                </label>
+              <div className="card-title capitalize text-white mb-1 text-primary">
+                Upload Midi File
             </div>
+              <br/>
+              <Fab
+                  size="small"
+                  color="secondary"
+                  aria-label="Add"
+                  className={classes.button}
+              >
+                  <Icon>add</Icon>
+              </Fab>
           </SimpleCard>
       </Fragment>
     );
