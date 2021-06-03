@@ -7,7 +7,8 @@ import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.beans.Beans;
 
@@ -37,8 +38,11 @@ class InterpreterServiceImplTest {
         try {
             UploadFileResponse res = interpreterService.uploadFile(req);
         } catch (InvalidUploadException e) {
-            // SHOULD DO THIS - TODO: CHANGE TO ASSERTTHROWS
-           // assertThrows("s");
+
+            InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
+                    ()->interpreterService.uploadFile(req),
+                    "[File System Failure] ");
+            assertTrue(thrown.getMessage().contains("[File System Failure] "));
         }
     }
 
@@ -48,11 +52,13 @@ class InterpreterServiceImplTest {
         try {
             UploadFileResponse res = interpreterService.uploadFile(req);
         } catch (InvalidUploadException e) {
-            // SHOULD DO THIS TODO: CHANGE TO ASSERTTHROWS
+
+            InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
+                    ()->interpreterService.uploadFile(req),
+                    "[Bad Request] No request made");
+            assertTrue(thrown.getMessage().contains("[Bad Request] No request made"));
         }
-        //assertThatThrownBy(()->interpreterService.uploadFile(req))
-        //        .isInstanceOf(InvalidUploadException.class)
-        //        .hasMessageContaining("[Bad Request] No request made");
+
 
     }
 
