@@ -1,9 +1,9 @@
 package com.noxception.midisense.interpreter;
 
 import com.noxception.midisense.config.MidiSenseConfiguration;
-import com.noxception.midisense.interpreter.exceptions.InvalidParseException;
-import com.noxception.midisense.interpreter.rrobjects.ParseFileRequest;
-import com.noxception.midisense.interpreter.rrobjects.ParseFileResponse;
+import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
+import com.noxception.midisense.interpreter.rrobjects.UploadFileRequest;
+import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -16,20 +16,25 @@ import java.util.UUID;
 public class InterpreterServiceImpl implements InterpreterService{
 
     @Override
-    public ParseFileResponse parseFile(ParseFileRequest request) throws InvalidParseException {
+    public UploadFileResponse uploadFile(UploadFileRequest request) throws InvalidUploadException {
         //check to see if there is a valid request object
-        if(request==null) throw new InvalidParseException("[Bad Request] No request made");
-        String XMLString = null;
-        String staccatoSequence = null;
+        if(request==null) throw new InvalidUploadException("[Bad Request] No request made");
         try {
 
             //get the contents of the file
             byte[] fileContents = request.getFileContents();
 
-            //write to storage temporarily
+            //write to storage
             UUID fileDesignator = writeFileToStorage(fileContents);
             File sourceFile = new File(generatePath(fileDesignator));
 
+            return new UploadFileResponse(fileDesignator);
+        } catch (IOException e) {
+            throw new InvalidUploadException("[File System Failure] "+e.getMessage());
+        }
+    }
+
+            //TODO: Future code for interpretation
             //translate
             /*Pattern pattern = MidiFileManager.loadPatternFromMidi(sourceFile);
             staccatoSequence = pattern.toString();*/
@@ -39,15 +44,6 @@ public class InterpreterServiceImpl implements InterpreterService{
             parser.addParserListener(listener);
             parser.parse(MidiSystem.getSequence(sourceFile));
             XMLString = listener.getMusicXMLString();*/
-
-            //remove from temporary storage
-            deleteFileFromStorage(sourceFile);
-
-        } catch (IOException e) {
-            throw new InvalidParseException("[File System Failure] "+e.getMessage());
-        }
-        return new ParseFileResponse(true);
-    }
 
     //================================
     // AUXILIARY METHODS

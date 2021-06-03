@@ -1,14 +1,16 @@
 package com.noxception.midisense.interpreter.rrobjects;
 
-public class ParseFileResponse {
-    private boolean success;
+import java.util.UUID;
 
-    public ParseFileResponse(boolean success) {
-        this.success = success;
+public class UploadFileResponse {
+    private UUID fileDesignator;
+
+    public UploadFileResponse(UUID fileDesignator) {
+        this.fileDesignator = fileDesignator;
     }
 
-    public boolean isSuccess() {
-        return success;
+    public UUID getFileDesignator() {
+        return fileDesignator;
     }
 
     //TODO: THIS IS WHAT I ACTUALLY WANT TO RETURN

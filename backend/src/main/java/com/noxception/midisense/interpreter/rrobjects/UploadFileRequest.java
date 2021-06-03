@@ -1,9 +1,9 @@
 package com.noxception.midisense.interpreter.rrobjects;
 
-public class ParseFileRequest {
+public class UploadFileRequest {
     private byte[] fileContents;
 
-    public ParseFileRequest(byte[] fileContents) {
+    public UploadFileRequest(byte[] fileContents) {
         this.fileContents = fileContents;
     }
 

@@ -1,9 +1,9 @@
 package com.noxception.midisense.interpreter;
 
-import com.noxception.midisense.interpreter.exceptions.InvalidParseException;
-import com.noxception.midisense.interpreter.rrobjects.ParseFileRequest;
-import com.noxception.midisense.interpreter.rrobjects.ParseFileResponse;
+import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
+import com.noxception.midisense.interpreter.rrobjects.UploadFileRequest;
+import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
 
 public interface InterpreterService {
-    public ParseFileResponse parseFile(ParseFileRequest request) throws InvalidParseException;
+    public UploadFileResponse uploadFile(UploadFileRequest request) throws InvalidUploadException;
 }
