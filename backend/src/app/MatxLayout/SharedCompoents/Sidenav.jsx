@@ -4,7 +4,9 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { navigations } from "../../navigations";
+//import { navigations } from "../../navigations";
+import { navigations } from "../../demoNav";
+
 import { MatxVerticalNav } from "matx";
 import { setLayoutSettings } from "app/redux/actions/LayoutActions";
 
@@ -40,7 +42,7 @@ const Sidenav = props => {
         className="scrollable position-relative"
       >
         {props.children}
-        <MatxVerticalNav navigation={navigations} />
+        {<MatxVerticalNav navigation={navigations} />}
       </Scrollbar>
       {renderOverlay()}
     </Fragment>
