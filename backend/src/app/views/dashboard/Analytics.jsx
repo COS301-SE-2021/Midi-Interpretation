@@ -19,14 +19,7 @@ class Dashboard1 extends Component {
   state = {};
 
   render() {;
-      const classes = makeStyles(theme => ({
-          button: {
-              margin: theme.spacing(1)
-          },
-          input: {
-              display: "none"
-          }
-      }));
+      const classes = makeStyles;
       let { theme } = this.props;
       return (
           <div className="m-sm-30">
