@@ -7,10 +7,11 @@ import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.beans.Beans;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class InterpreterServiceImplTest {
@@ -25,10 +26,11 @@ class InterpreterServiceImplTest {
         UploadFileRequest req = new UploadFileRequest(validFileContents);
         try {
             UploadFileResponse res = interpreterService.uploadFile(req);
+            assertEquals(res.getFileDesignator().getClass(), UUID.class);
+            assertNotEquals(res.getFileDesignator(), null);
         } catch (InvalidUploadException e) {
             // Nothing
         }
-        Assertions.assertEquals(req.getFileContents(),validFileContents);
     }
 
     @Test
