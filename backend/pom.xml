@@ -16,6 +16,10 @@
     <properties>
         <java.version>11</java.version>
         <spring-native.version>0.10.0-SNAPSHOT</spring-native.version>
+        <frontend-src-dir>${project.basedir}/src/main/frontend</frontend-src-dir>
+        <node.version>v14.17.0</node.version>
+        <yarn.version>v1.22.10</yarn.version>
+        <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -101,24 +105,65 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>io.swagger.codegen.v3</groupId>
-                <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>3.0.18</version>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>${frontend-maven-plugin.version}</version>
+
+                <configuration>
+                    <nodeVersion>${node.version}</nodeVersion>
+                    <yarnVersion>${yarn.version}</yarnVersion>
+                    <workingDirectory>${frontend-src-dir}</workingDirectory>
+                    <installDirectory>${project.build.directory}</installDirectory>
+                </configuration>
+
                 <executions>
                     <execution>
+                        <id>install-frontend-tools</id>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>install-node-and-yarn</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>yarn-install</id>
+                        <goals>
+                            <goal>yarn</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/application.yaml</inputSpec>
-                            <language>spring</language>
-                            <output>${project.build.directory}/generated-sources/</output>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-                            <apiPackage>com.noxception.midisense.api</apiPackage>
-                            <modelPackage>com.noxception.midisense.models</modelPackage>
-                            <configOptions>
-                                <interfaceOnly>true</interfaceOnly>
-                            </configOptions>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>build-frontend</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <arguments>build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>position-react-build</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${frontend-src-dir}/build</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>
