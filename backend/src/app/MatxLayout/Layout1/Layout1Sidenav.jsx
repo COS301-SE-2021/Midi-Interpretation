@@ -107,12 +107,7 @@ class Layout1Sidenav extends Component {
     return (
       <SidenavTheme theme={sidenavTheme} settings={settings}>
         <div className="sidenav">
-          <div
-            className="sidenav__hold"
-            style={{
-              backgroundImage: `url(${settings.layout1Settings.leftSidebar.bgImgURL})`
-            }}
-          >
+          <div className="sidenav__hold" >
             {!this.state.hidden && (
               <Fragment>
                 {this.renderLogoSwitch()}
