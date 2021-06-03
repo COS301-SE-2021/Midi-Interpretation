@@ -25,9 +25,9 @@ class Dashboard1 extends Component {
 
     return (
       <Fragment>
-        <div className="pb-24 pt-7 px-18 bg-primary">
+        <div className="pb-24 pt-7 px-5 bg-primary">
           <div className="card-title capitalize text-white mb-1 text-white-secondary">
-            New Midi Project
+              New Midi Project
           </div>
         </div>
           <SimpleCard>
@@ -35,14 +35,15 @@ class Dashboard1 extends Component {
                 Upload Midi File
             </div>
               <br/>
-              <Fab
-                  size="small"
-                  color="secondary"
-                  aria-label="Add"
-                  className={classes.button}
-              >
-                  <Icon>add</Icon>
-              </Fab>
+              <label htmlFor="outlined-button-file">
+                  <Button
+                      variant="outlined"
+                      component="span"
+                      className={classes.button}
+                  >
+                      Upload
+                  </Button>
+              </label>
           </SimpleCard>
       </Fragment>
     );
