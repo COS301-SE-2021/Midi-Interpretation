@@ -25,7 +25,7 @@ class InterpreterServiceImplTest {
         } catch (InvalidUploadException e) {
             // SOMETHING
         }
-        //ASSERTION FOR VALID UUID RETURNED
+        //TODO: ASSERT RESPONSE IS VALID UUID
     }
 
     @Test
@@ -35,7 +35,7 @@ class InterpreterServiceImplTest {
         try {
             UploadFileResponse res = interpreterService.uploadFile(req);
         } catch (InvalidUploadException e) {
-            // SHOULD DO THIS
+            // SHOULD DO THIS - TODO: CHANGE TO ASSERTTHROWS
         }
     }
 
@@ -45,7 +45,7 @@ class InterpreterServiceImplTest {
         try {
             UploadFileResponse res = interpreterService.uploadFile(req);
         } catch (InvalidUploadException e) {
-            // SHOULD DO THIS
+            // SHOULD DO THIS TODO: CHANGE TO ASSERTTHROWS
         }
     }
 
