@@ -22,6 +22,9 @@ class InterpreterServiceImplTest {
 
     @Autowired
     InterpreterServiceImpl interpreterService;
+    //TODO: CONTRACT BASED
+    //TODO: UNIT TEST - revise definition
+    //TODO: LOGGING INSTEAD OF SYSTEM OUT
 
     @Test
     public void testUploadFileValidFile(){
