@@ -1,13 +1,19 @@
 package com.noxception.midisense.interpreter.rrobjects;
 
-public class InterpretTempoResponse {
-    private String tempo;
+import com.noxception.midisense.interpreter.dataclass.TempoIndication;
 
-    public InterpretTempoResponse(String tempo) {
+public class InterpretTempoResponse {
+    private TempoIndication tempo;
+
+    public InterpretTempoResponse(TempoIndication tempo) {
         this.tempo = tempo;
     }
 
-    public String getTempo() {
+    public InterpretTempoResponse(int tempo) {
+        this.tempo = new TempoIndication(tempo);
+    }
+
+    public TempoIndication getTempo() {
         return tempo;
     }
 }

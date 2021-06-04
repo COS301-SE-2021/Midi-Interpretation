@@ -54,7 +54,9 @@ public class InterpreterServiceImpl implements InterpreterService{
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
             String details = pattern.toString();
             String time = details.substring(details.indexOf("TIME:")+5,details.indexOf("KEY:")-1);
-            return new InterpretMetreResponse(time);
+            int numBeats = Integer.parseInt(time.substring(0,time.indexOf("/")));
+            int beatValue = Integer.parseInt(time.substring(time.indexOf("/")+1));
+            return new InterpretMetreResponse(numBeats,beatValue);
         } catch (IOException e) {
             throw new InvalidDesignatorException("[File System Failure]");
         } catch (InvalidMidiDataException e) {
@@ -72,7 +74,8 @@ public class InterpreterServiceImpl implements InterpreterService{
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
             String details = pattern.toString();
             String tempo = details.substring(1,details.indexOf("TIME:")-1);
-            return new InterpretTempoResponse(tempo);
+            int tempoIndication = Integer.parseInt(tempo);
+            return new InterpretTempoResponse(tempoIndication);
         } catch (IOException e) {
             throw new InvalidDesignatorException("[File System Failure]");
         } catch (InvalidMidiDataException e) {
