@@ -12,9 +12,15 @@ tags:
 
 paths:
 
+  #=================================================
+  # ENDPOINT DEFINITIONS
+  #=================================================
+
+  #============= INTERPRETER ============================
+
   /interpreter/uploadFile:
     post:
-      summary: "Endpoint for the Create Book use case of the Book subsystem"
+      summary: "Endpoint for the Upload File use case of the Interpreter subsystem"
       tags:
         - "Interpreter"
       description: uploadFile
@@ -34,6 +40,53 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterUploadFileResponse'
 
+  /interpreter/interpretMetre:
+    post:
+      summary: "Endpoint for the Interpret Metre use case of the Interpreter subsystem"
+      tags:
+        - "Interpreter"
+      description: interpretMetre
+      operationId: interpretMetre
+      requestBody:
+        description: "Request for interpretMetre"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterInterpretMetreRequest'
+      responses:
+        '200':
+          description: "Interpret Metre Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterInterpretMetreResponse'
+
+  /interpreter/interpretTempo:
+    post:
+      summary: "Endpoint for the Interpret Tempo use case of the Interpreter subsystem"
+      tags:
+        - "Interpreter"
+      description: interpretTempo
+      operationId: interpretTempo
+      requestBody:
+        description: "Request for interpretTempo"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterInterpretTempoRequest'
+      responses:
+        '200':
+          description: "Interpret Tempo Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterInterpretTempoResponse'
+
+  #=================================================
+  # SCHEMAS + OBJECTS
+  #=================================================
 
 components:
   schemas:
@@ -52,3 +105,34 @@ components:
       properties:
         fileDesignator:
           type: string
+
+    interpreterInterpretMetreRequest:
+      description: "Description Here"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    interpreterInterpretMetreResponse:
+      type: object
+      properties:
+        timeSignature:
+          type: object
+          properties:
+            numBeats:
+              type: integer
+            beatValue:
+              type: integer
+
+    interpreterInterpretTempoRequest:
+      description: "Description Here"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    interpreterInterpretTempoResponse:
+      type: object
+      properties:
+        tempoIndication:
+          type: integer

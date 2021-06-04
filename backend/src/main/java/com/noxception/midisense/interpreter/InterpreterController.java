@@ -1,11 +1,10 @@
 package com.noxception.midisense.interpreter;
 
 import com.noxception.midisense.api.InterpreterApi;
+import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
-import com.noxception.midisense.interpreter.rrobjects.UploadFileRequest;
-import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
-import com.noxception.midisense.models.InterpreterUploadFileRequest;
-import com.noxception.midisense.models.InterpreterUploadFileResponse;
+import com.noxception.midisense.interpreter.rrobjects.*;
+import com.noxception.midisense.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class InterpreterController implements InterpreterApi {
@@ -32,6 +32,38 @@ public class InterpreterController implements InterpreterApi {
             UploadFileResponse res = interpreterService.uploadFile(req);
             responseObject.setFileDesignator(res.getFileDesignator().toString());
         } catch (InvalidUploadException e) {
+            returnStatus = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<>(responseObject,returnStatus);
+    }
+
+    @Override
+    public ResponseEntity<InterpreterInterpretMetreResponse> interpretMetre(InterpreterInterpretMetreRequest body) {
+        InterpreterInterpretMetreResponse responseObject = new InterpreterInterpretMetreResponse();
+        HttpStatus returnStatus = HttpStatus.OK;
+        try{
+            InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(body.getFileDesignator()));
+            InterpretMetreResponse res = interpreterService.interpretMetre(req);
+
+            InterpreterInterpretMetreResponseTimeSignature time = new InterpreterInterpretMetreResponseTimeSignature();
+            time.setBeatValue(res.getMetre().getBeatValue());
+            time.setNumBeats(res.getMetre().getNumBeats());
+            responseObject.setTimeSignature(time);
+        } catch (InvalidDesignatorException | IllegalArgumentException e){
+            returnStatus = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<>(responseObject,returnStatus);
+    }
+
+    @Override
+    public ResponseEntity<InterpreterInterpretTempoResponse> interpretTempo(InterpreterInterpretTempoRequest body) {
+        InterpreterInterpretTempoResponse responseObject = new InterpreterInterpretTempoResponse();
+        HttpStatus returnStatus = HttpStatus.OK;
+        try{
+            InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(body.getFileDesignator()));
+            InterpretTempoResponse res = interpreterService.interpretTempo(req);
+            responseObject.setTempoIndication(res.getTempo().getTempo());
+        } catch (InvalidDesignatorException | IllegalArgumentException e){
             returnStatus = HttpStatus.BAD_REQUEST;
         }
         return new ResponseEntity<>(responseObject,returnStatus);

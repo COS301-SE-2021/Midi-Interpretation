@@ -83,16 +83,18 @@ public class InterpreterServiceImpl implements InterpreterService{
         }
     }
 
-    //TODO: Future code for interpretation
+            //TODO: Future code for interpretation
             //translate
             /*Pattern pattern = MidiFileManager.loadPatternFromMidi(sourceFile);
-            staccatoSequence = pattern.toString();*/
+            staccatoSequence = pattern.toString();
 
-            /*MidiParser parser = new MidiParser();
+
+            MidiParser parser = new MidiParser();
             MusicXmlParserListener listener = new MusicXmlParserListener();
             parser.addParserListener(listener);
             parser.parse(MidiSystem.getSequence(sourceFile));
             XMLString = listener.getMusicXMLString();*/
+
 
     //================================
     // AUXILIARY METHODS
