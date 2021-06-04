@@ -30,6 +30,7 @@ class InterpreterServiceImplTest {
             UploadFileResponse res = interpreterService.uploadFile(req);
             assertEquals(res.getFileDesignator().getClass(), UUID.class);
             assertNotEquals(res.getFileDesignator(), null);
+            System.out.println(res.getFileDesignator());
         } catch (InvalidUploadException e) {
         }
     }
@@ -86,11 +87,11 @@ class InterpreterServiceImplTest {
 
     @Test
     public void testInterpretMetreInvalidFile(){
-        /*InterpretMetreRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.interpretTempo(req),
+                ()->interpreterService.interpretMetre(req),
                 "[File System Failure]");
-        assertTrue(thrown.getMessage().contains("[File System Failure]"));*/
+        assertTrue(thrown.getMessage().contains("[File System Failure]"));
     }
 
     @Test
