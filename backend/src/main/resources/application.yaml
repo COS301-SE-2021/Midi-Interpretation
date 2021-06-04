@@ -1,0 +1,54 @@
+openapi: 3.0.0
+
+info:
+  version: 1.0.0
+  title: MIDISense
+  description: "This is the API for the MIDISense System"
+
+tags:
+  - name: "Display"
+  - name: "Interpreter"
+  - name: "Intelligence"
+
+paths:
+
+  /interpreter/uploadFile:
+    post:
+      summary: "Endpoint for the Create Book use case of the Book subsystem"
+      tags:
+        - "Interpreter"
+      description: uploadFile
+      operationId: uploadFile
+      requestBody:
+        description: "Request for uploadFile"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterUploadFileRequest'
+      responses:
+        '200':
+          description: "Upload File Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterUploadFileResponse'
+
+
+components:
+  schemas:
+
+    interpreterUploadFileRequest:
+      description: "Description Here"
+      type: object
+      properties:
+        fileContents:
+          type: array
+          items:
+            type: integer
+
+    interpreterUploadFileResponse:
+      type: object
+      properties:
+        fileDesignator:
+          type: string
