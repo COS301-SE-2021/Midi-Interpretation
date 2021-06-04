@@ -18,14 +18,19 @@ import java.util.UUID;
 @Service
 public class InterpreterServiceImpl implements InterpreterService{
 
+    private final int maximumUploadSize = kilobytesToBytes(36);
+
     @Override
     public UploadFileResponse uploadFile(UploadFileRequest request) throws InvalidUploadException {
         //check to see if there is a valid request object
-        if(request==null) throw new InvalidUploadException("[Bad Request] No request made");
+        if(request==null) throw new InvalidUploadException("[No Request Made]");
         try {
 
             //get the contents of the file
             byte[] fileContents = request.getFileContents();
+            //check to see that it isn't empty, or is of maximum length
+            if(fileContents.length==0) throw new InvalidUploadException("[Empty File]");
+            if(fileContents.length > maximumUploadSize) throw new InvalidUploadException("[Maximum File Size Exceeded]");
 
             //write to storage
             UUID fileDesignator = writeFileToStorage(fileContents);
@@ -42,13 +47,14 @@ public class InterpreterServiceImpl implements InterpreterService{
     @Override
     public InterpretMetreResponse interpretMetre(InterpretMetreRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
-        if(request==null) throw new InvalidDesignatorException("[Bad Request] No request made");
+        if(request==null) throw new InvalidDesignatorException("[No Request Made]");
         try {
             UUID fileDesignator = request.getFileDesignator();
             File sourceFile = new File(generatePath(fileDesignator));
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
-            //return response
-            return new InterpretMetreResponse("4/4");
+            String details = pattern.toString();
+            String time = details.substring(details.indexOf("TIME:")+5,details.indexOf("KEY:")-1);
+            return new InterpretMetreResponse(time);
         } catch (IOException e) {
             throw new InvalidDesignatorException("[File System Failure]");
         } catch (InvalidMidiDataException e) {
@@ -59,12 +65,14 @@ public class InterpreterServiceImpl implements InterpreterService{
     @Override
     public InterpretTempoResponse interpretTempo(InterpretTempoRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
-        if(request==null) throw new InvalidDesignatorException("[Bad Request] No request made");
+        if(request==null) throw new InvalidDesignatorException("[No Request Made]");
         try {
             UUID fileDesignator = request.getFileDesignator();
             File sourceFile = new File(generatePath(fileDesignator));
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
-            return new InterpretTempoResponse("168 bpm");
+            String details = pattern.toString();
+            String tempo = details.substring(1,details.indexOf("TIME:")-1);
+            return new InterpretTempoResponse(tempo);
         } catch (IOException e) {
             throw new InvalidDesignatorException("[File System Failure]");
         } catch (InvalidMidiDataException e) {
@@ -86,6 +94,10 @@ public class InterpreterServiceImpl implements InterpreterService{
     //================================
     // AUXILIARY METHODS
     //================================
+
+    private static int kilobytesToBytes(int n){
+        return (int) (n*Math.pow(2,10));
+    }
 
     private UUID writeFileToStorage(byte[] fileContents) throws IOException{
         //generate unique fileDesignator

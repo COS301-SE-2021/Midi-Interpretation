@@ -4,26 +4,23 @@ import com.noxception.midisense.TestingDictionary;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.*;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.beans.Beans;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@RunWith(SpringRunner.class)
+@SpringBootTest
 class InterpreterServiceImplTest {
 
 
-    //TODO: @Autowired
-    InterpreterServiceImpl interpreterService = new InterpreterServiceImpl();
+    @Autowired
+    InterpreterServiceImpl interpreterService;
 
     @Test
     public void testUploadFileValidFile(){
@@ -43,8 +40,8 @@ class InterpreterServiceImplTest {
         UploadFileRequest req = new UploadFileRequest(validFileContents);
         InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
                 ()->interpreterService.uploadFile(req),
-                "[File System Failure] ");
-        assertTrue(thrown.getMessage().contains("[File System Failure] "));
+                "[Empty File]");
+        assertTrue(thrown.getMessage().contains("[Empty File]"));
     }
 
     @Test
@@ -56,8 +53,8 @@ class InterpreterServiceImplTest {
 
             InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
                     ()->interpreterService.uploadFile(req),
-                    "[Bad Request] No request made");
-            assertTrue(thrown.getMessage().contains("[Bad Request] No request made"));
+                    "[No Request Made]");
+            assertTrue(thrown.getMessage().contains("[No Request Made]"));
         }
     }
 
