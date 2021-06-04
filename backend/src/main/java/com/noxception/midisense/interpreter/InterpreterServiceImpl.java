@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 public class InterpreterServiceImpl implements InterpreterService{
 
-    private final int maximumUploadSize = kilobytesToBytes(36);
+    private final int maximumUploadSize = kilobytesToBytes(1024);
 
     @Override
     public UploadFileResponse uploadFile(UploadFileRequest request) throws InvalidUploadException {
