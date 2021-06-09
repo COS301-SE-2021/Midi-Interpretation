@@ -49,6 +49,7 @@ public class InterpreterServiceImpl implements InterpreterService{
         //check to see if there is a valid request object
         if(request==null) throw new InvalidDesignatorException("[No Request Made]");
         try {
+            //attempt to interpret the metre
             UUID fileDesignator = request.getFileDesignator();
             File sourceFile = new File(generatePath(fileDesignator));
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
@@ -69,6 +70,7 @@ public class InterpreterServiceImpl implements InterpreterService{
         //check to see if there is a valid request object
         if(request==null) throw new InvalidDesignatorException("[No Request Made]");
         try {
+            //attempt to interpret the tempo
             UUID fileDesignator = request.getFileDesignator();
             File sourceFile = new File(generatePath(fileDesignator));
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);

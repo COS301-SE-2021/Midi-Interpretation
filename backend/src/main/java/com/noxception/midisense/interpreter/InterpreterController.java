@@ -39,6 +39,7 @@ public class InterpreterController implements InterpreterApi {
 
     @Override
     public ResponseEntity<InterpreterInterpretMetreResponse> interpretMetre(InterpreterInterpretMetreRequest body) {
+        //Definition: A time (or metre) signature, indicates the number of beats in a measure and the value of the basic beat
         InterpreterInterpretMetreResponse responseObject = new InterpreterInterpretMetreResponse();
         HttpStatus returnStatus = HttpStatus.OK;
         try{
@@ -57,6 +58,7 @@ public class InterpreterController implements InterpreterApi {
 
     @Override
     public ResponseEntity<InterpreterInterpretTempoResponse> interpretTempo(InterpreterInterpretTempoRequest body) {
+        //Definition: The tempo of a piece of music is the speed of the underlying beat.
         InterpreterInterpretTempoResponse responseObject = new InterpreterInterpretTempoResponse();
         HttpStatus returnStatus = HttpStatus.OK;
         try{
@@ -69,7 +71,8 @@ public class InterpreterController implements InterpreterApi {
         return new ResponseEntity<>(responseObject,returnStatus);
     }
 
-    // HELPER METHODS
+    // HELPER METHODS BELOW THIS LINE
+    //----------------------------------------------------------------------------------------------------
     private byte[] intArrayToByteArray(List<Integer> list)
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
