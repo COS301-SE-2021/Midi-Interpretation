@@ -1,5 +1,6 @@
 package com.noxception.midisense.interpreter;
 
+import com.noxception.midisense.MIDISenseUnitTest;
 import com.noxception.midisense.TestingDictionary;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
@@ -17,14 +18,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-class InterpreterServiceImplTest {
-
+class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Autowired
     InterpreterServiceImpl interpreterService;
     //TODO: CONTRACT BASED
     //TODO: UNIT TEST - revise definition
-    //TODO: LOGGING INSTEAD OF SYSTEM OUT
 
     @Test
     public void testUploadFileValidFile(){
@@ -34,7 +33,7 @@ class InterpreterServiceImplTest {
             UploadFileResponse res = interpreterService.uploadFile(req);
             assertEquals(res.getFileDesignator().getClass(), UUID.class);
             assertNotEquals(res.getFileDesignator(), null);
-            System.out.println(res.getFileDesignator());
+            log(res.getFileDesignator().toString());
         } catch (InvalidUploadException e) {
         }
     }
@@ -82,7 +81,7 @@ class InterpreterServiceImplTest {
         InterpretTempoResponse res = null;
         try {
             res = interpreterService.interpretTempo(req);
-            System.out.println(res.getTempo());
+            log(res.getTempo().toString());
             assertNotEquals(res.getTempo(),null);
         } catch (InvalidDesignatorException e) {
             e.printStackTrace();
