@@ -1,7 +1,9 @@
 package com.noxception.midisense.interpreter.rrobjects;
 
-public class UploadFileRequest {
-    private byte[] fileContents;
+import com.noxception.midisense.config.dataclass.RequestObject;
+
+public class UploadFileRequest extends RequestObject {
+    private final byte[] fileContents;
 
     public UploadFileRequest(byte[] fileContents) {
         this.fileContents = fileContents;
