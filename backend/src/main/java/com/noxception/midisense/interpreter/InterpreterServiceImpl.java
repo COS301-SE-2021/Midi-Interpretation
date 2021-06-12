@@ -20,7 +20,7 @@ import java.util.UUID;
 @Service
 public class InterpreterServiceImpl implements InterpreterService{
 
-    private final int maximumUploadSize = kilobytesToBytes(1024);
+    private final int maximumUploadSize = kilobytesToBytes(MIDISenseConfig.MAX_FILE_UPLOAD_SIZE);
 
     @DevelopmentNote(
             taskName = "uploadFile Use Case",

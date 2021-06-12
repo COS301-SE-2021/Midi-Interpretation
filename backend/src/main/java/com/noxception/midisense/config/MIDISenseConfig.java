@@ -1,9 +1,12 @@
 package com.noxception.midisense.config;
 
 public class MIDISenseConfig {
+
+
     public static final String CROSS_ORIGIN = "*";
     public static final String FILE_FORMAT = ".mid";
     public static final String FILE_SYSTEM_PATH = "src/main/java/com/noxception/midisense/midiPool/";
+    public static final int MAX_FILE_UPLOAD_SIZE = 1024;
 
     //EXCEPTIONS
     public static String messageBox(String message){ return "{"+message+"}";}
