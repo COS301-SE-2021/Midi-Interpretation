@@ -1,6 +1,7 @@
 package com.noxception.midisense.interpreter;
 
 import com.noxception.midisense.config.MidiSenseConfiguration;
+import com.noxception.midisense.config.DevelopmentNote;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.*;
@@ -20,6 +21,13 @@ public class InterpreterServiceImpl implements InterpreterService{
 
     private final int maximumUploadSize = kilobytesToBytes(1024);
 
+    @DevelopmentNote(
+            taskName = "uploadFile Use Case",
+            developers = {DevelopmentNote.Developers.ADRIAN},
+            status = DevelopmentNote.WorkState.COMPLETED,
+            lastModified = "2021/06/12",
+            comments = "Successfully reconstructs and saves file."
+    )
     @Override
     public UploadFileResponse uploadFile(UploadFileRequest request) throws InvalidUploadException {
         //check to see if there is a valid request object
@@ -44,6 +52,13 @@ public class InterpreterServiceImpl implements InterpreterService{
         }
     }
 
+    @DevelopmentNote(
+            taskName = "interpretMetre Use Case",
+            developers = {DevelopmentNote.Developers.ADRIAN},
+            status = DevelopmentNote.WorkState.IN_PROGRESS,
+            lastModified = "2021/06/12",
+            comments = "Update to include staccato passing use case."
+    )
     @Override
     public InterpretMetreResponse interpretMetre(InterpretMetreRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
@@ -65,6 +80,13 @@ public class InterpreterServiceImpl implements InterpreterService{
         }
     }
 
+    @DevelopmentNote(
+            taskName = "interpretTempo Use Case",
+            developers = {DevelopmentNote.Developers.ADRIAN},
+            status = DevelopmentNote.WorkState.IN_PROGRESS,
+            lastModified = "2021/06/12",
+            comments = "Update to include staccato passing use case."
+    )
     @Override
     public InterpretTempoResponse interpretTempo(InterpretTempoRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
@@ -120,7 +142,7 @@ public class InterpreterServiceImpl implements InterpreterService{
     }
 
     private void deleteFileFromStorage(File file) throws IOException{
-        if (!file.delete()) throw new IOException("Unable to delete file \""+file.getName()+"\"");
+        if (!file.delete()) throw new IOException("Unable to delete file "+file.getName());
     }
 
     private String generatePath(UUID fileDesignator){
