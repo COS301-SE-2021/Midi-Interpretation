@@ -107,6 +107,35 @@ public class InterpreterServiceImpl implements InterpreterService{
         }
     }
 
+    @DevelopmentNote(
+            taskName = "interpretKeySignature Use Case",
+            developers = {DevelopmentNote.Developers.CLAUDIO},
+            status = DevelopmentNote.WorkState.IN_PROGRESS,
+            lastModified = "2021/06/12",
+            comments = "n/a"
+    )
+    @Override
+    public InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException {
+        //check to see if there is a valid request object
+        if(request==null) throw new InvalidDesignatorException("[No Request Made]");
+        try {
+            //attempt to interpret the Key Signature
+            UUID fileDesignator = request.getFileDesignator();
+            File sourceFile = new File(generatePath(fileDesignator));
+            Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
+            String details = pattern.toString();
+            System.out.println(details);
+            String sigName = "lol";
+
+            //int beatValue = Integer.parseInt(time.substring(time.indexOf("/")+1));
+            return new InterpretKeySignatureResponse(sigName);
+        } catch (IOException e) {
+            throw new InvalidDesignatorException("[File System Failure]");
+        } catch (InvalidMidiDataException e) {
+            throw new InvalidDesignatorException("[MIDI Interpretation Failure]");
+        }
+    }
+
             //TODO: Future code for interpretation
             //translate
             /*Pattern pattern = MidiFileManager.loadPatternFromMidi(sourceFile);

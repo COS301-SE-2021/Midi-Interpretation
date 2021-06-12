@@ -87,7 +87,18 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
             e.printStackTrace();
         }
     }
-
+    @Test
+    public void testInterpretKeySignatureValidFile(){
+        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        InterpretKeySignatureResponse res = null;
+        try {
+            res = interpreterService.interpretKeySignature(req);
+            System.out.println(res.getKeySignature());
+            assertNotEquals(res.getKeySignature(),null);
+        } catch (InvalidDesignatorException e) {
+            e.printStackTrace();
+        }
+    }
     @Test
     public void testInterpretMetreInvalidFile(){
         InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
