@@ -34,7 +34,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
             UploadFileResponse res = interpreterService.uploadFile(req);
             assertEquals(res.getFileDesignator().getClass(), UUID.class);
             assertNotEquals(res.getFileDesignator(), null);
-            log(res.getFileDesignator().toString());
+            log(res.getFileDesignator());
         } catch (InvalidUploadException e) {
         }
     }
@@ -69,7 +69,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InterpretMetreResponse res = null;
         try {
             res = interpreterService.interpretMetre(req);
-            System.out.println(res.getMetre());
+            log(res.getMetre());
             assertNotEquals(res.getMetre(),null);
         } catch (InvalidDesignatorException e) {
             e.printStackTrace();
@@ -82,7 +82,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InterpretTempoResponse res = null;
         try {
             res = interpreterService.interpretTempo(req);
-            log(res.getTempo().toString());
+            log(res.getTempo());
             assertNotEquals(res.getTempo(),null);
         } catch (InvalidDesignatorException e) {
             e.printStackTrace();
@@ -94,7 +94,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InterpretKeySignatureResponse res = null;
         try {
             res = interpreterService.interpretKeySignature(req);
-            System.out.println(res.getKeySignature());
+            log(res.getKeySignature());
             assertNotEquals(res.getKeySignature(),null);
         } catch (InvalidDesignatorException | InvalidKeySignatureException e) {
             e.printStackTrace();

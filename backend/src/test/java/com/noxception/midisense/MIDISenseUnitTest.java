@@ -1,6 +1,7 @@
 package com.noxception.midisense;
 
 
+import org.apache.juli.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,12 @@ public class MIDISenseUnitTest {
         }
     }
     protected void log(String message){
+        log(message,LogType.INFO);
+    }
+    protected void log(Object message, LogType logType){
+        log(message.toString(),logType);
+    }
+    protected void log(Object message){
         log(message,LogType.INFO);
     }
     public enum LogType{
