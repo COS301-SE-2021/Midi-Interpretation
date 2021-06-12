@@ -124,10 +124,8 @@ public class InterpreterServiceImpl implements InterpreterService{
             File sourceFile = new File(generatePath(fileDesignator));
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
             String details = pattern.toString();
-            System.out.println(details);
-            String sigName = "lol";
-
-            //int beatValue = Integer.parseInt(time.substring(time.indexOf("/")+1));
+            String d2 = details.substring(details.indexOf("KEY:"));
+            String sigName = details.substring(details.indexOf("KEY:")+4, d2.indexOf(" ")+details.indexOf("KEY:"));
             return new InterpretKeySignatureResponse(sigName);
         } catch (IOException e) {
             throw new InvalidDesignatorException("[File System Failure]");
