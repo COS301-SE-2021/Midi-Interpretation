@@ -2,7 +2,6 @@ package com.noxception.midisense;
 
 import com.noxception.midisense.config.DevelopmentNote;
 import com.noxception.midisense.display.DisplayController;
-import com.noxception.midisense.display.DisplayService;
 import com.noxception.midisense.display.DisplayServiceImpl;
 import com.noxception.midisense.intelligence.IntelligenceController;
 import com.noxception.midisense.intelligence.IntelligenceServiceImpl;
@@ -10,7 +9,6 @@ import com.noxception.midisense.interpreter.InterpreterController;
 import com.noxception.midisense.interpreter.InterpreterServiceImpl;
 import org.junit.jupiter.api.Test;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 

@@ -32,14 +32,14 @@ public class InterpreterServiceImpl implements InterpreterService{
     @Override
     public UploadFileResponse uploadFile(UploadFileRequest request) throws InvalidUploadException {
         //check to see if there is a valid request object
-        if(request==null) throw new InvalidUploadException("[No Request Made]");
+        if(request==null) throw new InvalidUploadException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         try {
 
             //get the contents of the file
             byte[] fileContents = request.getFileContents();
             //check to see that it isn't empty, or is of maximum length
-            if(fileContents.length==0) throw new InvalidUploadException("[Empty File]");
-            if(fileContents.length > maximumUploadSize) throw new InvalidUploadException("[Maximum File Size Exceeded]");
+            if(fileContents.length==0) throw new InvalidUploadException(MIDISenseConfig.EMPTY_FILE_EXCEPTION_TEXT);
+            if(fileContents.length > maximumUploadSize) throw new InvalidUploadException(MIDISenseConfig.FILE_TOO_LARGE_EXCEPTION_TEXT);
 
             //write to storage
             UUID fileDesignator = writeFileToStorage(fileContents);
@@ -49,7 +49,7 @@ public class InterpreterServiceImpl implements InterpreterService{
             return new UploadFileResponse(fileDesignator);
         } catch (IOException e) {
             //throw exception
-            throw new InvalidUploadException("[File System Failure]");
+            throw new InvalidUploadException(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
         }
     }
 
@@ -63,7 +63,7 @@ public class InterpreterServiceImpl implements InterpreterService{
     @Override
     public InterpretMetreResponse interpretMetre(InterpretMetreRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
-        if(request==null) throw new InvalidDesignatorException("[No Request Made]");
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         //attempt to interpret the metre
         String details = parseStaccato(new ParseStaccatoRequest(request.getFileDesignator())).getStaccatoSequence();
         String time = details.substring(details.indexOf("TIME:")+5,details.indexOf("KEY:")-1);
@@ -82,7 +82,7 @@ public class InterpreterServiceImpl implements InterpreterService{
     @Override
     public InterpretTempoResponse interpretTempo(InterpretTempoRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
-        if(request==null) throw new InvalidDesignatorException("[No Request Made]");
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         //attempt to interpret the tempo
         String details = parseStaccato(new ParseStaccatoRequest(request.getFileDesignator())).getStaccatoSequence();
         String tempo = details.substring(1,details.indexOf("TIME:")-1);
@@ -100,7 +100,7 @@ public class InterpreterServiceImpl implements InterpreterService{
     @Override
     public InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException, InvalidKeySignatureException {
         //check to see if there is a valid request object
-        if(request==null) throw new InvalidDesignatorException("[No Request Made]");
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         //attempt to interpret the Key Signature
         String details = parseStaccato(new ParseStaccatoRequest(request.getFileDesignator())).getStaccatoSequence();
         String sigName = details.substring(details.indexOf("KEY:")+4, details.substring(details.indexOf("KEY:")).indexOf(" ")+details.indexOf("KEY:"));
@@ -117,26 +117,23 @@ public class InterpreterServiceImpl implements InterpreterService{
     @Override
     public ParseStaccatoResponse parseStaccato(ParseStaccatoRequest request) throws InvalidDesignatorException{
         //check to see if there is a valid request object
-        if(request==null) throw new InvalidDesignatorException("[No Request Made]");
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         try {
             UUID fileDesignator = request.getFileDesignator();
             File sourceFile = new File(generatePath(fileDesignator));
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
             return new ParseStaccatoResponse(pattern.toString());
         } catch (IOException e) {
-            throw new InvalidDesignatorException("[File System Failure]");
+            throw new InvalidDesignatorException(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
         } catch (InvalidMidiDataException e) {
-            throw new InvalidDesignatorException("[MIDI Interpretation Failure]");
+            throw new InvalidDesignatorException(MIDISenseConfig.INVALID_MIDI_EXCEPTION_TEXT);
         }
     }
 
             //TODO: Future code for interpretation
-            //translate
-            /*Pattern pattern = MidiFileManager.loadPatternFromMidi(sourceFile);
-            staccatoSequence = pattern.toString();
 
 
-            MidiParser parser = new MidiParser();
+           /* MidiParser parser = new MidiParser();
             MusicXmlParserListener listener = new MusicXmlParserListener();
             parser.addParserListener(listener);
             parser.parse(MidiSystem.getSequence(sourceFile));

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class MIDISenseUnitTest {
 
+    //PERTAINING TO LOGGING
     protected static final Logger logger = LoggerFactory.getLogger(MIDISenseUnitTest.class);
     protected void log(String message, LogType logType){
         switch(logType){
@@ -31,4 +32,14 @@ public class MIDISenseUnitTest {
         DEBUG,
         ERROR
     }
+
+    //PERTAINING TO TESTING ANNOTATIONS
+    public class TestTags{
+        public static final String VALID_INPUT = "VI";
+        public static final String MALFORMED_INPUT = "MI";
+        public static final String EMPTY_INPUT = "EI";
+        public static final String REPEATED_INPUT = "RI";
+        public static final String DOMAIN_SENSITIVE_INPUT = "DI";
+    }
+
 }
