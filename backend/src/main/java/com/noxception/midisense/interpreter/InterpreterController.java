@@ -1,6 +1,7 @@
 package com.noxception.midisense.interpreter;
 
 import com.noxception.midisense.api.InterpreterApi;
+import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.*;
@@ -8,6 +9,7 @@ import com.noxception.midisense.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayOutputStream;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+@CrossOrigin(value = MIDISenseConfig.CROSS_ORIGIN)
 @RestController
 public class InterpreterController implements InterpreterApi {
 

@@ -56,78 +56,73 @@ public class InterpreterServiceImpl implements InterpreterService{
     @DevelopmentNote(
             taskName = "interpretMetre Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.IN_PROGRESS,
-            lastModified = "2021/06/12",
-            comments = "Update to include staccato passing use case."
+            status = DevelopmentNote.WorkState.PENDING_REVIEW,
+            lastModified = "2021/06/12 21:55",
+            comments = "Updated to use the new parse staccato method."
     )
     @Override
     public InterpretMetreResponse interpretMetre(InterpretMetreRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
         if(request==null) throw new InvalidDesignatorException("[No Request Made]");
-        try {
-            //attempt to interpret the metre
-            UUID fileDesignator = request.getFileDesignator();
-            File sourceFile = new File(generatePath(fileDesignator));
-            Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
-            String details = pattern.toString();
-            String time = details.substring(details.indexOf("TIME:")+5,details.indexOf("KEY:")-1);
-            int numBeats = Integer.parseInt(time.substring(0,time.indexOf("/")));
-            int beatValue = Integer.parseInt(time.substring(time.indexOf("/")+1));
-            return new InterpretMetreResponse(numBeats,beatValue);
-        } catch (IOException e) {
-            throw new InvalidDesignatorException("[File System Failure]");
-        } catch (InvalidMidiDataException e) {
-            throw new InvalidDesignatorException("[MIDI Interpretation Failure]");
-        }
+        //attempt to interpret the metre
+        String details = parseStaccato(new ParseStaccatoRequest(request.getFileDesignator())).getStaccatoSequence();
+        String time = details.substring(details.indexOf("TIME:")+5,details.indexOf("KEY:")-1);
+        int numBeats = Integer.parseInt(time.substring(0,time.indexOf("/")));
+        int beatValue = Integer.parseInt(time.substring(time.indexOf("/")+1));
+        return new InterpretMetreResponse(numBeats,beatValue);
     }
 
     @DevelopmentNote(
             taskName = "interpretTempo Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.IN_PROGRESS,
-            lastModified = "2021/06/12",
-            comments = "Update to include staccato passing use case."
+            status = DevelopmentNote.WorkState.PENDING_REVIEW,
+            lastModified = "2021/06/12 21:55",
+            comments = "Updated to use the new parse staccato method."
     )
     @Override
     public InterpretTempoResponse interpretTempo(InterpretTempoRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
         if(request==null) throw new InvalidDesignatorException("[No Request Made]");
-        try {
-            //attempt to interpret the tempo
-            UUID fileDesignator = request.getFileDesignator();
-            File sourceFile = new File(generatePath(fileDesignator));
-            Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
-            String details = pattern.toString();
-            String tempo = details.substring(1,details.indexOf("TIME:")-1);
-            int tempoIndication = Integer.parseInt(tempo);
-            return new InterpretTempoResponse(tempoIndication);
-        } catch (IOException e) {
-            throw new InvalidDesignatorException("[File System Failure]");
-        } catch (InvalidMidiDataException e) {
-            throw new InvalidDesignatorException("[MIDI Interpretation Failure]");
-        }
+        //attempt to interpret the tempo
+        String details = parseStaccato(new ParseStaccatoRequest(request.getFileDesignator())).getStaccatoSequence();
+        String tempo = details.substring(1,details.indexOf("TIME:")-1);
+        int tempoIndication = Integer.parseInt(tempo);
+        return new InterpretTempoResponse(tempoIndication);
     }
 
     @DevelopmentNote(
             taskName = "interpretKeySignature Use Case",
-            developers = {DevelopmentNote.Developers.CLAUDIO},
-            status = DevelopmentNote.WorkState.IN_PROGRESS,
-            lastModified = "2021/06/12",
-            comments = "n/a"
+            developers = {DevelopmentNote.Developers.CLAUDIO, DevelopmentNote.Developers.ADRIAN},
+            status = DevelopmentNote.WorkState.PENDING_REVIEW,
+            lastModified = "2021/06/12 21:55",
+            comments = "Updated to use the new parse staccato method. Needs Tests"
     )
     @Override
     public InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException, InvalidKeySignatureException {
         //check to see if there is a valid request object
         if(request==null) throw new InvalidDesignatorException("[No Request Made]");
+        //attempt to interpret the Key Signature
+        String details = parseStaccato(new ParseStaccatoRequest(request.getFileDesignator())).getStaccatoSequence();
+        String sigName = details.substring(details.indexOf("KEY:")+4, details.substring(details.indexOf("KEY:")).indexOf(" ")+details.indexOf("KEY:"));
+        return new InterpretKeySignatureResponse(sigName);
+    }
+
+    @DevelopmentNote(
+            taskName = "parseStaccato Use Case",
+            developers = {DevelopmentNote.Developers.ADRIAN},
+            status = DevelopmentNote.WorkState.PENDING_REVIEW,
+            lastModified = "2021/06/12 21:55",
+            comments = "Added method - needs tests"
+    )
+    @Override
+    public ParseStaccatoResponse parseStaccato(ParseStaccatoRequest request) throws InvalidDesignatorException{
+        //check to see if there is a valid request object
+        if(request==null) throw new InvalidDesignatorException("[No Request Made]");
         try {
-            //attempt to interpret the Key Signature
             UUID fileDesignator = request.getFileDesignator();
             File sourceFile = new File(generatePath(fileDesignator));
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
-            String details = pattern.toString();
-            String d2 = details.substring(details.indexOf("KEY:"));
-            String sigName = details.substring(details.indexOf("KEY:")+4, d2.indexOf(" ")+details.indexOf("KEY:"));
-            return new InterpretKeySignatureResponse(sigName);
+            return new ParseStaccatoResponse(pattern.toString());
         } catch (IOException e) {
             throw new InvalidDesignatorException("[File System Failure]");
         } catch (InvalidMidiDataException e) {
