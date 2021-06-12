@@ -25,7 +25,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         interpreterService = new InterpreterServiceImpl();
     }
 
-
     @Test
     @DisplayName("Tests uploading with a valid file byte array, should store in MIDIPool.")
     @Tag(TestTags.VALID_INPUT)
@@ -157,7 +156,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
     }
 
-
+    //TODO: ADRIAN: TEST PARSE STACCATO FOR VALID, INVALID AND EMPTY
 
 
 
