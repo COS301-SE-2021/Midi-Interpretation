@@ -1,6 +1,6 @@
 package com.noxception.midisense.controller;
 
-import com.noxception.midisense.TestingDictionary;
+import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.models.InterpreterInterpretMetreRequest;
 import com.noxception.midisense.models.InterpreterInterpretTempoRequest;
 import com.noxception.midisense.models.InterpreterUploadFileRequest;

@@ -1,4 +1,4 @@
-package com.noxception.midisense;
+package com.noxception.midisense.dataclass;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;

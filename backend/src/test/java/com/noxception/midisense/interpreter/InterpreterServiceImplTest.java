@@ -1,7 +1,7 @@
 package com.noxception.midisense.interpreter;
 
-import com.noxception.midisense.MIDISenseUnitTest;
-import com.noxception.midisense.TestingDictionary;
+import com.noxception.midisense.dataclass.MIDISenseUnitTest;
+import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;

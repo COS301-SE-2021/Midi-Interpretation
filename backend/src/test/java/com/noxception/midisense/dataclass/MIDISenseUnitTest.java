@@ -1,7 +1,6 @@
-package com.noxception.midisense;
+package com.noxception.midisense.dataclass;
 
 
-import org.apache.juli.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,7 @@
 package com.noxception.midisense;
 
 import com.noxception.midisense.config.DevelopmentNote;
+import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.display.DisplayController;
 import com.noxception.midisense.display.DisplayServiceImpl;
 import com.noxception.midisense.intelligence.IntelligenceController;
@@ -12,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class DeveloperProgress extends MIDISenseUnitTest{
+public class DeveloperProgress extends MIDISenseUnitTest {
 
     @Test
     public void getTaskProgress(){
