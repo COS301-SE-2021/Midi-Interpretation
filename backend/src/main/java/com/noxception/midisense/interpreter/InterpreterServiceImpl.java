@@ -1,8 +1,9 @@
 package com.noxception.midisense.interpreter;
 
-import com.noxception.midisense.config.MidiSenseConfiguration;
+import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.config.DevelopmentNote;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.*;
 import org.jfugue.midi.MidiFileManager;
@@ -115,7 +116,7 @@ public class InterpreterServiceImpl implements InterpreterService{
             comments = "n/a"
     )
     @Override
-    public InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException {
+    public InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException, InvalidKeySignatureException {
         //check to see if there is a valid request object
         if(request==null) throw new InvalidDesignatorException("[No Request Made]");
         try {
@@ -174,7 +175,7 @@ public class InterpreterServiceImpl implements InterpreterService{
 
     private String generatePath(UUID fileDesignator){
         //generates the path for the unique fileDesignator
-        return MidiSenseConfiguration.FILESYSTEMPATH.get()+fileDesignator.toString()+ MidiSenseConfiguration.FILEFORMAT.get();
+        return MIDISenseConfig.FILE_SYSTEM_PATH+fileDesignator.toString()+ MIDISenseConfig.FILE_FORMAT;
     }
 
 }

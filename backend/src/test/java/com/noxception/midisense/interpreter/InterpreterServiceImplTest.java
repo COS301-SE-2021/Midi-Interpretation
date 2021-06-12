@@ -3,6 +3,7 @@ package com.noxception.midisense.interpreter;
 import com.noxception.midisense.MIDISenseUnitTest;
 import com.noxception.midisense.TestingDictionary;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.*;
 import org.junit.jupiter.api.Test;
@@ -95,7 +96,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
             res = interpreterService.interpretKeySignature(req);
             System.out.println(res.getKeySignature());
             assertNotEquals(res.getKeySignature(),null);
-        } catch (InvalidDesignatorException e) {
+        } catch (InvalidDesignatorException | InvalidKeySignatureException e) {
             e.printStackTrace();
         }
     }
