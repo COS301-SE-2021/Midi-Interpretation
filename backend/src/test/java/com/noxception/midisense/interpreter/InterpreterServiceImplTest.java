@@ -6,40 +6,37 @@ import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorExceptio
 import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
 class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
-    @Autowired
-    InterpreterServiceImpl interpreterService;
-    //TODO: CONTRACT BASED
-    //TODO: UNIT TEST - revise definition
+    private InterpreterServiceImpl interpreterService;
+
+    @BeforeEach
+    public void setUp() {
+        interpreterService = new InterpreterServiceImpl();
+    }
+
 
     @Test
-    public void testUploadFileValidFile(){
+    @DisplayName("Tests uploading with a valid file byte array, should store in MIDIPool.")
+    public void testUploadFileValidFile() throws InvalidUploadException{
         byte[] validFileContents = TestingDictionary.interpreter_uploadFile_validFileContents;
         UploadFileRequest req = new UploadFileRequest(validFileContents);
-        try {
-            UploadFileResponse res = interpreterService.uploadFile(req);
-            assertEquals(res.getFileDesignator().getClass(), UUID.class);
-            assertNotEquals(res.getFileDesignator(), null);
-            log(res.getFileDesignator());
-        } catch (InvalidUploadException e) {
-        }
+        UploadFileResponse res = interpreterService.uploadFile(req);
+        assertEquals(res.getFileDesignator().getClass(), UUID.class);
+        assertNotEquals(res.getFileDesignator(), null);
+        log(res.getFileDesignator());
     }
 
     @Test
+    @DisplayName("Tests uploading with an invalid file byte array, should throw exception.")
     public void testUploadFileInvalidFile(){
         byte[] validFileContents = TestingDictionary.interpreter_uploadFile_invalidFileContents;
         UploadFileRequest req = new UploadFileRequest(validFileContents);
@@ -50,6 +47,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Tests uploading with an empty request object, should throw exception.")
     public void testUploadFileEmptyRequest(){
         UploadFileRequest req = null;
         try {
@@ -64,6 +62,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Tests interpreting metre with a valid file designator, should return a valid metre object.")
     public void testInterpretMetreValidFile(){
         InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretMetreResponse res = null;
@@ -77,6 +76,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Tests interpreting tempo with a valid file designator, should return a valid tempo object.")
     public void testInterpretTempoValidFile(){
         InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretTempoResponse res = null;
@@ -88,7 +88,9 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
             e.printStackTrace();
         }
     }
+
     @Test
+    @DisplayName("Tests interpreting key signature with a valid file designator, should return a valid key signature object.")
     public void testInterpretKeySignatureValidFile(){
         InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretKeySignatureResponse res = null;
@@ -100,7 +102,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
             e.printStackTrace();
         }
     }
+
+    //TODO: CLAUDIO: test Key sig with invalid file and empty request
+
     @Test
+    @DisplayName("Tests interpreting metre with an invalid file designator, should throw an exception.")
     public void testInterpretMetreInvalidFile(){
         InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -110,6 +116,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Tests interpreting tempo with an invalid file designator, should throw an exception.")
     public void testInterpretTempoInvalidFile(){
         InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -119,6 +126,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Tests interpreting metre with an empty request, should throw an exception.")
     public void testInterpretMetreEmptyRequest(){
         InterpretMetreRequest req = null;
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -128,6 +136,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Tests interpreting metre with an empty request, should throw an exception.")
     public void testInterpretTempoEmptyRequest(){
         InterpretTempoRequest req = null;
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -135,6 +144,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "[No Request Made]");
         assertTrue(thrown.getMessage().contains("[No Request Made]"));
     }
+
+
 
 
 
