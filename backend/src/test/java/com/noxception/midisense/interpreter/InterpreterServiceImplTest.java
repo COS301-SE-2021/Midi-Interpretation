@@ -85,8 +85,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         log(res.getKeySignature());
     }
 
-    //TODO: CLAUDIO: test Key sig with invalid file and empty request
-
     @Test
     @DisplayName("Tests interpreting metre with an invalid file designator, should throw an exception.")
     @Tag(TestTags.MALFORMED_INPUT)
@@ -105,6 +103,16 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretTempo(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+    }
+    @Test
+    @DisplayName("Tests interpreting Key Signature with an invalid file designator, should throw an exception.")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testInterpretKeySignatureInvalidFile(){
+        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.interpretKeySignature(req),
                 "No processing should happen if a file doesn't exist.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
     }
@@ -128,6 +136,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
     }
+
 
     //TODO: ADRIAN: TEST PARSE STACCATO FOR VALID, INVALID AND EMPTY
 
