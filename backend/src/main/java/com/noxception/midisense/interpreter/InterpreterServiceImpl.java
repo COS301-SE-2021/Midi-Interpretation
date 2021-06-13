@@ -56,9 +56,9 @@ public class InterpreterServiceImpl implements InterpreterService{
     @DevelopmentNote(
             taskName = "interpretMetre Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.PENDING_REVIEW,
+            status = DevelopmentNote.WorkState.COMPLETED,
             lastModified = "2021/06/12 21:55",
-            comments = "Updated to use the new parse staccato method."
+            comments = "Reviewed method and tests~Claudio"
     )
     @Override
     public InterpretMetreResponse interpretMetre(InterpretMetreRequest request) throws InvalidDesignatorException {
@@ -75,9 +75,9 @@ public class InterpreterServiceImpl implements InterpreterService{
     @DevelopmentNote(
             taskName = "interpretTempo Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.PENDING_REVIEW,
+            status = DevelopmentNote.WorkState.COMPLETED,
             lastModified = "2021/06/12 21:55",
-            comments = "Updated to use the new parse staccato method."
+            comments = "Reviewed method and tests~Claudio"
     )
     @Override
     public InterpretTempoResponse interpretTempo(InterpretTempoRequest request) throws InvalidDesignatorException {
@@ -94,8 +94,8 @@ public class InterpreterServiceImpl implements InterpreterService{
             taskName = "interpretKeySignature Use Case",
             developers = {DevelopmentNote.Developers.CLAUDIO, DevelopmentNote.Developers.ADRIAN},
             status = DevelopmentNote.WorkState.PENDING_REVIEW,
-            lastModified = "2021/06/12 21:55",
-            comments = "Updated to use the new parse staccato method. Needs Tests"
+            lastModified = "2021/06/13 9:33",
+            comments = "Finished method and testing"
     )
     @Override
     public InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException, InvalidKeySignatureException {
