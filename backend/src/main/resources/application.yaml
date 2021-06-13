@@ -46,7 +46,7 @@ paths:
       tags:
         - "Interpreter"
       description: parse to XML file
-      operationId: parseXML
+      operationId: ParseXML
       requestBody:
         description: "Request for parseXML"
         required: true
@@ -68,7 +68,7 @@ paths:
         tags:
           - "Interpreter"
         description: parse to Staccato
-        operationId: parseStaccato
+        operationId: ParseStaccato
         requestBody:
           description: "Request for parseStaccato"
           required: true
@@ -167,7 +167,7 @@ components:
           type: string
 
     interpreterParseStaccatoRequest:
-      description: "Description Here"
+      description: "request for parseStaccato"
       type: object
       properties:
         fileContents:
