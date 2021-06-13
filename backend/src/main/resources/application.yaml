@@ -21,43 +21,43 @@ schemes:
   - http
 
 paths:
-  /interpreter/parseFile:
+  /display/DisplayMusicMetadata :
     post:
       tags:
-        - interpreter
-      summary: Returns parseFile token
-      description: parseFile
-      operationId: parseFile
+        - display
+      summary: Returns DisplayMusicMetadata token
+      description: DisplayMusicMetadata
+      operationId: DisplayMusicMetadata
       consumes:
         - application/json
       produces:
         - application/json
       parameters:
         - in: body
-          name: parseFileRequest
-          description: Request for parseFile
+          name: DisplayMusicMetadata Request
+          description: Request for DisplayMusicMetadata
           required: true
           schema:
-            $ref: '#/definitions/parseFileRequest'
+            $ref: '#/definitions/DisplayMusicMetadataRequest'
       responses:
         '200':
-          description: Login response
+          description: Music metadata display response
           schema:
-            $ref: '#/definitions/parseFileResponse'
+            $ref: '#/definitions/DisplayMusicMetadataResponse'
         '401':
           description: InvalidFileException
 
 definitions:
-  parseFileRequest:
+  DisplayMusicMetadataRequest:
     type: object
     required:
-      - file
+      fileDesignator: string
     properties:
       file:
         type: array
         items: integer
 
-  parseFileResponse:
+  DisplayMusicMetadataResponse:
     type: object
     properties:
       success:
