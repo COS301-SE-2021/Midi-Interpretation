@@ -1,53 +1,64 @@
-openapi: 3.0.0
+swagger: '2.0'
 
 info:
+  description: This is the API for the MIDISense System
   version: 1.0.0
   title: MIDISense
-  description: "This is the API for the MIDISense System"
+
+host: 'localhost:8080'
+basePath: /api
 
 tags:
-  - name: "Display"
-  - name: "Interpreter"
-  - name: "Intelligence"
+  - name: display
+    description: Display
+  - name: interpreter
+    description: Interpreter
+  - name: intelligence
+    description: Intelligence
+
+schemes:
+  - https
+  - http
 
 paths:
-
-  /display/DisplayMusicMetaData:
+  /interpreter/parseFile:
     post:
-      summary: "Endpoint for the DisplayMusicMetaData use case of the Display branch"
       tags:
-        - "Display"
-      description: DisplayMusicMetaData
-      operationId: DisplayMusicMetaData
-      requestBody:
-        description: "Request for DisplayMusicMetaData"
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DisplayMusicMetaDataRequest'
+        - interpreter
+      summary: Returns parseFile token
+      description: parseFile
+      operationId: parseFile
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: parseFileRequest
+          description: Request for parseFile
+          required: true
+          schema:
+            $ref: '#/definitions/parseFileRequest'
       responses:
         '200':
-          description: "playback File Response"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DisplayMusicMetaDataResponse'
+          description: Login response
+          schema:
+            $ref: '#/definitions/parseFileResponse'
+        '401':
+          description: InvalidFileException
 
+definitions:
+  parseFileRequest:
+    type: object
+    required:
+      - file
+    properties:
+      file:
+        type: array
+        items: integer
 
-components:
-  schemas:
-
-    DisplayMusicMetaDataRequest:
-      type: object
-      properties:
-        fileContents:
-          type: array
-          items:
-            type: integer
-
-    DisplayMusicMetaDataResponse:
-      type: object
-      properties:
-        fileDesignator:
-          type: string
+  parseFileResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
