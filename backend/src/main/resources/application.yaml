@@ -61,6 +61,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/interpreterParseXMLResponse'
+        '401':
+          description: Invalid File
 
     /interpreter/parseStaccato:
       post:
@@ -83,6 +85,8 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/interpreterParseStaccatoResponse'
+          '401':
+            description: Invalid File
 
 
   /interpreter/interpretMetre:
