@@ -1,0 +1,53 @@
+openapi: 3.0.0
+
+info:
+  version: 1.0.0
+  title: MIDISense
+  description: "This is the API for the MIDISense System"
+
+tags:
+  - name: "Display"
+  - name: "Interpreter"
+  - name: "Intelligence"
+
+paths:
+
+  /display/DisplayMusicMetaData:
+    post:
+      summary: "Endpoint for the DisplayMusicMetaData use case of the Display branch"
+      tags:
+        - "Display"
+      description: DisplayMusicMetaData
+      operationId: DisplayMusicMetaData
+      requestBody:
+        description: "Request for DisplayMusicMetaData"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DisplayMusicMetaDataRequest'
+      responses:
+        '200':
+          description: "playback File Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplayMusicMetaDataResponse'
+
+
+components:
+  schemas:
+
+    DisplayMusicMetaDataRequest:
+      type: object
+      properties:
+        fileContents:
+          type: array
+          items:
+            type: integer
+
+    DisplayMusicMetaDataResponse:
+      type: object
+      properties:
+        fileDesignator:
+          type: string
