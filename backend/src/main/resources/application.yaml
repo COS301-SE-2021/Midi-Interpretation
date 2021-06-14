@@ -12,9 +12,15 @@ tags:
 
 paths:
 
+  #=================================================
+  # ENDPOINT DEFINITIONS
+  #=================================================
+
+  #============= INTERPRETER ============================
+
   /interpreter/uploadFile:
     post:
-      summary: "Endpoint for the Create Book use case of the Book subsystem"
+      summary: "Endpoint for the Upload File use case of the Interpreter subsystem"
       tags:
         - "Interpreter"
       description: uploadFile
@@ -34,6 +40,102 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterUploadFileResponse'
 
+  /interpreter/parseXML:
+    post:
+      summary: "Endpoint for parsing an XML of the Interpreter subsystem"
+      tags:
+        - "Interpreter"
+      description: parse to XML file
+      operationId: ParseXML
+      requestBody:
+        description: "Request for parseXML"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterParseXMLRequest'
+      responses:
+        '200':
+          description: "parseXML Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterParseXMLResponse'
+        '401':
+          description: Invalid File
+
+    /interpreter/parseStaccato:
+      post:
+        summary: "Endpoint for parsing Staccato of the Interpreter subsystem"
+        tags:
+          - "Interpreter"
+        description: parse to Staccato
+        operationId: ParseStaccato
+        requestBody:
+          description: "Request for parseStaccato"
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterParseStaccatoRequest'
+        responses:
+          '200':
+            description: "parseStaccato Response"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/interpreterParseStaccatoResponse'
+          '401':
+            description: Invalid File
+
+
+  /interpreter/interpretMetre:
+    post:
+      summary: "Endpoint for the Interpret Metre use case of the Interpreter subsystem"
+      tags:
+        - "Interpreter"
+      description: interpretMetre
+      operationId: interpretMetre
+      requestBody:
+        description: "Request for interpretMetre"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterInterpretMetreRequest'
+      responses:
+        '200':
+          description: "Interpret Metre Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterInterpretMetreResponse'
+
+  /interpreter/interpretTempo:
+    post:
+      summary: "Endpoint for the Interpret Tempo use case of the Interpreter subsystem"
+      tags:
+        - "Interpreter"
+      description: interpretTempo
+      operationId: interpretTempo
+      requestBody:
+        description: "Request for interpretTempo"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterInterpretTempoRequest'
+      responses:
+        '200':
+          description: "Interpret Tempo Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterInterpretTempoResponse'
+
+  #=================================================
+  # SCHEMAS + OBJECTS
+  #=================================================
 
 components:
   schemas:
@@ -52,3 +154,64 @@ components:
       properties:
         fileDesignator:
           type: string
+
+    interpreterParseXMLRequest:
+      description: "Description Here"
+      type: object
+      properties:
+        fileContents:
+          type: array
+          items:
+            type: integer
+
+    interpreterParseXMLResponse:
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    interpreterParseStaccatoRequest:
+      description: "request for parseStaccato"
+      type: object
+      properties:
+        fileContents:
+          type: array
+          items:
+            type: integer
+
+    interpreterParseStaccatoResponse:
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    interpreterInterpretMetreRequest:
+      description: "Description Here"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    interpreterInterpretMetreResponse:
+      type: object
+      properties:
+        timeSignature:
+          type: object
+          properties:
+            numBeats:
+              type: integer
+            beatValue:
+              type: integer
+
+    interpreterInterpretTempoRequest:
+      description: "Description Here"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    interpreterInterpretTempoResponse:
+      type: object
+      properties:
+        tempoIndication:
+          type: integer

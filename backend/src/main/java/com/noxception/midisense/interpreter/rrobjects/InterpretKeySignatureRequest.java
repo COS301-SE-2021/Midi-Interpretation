@@ -4,10 +4,10 @@ import com.noxception.midisense.config.dataclass.RequestObject;
 
 import java.util.UUID;
 
-public class InterpretTempoRequest extends RequestObject {
+public class InterpretKeySignatureRequest extends RequestObject {
     private final UUID fileDesignator;
 
-    public InterpretTempoRequest(UUID fileDesignator) {
+    public InterpretKeySignatureRequest(UUID fileDesignator) {
         this.fileDesignator = fileDesignator;
     }
 
