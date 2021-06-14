@@ -15,6 +15,10 @@
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>11</java.version>
+        <frontend-src-dir>${project.basedir}/src/main/app</frontend-src-dir>
+        <node.version>v12.3.1</node.version>
+        <yarn.version>v1.16.0</yarn.version>
+        <frontend-maven-plugin.version>1.7.6</frontend-maven-plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -68,7 +72,7 @@
             <!--plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>${frontend-maven-plugin.version}</version>
+                <version>1.12.0</version>
 
                 <configuration>
                     <nodeVersion>${node.version}</nodeVersion>
@@ -76,7 +80,6 @@
                     <workingDirectory>${frontend-src-dir}</workingDirectory>
                     <installDirectory>${project.build.directory}</installDirectory>
                 </configuration>
-
                 <executions>
                     <execution>
                         <id>install-frontend-tools</id>
