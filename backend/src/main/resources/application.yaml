@@ -44,8 +44,30 @@ paths:
           description: Music metadata display response
           schema:
             $ref: '#/definitions/DisplayMusicMetadataResponse'
-        '401':
-          description: InvalidFileException
+
+  /display/DisplayNoteMetadata :
+    post:
+      tags:
+        - display
+      summary: Returns DisplayNoteMetadata token
+      description: DisplayNoteMetadata
+      operationId: DisplayNoteMetadata
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: DisplayNoteMetadata Request
+          description: Request for DisplayNoteMetadata
+          required: true
+          schema:
+            $ref: '#/definitions/DisplayNoteMetadataRequest'
+      responses:
+        '200':
+          description: Music metadata display response
+          schema:
+            $ref: '#/definitions/DisplayNoteMetadataResponse'
 
 definitions:
   DisplayMusicMetadataRequest:
@@ -57,7 +79,22 @@ definitions:
         type: array
         items: integer
 
+  DisplayNoteMetadataRequest:
+    type: object
+    required:
+      fileDesignator: string
+    properties:
+      file:
+        type: array
+        items: integer
+
   DisplayMusicMetadataResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+
+  DisplayNoteMetadataResponse:
     type: object
     properties:
       success:
