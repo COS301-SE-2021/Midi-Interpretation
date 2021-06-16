@@ -10,11 +10,6 @@ basePath: /api
 
 tags:
   - name: display
-    description: Display
-  - name: interpreter
-    description: Interpreter
-  - name: intelligence
-    description: Intelligence
 
 schemes:
   - https
@@ -25,8 +20,8 @@ paths:
     post:
       tags:
         - display
-      summary: Returns DisplayMusicMetadata token
-      description: DisplayMusicMetadata
+      summary: "Returns DisplayMusicMetadata token"
+      description: "Displays the music metadata of the given midi file"
       operationId: DisplayMusicMetadata
       consumes:
         - application/json
@@ -34,8 +29,8 @@ paths:
         - application/json
       parameters:
         - in: body
-          name: DisplayMusicMetadata Request
-          description: Request for DisplayMusicMetadata
+          name: "DisplayMusicMetadata Request"
+          description: "Request for DisplayMusicMetadata"
           required: true
           schema:
             $ref: '#/definitions/DisplayMusicMetadataRequest'
@@ -49,8 +44,8 @@ paths:
     post:
       tags:
         - display
-      summary: Returns DisplayNoteMetadata token
-      description: DisplayNoteMetadata
+      summary: "Returns DisplayNoteMetadata token"
+      description: "Displays note metadata of the midi file"
       operationId: DisplayNoteMetadata
       consumes:
         - application/json
@@ -58,14 +53,14 @@ paths:
         - application/json
       parameters:
         - in: body
-          name: DisplayNoteMetadata Request
-          description: Request for DisplayNoteMetadata
+          name: "DisplayNoteMetadata Request"
+          description: "Request for DisplayNoteMetadata"
           required: true
           schema:
             $ref: '#/definitions/DisplayNoteMetadataRequest'
       responses:
         '200':
-          description: Music metadata display response
+          description: "Music metadata display response"
           schema:
             $ref: '#/definitions/DisplayNoteMetadataResponse'
 
