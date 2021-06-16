@@ -74,6 +74,11 @@ public class InterpreterController implements InterpreterApi {
         return new ResponseEntity<>(responseObject,returnStatus);
     }
 
+    @Override
+    public ResponseEntity<InterpreterParseXMLResponse> parseXML(InterpreterParseXMLRequest body) {
+        return null;
+    }
+
     // HELPER METHODS BELOW THIS LINE
     //----------------------------------------------------------------------------------------------------
     private byte[] intArrayToByteArray(List<Integer> list)
