@@ -159,6 +159,19 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Tests parsing Staccato with a invalid file, should return an xml tree")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testParseStacatoInvalidFile() throws Exception{
+        ParseStaccatoRequest req = new ParseStaccatoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.parseStaccato(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+    }
+
+
+
+    @Test
     @DisplayName("Tests parsing XML with a valid file, should return an xml tree")
     @Tag(TestTags.VALID_INPUT)
     public void testParseXMLValidFile() throws Exception{
