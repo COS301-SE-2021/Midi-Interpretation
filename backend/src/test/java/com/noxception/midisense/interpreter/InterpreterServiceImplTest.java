@@ -169,6 +169,15 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
     }
 
+    @Test
+    @DisplayName("Tests parsing Staccato with a empty file, should return an xml tree")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testParseStacatoEmptyFile() throws Exception{
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.parseStaccato(null),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
 
 
     @Test
