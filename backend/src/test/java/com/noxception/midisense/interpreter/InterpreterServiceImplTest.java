@@ -150,6 +150,15 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     //TODO: ADRIAN: TEST PARSE STACCATO FOR VALID, INVALID AND EMPTY
 
     @Test
+    @DisplayName("Tests parsing Staccato with a valid file, should return an xml tree")
+    @Tag(TestTags.VALID_INPUT)
+    public void testParseStacatoValidFile() throws Exception{
+        ParseStaccatoRequest req = new ParseStaccatoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        ParseStaccatoResponse res = interpreterService.parseStaccato(req);
+        log(res.getStaccatoSequence());
+    }
+
+    @Test
     @DisplayName("Tests parsing XML with a valid file, should return an xml tree")
     @Tag(TestTags.VALID_INPUT)
     public void testParseXMLValidFile() throws Exception{
