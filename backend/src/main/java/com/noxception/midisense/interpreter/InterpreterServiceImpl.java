@@ -130,7 +130,12 @@ public class InterpreterServiceImpl implements InterpreterService{
         }
     }
 
-            //TODO: Future code for interpretation
+    @Override
+    public ParseXMLResponse parseXML(ParseXMLRequest request) throws InvalidDesignatorException {
+        return null;
+    }
+
+    //TODO: Future code for interpretation
 
 
            /* MidiParser parser = new MidiParser();
