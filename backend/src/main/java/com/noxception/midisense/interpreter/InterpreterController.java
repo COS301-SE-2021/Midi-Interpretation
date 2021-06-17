@@ -75,6 +75,11 @@ public class InterpreterController implements InterpreterApi {
     }
 
     @Override
+    public ResponseEntity<InterpreterParseStaccatoResponse> parseStaccato(InterpreterParseStaccatoRequest body) {
+        return null;
+    }
+
+    @Override
     public ResponseEntity<InterpreterParseXMLResponse> parseXML(InterpreterParseXMLRequest body) {
         return null;
     }

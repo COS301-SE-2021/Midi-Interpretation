@@ -64,30 +64,27 @@ paths:
         '401':
           description: Invalid File
 
-    /interpreter/parseStaccato:
-      post:
-        summary: "Endpoint for parsing Staccato of the Interpreter subsystem"
-        tags:
-          - "Interpreter"
-        description: parse to Staccato
-        operationId: ParseStaccato
-        requestBody:
-          description: "Request for parseStaccato"
-          required: true
+  /interpreter/parseStaccato:
+    post:
+      summary: "API endpoint for parsing a file to Staccato"
+      tags:
+        - "Interpreter"
+      description: parseStaccato
+      operationId: ParseStaccato
+      requestBody:
+        description: "Request for parseStaccato"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterParseStaccatoRequest'
+      responses:
+        '200':
+          description: "parseStaccato Response"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/interpreterParseStaccatoRequest'
-        responses:
-          '200':
-            description: "parseStaccato Response"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/interpreterParseStaccatoResponse'
-          '401':
-            description: Invalid File
-
+                $ref: '#/components/schemas/interpreterParseStaccatoResponse'
 
   /interpreter/interpretMetre:
     post:
