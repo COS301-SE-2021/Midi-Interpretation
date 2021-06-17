@@ -1,12 +1,14 @@
 package com.noxception.midisense.interpreter;
 
-import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.config.DevelopmentNote;
+import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
+import com.noxception.midisense.interpreter.parser.MIDISenseParserListener;
 import com.noxception.midisense.interpreter.rrobjects.*;
 import org.jfugue.midi.MidiFileManager;
+import org.jfugue.midi.MidiParser;
 import org.jfugue.pattern.Pattern;
 import org.springframework.stereotype.Service;
 
@@ -112,7 +114,7 @@ public class InterpreterServiceImpl implements InterpreterService{
             developers = {DevelopmentNote.Developers.ADRIAN},
             status = DevelopmentNote.WorkState.PENDING_REVIEW,
             lastModified = "2021/06/12 21:55",
-            comments = "Added method - needs tests"
+            comments = "Added method"
     )
     @Override
     public ParseStaccatoResponse parseStaccato(ParseStaccatoRequest request) throws InvalidDesignatorException{
@@ -130,19 +132,32 @@ public class InterpreterServiceImpl implements InterpreterService{
         }
     }
 
+    @DevelopmentNote(
+            taskName = "parseXML Use Case",
+            developers = {DevelopmentNote.Developers.ADRIAN},
+            status = DevelopmentNote.WorkState.IN_PROGRESS,
+            lastModified = "2021/06/17 22:24",
+            comments = "Added method - relies upon a  custom parser listener. Will work on further"
+    )
     @Override
     public ParseXMLResponse parseXML(ParseXMLRequest request) throws InvalidDesignatorException {
-        return null;
-    }
-
-    //TODO: Future code for interpretation
-
-
-           /* MidiParser parser = new MidiParser();
-            MusicXmlParserListener listener = new MusicXmlParserListener();
+        //check to see if there is a valid request object
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+        try {
+            UUID fileDesignator = request.getFileDesignator();
+            File sourceFile = new File(generatePath(fileDesignator));
+            MidiParser parser = new MidiParser();
+            MIDISenseParserListener listener = new MIDISenseParserListener();
             parser.addParserListener(listener);
-            parser.parse(MidiSystem.getSequence(sourceFile));
-            XMLString = listener.getMusicXMLString();*/
+            parser.parse(MidiFileManager.load(sourceFile));
+            String output = listener.getTrackMap().toString();
+            return new ParseXMLResponse(output);
+        } catch (IOException e) {
+            throw new InvalidDesignatorException(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
+        } catch (InvalidMidiDataException e) {
+            throw new InvalidDesignatorException(MIDISenseConfig.INVALID_MIDI_EXCEPTION_TEXT);
+        }
+    }
 
 
     //================================
