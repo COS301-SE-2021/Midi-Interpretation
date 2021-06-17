@@ -12,4 +12,5 @@ public interface InterpreterService {
     InterpretTempoResponse interpretTempo(InterpretTempoRequest request) throws InvalidDesignatorException;
     InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException, InvalidKeySignatureException;
     ParseStaccatoResponse parseStaccato(ParseStaccatoRequest request) throws InvalidDesignatorException;
+    ParseXMLResponse parseXML(ParseXMLRequest request) throws InvalidDesignatorException;
 }

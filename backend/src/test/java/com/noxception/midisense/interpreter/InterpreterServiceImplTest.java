@@ -138,7 +138,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
-    @DisplayName("Tests interpreting Key Siganture with an empty request, should throw an exception.")
+    @DisplayName("Tests interpreting Key Signature with an empty request, should throw an exception.")
     @Tag(TestTags.EMPTY_INPUT)
     public void testInterpretKeySignatureEmptyRequest(){
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -146,7 +146,17 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
     }
+
     //TODO: ADRIAN: TEST PARSE STACCATO FOR VALID, INVALID AND EMPTY
+
+    @Test
+    @DisplayName("Tests parsing XML with a valid file, should return an xml tree")
+    @Tag(TestTags.VALID_INPUT)
+    public void testParseXMLValidFile() throws Exception{
+        ParseXMLRequest req = new ParseXMLRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        ParseXMLResponse res = interpreterService.parseXML(req);
+        log(res.getXMLSequence());
+    }
 
 
 
