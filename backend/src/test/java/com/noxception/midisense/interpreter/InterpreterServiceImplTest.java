@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileWriter;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -152,7 +153,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Test
     @DisplayName("Tests parsing Staccato with a valid file, should return an xml tree")
     @Tag(TestTags.VALID_INPUT)
-    public void testParseStacatoValidFile() throws Exception{
+    public void testParseStaccatoValidFile() throws Exception{
         ParseStaccatoRequest req = new ParseStaccatoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         ParseStaccatoResponse res = interpreterService.parseStaccato(req);
         log(res.getStaccatoSequence());
@@ -161,7 +162,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Test
     @DisplayName("Tests parsing Staccato with a invalid file, should return an xml tree")
     @Tag(TestTags.MALFORMED_INPUT)
-    public void testParseStacatoInvalidFile() throws Exception{
+    public void testParseStaccatoInvalidFile() throws Exception{
         ParseStaccatoRequest req = new ParseStaccatoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.parseStaccato(req),
@@ -172,7 +173,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Test
     @DisplayName("Tests parsing Staccato with a empty file, should return an xml tree")
     @Tag(TestTags.EMPTY_INPUT)
-    public void testParseStacatoEmptyFile() throws Exception{
+    public void testParseStaccatoEmptyFile() throws Exception{
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.parseStaccato(null),
                 "No processing should happen if a file doesn't exist.");
@@ -186,7 +187,9 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testParseXMLValidFile() throws Exception{
         ParseXMLRequest req = new ParseXMLRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         ParseXMLResponse res = interpreterService.parseXML(req);
-        log(res.getXMLSequence());
+        FileWriter myWriter = new FileWriter("savedContent.txt");
+        myWriter.write(res.getXMLSequence());
+        myWriter.close();
     }
 
 

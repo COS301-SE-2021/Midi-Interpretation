@@ -6,6 +6,7 @@ import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorExceptio
 import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.parser.MIDISenseParserListener;
+import com.noxception.midisense.interpreter.parser.Score;
 import com.noxception.midisense.interpreter.rrobjects.*;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.midi.MidiParser;
@@ -150,7 +151,8 @@ public class InterpreterServiceImpl implements InterpreterService{
             MIDISenseParserListener listener = new MIDISenseParserListener();
             parser.addParserListener(listener);
             parser.parse(MidiFileManager.load(sourceFile));
-            String output = listener.getTrackMap().toString();
+            Score s = listener.getParsedScore();
+            String output = s.toString();
             return new ParseXMLResponse(output);
         } catch (IOException e) {
             throw new InvalidDesignatorException(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
