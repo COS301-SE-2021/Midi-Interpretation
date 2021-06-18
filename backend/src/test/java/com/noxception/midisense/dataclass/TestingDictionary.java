@@ -18,8 +18,8 @@ public class TestingDictionary {
     //Interpreter
     public static byte[] interpreter_uploadFile_validFileContents = getValidByteArray();
     public static byte[] interpreter_uploadFile_invalidFileContents = {};
-    public static String interpreter_all_validFileDesignator = "13e5ff63-4a13-4354-b0c0-081165033405";
-    public static String interpreter_all_invalidFileDesignator = "13e5ff63-4a13-4354-b0c0-081165033406";
+    public static String interpreter_all_validFileDesignator = "6698692f-840d-4c30-bcfe-dc544ac345f9";
+    public static String interpreter_all_invalidFileDesignator = "6698692f-840d-4c30-bcfe-dc544ac345f9";
 
     //MISC methods
     public static byte[] getValidByteArray(){
