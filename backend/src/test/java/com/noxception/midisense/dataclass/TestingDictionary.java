@@ -24,7 +24,7 @@ public class TestingDictionary {
     //MISC methods
     public static byte[] getValidByteArray(){
         try {
-            return Files.readAllBytes(Paths.get("src/main/java/com/noxception/midisense/midiPool/MyHeartWillGoOn.mid"));
+            return Files.readAllBytes(Paths.get("src/main/java/com/noxception/midisense/midiPool/NeverGonnaGiveYouUp.mid"));
         } catch (IOException e) {
             e.printStackTrace();
         }
