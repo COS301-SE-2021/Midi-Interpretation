@@ -19,6 +19,7 @@ public class MIDISenseParserListener extends LoggableObject implements ParserLis
 
     @Override
     public void onNoteParsed(Note note) {
+        log(note.toString());
     }
 
     @Override
