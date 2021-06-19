@@ -218,6 +218,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterGetTrackMetadataResponse'
 
+  /interpreter/getTrackOverview:
+    post:
+      summary: "Endpoint for getting the track overview"
+      tags:
+        - "Interpreter"
+      description: getTrackOverview
+      operationId: getTrackOverview
+      requestBody:
+        description: "Request for getTrackOverview"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterGetTrackOverviewRequest'
+      responses:
+        '200':
+          description: "getTrackOverview response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterGetTrackOverviewResponse'
+
   #=================================================
   # SCHEMAS + OBJECTS
   #=================================================
@@ -367,3 +389,18 @@ components:
       properties:
         trackString:
           type: String
+
+    interpreterGetTrackOverviewRequest:
+      description: "Request for Track Overview"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+        trackIndex:
+          type: integer
+
+    interpreterGetTrackOverviewResponse:
+      type: object
+      properties:
+        pitchArray:
+          type: integer
