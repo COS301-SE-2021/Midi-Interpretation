@@ -2,33 +2,65 @@ package com.noxception.midisense.display;
 
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.TestingDictionary;
-import com.noxception.midisense.config.MIDISenseConfig;
-import com.noxception.midisense.display.DisplayServiceImpl;
+import com.noxception.midisense.display.exceptions.InvalidTrackException;
+import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
-import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
-import com.noxception.midisense.interpreter.rrobjects.*;
+import com.noxception.midisense.interpreter.rrobjects.InterpretKeySignatureRequest;
+import com.noxception.midisense.interpreter.rrobjects.InterpretKeySignatureResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.awt.image.TileObserver;
+import java.lang.reflect.Field;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+@RunWith(SpringRunner.class)
+@SpringBootTest
 class DisplayServiceImplTest extends MIDISenseUnitTest {
 
+    @Autowired
     private DisplayServiceImpl displayService;
 
     @BeforeEach
     public void setUp() {
-        displayService = new DisplayServiceImpl();
+        LogType[] monitorList = {LogType.DEBUG};
+        this.monitor(monitorList);
     }
 
     //TODO: CLAUDIO DO ALL UNIT TESTS FOR THE 4 FUNCTIONS TOMORROW MORNING
     //below are sample tests I used in unit testing on another branch to make it easier for myself
+
+    @Test
+    @DisplayName("Tests getting metadata with a valid file designator, should return a trio of key sig, time sig and tempo.")
+    @Tag(TestTags.VALID_INPUT)
+    public void testGetPieceMetadataValidFile() throws InvalidDesignatorException {
+        GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
+        logAllFields(res);
+    }
+
+    @Test
+    @DisplayName("Tests getting track info with a valid file designator, should return a list of instrument lines.")
+    @Tag(TestTags.VALID_INPUT)
+    public void testGetTrackInfoValidFile() throws InvalidDesignatorException {
+        GetTrackInfoRequest req = new GetTrackInfoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        GetTrackInfoResponse res = displayService.getTrackInfo(req);
+        logAllFields(res);
+    }
+
+    @Test
+    @DisplayName("Tests getting metadata with a valid file designator, should return a trio of key sig, time sig and tempo")
+    @Tag(TestTags.VALID_INPUT)
+    public void testGetTrackMetadataValidFile() throws InvalidDesignatorException, InvalidTrackException {
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator),TestingDictionary.display_all_valid_track_index);
+        GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
+        logAllFields(res);
+    }
 
     /* SAMPLE
     @Test

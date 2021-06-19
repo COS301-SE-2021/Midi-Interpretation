@@ -1,11 +1,9 @@
 package com.noxception.midisense.interpreter;
 
 import com.noxception.midisense.config.MIDISenseConfig;
-import com.noxception.midisense.config.dataclass.LoggableObject;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,10 +89,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Test
     @DisplayName("Tests interpreting key signature with a valid file designator, should return a valid key signature object.")
     @Tag(TestTags.VALID_INPUT)
-    public void testInterpretKeySignatureValidFile() throws InvalidDesignatorException, InvalidKeySignatureException {
+    public void testInterpretKeySignatureValidFile() throws InvalidDesignatorException {
         InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
         log(res.getKeySignature(),LogType.DEBUG);
+        System.out.println(res.getKeySignature());
     }
 
     @Test
@@ -105,7 +104,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretMetre(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
     }
 
     @Test
@@ -116,7 +115,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretTempo(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
     }
     @Test
     @DisplayName("Tests interpreting Key Signature with an invalid file designator, should throw an exception.")
@@ -126,7 +125,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretKeySignature(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
     }
 
     @Test
@@ -230,7 +229,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     //TODO: DONT RUN THIS TEST - IT WILL DELETE THE ONE GOOD MIDI - IF YOU DO RUN IT, UNDO THE CHANGE IN GITHUB DESKTOP
     @Test
     @Transactional
-    @Rollback
+    @Rollback(value = false)
     @DisplayName("Tests processing with a valid file, should return true")
     @Tag(TestTags.VALID_INPUT)
     public void testProcessFileValidFile() throws Exception{
@@ -250,7 +249,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         ProcessFileResponse response = interpreterService.processFile(req);
         log(response.getMessage(),LogType.DEBUG);
         assertEquals(false, response.getSuccess());
-        assertEquals(MIDISenseConfig.FILE_DOES_NOT_EXIST, response.getMessage());
+        assertEquals(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT, response.getMessage());
     }
 
     @Test

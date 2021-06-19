@@ -4,12 +4,10 @@ import com.noxception.midisense.config.DevelopmentNote;
 import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.config.dataclass.LoggableObject;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.parser.MIDISenseParserListener;
 import com.noxception.midisense.interpreter.parser.Score;
 import com.noxception.midisense.interpreter.parser.Track;
-import com.noxception.midisense.interpreter.repository.NoteEntity;
 import com.noxception.midisense.interpreter.repository.ScoreEntity;
 import com.noxception.midisense.interpreter.repository.ScoreRepository;
 import com.noxception.midisense.interpreter.repository.TrackEntity;
@@ -17,7 +15,6 @@ import com.noxception.midisense.interpreter.rrobjects.*;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.midi.MidiParser;
 import org.jfugue.pattern.Pattern;
-import org.jfugue.theory.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +78,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             lastModified = "2021/06/19",
             comments = "Added method"
     )
+    @Transactional
     @Override
     public ProcessFileResponse processFile(ProcessFileRequest request) throws InvalidDesignatorException{
         //check to see if there is a valid request object
@@ -93,11 +91,10 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
 
             //persist score details to database
             saveScore(parsedScore,fileDesignator);
-            log("Persisting Score "+fileDesignator.toString(),LogType.DEBUG);
 
-            //delete file from storage
+            //TODO: delete file from storage
             //deleteFileFromStorage(fileDesignator);
-            return new ProcessFileResponse(true,MIDISenseConfig.SUCCESSFUL_PARSING);
+            return new ProcessFileResponse(true,MIDISenseConfig.SUCCESSFUL_PARSING_TEXT);
         }
         catch(InvalidMidiDataException m){
             //FILE CANT BE PARSED
@@ -105,7 +102,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         }
         catch(InvalidDesignatorException d){
             //INVALID REFERENCE TO FILE
-            return new ProcessFileResponse(false, MIDISenseConfig.FILE_DOES_NOT_EXIST);
+            return new ProcessFileResponse(false, MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         }
         /*catch(IOException i){
             //FILE SYSTEM FAILURE
@@ -131,7 +128,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         //attempt to interpret the metre
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
-        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST);
+        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         String metre = searchResults.get().getTimeSignature();
         int numBeats = Integer.parseInt(metre.substring(0, metre.indexOf("/")));
         int beatValue = Integer.parseInt(metre.substring(metre.indexOf("/")+1));
@@ -151,7 +148,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         //attempt to interpret the tempo
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
-        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST);
+        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         int tempoIndication = searchResults.get().getTempoIndication();
         return new InterpretTempoResponse(tempoIndication);
     }
@@ -164,12 +161,12 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             comments = "Finished method and testing"
     )
     @Override
-    public InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException, InvalidKeySignatureException {
+    public InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
         if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         //attempt to interpret the Key Signature
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
-        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST);
+        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         String sigName = searchResults.get().getKeySignature();
         return new InterpretKeySignatureResponse(sigName);
     }
@@ -191,7 +188,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
             return new ParseStaccatoResponse(pattern.toString());
         } catch (IOException e) {
-            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST);
+            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         } catch (InvalidMidiDataException e) {
             throw new InvalidDesignatorException(MIDISenseConfig.INVALID_MIDI_EXCEPTION_TEXT);
         }
@@ -222,6 +219,11 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             throw new InvalidMidiDataException(MIDISenseConfig.INVALID_MIDI_EXCEPTION_TEXT);
         }
     }
+
+    //================================
+    // HELPER METHODS
+    //================================
+
 
     private static int kilobytesToBytes(int n){
         return (int) (n*Math.pow(2,10));
@@ -258,27 +260,12 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         scoreEntity.setKeySignature(score.getKeySignature().getSignatureName());
         scoreEntity.setTimeSignature(score.getTimeSignature().toString());
         scoreEntity.setTempoIndication(score.getTempoIndication().getTempo());
-
         for(Track track : score.getTrackMap().values()){
             TrackEntity newTrack = new TrackEntity();
             newTrack.setInstrumentName(track.getInstrumentString());
-            //============================
-           /* for(Note note: track.getNoteSequence()){
-                NoteEntity newNote = new NoteEntity();
-                newNote.setStep(note.getToneString());
-                newNote.setOctave(note.getOctave());
-                newNote.setOnVelocity(note.getOnVelocity());
-                newNote.setOffVelocity(note.getOffVelocity());
-                newNote.setRest(note.isRest());
-                newNote.setPercussive(note.isPercussionNote());
-                newTrack.addNote(note.toString());
-            }*/
             newTrack.setNotes(track.notesToString());
-            //============================
             scoreEntity.addTrack(newTrack);
         }
-
-        //=======================================================
         ScoreEntity savedScore = scoreRepository.save(scoreEntity);
         return scoreEntity == savedScore;
     }

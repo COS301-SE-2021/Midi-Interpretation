@@ -13,7 +13,7 @@ public class ScoreEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long scoreID;
     private String fileDesignator;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<TrackEntity> tracks = new ArrayList<>();
     private String keySignature;
     private String timeSignature;
