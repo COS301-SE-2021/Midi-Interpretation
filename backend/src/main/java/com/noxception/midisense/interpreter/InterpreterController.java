@@ -84,6 +84,11 @@ public class InterpreterController implements InterpreterApi {
         return null;
     }
 
+    @Override
+    public ResponseEntity<InterpreterProcessFileResponse> processFIle(InterpreterProcessFileRequest body) {
+        return null;
+    }
+
     // HELPER METHODS BELOW THIS LINE
     //----------------------------------------------------------------------------------------------------
     private byte[] intArrayToByteArray(List<Integer> list)
