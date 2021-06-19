@@ -51,6 +51,11 @@ public class InterpreterController implements InterpreterApi {
     }
 
     @Override
+    public ResponseEntity<InterpreterGetTrackMetadataResponse> getTrackMetadata(InterpreterGetTrackMetadataRequest body) {
+        return null;
+    }
+
+    @Override
     public ResponseEntity<InterpreterInterpretMetreResponse> interpretMetre(InterpreterInterpretMetreRequest body) {
         //Definition: A time (or metre) signature, indicates the number of beats in a measure and the value of the basic beat
         InterpreterInterpretMetreResponse responseObject = new InterpreterInterpretMetreResponse();
