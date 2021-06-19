@@ -41,6 +41,11 @@ public class InterpreterController implements InterpreterApi {
     }
 
     @Override
+    public ResponseEntity<InterpreterGetPieceMetadataResponse> getPieceMetadata(InterpreterGetPieceMetadataRequest body) {
+        return null;
+    }
+
+    @Override
     public ResponseEntity<InterpreterInterpretMetreResponse> interpretMetre(InterpreterInterpretMetreRequest body) {
         //Definition: A time (or metre) signature, indicates the number of beats in a measure and the value of the basic beat
         InterpreterInterpretMetreResponse responseObject = new InterpreterInterpretMetreResponse();
@@ -81,6 +86,11 @@ public class InterpreterController implements InterpreterApi {
 
     @Override
     public ResponseEntity<InterpreterParseXMLResponse> parseXML(InterpreterParseXMLRequest body) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<InterpreterProcessFileResponse> processFIle(InterpreterProcessFileRequest body) {
         return null;
     }
 

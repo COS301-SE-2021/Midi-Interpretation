@@ -40,6 +40,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterUploadFileResponse'
 
+  /interpreter/processFile:
+    post:
+      summary: "API endpoint to process File"
+      tags:
+        - "Interpreter"
+      description: ProcessFile
+      operationId: ProcessFIle
+      requestBody:
+        description: "Request for processFile"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterProcessFileRequest'
+      responses:
+        '200':
+          description: "processFile Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterProcessFileResponse'
+
   /interpreter/parseXML:
     post:
       summary: "Endpoint for parsing an XML of the Interpreter subsystem"
@@ -85,6 +107,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/interpreterParseStaccatoResponse'
+
+  /interpreter/getPieceMetadata:
+    post:
+      summary: "endpoint for getting the piece metadata"
+      tags:
+        - "Interpreter"
+      description: getPieceMetadata
+      operationId: getPieceMetadata
+      requestBody:
+        description: "Request for getPieceMetadata"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterGetPieceMetadataRequest'
+      responses:
+        '200':
+          description: "getPieceMetadata Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterGetPieceMetadataResponse'
 
   /interpreter/interpretMetre:
     post:
@@ -152,6 +196,22 @@ components:
         fileDesignator:
           type: string
 
+    interpreterProcessFileRequest:
+      description: "Request the ProcessFile"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    interpreterProcessFileResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+
+
     interpreterParseXMLRequest:
       description: "Description Here"
       type: object
@@ -181,6 +241,27 @@ components:
       properties:
         fileDesignator:
           type: string
+
+    interpreterGetPieceMetadataRequest:
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    interpreterGetPieceMetadataResponse:
+      type: object
+      properties:
+        tempoIndication:
+          type: integer
+        keySignature:
+          type: string
+        timeSignature:
+          type: object
+          properties:
+            numBeats:
+              type: integer
+            beatValue:
+              type: integer
 
     interpreterInterpretMetreRequest:
       description: "Description Here"
