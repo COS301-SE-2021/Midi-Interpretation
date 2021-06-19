@@ -1,8 +1,9 @@
 package com.noxception.midisense.interpreter;
 
+import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.config.dataclass.LoggableObject;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.TestingDictionary;
-import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
@@ -30,10 +31,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Autowired
     private InterpreterServiceImpl interpreterService;
 
-//    @BeforeEach
-//    public void setUp() {
-//        interpreterService = new InterpreterServiceImpl();
-//    }
+    @BeforeEach
+    public void setUp() {
+        LogType[] monitorList = {LogType.DEBUG};
+        this.monitor(monitorList);
+    }
 
     @Test
     @DisplayName("Tests uploading with a valid file byte array, should store in MIDIPool.")
@@ -42,7 +44,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         byte[] validFileContents = TestingDictionary.interpreter_uploadFile_validFileContents;
         UploadFileRequest req = new UploadFileRequest(validFileContents);
         UploadFileResponse res = interpreterService.uploadFile(req);
-        log(res.getFileDesignator());
+        log(res.getFileDesignator(),LogType.DEBUG);
     }
 
     @Test
@@ -74,7 +76,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testInterpretMetreValidFile() throws Exception {
         InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretMetreResponse res = interpreterService.interpretMetre(req);
-        log(res.getMetre());
+        log(res.getMetre(),LogType.DEBUG);
     }
 
     @Test
@@ -83,7 +85,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testInterpretTempoValidFile() throws InvalidDesignatorException {
         InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretTempoResponse res = interpreterService.interpretTempo(req);
-        System.out.println(res.getTempo());
+        log(res.getTempo(),LogType.DEBUG);
     }
 
     @Test
@@ -92,7 +94,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testInterpretKeySignatureValidFile() throws InvalidDesignatorException, InvalidKeySignatureException {
         InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
-        log(res.getKeySignature());
+        log(res.getKeySignature(),LogType.DEBUG);
     }
 
     @Test
@@ -163,7 +165,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testParseStaccatoValidFile() throws Exception{
         ParseStaccatoRequest req = new ParseStaccatoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         ParseStaccatoResponse res = interpreterService.parseStaccato(req);
-        log(res.getStaccatoSequence());
+        log(res.getStaccatoSequence(),LogType.DEBUG);
     }
 
     @Test
@@ -234,7 +236,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testProcessFileValidFile() throws Exception{
         ProcessFileRequest request = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         ProcessFileResponse response = interpreterService.processFile(request);
-        log(response.getMessage());
+        log(response.getMessage(),LogType.DEBUG);
         assertEquals(true,response.getSuccess());
     }
 
@@ -246,7 +248,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testProcessFileInvalidFile() throws Exception {
         ProcessFileRequest req = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         ProcessFileResponse response = interpreterService.processFile(req);
-        log(response.getMessage());
+        log(response.getMessage(),LogType.DEBUG);
         assertEquals(false, response.getSuccess());
         assertEquals(MIDISenseConfig.FILE_DOES_NOT_EXIST, response.getMessage());
     }
