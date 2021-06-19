@@ -196,6 +196,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterGetTrackInfoResponse'
 
+  /interpreter/getTrackMetadata:
+    post:
+      summary: "Endpoint for receiving the track metadata"
+      tags:
+        - "Interpreter"
+      description: getTrackMetadata
+      operationId: getTrackMetadata
+      requestBody:
+        description: "Request for getTrackMetadata"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterGetTrackMetadataRequest'
+      responses:
+        '200':
+          description: "getTrackMetadata Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterGetTrackMetadataResponse'
+
   #=================================================
   # SCHEMAS + OBJECTS
   #=================================================
@@ -330,3 +352,18 @@ components:
           type: integer
         trackName:
           type: string
+
+    interpreterGetTrackMetadataRequest:
+      description: "Request Track Metadata"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+        trackIndex:
+          type: integer
+
+    interpreterGetTrackMetadataResponse:
+      type: object
+      properties:
+        trackString:
+          type: String
