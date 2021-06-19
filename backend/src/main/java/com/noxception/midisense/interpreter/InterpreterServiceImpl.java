@@ -2,6 +2,7 @@ package com.noxception.midisense.interpreter;
 
 import com.noxception.midisense.config.DevelopmentNote;
 import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.config.dataclass.LoggableObject;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
@@ -21,9 +22,13 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 @Service
-public class InterpreterServiceImpl implements InterpreterService{
+public class InterpreterServiceImpl extends LoggableObject implements InterpreterService{
 
     private final int maximumUploadSize = kilobytesToBytes(MIDISenseConfig.MAX_FILE_UPLOAD_SIZE);
+
+    //================================
+    // FRONT END USE CASES
+    //================================
 
     @DevelopmentNote(
             taskName = "uploadFile Use Case",
@@ -55,6 +60,47 @@ public class InterpreterServiceImpl implements InterpreterService{
             throw new InvalidUploadException(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
         }
     }
+
+    @DevelopmentNote(
+            taskName = "processFile Use Case",
+            developers = {DevelopmentNote.Developers.ADRIAN},
+            status = DevelopmentNote.WorkState.IN_PROGRESS,
+            lastModified = "2021/06/19",
+            comments = "Added method"
+    )
+    @Override
+    public ProcessFileResponse processFile(ProcessFileRequest request) throws InvalidDesignatorException{
+        //check to see if there is a valid request object
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+        try {
+            //parse file as JSON and persist to database
+            UUID fileDesignator = request.getFileDesignator();
+            ParseJSONResponse parserResponse = this.parseJSON(new ParseJSONRequest(fileDesignator));
+            Score parsedScore = parserResponse.getParsedScore();
+            //persist score details to database
+            log("Persisting Score "+fileDesignator.toString(),LogType.DEBUG);
+            //delete file from storage
+            deleteFileFromStorage(fileDesignator);
+            return new ProcessFileResponse(true,MIDISenseConfig.SUCCESSFUL_PARSING);
+        }
+        catch(InvalidMidiDataException m){
+            //FILE CANT BE PARSED
+            return new ProcessFileResponse(false, MIDISenseConfig.INVALID_MIDI_EXCEPTION_TEXT);
+        }
+        catch(InvalidDesignatorException d){
+            //INVALID REFERENCE TO FILE
+            return new ProcessFileResponse(false, MIDISenseConfig.FILE_DOES_NOT_EXIST);
+        }
+        catch(IOException i){
+            //FILE SYSTEM FAILURE
+            return new ProcessFileResponse(false, MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
+        }
+
+    }
+
+    //================================
+    // AUXILIARY METHODS
+    //================================
 
     @DevelopmentNote(
             taskName = "interpretMetre Use Case",
@@ -134,14 +180,14 @@ public class InterpreterServiceImpl implements InterpreterService{
     }
 
     @DevelopmentNote(
-            taskName = "parseXML Use Case",
+            taskName = "parseJSON Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
             status = DevelopmentNote.WorkState.IN_PROGRESS,
             lastModified = "2021/06/17 22:24",
             comments = "Added method - relies upon a  custom parser listener. Will work on further"
     )
     @Override
-    public ParseXMLResponse parseXML(ParseXMLRequest request) throws InvalidDesignatorException {
+    public ParseJSONResponse parseJSON(ParseJSONRequest request) throws InvalidDesignatorException, InvalidMidiDataException {
         //check to see if there is a valid request object
         if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         try {
@@ -151,20 +197,13 @@ public class InterpreterServiceImpl implements InterpreterService{
             MIDISenseParserListener listener = new MIDISenseParserListener();
             parser.addParserListener(listener);
             parser.parse(MidiFileManager.load(sourceFile));
-            Score s = listener.getParsedScore();
-            String output = s.toString();
-            return new ParseXMLResponse(output);
+            return new ParseJSONResponse(listener.getParsedScore());
         } catch (IOException e) {
             throw new InvalidDesignatorException(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
         } catch (InvalidMidiDataException e) {
-            throw new InvalidDesignatorException(MIDISenseConfig.INVALID_MIDI_EXCEPTION_TEXT);
+            throw new InvalidMidiDataException(MIDISenseConfig.INVALID_MIDI_EXCEPTION_TEXT);
         }
     }
-
-
-    //================================
-    // AUXILIARY METHODS
-    //================================
 
     private static int kilobytesToBytes(int n){
         return (int) (n*Math.pow(2,10));
@@ -183,7 +222,8 @@ public class InterpreterServiceImpl implements InterpreterService{
         return fileDesignator;
     }
 
-    private void deleteFileFromStorage(File file) throws IOException{
+    private void deleteFileFromStorage(UUID fileDesignator) throws IOException{
+        File file = new File(generatePath(fileDesignator));
         if (!file.delete()) throw new IOException("Unable to delete file "+file.getName());
     }
 

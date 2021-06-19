@@ -6,6 +6,7 @@ import com.noxception.midisense.interpreter.dataclass.TimeSignature;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Score {
     private final HashMap<Integer,Track> trackMap = new HashMap<>();
@@ -40,7 +41,7 @@ public class Score {
 
     @Override
     public String toString() {
-        ArrayList<String> trackList = new ArrayList<>();
+        List<String> trackList = new ArrayList<>();
         for(Track t : trackMap.values()){
             trackList.add(t.toString());
         }
