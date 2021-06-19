@@ -179,7 +179,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
 
-    //TODO: CLAUDIO: FILL IN EMPTY REQUEST AND INVALID FILE DES FOR PARSE JSON
+
 
     @Test
     @DisplayName("Tests parsing JSON with a valid file, should return a JSON tree")
@@ -191,6 +191,20 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         myWriter.write(res.getParsedScore().toString());
         myWriter.close();
     }
+
+    @Test
+    @DisplayName("Tests parsing JSON with a invalid file, should return a JSON tree")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testParseJSONInvalidFile() throws Exception{
+        ParseJSONRequest req = new ParseJSONRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.parseJSON(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+    }
+
+
+
 
     @Test
     @DisplayName("Tests processing with a valid file, should return true")
