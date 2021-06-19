@@ -192,12 +192,16 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         myWriter.close();
     }
 
+    //TODO: CLAUDIO: ADD AN EMPTY AND INVALID FILE FOR THIS
+    //TODO: DONT RUN THIS TEST - IT WILL DELETE THE ONE GOOD MIDI - IF YOU DO RUN IT, UNDO THE CHANGE IN GITHUB DESKTOP
     @Test
     @DisplayName("Tests processing with a valid file, should return true")
     @Tag(TestTags.VALID_INPUT)
     public void testProcessFileValidFile() throws Exception{
         ProcessFileRequest request = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
-        //TODO: ADRIAN: Fill this in
+        ProcessFileResponse response = interpreterService.processFile(request);
+        log(response.getMessage());
+        assertEquals(true,response.getSuccess());
     }
 
 
