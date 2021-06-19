@@ -192,8 +192,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         myWriter.close();
     }
 
-    //TODO: CLAUDIO: ADD AN EMPTY AND INVALID FILE FOR THIS
-    //TODO: DONT RUN THIS TEST - IT WILL DELETE THE ONE GOOD MIDI - IF YOU DO RUN IT, UNDO THE CHANGE IN GITHUB DESKTOP
+
     @Test
     @DisplayName("Tests parsing JSON with a invalid file, should return a JSON tree")
     @Tag(TestTags.MALFORMED_INPUT)
@@ -217,6 +216,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
 
 
+    //TODO: CLAUDIO: ADD AN EMPTY AND INVALID FILE FOR THIS
+    //TODO: DONT RUN THIS TEST - IT WILL DELETE THE ONE GOOD MIDI - IF YOU DO RUN IT, UNDO THE CHANGE IN GITHUB DESKTOP
     @Test
     @DisplayName("Tests processing with a valid file, should return true")
     @Tag(TestTags.VALID_INPUT)
