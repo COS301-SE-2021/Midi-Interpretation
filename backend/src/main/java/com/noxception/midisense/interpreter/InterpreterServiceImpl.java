@@ -8,13 +8,21 @@ import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureExcept
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.parser.MIDISenseParserListener;
 import com.noxception.midisense.interpreter.parser.Score;
+import com.noxception.midisense.interpreter.parser.Track;
+import com.noxception.midisense.interpreter.repository.NoteEntity;
+import com.noxception.midisense.interpreter.repository.ScoreEntity;
+import com.noxception.midisense.interpreter.repository.ScoreRepository;
+import com.noxception.midisense.interpreter.repository.TrackEntity;
 import com.noxception.midisense.interpreter.rrobjects.*;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.midi.MidiParser;
 import org.jfugue.pattern.Pattern;
+import org.jfugue.theory.Note;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,6 +31,9 @@ import java.util.UUID;
 
 @Service
 public class InterpreterServiceImpl extends LoggableObject implements InterpreterService{
+
+    @Autowired
+    private ScoreRepository scoreRepository;
 
     private final int maximumUploadSize = kilobytesToBytes(MIDISenseConfig.MAX_FILE_UPLOAD_SIZE);
 
@@ -37,6 +48,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             lastModified = "2021/06/12",
             comments = "Successfully reconstructs and saves file."
     )
+    @Transactional
     @Override
     public UploadFileResponse uploadFile(UploadFileRequest request) throws InvalidUploadException {
         //check to see if there is a valid request object
@@ -77,10 +89,13 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             UUID fileDesignator = request.getFileDesignator();
             ParseJSONResponse parserResponse = this.parseJSON(new ParseJSONRequest(fileDesignator));
             Score parsedScore = parserResponse.getParsedScore();
+
             //persist score details to database
+            saveScore(parsedScore,fileDesignator);
             log("Persisting Score "+fileDesignator.toString(),LogType.DEBUG);
+
             //delete file from storage
-            deleteFileFromStorage(fileDesignator);
+            //deleteFileFromStorage(fileDesignator);
             return new ProcessFileResponse(true,MIDISenseConfig.SUCCESSFUL_PARSING);
         }
         catch(InvalidMidiDataException m){
@@ -91,10 +106,10 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             //INVALID REFERENCE TO FILE
             return new ProcessFileResponse(false, MIDISenseConfig.FILE_DOES_NOT_EXIST);
         }
-        catch(IOException i){
+        /*catch(IOException i){
             //FILE SYSTEM FAILURE
             return new ProcessFileResponse(false, MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
-        }
+        }*/
 
     }
 
@@ -230,6 +245,39 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
     private String generatePath(UUID fileDesignator){
         //generates the path for the unique fileDesignator
         return MIDISenseConfig.FILE_SYSTEM_PATH+fileDesignator.toString()+ MIDISenseConfig.FILE_FORMAT;
+    }
+
+    @Transactional
+    public boolean saveScore(Score score, UUID fileDesignator){
+        ScoreEntity scoreEntity = new ScoreEntity();
+        //map the variables
+        scoreEntity.setFileDesignator(fileDesignator);
+        scoreEntity.setKeySignature(score.getKeySignature().getSignatureName());
+        scoreEntity.setTimeSignature(score.getTimeSignature().toString());
+        scoreEntity.setTempoIndication(score.getTempoIndication().getTempo());
+
+        for(Track track : score.getTrackMap().values()){
+            TrackEntity newTrack = new TrackEntity();
+            newTrack.setInstrumentName(track.getInstrumentString());
+            //============================
+           /* for(Note note: track.getNoteSequence()){
+                NoteEntity newNote = new NoteEntity();
+                newNote.setStep(note.getToneString());
+                newNote.setOctave(note.getOctave());
+                newNote.setOnVelocity(note.getOnVelocity());
+                newNote.setOffVelocity(note.getOffVelocity());
+                newNote.setRest(note.isRest());
+                newNote.setPercussive(note.isPercussionNote());
+                newTrack.addNote(note.toString());
+            }*/
+            newTrack.setNotes(track.notesToString());
+            //============================
+            scoreEntity.addTrack(newTrack);
+        }
+
+        //=======================================================
+        ScoreEntity savedScore = scoreRepository.save(scoreEntity);
+        return scoreEntity == savedScore;
     }
 
 }

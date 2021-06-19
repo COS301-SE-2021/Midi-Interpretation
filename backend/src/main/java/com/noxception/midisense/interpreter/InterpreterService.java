@@ -4,9 +4,11 @@ import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorExceptio
 import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.*;
+import org.springframework.stereotype.Service;
 
 import javax.sound.midi.InvalidMidiDataException;
 
+@Service
 public interface InterpreterService {
 
     //================================

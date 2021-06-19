@@ -14,6 +14,14 @@ public class Score {
     private TimeSignature timeSignature;
     private TempoIndication tempoIndication;
 
+    public void addTrack(int trackNumber){
+        trackMap.put(trackNumber,new Track());
+    }
+
+    public void addTrack(int trackNumber, Track track){
+        trackMap.put(trackNumber,track);
+    }
+
     public void setKeySignature(byte x, byte y){
         this.keySignature = new KeySignature();
     }
@@ -30,14 +38,21 @@ public class Score {
         return trackMap.get(trackNumber);
     }
 
-    public void addTrack(int trackNumber){
-        trackMap.put(trackNumber,new Track());
+    public HashMap<Integer, Track> getTrackMap() {
+        return trackMap;
     }
 
-    public void addTrack(int trackNumber, Track track){
-        trackMap.put(trackNumber,track);
+    public KeySignature getKeySignature() {
+        return keySignature;
     }
 
+    public TimeSignature getTimeSignature() {
+        return timeSignature;
+    }
+
+    public TempoIndication getTempoIndication() {
+        return tempoIndication;
+    }
 
     @Override
     public String toString() {
@@ -45,6 +60,6 @@ public class Score {
         for(Track t : trackMap.values()){
             trackList.add(t.toString());
         }
-        return String.format("{\"key_signature\": \"%s\", \"time_signature\": \"%s\", \"tracks\": [%s]}",this.keySignature,this.timeSignature,String.join(", ",trackList));
+        return String.format("{\"key_signature\": \"%s\", \"time_signature\": \"%s\", \"tempo_indication\": %d, \"tracks\": [%s]}",this.keySignature,this.timeSignature,this.tempoIndication.getTempo(),String.join(", ",trackList));
     }
 }

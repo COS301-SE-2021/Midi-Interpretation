@@ -11,20 +11,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import java.io.FileWriter;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
+    @Autowired
     private InterpreterServiceImpl interpreterService;
 
-    @BeforeEach
-    public void setUp() {
-        interpreterService = new InterpreterServiceImpl();
-    }
+//    @BeforeEach
+//    public void setUp() {
+//        interpreterService = new InterpreterServiceImpl();
+//    }
 
     @Test
     @DisplayName("Tests uploading with a valid file byte array, should store in MIDIPool.")
@@ -218,6 +227,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     //TODO: DONT RUN THIS TEST - IT WILL DELETE THE ONE GOOD MIDI - IF YOU DO RUN IT, UNDO THE CHANGE IN GITHUB DESKTOP
     @Test
+    @Transactional
+    @Rollback(value = false)
     @DisplayName("Tests processing with a valid file, should return true")
     @Tag(TestTags.VALID_INPUT)
     public void testProcessFileValidFile() throws Exception{

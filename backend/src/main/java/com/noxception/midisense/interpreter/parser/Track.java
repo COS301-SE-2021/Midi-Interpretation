@@ -27,7 +27,7 @@ public class Track {
         this.instrumentIndex = instrument;
     }
 
-    private String getInstrumentString(){
+    public String getInstrumentString(){
         return instruments[this.instrumentIndex];
     }
 
@@ -49,6 +49,17 @@ public class Track {
                 note.getOnVelocity(),
                 note.getOffVelocity());
     }
+
+    public String notesToString() {
+        List<String> items = new ArrayList<>();
+        for(Note n: noteSequence){
+            items.add(noteToString(n));
+        }
+        String notes = String.join(", ",items);
+
+        return String.format("notes\": [%s]}",notes);
+    }
+
 
     @Override
     public String toString() {

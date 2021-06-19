@@ -57,7 +57,7 @@ public class InterpreterController implements InterpreterApi {
             InterpreterInterpretMetreResponseTimeSignature time = new InterpreterInterpretMetreResponseTimeSignature();
             time.setBeatValue(res.getMetre().getBeatValue());
             time.setNumBeats(res.getMetre().getNumBeats());
-            responseObject.setTimeSignature(time);
+            //responseObject.setTimeSignature(time);
         } catch (InvalidDesignatorException | IllegalArgumentException e){
             returnStatus = HttpStatus.BAD_REQUEST;
         }
