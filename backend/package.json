@@ -51,6 +51,7 @@
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "shortid": "^2.2.14",
+    "styled-components": "^5.3.0",
     "swiper": "^4.5.0",
     "victory": "^32.3.3"
   },
@@ -79,6 +80,7 @@
     "customize-cra": "^0.9.1",
     "eslint-plugin-react-hooks": "0.0.0-8d7535e54",
     "gh-pages": "^2.1.1",
-    "react-app-rewired": "^2.1.5"
+    "react-app-rewired": "^2.1.5",
+    "react-dropzone": "^11.3.2"
   }
 }
