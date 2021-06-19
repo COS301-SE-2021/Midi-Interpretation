@@ -203,6 +203,15 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
     }
 
+    @Test
+    @DisplayName("Tests parsing JSON with a empty file, should return a JSON tree")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testParseJSONEmptyFile() throws Exception{
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.parseJSON(null),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
 
 
 
