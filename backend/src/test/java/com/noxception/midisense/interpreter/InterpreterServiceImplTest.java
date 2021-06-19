@@ -227,18 +227,19 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         log(response.getMessage());
         assertEquals(true,response.getSuccess());
     }
-/*
+
     @Test
     @DisplayName("Tests processing with an invalid file, should return true")
     @Tag(TestTags.MALFORMED_INPUT)
-    public void testProcessFileInvalidFile() throws Exception{
+    public void testProcessFileInvalidFile() throws Exception {
         ProcessFileRequest req = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
-        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.processFile(req),
-                "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.));
+        ProcessFileResponse response = interpreterService.processFile(req);
+        log(response.getMessage());
+        assertEquals(false, response.getSuccess());
+        assertEquals(MIDISenseConfig.FILE_DOES_NOT_EXIST, response.getMessage());
     }
-*/
+
+
     @Test
     @DisplayName("Tests processing with an empty file, should return true")
     @Tag(TestTags.EMPTY_INPUT)
