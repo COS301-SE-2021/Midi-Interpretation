@@ -5,7 +5,7 @@ import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureExcept
 public class KeySignature {
     private final int numAccidentals;
     private final String signatureName;
-    private final String[] signatures =
+    private static final String[] signatures =
             {"Cbmaj","Gbmaj","Dbmaj","Abmaj","Ebmaj","Bbmaj","Cmaj","Gmaj","Dmaj","Amaj","Emaj","Bmaj","F#maj","C#maj"};
 
     public KeySignature(){
@@ -36,7 +36,7 @@ public class KeySignature {
     }
 
     private String numAccidentalsToSignatureName(int numAccidentals) throws InvalidKeySignatureException{
-       try{ return this.signatures[(7+numAccidentals)-1];}
+       try{ return signatures[(7+numAccidentals)-1];}
        catch(Exception e){
             throw new InvalidKeySignatureException("[Not a valid Key Signature]");
        }
