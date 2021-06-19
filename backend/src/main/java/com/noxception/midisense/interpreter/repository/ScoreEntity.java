@@ -1,5 +1,7 @@
 package com.noxception.midisense.interpreter.repository;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +10,9 @@ import java.util.UUID;
 @Entity
 public class ScoreEntity {
     @Id
-    @GeneratedValue
-    private UUID scoreID;
-    private UUID fileDesignator;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long scoreID;
+    private String fileDesignator;
     @OneToMany(cascade = CascadeType.ALL)
     private List<TrackEntity> tracks = new ArrayList<>();
     private String keySignature;
@@ -24,11 +26,11 @@ public class ScoreEntity {
         tracks.add(trackEntity);
     }
 
-    public UUID getScoreID() {
+    public Long getScoreID() {
         return scoreID;
     }
 
-    public UUID getFileDesignator() {
+    public String getFileDesignator() {
         return fileDesignator;
     }
 
@@ -48,7 +50,7 @@ public class ScoreEntity {
         return tempoIndication;
     }
 
-    public void setFileDesignator(UUID fileDesignator) {
+    public void setFileDesignator(String fileDesignator) {
         this.fileDesignator = fileDesignator;
     }
 

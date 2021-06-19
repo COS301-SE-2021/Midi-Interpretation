@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -129,10 +130,11 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         //check to see if there is a valid request object
         if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         //attempt to interpret the metre
-        String details = parseStaccato(new ParseStaccatoRequest(request.getFileDesignator())).getStaccatoSequence();
-        String time = details.substring(details.indexOf("TIME:")+5,details.indexOf("KEY:")-1);
-        int numBeats = Integer.parseInt(time.substring(0,time.indexOf("/")));
-        int beatValue = Integer.parseInt(time.substring(time.indexOf("/")+1));
+        Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
+        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST);
+        String metre = searchResults.get().getTimeSignature();
+        int numBeats = Integer.parseInt(metre.substring(0, metre.indexOf("/")));
+        int beatValue = Integer.parseInt(metre.substring(metre.indexOf("/")+1));
         return new InterpretMetreResponse(numBeats,beatValue);
     }
 
@@ -148,9 +150,9 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         //check to see if there is a valid request object
         if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         //attempt to interpret the tempo
-        String details = parseStaccato(new ParseStaccatoRequest(request.getFileDesignator())).getStaccatoSequence();
-        String tempo = details.substring(1,details.indexOf("TIME:")-1);
-        int tempoIndication = Integer.parseInt(tempo);
+        Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
+        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST);
+        int tempoIndication = searchResults.get().getTempoIndication();
         return new InterpretTempoResponse(tempoIndication);
     }
 
@@ -166,8 +168,9 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         //check to see if there is a valid request object
         if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         //attempt to interpret the Key Signature
-        String details = parseStaccato(new ParseStaccatoRequest(request.getFileDesignator())).getStaccatoSequence();
-        String sigName = details.substring(details.indexOf("KEY:")+4, details.substring(details.indexOf("KEY:")).indexOf(" ")+details.indexOf("KEY:"));
+        Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
+        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST);
+        String sigName = searchResults.get().getKeySignature();
         return new InterpretKeySignatureResponse(sigName);
     }
 
@@ -188,7 +191,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
             return new ParseStaccatoResponse(pattern.toString());
         } catch (IOException e) {
-            throw new InvalidDesignatorException(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST);
         } catch (InvalidMidiDataException e) {
             throw new InvalidDesignatorException(MIDISenseConfig.INVALID_MIDI_EXCEPTION_TEXT);
         }
@@ -251,7 +254,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
     public boolean saveScore(Score score, UUID fileDesignator){
         ScoreEntity scoreEntity = new ScoreEntity();
         //map the variables
-        scoreEntity.setFileDesignator(fileDesignator);
+        scoreEntity.setFileDesignator(fileDesignator.toString());
         scoreEntity.setKeySignature(score.getKeySignature().getSignatureName());
         scoreEntity.setTimeSignature(score.getTimeSignature().toString());
         scoreEntity.setTempoIndication(score.getTempoIndication().getTempo());

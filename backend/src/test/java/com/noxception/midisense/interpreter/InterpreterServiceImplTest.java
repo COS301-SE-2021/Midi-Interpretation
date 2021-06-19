@@ -83,7 +83,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testInterpretTempoValidFile() throws InvalidDesignatorException {
         InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretTempoResponse res = interpreterService.interpretTempo(req);
-        log(res.getTempo());
+        System.out.println(res.getTempo());
     }
 
     @Test
@@ -103,7 +103,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretMetre(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST));
     }
 
     @Test
@@ -114,7 +114,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretTempo(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST));
     }
     @Test
     @DisplayName("Tests interpreting Key Signature with an invalid file designator, should throw an exception.")
@@ -124,7 +124,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretKeySignature(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST));
     }
 
     @Test
@@ -228,7 +228,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     //TODO: DONT RUN THIS TEST - IT WILL DELETE THE ONE GOOD MIDI - IF YOU DO RUN IT, UNDO THE CHANGE IN GITHUB DESKTOP
     @Test
     @Transactional
-    @Rollback(value = false)
+    @Rollback
     @DisplayName("Tests processing with a valid file, should return true")
     @Tag(TestTags.VALID_INPUT)
     public void testProcessFileValidFile() throws Exception{
@@ -239,6 +239,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     @DisplayName("Tests processing with an invalid file, should return true")
     @Tag(TestTags.MALFORMED_INPUT)
     public void testProcessFileInvalidFile() throws Exception {
@@ -250,6 +252,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     @DisplayName("Tests processing with an empty file, should return true")
     @Tag(TestTags.EMPTY_INPUT)
     public void testProcessFileEmptyFile() throws Exception{
