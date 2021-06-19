@@ -30,7 +30,6 @@ public class MIDISenseParserListener extends LoggableObject implements ParserLis
     @Override
     public void beforeParsingStarts() {
         parsedScore = new Score();
-        this.LOGGING_ACTIVE = false;
     }
 
     @Override

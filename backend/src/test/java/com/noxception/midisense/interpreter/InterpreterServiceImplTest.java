@@ -179,7 +179,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
 
-    //TODO: CLAUDIO: FILL IN EMPTY REQUEST AND INVALID FILE DES FOR PARSE JSON
+
 
     @Test
     @DisplayName("Tests parsing JSON with a valid file, should return a JSON tree")
@@ -192,12 +192,40 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         myWriter.close();
     }
 
+
+    @Test
+    @DisplayName("Tests parsing JSON with a invalid file, should return a JSON tree")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testParseJSONInvalidFile() throws Exception{
+        ParseJSONRequest req = new ParseJSONRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.parseJSON(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests parsing JSON with a empty file, should return a JSON tree")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testParseJSONEmptyFile() throws Exception{
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.parseJSON(null),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
+
+
+
+    //TODO: CLAUDIO: ADD AN EMPTY AND INVALID FILE FOR THIS
+    //TODO: DONT RUN THIS TEST - IT WILL DELETE THE ONE GOOD MIDI - IF YOU DO RUN IT, UNDO THE CHANGE IN GITHUB DESKTOP
     @Test
     @DisplayName("Tests processing with a valid file, should return true")
     @Tag(TestTags.VALID_INPUT)
     public void testProcessFileValidFile() throws Exception{
         ProcessFileRequest request = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
-        //TODO: ADRIAN: Fill this in
+        ProcessFileResponse response = interpreterService.processFile(request);
+        log(response.getMessage());
+        assertEquals(true,response.getSuccess());
     }
 
 
