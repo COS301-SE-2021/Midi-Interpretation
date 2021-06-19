@@ -216,7 +216,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
 
 
-    //TODO: CLAUDIO: ADD AN EMPTY AND INVALID FILE FOR THIS
     //TODO: DONT RUN THIS TEST - IT WILL DELETE THE ONE GOOD MIDI - IF YOU DO RUN IT, UNDO THE CHANGE IN GITHUB DESKTOP
     @Test
     @DisplayName("Tests processing with a valid file, should return true")
@@ -238,7 +237,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertEquals(false, response.getSuccess());
         assertEquals(MIDISenseConfig.FILE_DOES_NOT_EXIST, response.getMessage());
     }
-
 
     @Test
     @DisplayName("Tests processing with an empty file, should return true")
