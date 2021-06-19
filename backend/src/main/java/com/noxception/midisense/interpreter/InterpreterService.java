@@ -1,4 +1,15 @@
 package com.noxception.midisense.interpreter;
 
+import com.noxception.midisense.config.DevelopmentNote;
+import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
+import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
+import com.noxception.midisense.interpreter.rrobjects.*;
+
 public interface InterpreterService {
+    UploadFileResponse uploadFile(UploadFileRequest request) throws InvalidUploadException;
+    InterpretMetreResponse interpretMetre(InterpretMetreRequest request) throws InvalidDesignatorException;
+    InterpretTempoResponse interpretTempo(InterpretTempoRequest request) throws InvalidDesignatorException;
+    InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException, InvalidKeySignatureException;
+    ParseStaccatoResponse parseStaccato(ParseStaccatoRequest request) throws InvalidDesignatorException;
 }
