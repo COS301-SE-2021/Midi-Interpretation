@@ -194,7 +194,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
 
     @Test
-    @DisplayName("Tests parsing JSON with a invalid file, should return a JSON tree")
+    @DisplayName("Tests parsing JSON with an invalid file, should return a JSON tree")
     @Tag(TestTags.MALFORMED_INPUT)
     public void testParseJSONInvalidFile() throws Exception{
         ParseJSONRequest req = new ParseJSONRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
@@ -205,7 +205,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
-    @DisplayName("Tests parsing JSON with a empty file, should return a JSON tree")
+    @DisplayName("Tests parsing JSON with an empty file, should return a JSON tree")
     @Tag(TestTags.EMPTY_INPUT)
     public void testParseJSONEmptyFile() throws Exception{
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -226,6 +226,27 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         ProcessFileResponse response = interpreterService.processFile(request);
         log(response.getMessage());
         assertEquals(true,response.getSuccess());
+    }
+/*
+    @Test
+    @DisplayName("Tests processing with an invalid file, should return true")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testProcessFileInvalidFile() throws Exception{
+        ProcessFileRequest req = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.processFile(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.));
+    }
+*/
+    @Test
+    @DisplayName("Tests processing with an empty file, should return true")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testProcessFileEmptyFile() throws Exception{
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.processFile(null),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
     }
 
 
