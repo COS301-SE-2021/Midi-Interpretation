@@ -174,7 +174,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterInterpretTempoResponse'
 
-  /interpreter/getTrackInfoRequest:
+  /interpreter/getTrackInfo:
     post:
       summary: "Endpoint for receiving the track info"
       tags:
@@ -191,10 +191,10 @@ paths:
       responses:
         '200':
           description: "GetTrackInfo Response"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/interpreterGetTrackInfoResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterGetTrackInfoResponse'
 
   #=================================================
   # SCHEMAS + OBJECTS
