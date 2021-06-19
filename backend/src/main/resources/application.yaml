@@ -108,6 +108,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterParseStaccatoResponse'
 
+  /interpreter/getPieceMetadata:
+    post:
+      summary: "endpoint for getting the piece metadata"
+      tags:
+        - "Interpreter"
+      description: getPieceMetadata
+      operationId: getPieceMetadata
+      requestBody:
+        description: "Request for getPieceMetadata"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterGetPieceMetadataRequest'
+      responses:
+        '200':
+          description: "getPieceMetadata Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterGetPieceMetadataResponse'
+
   /interpreter/interpretMetre:
     post:
       summary: "Endpoint for the Interpret Metre use case of the Interpreter subsystem"
@@ -219,6 +241,27 @@ components:
       properties:
         fileDesignator:
           type: string
+
+    interpreterGetPieceMetadataRequest:
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    interpreterGetPieceMetadataResponse:
+      type: object
+      properties:
+        tempoIndication:
+          type: integer
+        keySignature:
+          type: string
+        timeSignature:
+          type: object
+          properties:
+            numBeats:
+              type: integer
+            beatValue:
+              type: integer
 
     interpreterInterpretMetreRequest:
       description: "Description Here"
