@@ -6,6 +6,7 @@ import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.*;
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -35,6 +36,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         this.monitor(monitorList);
     }
 
+    @Ignore
     @Test
     @DisplayName("Tests uploading with a valid file byte array, should store in MIDIPool.")
     @Tag(TestTags.VALID_INPUT)
@@ -45,6 +47,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         log(res.getFileDesignator(),LogType.DEBUG);
     }
 
+    @Ignore
     @Test
     @DisplayName("Tests uploading with an invalid file byte array, should throw exception.")
     @Tag(TestTags.MALFORMED_INPUT)
@@ -57,6 +60,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_FILE_EXCEPTION_TEXT));
     }
 
+    @Ignore
     @Test
     @DisplayName("Tests uploading with an empty request object, should throw exception.")
     @Tag(TestTags.EMPTY_INPUT)
@@ -175,7 +179,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.parseStaccato(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
     }
 
     @Test
@@ -226,10 +230,9 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
 
 
-    //TODO: DONT RUN THIS TEST - IT WILL DELETE THE ONE GOOD MIDI - IF YOU DO RUN IT, UNDO THE CHANGE IN GITHUB DESKTOP
     @Test
     @Transactional
-    @Rollback(value = false)
+    @Rollback(value = true)
     @DisplayName("Tests processing with a valid file, should return true")
     @Tag(TestTags.VALID_INPUT)
     public void testProcessFileValidFile() throws Exception{
@@ -241,7 +244,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @Transactional
-    @Rollback
+    @Rollback(value = true)
     @DisplayName("Tests processing with an invalid file, should return true")
     @Tag(TestTags.MALFORMED_INPUT)
     public void testProcessFileInvalidFile() throws Exception {
@@ -254,7 +257,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @Transactional
-    @Rollback
+    @Rollback(value = true)
     @DisplayName("Tests processing with an empty file, should return true")
     @Tag(TestTags.EMPTY_INPUT)
     public void testProcessFileEmptyFile() throws Exception{

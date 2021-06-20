@@ -25,13 +25,10 @@ public class TestingDictionary {
     public static byte[] interpreter_uploadFile_validFileContents = getValidByteArray();
     public static byte[] interpreter_uploadFile_invalidFileContents = {};
 
-    private static final String d1 = "9ad37ae5-fde0-407b-80e5-27ec0b6b2bce";
-    private static final String d2 = "6698692f-840d-4c30-bcfe-dc544ac345f9";
-
-    public static String interpreter_all_validFileDesignator = d2;
+    public static String interpreter_all_validFileDesignator = "a1d7a79c-c22a-4ba3-ba7a-5a269dd8da98";
     public static String interpreter_all_invalidFileDesignator = "5698692f-840d-4c30-bcfe-dc544ac345f9";
 
-    public static String display_all_validFileDesignator = "6698692f-840d-4c30-bcfe-dc544ac345f9";
+    public static String display_all_validFileDesignator = "a1d7a79c-c22a-4ba3-ba7a-5a269dd8da98";
     public static String display_all_invalidFileDesignator = "6698692f-840d-4c30-bcfe-dc544ac345f8";
     public static byte display_all_valid_track_index = 0;
     public static byte display_all_invalid_track_index = 14;
@@ -43,12 +40,7 @@ public class TestingDictionary {
 
     //MISC methods
     public static byte[] getValidByteArray(){
-        try {
-            return Files.readAllBytes(Paths.get("src/main/java/com/noxception/midisense/midiPool/MyHeartWillGoOn.mid"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return new byte[]{1, 2, 3, 4, 5, 6, 7};
     }
 
     public static MvcResult mockRequest(String subsystem, String useCase, Object request, MockMvc mvc) throws Exception {
