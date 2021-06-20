@@ -19,5 +19,6 @@ public class MIDISenseConfig {
 
     public static final String SUCCESSFUL_PARSING_TEXT = messageBox("Successfully Parsed MIDI File.");
 
+    public static final String MIDI_FILE_STORAGE = "C:/Users/HP/Downloads/MidiTests/";
 
 }

@@ -97,7 +97,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             saveScore(parsedScore,fileDesignator);
 
             //TODO: delete file from storage
-            //deleteFileFromStorage(fileDesignator);
+            deleteFileFromStorage(fileDesignator);
             return new ProcessFileResponse(true,MIDISenseConfig.SUCCESSFUL_PARSING_TEXT);
         }
         catch(InvalidMidiDataException m){
@@ -108,10 +108,10 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             //INVALID REFERENCE TO FILE
             return new ProcessFileResponse(false, MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         }
-        /*catch(IOException i){
+        catch(IOException i){
             //FILE SYSTEM FAILURE
             return new ProcessFileResponse(false, MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
-        }*/
+        }
 
     }
 
@@ -188,7 +188,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         try {
             UUID fileDesignator = request.getFileDesignator();
-            File sourceFile = new File("src/main/java/com/noxception/midisense/midiPool/"+fileDesignator+".mid");
+            File sourceFile = new File(MIDISenseConfig.MIDI_FILE_STORAGE+fileDesignator+".mid");
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
             return new ParseStaccatoResponse(pattern.toString());
         } catch (IOException e) {
@@ -211,7 +211,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         try {
             UUID fileDesignator = request.getFileDesignator();
-            File sourceFile = new File("src/main/java/com/noxception/midisense/midiPool/"+fileDesignator+".mid");
+            File sourceFile = new File(MIDISenseConfig.MIDI_FILE_STORAGE+fileDesignator+".mid");
             MidiParser parser = new MidiParser();
             MIDISenseParserListener listener = new MIDISenseParserListener();
             parser.addParserListener(listener);
@@ -236,14 +236,14 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
     private UUID writeFileToStorage(byte[] fileContents) throws IOException{
         //generate unique fileDesignator
         UUID fileDesignator = UUID.randomUUID();
-        String fileName = "backend/src/main/java/com/noxception/midisense/midiPool/"+fileDesignator+".mid";
+        String fileName = MIDISenseConfig.MIDI_FILE_STORAGE+fileDesignator+".mid";
         FileOutputStream os = new FileOutputStream(fileName);
         os.write(fileContents);
         return fileDesignator;
     }
 
     private void deleteFileFromStorage(UUID fileDesignator) throws IOException{
-        File file = new File("src/main/java/com/noxception/midisense/midiPool/"+fileDesignator+".mid");
+        File file = new File(MIDISenseConfig.MIDI_FILE_STORAGE+fileDesignator+".mid");
         if (!file.delete()) throw new IOException("Unable to delete file "+file.getName());
     }
 
