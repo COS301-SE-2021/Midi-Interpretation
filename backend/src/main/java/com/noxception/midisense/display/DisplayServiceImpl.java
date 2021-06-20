@@ -112,7 +112,14 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     )
     @Transactional
     @Override
-    public GetTrackOverviewResponse getPieceOverview(GetTrackOverviewRequest request) {
-        return null;
+    public GetTrackOverviewResponse getTrackOverview(GetTrackOverviewRequest request) throws InvalidDesignatorException, InvalidTrackException {
+        Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
+        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+        byte trackIndex = request.getTrackIndex();
+        ScoreEntity score = searchResults.get();
+        List<TrackEntity> tracks = score.getTracks();
+        if(trackIndex >= tracks.size()) throw new InvalidTrackException(MIDISenseConfig.INVALID_TRACK_INDEX_EXCEPTION_TEXT);
+        TrackEntity track = tracks.get(trackIndex);
+        return new GetTrackOverviewResponse(track.getNoteSummary());
     }
 }

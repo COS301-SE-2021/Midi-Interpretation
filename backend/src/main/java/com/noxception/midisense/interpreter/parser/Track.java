@@ -57,7 +57,7 @@ public class Track {
         }
         String notes = String.join(", ",items);
 
-        return String.format("notes\": [%s]}",notes);
+        return String.format("{\"notes\": [%s]}",notes);
     }
 
 

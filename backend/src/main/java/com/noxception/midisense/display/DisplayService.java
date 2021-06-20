@@ -8,5 +8,5 @@ public interface DisplayService {
     GetPieceMetadataResponse getPieceMetadata(GetPieceMetadataRequest request) throws InvalidDesignatorException;
     GetTrackInfoResponse getTrackInfo(GetTrackInfoRequest request) throws InvalidDesignatorException;
     GetTrackMetadataResponse getTrackMetadata(GetTrackMetadataRequest request) throws InvalidDesignatorException, InvalidTrackException;
-    GetTrackOverviewResponse getPieceOverview(GetTrackOverviewRequest request);
+    GetTrackOverviewResponse getTrackOverview(GetTrackOverviewRequest request) throws InvalidDesignatorException, InvalidTrackException;
 }

@@ -3,15 +3,16 @@ package com.noxception.midisense.display.rrobjects;
 import com.noxception.midisense.config.dataclass.ResponseObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GetTrackOverviewResponse extends ResponseObject {
-    private final ArrayList<Byte> pitchArray;
+    private final List<String> pitchArray;
 
-    public GetTrackOverviewResponse(ArrayList<Byte> pitchArray) {
+    public GetTrackOverviewResponse(List<String> pitchArray) {
         this.pitchArray = pitchArray;
     }
 
-    public ArrayList<Byte> getPitchArray() {
+    public List<String> getPitchArray() {
         return pitchArray;
     }
 }

@@ -62,7 +62,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterProcessFileResponse'
 
-  /interpreter/parseXML:
+  /interpreter/parseJSON:
     post:
       summary: "Endpoint for parsing an XML of the Interpreter subsystem"
       tags:
@@ -75,14 +75,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/interpreterParseXMLRequest'
+              $ref: '#/components/schemas/interpreterParseJSONRequest'
       responses:
         '200':
           description: "parseXML Response"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/interpreterParseXMLResponse'
+                $ref: '#/components/schemas/interpreterParseJSONResponse'
         '401':
           description: Invalid File
 
@@ -108,11 +108,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterParseStaccatoResponse'
 
-  /interpreter/getPieceMetadata:
+  /display/getPieceMetadata:
     post:
       summary: "endpoint for getting the piece metadata"
       tags:
-        - "Interpreter"
+        - "Display"
       description: getPieceMetadata
       operationId: getPieceMetadata
       requestBody:
@@ -121,14 +121,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/interpreterGetPieceMetadataRequest'
+              $ref: '#/components/schemas/displayGetPieceMetadataRequest'
       responses:
         '200':
           description: "getPieceMetadata Response"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/interpreterGetPieceMetadataResponse'
+                $ref: '#/components/schemas/displayGetPieceMetadataResponse'
 
   /interpreter/interpretMetre:
     post:
@@ -174,11 +174,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterInterpretTempoResponse'
 
-  /interpreter/getTrackInfo:
+  /display/getTrackInfo:
     post:
       summary: "Endpoint for receiving the track info"
       tags:
-        - "Interpreter"
+        - "Display"
       description: getTrackInfo
       operationId: getTrackInfo
       requestBody:
@@ -187,20 +187,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/interpreterGetTrackInfoRequest'
+              $ref: '#/components/schemas/displayGetTrackInfoRequest'
       responses:
         '200':
           description: "GetTrackInfo Response"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/interpreterGetTrackInfoResponse'
+                $ref: '#/components/schemas/displayGetTrackInfoResponse'
 
-  /interpreter/getTrackMetadata:
+  /display/getTrackMetadata:
     post:
       summary: "Endpoint for receiving the track metadata"
       tags:
-        - "Interpreter"
+        - "Display"
       description: getTrackMetadata
       operationId: getTrackMetadata
       requestBody:
@@ -209,20 +209,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/interpreterGetTrackMetadataRequest'
+              $ref: '#/components/schemas/displayGetTrackMetadataRequest'
       responses:
         '200':
           description: "getTrackMetadata Response"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/interpreterGetTrackMetadataResponse'
+                $ref: '#/components/schemas/displayGetTrackMetadataResponse'
 
-  /interpreter/getTrackOverview:
+  /display/getTrackOverview:
     post:
       summary: "Endpoint for getting the track overview"
       tags:
-        - "Interpreter"
+        - "Display"
       description: getTrackOverview
       operationId: getTrackOverview
       requestBody:
@@ -231,14 +231,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/interpreterGetTrackOverviewRequest'
+              $ref: '#/components/schemas/displayGetTrackOverviewRequest'
       responses:
         '200':
           description: "getTrackOverview response"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/interpreterGetTrackOverviewResponse'
+                $ref: '#/components/schemas/displayGetTrackOverviewResponse'
 
   #=================================================
   # SCHEMAS + OBJECTS
@@ -278,7 +278,7 @@ components:
           type: string
 
 
-    interpreterParseXMLRequest:
+    interpreterParseJSONRequest:
       description: "Description Here"
       type: object
       properties:
@@ -287,7 +287,7 @@ components:
           items:
             type: integer
 
-    interpreterParseXMLResponse:
+    interpreterParseJSONResponse:
       type: object
       properties:
         fileDesignator:
@@ -308,13 +308,13 @@ components:
         fileDesignator:
           type: string
 
-    interpreterGetPieceMetadataRequest:
+    displayGetPieceMetadataRequest:
       type: object
       properties:
         fileDesignator:
           type: string
 
-    interpreterGetPieceMetadataResponse:
+    displayGetPieceMetadataResponse:
       type: object
       properties:
         tempoIndication:
@@ -360,14 +360,14 @@ components:
         tempoIndication:
           type: integer
 
-    interpreterGetTrackInfoRequest:
+    displayGetTrackInfoRequest:
       description: "Request Track Info"
       type: object
       properties:
         fileDesignator:
           type: string
 
-    interpreterGetTrackInfoResponse:
+    displayGetTrackInfoResponse:
       type: object
       properties:
         index:
@@ -375,7 +375,7 @@ components:
         trackName:
           type: string
 
-    interpreterGetTrackMetadataRequest:
+    displayGetTrackMetadataRequest:
       description: "Request Track Metadata"
       type: object
       properties:
@@ -384,13 +384,13 @@ components:
         trackIndex:
           type: integer
 
-    interpreterGetTrackMetadataResponse:
+    displayGetTrackMetadataResponse:
       type: object
       properties:
         trackString:
           type: String
 
-    interpreterGetTrackOverviewRequest:
+    displayGetTrackOverviewRequest:
       description: "Request for Track Overview"
       type: object
       properties:
@@ -399,8 +399,8 @@ components:
         trackIndex:
           type: integer
 
-    interpreterGetTrackOverviewResponse:
+    displayGetTrackOverviewResponse:
       type: object
       properties:
         pitchArray:
-          type: integer
+          type: string

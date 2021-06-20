@@ -197,7 +197,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testParseJSONValidFile() throws Exception{
         ParseJSONRequest req = new ParseJSONRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         ParseJSONResponse res = interpreterService.parseJSON(req);
-        FileWriter myWriter = new FileWriter("savedContent.txt");
+        FileWriter myWriter = new FileWriter("ParseJSONSuccess.txt");
         myWriter.write(res.getParsedScore().toString());
         myWriter.close();
     }

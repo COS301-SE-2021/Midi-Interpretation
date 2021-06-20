@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
@@ -56,9 +58,21 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     @Test
     @DisplayName("Tests getting metadata with a valid file designator, should return a trio of key sig, time sig and tempo")
     @Tag(TestTags.VALID_INPUT)
-    public void testGetTrackMetadataValidFile() throws InvalidDesignatorException, InvalidTrackException {
+    public void testGetTrackMetadataValidFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator),TestingDictionary.display_all_valid_track_index);
         GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
+        FileWriter myWriter = new FileWriter("GetTrackMetadataSuccess.txt");
+        myWriter.write(res.getTrackString());
+        myWriter.close();
+        logAllFields(res);
+    }
+
+    @Test
+    @DisplayName("Tests getting metadata with a valid file designator, should return a trio of key sig, time sig and tempo")
+    @Tag(TestTags.VALID_INPUT)
+    public void testGetPieceOverviewValidFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
+        GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator),TestingDictionary.display_all_valid_track_index);
+        GetTrackOverviewResponse res = displayService.getTrackOverview(req);
         logAllFields(res);
     }
 
