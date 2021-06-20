@@ -30,7 +30,7 @@ class FileUpload extends Component {
           files: [],
           isSet: false,
           uploadButtonText: "Please upload a file to continue.",
-          fileDesignator: "ca09ae60-d3df-43b6-95a6-233b5f81ea2c"
+          fileDesignator: "a1d7a79c-c22a-4ba3-ba7a-5a269dd8da98"
       };
       this.display = {
           pieceMetadata: null,
