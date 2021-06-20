@@ -47,6 +47,7 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
 //        KeySignature keySignature = interpreterService.interpretKeySignature(new InterpretKeySignatureRequest(fileDesignator)).getKeySignature();
 //        return new GetPieceMetadataResponse(keySignature,timeSignature,tempo);
         //METHOD 2 - NEW PERSISTENCE LOOKUP
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
         if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         ScoreEntity score = searchResults.get();
