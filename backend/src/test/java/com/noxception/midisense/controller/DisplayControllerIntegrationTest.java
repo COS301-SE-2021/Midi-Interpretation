@@ -109,6 +109,27 @@ public class DisplayControllerIntegrationTest {
         MvcResult response = TestingDictionary.mockRequest("display","getTrackOverview",request, mvc);
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
-    
+
+    @Test
+    @DisplayName("Tests getting track metadata with an invalid track index and valid file")
+    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
+    public void testGetTrackMetadataInvalidTrackIndex() throws Exception {
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+        request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
+        request.setTrackIndex((int) TestingDictionary.display_all_invalid_track_index);
+        MvcResult response = TestingDictionary.mockRequest("display","getTrackMetadata",request, mvc);
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Tests getting track overview with an invalid track index and valid file")
+    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
+    public void testGetTrackOverviewInvalidTrackIndex() throws Exception {
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+        request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
+        request.setTrackIndex((int) TestingDictionary.display_all_invalid_track_index);
+        MvcResult response = TestingDictionary.mockRequest("display","getTrackOverview",request, mvc);
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
     
 }
