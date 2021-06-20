@@ -1,29 +1,38 @@
 package com.noxception.midisense.interpreter;
 
+import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.TestingDictionary;
-import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.exceptions.InvalidKeySignatureException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import java.io.FileWriter;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
+    @Autowired
     private InterpreterServiceImpl interpreterService;
 
     @BeforeEach
     public void setUp() {
-        interpreterService = new InterpreterServiceImpl();
+        LogType[] monitorList = {LogType.DEBUG};
+        this.monitor(monitorList);
     }
 
     @Test
@@ -33,7 +42,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         byte[] validFileContents = TestingDictionary.interpreter_uploadFile_validFileContents;
         UploadFileRequest req = new UploadFileRequest(validFileContents);
         UploadFileResponse res = interpreterService.uploadFile(req);
-        log(res.getFileDesignator());
+        log(res.getFileDesignator(),LogType.DEBUG);
     }
 
     @Test
@@ -65,7 +74,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testInterpretMetreValidFile() throws Exception {
         InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretMetreResponse res = interpreterService.interpretMetre(req);
-        log(res.getMetre());
+        log(res.getMetre(),LogType.DEBUG);
     }
 
     @Test
@@ -74,16 +83,17 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testInterpretTempoValidFile() throws InvalidDesignatorException {
         InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretTempoResponse res = interpreterService.interpretTempo(req);
-        log(res.getTempo());
+        log(res.getTempo(),LogType.DEBUG);
     }
 
     @Test
     @DisplayName("Tests interpreting key signature with a valid file designator, should return a valid key signature object.")
     @Tag(TestTags.VALID_INPUT)
-    public void testInterpretKeySignatureValidFile() throws InvalidDesignatorException, InvalidKeySignatureException {
+    public void testInterpretKeySignatureValidFile() throws InvalidDesignatorException {
         InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
-        log(res.getKeySignature());
+        log(res.getKeySignature(),LogType.DEBUG);
+        System.out.println(res.getKeySignature());
     }
 
     @Test
@@ -94,7 +104,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretMetre(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
     }
 
     @Test
@@ -105,7 +115,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretTempo(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
     }
     @Test
     @DisplayName("Tests interpreting Key Signature with an invalid file designator, should throw an exception.")
@@ -115,7 +125,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretKeySignature(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
     }
 
     @Test
@@ -154,7 +164,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testParseStaccatoValidFile() throws Exception{
         ParseStaccatoRequest req = new ParseStaccatoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         ParseStaccatoResponse res = interpreterService.parseStaccato(req);
-        log(res.getStaccatoSequence());
+        log(res.getStaccatoSequence(),LogType.DEBUG);
     }
 
     @Test
@@ -187,7 +197,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void testParseJSONValidFile() throws Exception{
         ParseJSONRequest req = new ParseJSONRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         ParseJSONResponse res = interpreterService.parseJSON(req);
-        FileWriter myWriter = new FileWriter("savedContent.txt");
+        FileWriter myWriter = new FileWriter("ParseJSONSuccess.txt");
         myWriter.write(res.getParsedScore().toString());
         myWriter.close();
     }
@@ -218,27 +228,33 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     //TODO: DONT RUN THIS TEST - IT WILL DELETE THE ONE GOOD MIDI - IF YOU DO RUN IT, UNDO THE CHANGE IN GITHUB DESKTOP
     @Test
+    @Transactional
+    @Rollback(value = false)
     @DisplayName("Tests processing with a valid file, should return true")
     @Tag(TestTags.VALID_INPUT)
     public void testProcessFileValidFile() throws Exception{
         ProcessFileRequest request = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         ProcessFileResponse response = interpreterService.processFile(request);
-        log(response.getMessage());
+        log(response.getMessage(),LogType.DEBUG);
         assertEquals(true,response.getSuccess());
     }
 
     @Test
+    @Transactional
+    @Rollback
     @DisplayName("Tests processing with an invalid file, should return true")
     @Tag(TestTags.MALFORMED_INPUT)
     public void testProcessFileInvalidFile() throws Exception {
         ProcessFileRequest req = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         ProcessFileResponse response = interpreterService.processFile(req);
-        log(response.getMessage());
+        log(response.getMessage(),LogType.DEBUG);
         assertEquals(false, response.getSuccess());
-        assertEquals(MIDISenseConfig.FILE_DOES_NOT_EXIST, response.getMessage());
+        assertEquals(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT, response.getMessage());
     }
 
     @Test
+    @Transactional
+    @Rollback
     @DisplayName("Tests processing with an empty file, should return true")
     @Tag(TestTags.EMPTY_INPUT)
     public void testProcessFileEmptyFile() throws Exception{
