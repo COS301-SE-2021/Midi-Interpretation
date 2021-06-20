@@ -40,6 +40,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterUploadFileResponse'
 
+
   /interpreter/processFile:
     post:
       summary: "API endpoint to process File"
@@ -129,6 +130,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/displayGetPieceMetadataResponse'
+
 
   /interpreter/interpretMetre:
     post:
@@ -246,6 +248,15 @@ paths:
 
 components:
   schemas:
+
+    errorObject:
+      description: "The object returned when an error is encountered."
+      type: object
+      properties:
+        message:
+          type: string
+        cause:
+          type: string
 
     interpreterUploadFileRequest:
       description: "Description Here"
@@ -368,12 +379,14 @@ components:
           type: string
 
     displayGetTrackInfoResponse:
-      type: object
-      properties:
-        index:
-          type: integer
-        trackName:
-          type: string
+      type: array
+      items:
+        type: object
+        properties:
+          index:
+            type: integer
+          trackName:
+            type: string
 
     displayGetTrackMetadataRequest:
       description: "Request Track Metadata"
@@ -400,7 +413,6 @@ components:
           type: integer
 
     displayGetTrackOverviewResponse:
-      type: object
-      properties:
-        pitchArray:
-          type: string
+      type: array
+      items:
+        type: string
