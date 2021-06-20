@@ -18,13 +18,13 @@ As with most artistic disciplines, the accessibility of music and a rise in musi
 
 For a detailed description of the system, its requirement satisfactions and architecture, consult the following resources.
 
-* :open_book: [SRS Overleaf Document](https://www.overleaf.com/project/60b1ee15e3c004af1b36ca53 )
-* :open_book: [Architectural Requirements Overleaf Document](https://www.overleaf.com/project/60b1ee15e3c004af1b36ca53 )
+* :open_book: [SRS Overleaf Document](https://www.overleaf.com/read/vcghdpcsjqnj )
+* :open_book: [Architectural Requirements Overleaf Document](https://www.overleaf.com/read/wtvwkjzrvvrm )
 
 For a high-level overview of how to use the system and the development process, consider the following resources.
 
-* :open_book: [User Manual Overleaf Document](https://www.overleaf.com/project/60b1ee15e3c004af1b36ca53 )
-* :open_book: [Coding Quality Overleaf Document](https://www.overleaf.com/project/60b1ee15e3c004af1b36ca53 )
+* :open_book: [User Manual Overleaf Document](https://www.overleaf.com/read/mbsrvrmmhrwr )
+* :open_book: [Coding Quality Overleaf Document](https://www.overleaf.com/read/cyzqjtvqthwg )
 
 ---
 
