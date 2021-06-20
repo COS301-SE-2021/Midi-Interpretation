@@ -40,54 +40,95 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterUploadFileResponse'
 
-  /interpreter/parseXML:
+  /interpreter/processFile:
     post:
-      summary: "Endpoint for parsing an XML of the Interpreter subsystem"
+      summary: "API endpoint to process File"
       tags:
         - "Interpreter"
-      description: parse to XML file
-      operationId: ParseXML
+      description: ProcessFile
+      operationId: ProcessFIle
       requestBody:
-        description: "Request for parseXML"
+        description: "Request for processFile"
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/interpreterParseXMLRequest'
+              $ref: '#/components/schemas/interpreterProcessFileRequest'
       responses:
         '200':
-          description: "parseXML Response"
+          description: "processFile Response"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/interpreterParseXMLResponse'
+                $ref: '#/components/schemas/interpreterProcessFileResponse'
+
+  /interpreter/parseJSON:
+    post:
+      summary: "Endpoint for parsing an JSON of the Interpreter subsystem"
+      tags:
+        - "Interpreter"
+      description: parse to JSON file
+      operationId: ParseJSON
+      requestBody:
+        description: "Request for parseJSON"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterParseJSONRequest'
+      responses:
+        '200':
+          description: "parseJSON Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterParseJSONResponse'
         '401':
           description: Invalid File
 
-    /interpreter/parseStaccato:
-      post:
-        summary: "Endpoint for parsing Staccato of the Interpreter subsystem"
-        tags:
-          - "Interpreter"
-        description: parse to Staccato
-        operationId: ParseStaccato
-        requestBody:
-          description: "Request for parseStaccato"
-          required: true
+  /interpreter/parseStaccato:
+    post:
+      summary: "API endpoint for parsing a file to Staccato"
+      tags:
+        - "Interpreter"
+      description: parseStaccato
+      operationId: ParseStaccato
+      requestBody:
+        description: "Request for parseStaccato"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interpreterParseStaccatoRequest'
+      responses:
+        '200':
+          description: "parseStaccato Response"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/interpreterParseStaccatoRequest'
-        responses:
-          '200':
-            description: "parseStaccato Response"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/interpreterParseStaccatoResponse'
-          '401':
-            description: Invalid File
+                $ref: '#/components/schemas/interpreterParseStaccatoResponse'
 
+  /display/getPieceMetadata:
+    post:
+      summary: "endpoint for getting the piece metadata"
+      tags:
+        - "Display"
+      description: getPieceMetadata
+      operationId: getPieceMetadata
+      requestBody:
+        description: "Request for getPieceMetadata"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/displayGetPieceMetadataRequest'
+      responses:
+        '200':
+          description: "getPieceMetadata Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/displayGetPieceMetadataResponse'
 
   /interpreter/interpretMetre:
     post:
@@ -133,6 +174,72 @@ paths:
               schema:
                 $ref: '#/components/schemas/interpreterInterpretTempoResponse'
 
+  /display/getTrackInfo:
+    post:
+      summary: "Endpoint for receiving the track info"
+      tags:
+        - "Display"
+      description: getTrackInfo
+      operationId: getTrackInfo
+      requestBody:
+        descripiton: "Request for getTrackInfo"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/displayGetTrackInfoRequest'
+      responses:
+        '200':
+          description: "GetTrackInfo Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/displayGetTrackInfoResponse'
+
+  /display/getTrackMetadata:
+    post:
+      summary: "Endpoint for receiving the track metadata"
+      tags:
+        - "Display"
+      description: getTrackMetadata
+      operationId: getTrackMetadata
+      requestBody:
+        description: "Request for getTrackMetadata"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/displayGetTrackMetadataRequest'
+      responses:
+        '200':
+          description: "getTrackMetadata Response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/displayGetTrackMetadataResponse'
+
+  /display/getTrackOverview:
+    post:
+      summary: "Endpoint for getting the track overview"
+      tags:
+        - "Display"
+      description: getTrackOverview
+      operationId: getTrackOverview
+      requestBody:
+        description: "Request for getTrackOverview"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/displayGetTrackOverviewRequest'
+      responses:
+        '200':
+          description: "getTrackOverview response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/displayGetTrackOverviewResponse'
+
   #=================================================
   # SCHEMAS + OBJECTS
   #=================================================
@@ -155,7 +262,23 @@ components:
         fileDesignator:
           type: string
 
-    interpreterParseXMLRequest:
+    interpreterProcessFileRequest:
+      description: "Request the ProcessFile"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    interpreterProcessFileResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+
+
+    interpreterParseJSONRequest:
       description: "Description Here"
       type: object
       properties:
@@ -164,7 +287,7 @@ components:
           items:
             type: integer
 
-    interpreterParseXMLResponse:
+    interpreterParseJSONResponse:
       type: object
       properties:
         fileDesignator:
@@ -184,6 +307,27 @@ components:
       properties:
         fileDesignator:
           type: string
+
+    displayGetPieceMetadataRequest:
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    displayGetPieceMetadataResponse:
+      type: object
+      properties:
+        tempoIndication:
+          type: integer
+        keySignature:
+          type: string
+        timeSignature:
+          type: object
+          properties:
+            numBeats:
+              type: integer
+            beatValue:
+              type: integer
 
     interpreterInterpretMetreRequest:
       description: "Description Here"
@@ -215,3 +359,48 @@ components:
       properties:
         tempoIndication:
           type: integer
+
+    displayGetTrackInfoRequest:
+      description: "Request Track Info"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    displayGetTrackInfoResponse:
+      type: object
+      properties:
+        index:
+          type: integer
+        trackName:
+          type: string
+
+    displayGetTrackMetadataRequest:
+      description: "Request Track Metadata"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+        trackIndex:
+          type: integer
+
+    displayGetTrackMetadataResponse:
+      type: object
+      properties:
+        trackString:
+          type: String
+
+    displayGetTrackOverviewRequest:
+      description: "Request for Track Overview"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+        trackIndex:
+          type: integer
+
+    displayGetTrackOverviewResponse:
+      type: object
+      properties:
+        pitchArray:
+          type: string
