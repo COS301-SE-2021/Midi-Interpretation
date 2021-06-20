@@ -76,8 +76,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     }
 
 
-/*--- NOTE MADE BY CLAUDIO: Intelij not functioning on local comp, therefore not allowing
-                            testing of below functions,submitting the tests commented out*/
     @Test
     @DisplayName("Tests getting metadata with an invalid file designator")
     @Tag(TestTags.MALFORMED_INPUT)
