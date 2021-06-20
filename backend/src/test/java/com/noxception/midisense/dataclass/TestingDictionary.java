@@ -31,8 +31,11 @@ public class TestingDictionary {
     public static String interpreter_all_validFileDesignator = d2;
     public static String interpreter_all_invalidFileDesignator = "5698692f-840d-4c30-bcfe-dc544ac345f9";
 
+    public static String display_all_validFileDesignator = "6698692f-840d-4c30-bcfe-dc544ac345f9";
+    public static String display_all_invalidFileDesignator = "6698692f-840d-4c30-bcfe-dc544ac345f8";
     public static byte display_all_valid_track_index = 0;
     public static byte display_all_invalid_track_index = 14;
+
 
     @Autowired
     private WebApplicationContext webApplicationContext;

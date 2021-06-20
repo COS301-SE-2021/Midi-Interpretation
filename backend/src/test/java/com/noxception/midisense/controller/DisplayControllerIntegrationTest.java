@@ -26,7 +26,7 @@ public class DisplayControllerIntegrationTest {
     @Test
     public void testGetPieceMetadataValidDesignator() throws Exception {
         DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
-        request.setFileDesignator(TestingDictionary.interpreter_all_validFileDesignator);
+        request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
         MvcResult response = TestingDictionary.mockRequest("display","getPieceMetadata",request, mvc);
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
@@ -34,7 +34,7 @@ public class DisplayControllerIntegrationTest {
     @Test
     public void testGetTrackInfoValidDesignator() throws Exception {
         DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
-        request.setFileDesignator(TestingDictionary.interpreter_all_validFileDesignator);
+        request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
         MvcResult response = TestingDictionary.mockRequest("display","getTrackInfo",request, mvc);
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
@@ -42,7 +42,7 @@ public class DisplayControllerIntegrationTest {
     @Test
     public void testGetTrackMetadataValidDesignator() throws Exception {
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
-        request.setFileDesignator(TestingDictionary.interpreter_all_validFileDesignator);
+        request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
         request.setTrackIndex((int) TestingDictionary.display_all_valid_track_index);
         MvcResult response = TestingDictionary.mockRequest("display","getTrackMetadata",request, mvc);
         Assertions.assertEquals(200, response.getResponse().getStatus());
@@ -51,10 +51,44 @@ public class DisplayControllerIntegrationTest {
     @Test
     public void testGetTrackOverviewValidDesignator() throws Exception {
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
-        request.setFileDesignator(TestingDictionary.interpreter_all_validFileDesignator);
+        request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
         request.setTrackIndex((int) TestingDictionary.display_all_valid_track_index);
         MvcResult response = TestingDictionary.mockRequest("display","getTrackOverview",request, mvc);
         Assertions.assertEquals(200, response.getResponse().getStatus());
+    }
+
+    @Test
+    public void testGetPieceMetadataInvalidDesignator() throws Exception {
+        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
+        request.setFileDesignator(TestingDictionary.display_all_invalidFileDesignator);
+        MvcResult response = TestingDictionary.mockRequest("display","getPieceMetadata",request, mvc);
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    public void testGetTrackInfoInvalidDesignator() throws Exception {
+        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
+        request.setFileDesignator(TestingDictionary.display_all_invalidFileDesignator);
+        MvcResult response = TestingDictionary.mockRequest("display","getTrackInfo",request, mvc);
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    public void testGetTrackMetadataInvalidDesignator() throws Exception {
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+        request.setFileDesignator(TestingDictionary.display_all_invalidFileDesignator);
+        request.setTrackIndex((int) TestingDictionary.display_all_valid_track_index);
+        MvcResult response = TestingDictionary.mockRequest("display","getTrackMetadata",request, mvc);
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    public void testGetTrackOverviewInvalidDesignator() throws Exception {
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+        request.setFileDesignator(TestingDictionary.display_all_invalidFileDesignator);
+        request.setTrackIndex((int) TestingDictionary.display_all_valid_track_index);
+        MvcResult response = TestingDictionary.mockRequest("display","getTrackOverview",request, mvc);
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
     
     
