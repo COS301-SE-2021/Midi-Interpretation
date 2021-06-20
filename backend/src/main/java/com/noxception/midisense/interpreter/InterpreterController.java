@@ -22,76 +22,24 @@ import java.util.UUID;
 @RestController
 public class InterpreterController implements InterpreterApi {
 
+    //TODO: WORK ON CONTROLLER
+
     @Autowired
     InterpreterServiceImpl interpreterService;
 
-
-    @Override
-    public ResponseEntity<InterpreterUploadFileResponse> uploadFile(InterpreterUploadFileRequest body) {
-        InterpreterUploadFileResponse responseObject = new InterpreterUploadFileResponse();
-        HttpStatus returnStatus = HttpStatus.OK;
-        try{
-            UploadFileRequest req = new UploadFileRequest(intArrayToByteArray(body.getFileContents()));
-            UploadFileResponse res = interpreterService.uploadFile(req);
-            responseObject.setFileDesignator(res.getFileDesignator().toString());
-        } catch (InvalidUploadException e) {
-            returnStatus = HttpStatus.BAD_REQUEST;
-        }
-        return new ResponseEntity<>(responseObject,returnStatus);
-    }
-
-    @Override
-    public ResponseEntity<InterpreterGetPieceMetadataResponse> getPieceMetadata(InterpreterGetPieceMetadataRequest body) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<InterpreterGetTrackInfoResponse> getTrackInfo(InterpreterGetTrackInfoRequest body) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<InterpreterGetTrackMetadataResponse> getTrackMetadata(InterpreterGetTrackMetadataRequest body) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<InterpreterGetTrackOverviewResponse> getTrackOverview(InterpreterGetTrackOverviewRequest body) {
-        return null;
-    }
-
     @Override
     public ResponseEntity<InterpreterInterpretMetreResponse> interpretMetre(InterpreterInterpretMetreRequest body) {
-        //Definition: A time (or metre) signature, indicates the number of beats in a measure and the value of the basic beat
-        InterpreterInterpretMetreResponse responseObject = new InterpreterInterpretMetreResponse();
-        HttpStatus returnStatus = HttpStatus.OK;
-        try{
-            InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(body.getFileDesignator()));
-            InterpretMetreResponse res = interpreterService.interpretMetre(req);
-
-            InterpreterInterpretMetreResponseTimeSignature time = new InterpreterInterpretMetreResponseTimeSignature();
-            time.setBeatValue(res.getMetre().getBeatValue());
-            time.setNumBeats(res.getMetre().getNumBeats());
-            //responseObject.setTimeSignature(time);
-        } catch (InvalidDesignatorException | IllegalArgumentException e){
-            returnStatus = HttpStatus.BAD_REQUEST;
-        }
-        return new ResponseEntity<>(responseObject,returnStatus);
+        return null;
     }
 
     @Override
     public ResponseEntity<InterpreterInterpretTempoResponse> interpretTempo(InterpreterInterpretTempoRequest body) {
-        //Definition: The tempo of a piece of music is the speed of the underlying beat.
-        InterpreterInterpretTempoResponse responseObject = new InterpreterInterpretTempoResponse();
-        HttpStatus returnStatus = HttpStatus.OK;
-        try{
-            InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(body.getFileDesignator()));
-            InterpretTempoResponse res = interpreterService.interpretTempo(req);
-            responseObject.setTempoIndication(res.getTempo().getTempo());
-        } catch (InvalidDesignatorException | IllegalArgumentException e){
-            returnStatus = HttpStatus.BAD_REQUEST;
-        }
-        return new ResponseEntity<>(responseObject,returnStatus);
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<InterpreterParseJSONResponse> parseJSON(InterpreterParseJSONRequest body) {
+        return null;
     }
 
     @Override
@@ -100,12 +48,12 @@ public class InterpreterController implements InterpreterApi {
     }
 
     @Override
-    public ResponseEntity<InterpreterParseXMLResponse> parseXML(InterpreterParseXMLRequest body) {
+    public ResponseEntity<InterpreterProcessFileResponse> processFIle(InterpreterProcessFileRequest body) {
         return null;
     }
 
     @Override
-    public ResponseEntity<InterpreterProcessFileResponse> processFIle(InterpreterProcessFileRequest body) {
+    public ResponseEntity<InterpreterUploadFileResponse> uploadFile(InterpreterUploadFileRequest body) {
         return null;
     }
 
@@ -124,6 +72,5 @@ public class InterpreterController implements InterpreterApi {
         }
         return baos.toByteArray();
     }
-
 
 }

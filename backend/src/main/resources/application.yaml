@@ -64,13 +64,13 @@ paths:
 
   /interpreter/parseJSON:
     post:
-      summary: "Endpoint for parsing an XML of the Interpreter subsystem"
+      summary: "Endpoint for parsing an JSON of the Interpreter subsystem"
       tags:
         - "Interpreter"
-      description: parse to XML file
-      operationId: ParseXML
+      description: parse to JSON file
+      operationId: ParseJSON
       requestBody:
-        description: "Request for parseXML"
+        description: "Request for parseJSON"
         required: true
         content:
           application/json:
@@ -78,7 +78,7 @@ paths:
               $ref: '#/components/schemas/interpreterParseJSONRequest'
       responses:
         '200':
-          description: "parseXML Response"
+          description: "parseJSON Response"
           content:
             application/json:
               schema:
