@@ -32,9 +32,9 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @DevelopmentNote(
             taskName = "getPieceMetadata Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.PENDING_REVIEW,
+            status = DevelopmentNote.WorkState.COMPLETED,
             lastModified = "2021/06/19 22:37",
-            comments = "Added Method."
+            comments = "Reviewed ~Claudio"
     )
     @Transactional
     @Override
@@ -63,9 +63,9 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @DevelopmentNote(
             taskName = "getTrackInfo Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.PENDING_REVIEW,
+            status = DevelopmentNote.WorkState.COMPLETED,
             lastModified = "2021/06/19 22:37",
-            comments = "Added Method."
+            comments = "Reviewed ~Claudio"
     )
     @Transactional
     @Override
@@ -87,9 +87,9 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @DevelopmentNote(
             taskName = "getTrackMetadata Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.IN_PROGRESS,
+            status = DevelopmentNote.WorkState.COMPLETED,
             lastModified = "2021/06/19 22:37",
-            comments = "Added Method."
+            comments = "Reviewed ~Claudio"
     )
     @Transactional
     @Override
@@ -109,9 +109,9 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @DevelopmentNote(
             taskName = "getPieceOverview Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.IN_PROGRESS,
+            status = DevelopmentNote.WorkState.COMPLETED,
             lastModified = "2021/06/19 22:37",
-            comments = "Added Method."
+            comments = "Reviewed ~Claudio"
     )
     @Transactional
     @Override
