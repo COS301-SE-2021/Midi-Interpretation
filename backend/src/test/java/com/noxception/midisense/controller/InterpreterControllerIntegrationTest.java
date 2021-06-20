@@ -1,11 +1,14 @@
 package com.noxception.midisense.controller;
 
+import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.models.InterpreterInterpretMetreRequest;
 import com.noxception.midisense.models.InterpreterInterpretTempoRequest;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import com.noxception.midisense.models.InterpreterUploadFileRequest;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +35,16 @@ class InterpreterControllerIntegrationTest {
     private MockMvc mvc;
 
     @Test
+    @DisplayName("Tests uploading a valid file")
+    @Tag(MIDISenseUnitTest.TestTags.VALID_INPUT)
     void testUploadFileValidFile() throws Exception{
         MvcResult response = TestingDictionary.mockRequestFile("interpreter","uploadFile","src/main/java/com/noxception/midisense/midiPool/MyHeartWillGoOn.mid", mvc);
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
     @Test
+    @DisplayName("Tests uploading an invalid file")
+    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
     void testUploadFileInvalidFile() throws Exception{
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
         List<Integer> newByteArray = new ArrayList<>();
@@ -51,6 +58,8 @@ class InterpreterControllerIntegrationTest {
     @Test
     @Transactional
     @Rollback
+    @DisplayName("Tests processing a valid file")
+    @Tag(MIDISenseUnitTest.TestTags.VALID_INPUT)
     void testProcessFileValidFileDesignator() throws Exception{
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
         request.setFileDesignator(TestingDictionary.interpreter_all_validFileDesignator);
@@ -61,6 +70,8 @@ class InterpreterControllerIntegrationTest {
     @Test
     @Transactional
     @Rollback
+    @DisplayName("Tests processing an invalid file")
+    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
     void testProcessFileInvalidFileDesignator() throws Exception{
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
         request.setFileDesignator(TestingDictionary.interpreter_all_invalidFileDesignator);
