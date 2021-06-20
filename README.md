@@ -33,7 +33,7 @@ For a high-level overview of how to use the system and the development process, 
 For a demonstration of how to use the appropriate system functions, please consider watching the latest demonstration.
 
 * :tv: [Demonstration 1](https://drive.google.com/file/d/1u3yPmhA9ue9AsGq7qqYW6PU98itxFXpb/view)
-* :tv: [Demonstration 2](https://drive.google.com/file/d/1u3yPmhA9ue9AsGq7qqYW6PU98itxFXpb/view)
+* :tv: [Demonstration 2](https://drive.google.com/drive/folders/1akAs5YBSMEl8_UUb5O6xQeK6xQavhJ_Z?usp=sharing)
 
 ---
 
