@@ -8,7 +8,7 @@ It is without a doubt, the most ubiquitous of art forms, permeating through the 
 
 ---
 
-![Alt text](documentation/images/logo.png?raw=true "Title")
+![Alt text](documentation/images/Midi_final.png?raw=true "Title")
 
 As with most artistic disciplines, the accessibility of music and a rise in music education among the youth have made its practises an appropriate target for rapid digitisation. As the composition, arrangement and transcription of works are common industry practises, there has been a drive in recent years to marry these processes with technologies that enhance both the sensory and extrasensory perception of a work during such tasks.
 
