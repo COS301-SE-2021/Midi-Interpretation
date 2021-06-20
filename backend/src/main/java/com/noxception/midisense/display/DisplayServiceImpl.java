@@ -32,9 +32,9 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @DevelopmentNote(
             taskName = "getPieceMetadata Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.PENDING_REVIEW,
+            status = DevelopmentNote.WorkState.COMPLETED,
             lastModified = "2021/06/19 22:37",
-            comments = "Added Method."
+            comments = "Reviewed ~Claudio"
     )
     @Transactional
     @Override
@@ -47,6 +47,7 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
 //        KeySignature keySignature = interpreterService.interpretKeySignature(new InterpretKeySignatureRequest(fileDesignator)).getKeySignature();
 //        return new GetPieceMetadataResponse(keySignature,timeSignature,tempo);
         //METHOD 2 - NEW PERSISTENCE LOOKUP
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
         if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         ScoreEntity score = searchResults.get();
@@ -62,13 +63,14 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @DevelopmentNote(
             taskName = "getTrackInfo Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.PENDING_REVIEW,
+            status = DevelopmentNote.WorkState.COMPLETED,
             lastModified = "2021/06/19 22:37",
-            comments = "Added Method."
+            comments = "Reviewed ~Claudio"
     )
     @Transactional
     @Override
     public GetTrackInfoResponse getTrackInfo(GetTrackInfoRequest request) throws InvalidDesignatorException {
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
         if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         GetTrackInfoResponse getTrackInfoResponse = new GetTrackInfoResponse();
@@ -85,13 +87,14 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @DevelopmentNote(
             taskName = "getTrackMetadata Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.IN_PROGRESS,
+            status = DevelopmentNote.WorkState.COMPLETED,
             lastModified = "2021/06/19 22:37",
-            comments = "Added Method."
+            comments = "Reviewed ~Claudio"
     )
     @Transactional
     @Override
     public GetTrackMetadataResponse getTrackMetadata(GetTrackMetadataRequest request) throws InvalidDesignatorException, InvalidTrackException {
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
         if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         byte trackIndex = request.getTrackIndex();
@@ -106,13 +109,14 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @DevelopmentNote(
             taskName = "getPieceOverview Use Case",
             developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.IN_PROGRESS,
+            status = DevelopmentNote.WorkState.COMPLETED,
             lastModified = "2021/06/19 22:37",
-            comments = "Added Method."
+            comments = "Reviewed ~Claudio"
     )
     @Transactional
     @Override
     public GetTrackOverviewResponse getTrackOverview(GetTrackOverviewRequest request) throws InvalidDesignatorException, InvalidTrackException {
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
         if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         byte trackIndex = request.getTrackIndex();

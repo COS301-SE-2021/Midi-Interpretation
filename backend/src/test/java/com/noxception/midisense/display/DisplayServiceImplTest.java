@@ -1,12 +1,11 @@
 package com.noxception.midisense.display;
 
+import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.rrobjects.InterpretKeySignatureRequest;
-import com.noxception.midisense.interpreter.rrobjects.InterpretKeySignatureResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -21,6 +20,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class DisplayServiceImplTest extends MIDISenseUnitTest {
@@ -34,8 +35,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         this.monitor(monitorList);
     }
 
-    //TODO: CLAUDIO DO ALL UNIT TESTS FOR THE 4 FUNCTIONS TOMORROW MORNING
-    //below are sample tests I used in unit testing on another branch to make it easier for myself
 
     @Test
     @DisplayName("Tests getting metadata with a valid file designator, should return a trio of key sig, time sig and tempo.")
@@ -76,48 +75,118 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         logAllFields(res);
     }
 
-    /* SAMPLE
-    @Test
-    @DisplayName("Tests uploading with a valid file byte array, should store in MIDIPool.")
-    @Tag(TestTags.VALID_INPUT)
-    public void testUploadFileValidFile() throws InvalidUploadException{
-        byte[] validFileContents = TestingDictionary.interpreter_uploadFile_validFileContents;
-        UploadFileRequest req = new UploadFileRequest(validFileContents);
-        UploadFileResponse res = interpreterService.uploadFile(req);
-        log(res.getFileDesignator());
-    }
-
 
     @Test
-    @DisplayName("Tests interpreting key signature with a valid file designator, should return a valid key signature object.")
-    @Tag(TestTags.VALID_INPUT)
-    public void testInterpretKeySignatureValidFile() throws InvalidDesignatorException, InvalidKeySignatureException {
-        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
-        InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
-        log(res.getKeySignature());
-    }
-
-    @Test
-    @DisplayName("Tests interpreting Key Signature with an invalid file designator, should throw an exception.")
+    @DisplayName("Tests getting metadata with an invalid file designator")
     @Tag(TestTags.MALFORMED_INPUT)
-    public void testInterpretKeySignatureInvalidFile(){
-        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+    public void testGetPieceMetadataInvalidFile() throws InvalidDesignatorException {
+        GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.interpretKeySignature(req),
+                ()->displayService.getPieceMetadata(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
     }
 
     @Test
-    @DisplayName("Tests interpreting Key Siganture with an empty request, should throw an exception.")
-    @Tag(TestTags.EMPTY_INPUT)
-    public void testInterpretKeySignatureEmptyRequest(){
+    @DisplayName("Tests getting track info with an invalid file designator")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testGetTrackInfoInvalidFile() throws InvalidDesignatorException {
+        GetTrackInfoRequest req = new GetTrackInfoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.interpretKeySignature(null),
-                "A null request should not be processed.");
+                ()->displayService.getTrackInfo(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests getting metadata with an invalid file designator")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testGetTrackMetadataInvalidFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator),TestingDictionary.display_all_valid_track_index);
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackMetadata(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests getting metadata with an invalid file designator")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testGetPieceOverviewInvalidFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
+        GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator),TestingDictionary.display_all_valid_track_index);
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackOverview(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+    }
+
+
+
+    @Test
+    @DisplayName("Tests getting metadata with an invalid track index and valid file")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testGetTrackMetadataInvalidIndex() throws InvalidDesignatorException, InvalidTrackException, IOException {
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator),TestingDictionary.display_all_invalid_track_index);
+        InvalidTrackException thrown = assertThrows(InvalidTrackException.class,
+                ()->displayService.getTrackMetadata(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests getting metadata with an invalid track index and valid file")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testGetPieceOverviewInvalidIndex() throws InvalidDesignatorException, InvalidTrackException, IOException {
+        GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator), TestingDictionary.display_all_invalid_track_index);
+        InvalidTrackException thrown = assertThrows(InvalidTrackException.class,
+                () -> displayService.getTrackOverview(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
+    }
+
+
+
+    @Test
+    @DisplayName("Tests getting metadata with an empty file designator")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testGetPieceMetadataEmptyFile() throws InvalidDesignatorException {
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getPieceMetadata(null),
+                "No processing should happen if a file doesn't exist.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
     }
-    */
+
+    @Test
+    @DisplayName("Tests getting track info with an empty file designator")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testGetTrackInfoEmptyFile() throws InvalidDesignatorException {
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackInfo(null),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests getting metadata with an empty file designator")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testGetTrackMetadataEmptyFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackMetadata(null),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests getting metadata with an empty file designator")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testGetPieceOverviewEmptyFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackOverview(null),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
+
+
 
     
 }
