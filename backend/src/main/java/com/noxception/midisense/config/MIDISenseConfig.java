@@ -6,6 +6,7 @@ public class MIDISenseConfig {
     public static final String CROSS_ORIGIN = "*";
     public static final String FILE_FORMAT = ".mid";
     public static final int MAX_FILE_UPLOAD_SIZE = 1024;
+    public static final boolean DELETE_UPON_INTERPRET = false;
 
     //EXCEPTIONS and MESSAGES
     public static String messageBox(String message){ return "{"+message+"}";}

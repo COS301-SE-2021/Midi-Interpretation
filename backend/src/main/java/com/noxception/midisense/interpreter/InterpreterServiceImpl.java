@@ -96,8 +96,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             //persist score details to database
             saveScore(parsedScore,fileDesignator);
 
-            //TODO: delete file from storage
-            deleteFileFromStorage(fileDesignator);
+            if(MIDISenseConfig.DELETE_UPON_INTERPRET) deleteFileFromStorage(fileDesignator);
             return new ProcessFileResponse(true,MIDISenseConfig.SUCCESSFUL_PARSING_TEXT);
         }
         catch(InvalidMidiDataException m){
