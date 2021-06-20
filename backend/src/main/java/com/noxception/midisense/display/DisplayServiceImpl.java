@@ -70,6 +70,7 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @Transactional
     @Override
     public GetTrackInfoResponse getTrackInfo(GetTrackInfoRequest request) throws InvalidDesignatorException {
+        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
         if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
         GetTrackInfoResponse getTrackInfoResponse = new GetTrackInfoResponse();
