@@ -17,10 +17,18 @@ import org.jfugue.midi.MidiParser;
 import org.jfugue.pattern.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.transaction.Transactional;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,6 +39,8 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
     private ScoreRepository scoreRepository;
 
     private final int maximumUploadSize = kilobytesToBytes(MIDISenseConfig.MAX_FILE_UPLOAD_SIZE);
+
+
 
     //================================
     // FRONT END USE CASES
@@ -49,8 +59,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         //check to see if there is a valid request object
         if(request==null) throw new InvalidUploadException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         try {
-
-            //get the contents of the file
+           //get the contents of the file
             byte[] fileContents = request.getFileContents();
             //check to see that it isn't empty, or is of maximum length
             if(fileContents.length==0) throw new InvalidUploadException(MIDISenseConfig.EMPTY_FILE_EXCEPTION_TEXT);
@@ -58,10 +67,8 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
 
             //write to storage
             UUID fileDesignator = writeFileToStorage(fileContents);
-            File sourceFile = new File(generatePath(fileDesignator));
-
-            //return response
             return new UploadFileResponse(fileDesignator);
+
         } catch (IOException e) {
             //throw exception
             throw new InvalidUploadException(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
@@ -181,7 +188,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         try {
             UUID fileDesignator = request.getFileDesignator();
-            File sourceFile = new File(generatePath(fileDesignator));
+            File sourceFile = new File("src/main/java/com/noxception/midisense/midiPool/"+fileDesignator+".mid");
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
             return new ParseStaccatoResponse(pattern.toString());
         } catch (IOException e) {
@@ -204,7 +211,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
         try {
             UUID fileDesignator = request.getFileDesignator();
-            File sourceFile = new File(generatePath(fileDesignator));
+            File sourceFile = new File("src/main/java/com/noxception/midisense/midiPool/"+fileDesignator+".mid");
             MidiParser parser = new MidiParser();
             MIDISenseParserListener listener = new MIDISenseParserListener();
             parser.addParserListener(listener);
@@ -229,25 +236,18 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
     private UUID writeFileToStorage(byte[] fileContents) throws IOException{
         //generate unique fileDesignator
         UUID fileDesignator = UUID.randomUUID();
-        OutputStream os = new FileOutputStream(generatePath(fileDesignator));
-
-        //write file to storage
+        String fileName = "backend/src/main/java/com/noxception/midisense/midiPool/"+fileDesignator+".mid";
+        FileOutputStream os = new FileOutputStream(fileName);
         os.write(fileContents);
-        os.close();
-
-        //return Identifier
         return fileDesignator;
     }
 
     private void deleteFileFromStorage(UUID fileDesignator) throws IOException{
-        File file = new File(generatePath(fileDesignator));
+        File file = new File("src/main/java/com/noxception/midisense/midiPool/"+fileDesignator+".mid");
         if (!file.delete()) throw new IOException("Unable to delete file "+file.getName());
     }
 
-    private String generatePath(UUID fileDesignator){
-        //generates the path for the unique fileDesignator
-        return MIDISenseConfig.FILE_SYSTEM_PATH+fileDesignator.toString()+ MIDISenseConfig.FILE_FORMAT;
-    }
+
 
     @Transactional
     public boolean saveScore(Score score, UUID fileDesignator){

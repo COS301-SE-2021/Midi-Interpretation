@@ -1,15 +1,21 @@
 package com.noxception.midisense.dataclass;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.util.MimeType;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class TestingDictionary {
@@ -28,6 +34,9 @@ public class TestingDictionary {
     public static byte display_all_valid_track_index = 0;
     public static byte display_all_invalid_track_index = 14;
 
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
 
     //MISC methods
     public static byte[] getValidByteArray(){
@@ -44,6 +53,16 @@ public class TestingDictionary {
                 .post("/"+subsystem+"/" + useCase)
                 .content(convertToJson(request))
                 .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON);
+        return mvc.perform(rq).andDo(MockMvcResultHandlers.print()).andReturn();
+    }
+
+    public static MvcResult mockRequestFile(String subsystem, String useCase, String filename, MockMvc mvc) throws Exception {
+        MockMultipartFile file = new MockMultipartFile("Tester.mid",Files.readAllBytes(Path.of(filename)));
+        RequestBuilder rq = MockMvcRequestBuilders
+                .multipart("/"+subsystem+"/" + useCase)
+                .content(file.getBytes())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .accept(MediaType.APPLICATION_JSON);
         return mvc.perform(rq).andDo(MockMvcResultHandlers.print()).andReturn();
     }

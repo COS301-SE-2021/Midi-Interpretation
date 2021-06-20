@@ -14,6 +14,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +30,14 @@ class InterpreterControllerIntegrationTest {
 
     @Test
     void testUploadFileValidFile() throws Exception{
-        InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
-        List<Integer> newByteArray = new ArrayList<>();
-        byte[] inArray = TestingDictionary.interpreter_uploadFile_validFileContents;
-        if(inArray != null) for (byte b : inArray) newByteArray.add((int) b);
-        request.setFileContents(newByteArray);
-        MvcResult response = TestingDictionary.mockRequest("interpreter","uploadFile",request, mvc);
+//        InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
+//        List<Integer> newByteArray = new ArrayList<>();
+//        byte[] inArray = TestingDictionary.interpreter_uploadFile_validFileContents;
+//        if(inArray != null) for (byte b : inArray) newByteArray.add((int) b);
+//        request.setFileContents(newByteArray);
+//        MvcResult response = TestingDictionary.mockRequest("interpreter","uploadFile",request, mvc);
+//        Assertions.assertEquals(200, response.getResponse().getStatus());
+        MvcResult response = TestingDictionary.mockRequestFile("interpreter","uploadFile","src/main/java/com/noxception/midisense/midiPool/MyHeartWillGoOn.mid", mvc);
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
@@ -47,36 +52,6 @@ class InterpreterControllerIntegrationTest {
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
-    @Test
-    public void testInterpretMetreValidFile() throws Exception{
-        InterpreterInterpretMetreRequest request = new InterpreterInterpretMetreRequest();
-        request.setFileDesignator(TestingDictionary.interpreter_all_validFileDesignator);
-        MvcResult response = TestingDictionary.mockRequest("interpreter","interpretMetre",request, mvc);
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-    }
 
-    @Test
-    public void testInterpretTempoValidFile() throws Exception{
-        InterpreterInterpretTempoRequest request = new InterpreterInterpretTempoRequest();
-        request.setFileDesignator(TestingDictionary.interpreter_all_validFileDesignator);
-        MvcResult response = TestingDictionary.mockRequest("interpreter","interpretTempo",request, mvc);
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-    }
-
-    @Test
-    public void testInterpretMetreInvalidFile() throws Exception{
-        InterpreterInterpretMetreRequest request = new InterpreterInterpretMetreRequest();
-        request.setFileDesignator(TestingDictionary.interpreter_all_invalidFileDesignator);
-        MvcResult response = TestingDictionary.mockRequest("interpreter","interpretMetre",request, mvc);
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
-
-    @Test
-    public void testInterpretTempoInvalidFile() throws Exception{
-        InterpreterInterpretTempoRequest request = new InterpreterInterpretTempoRequest();
-        request.setFileDesignator(TestingDictionary.interpreter_all_invalidFileDesignator);
-        MvcResult response = TestingDictionary.mockRequest("interpreter","interpretTempo",request, mvc);
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
 
 }

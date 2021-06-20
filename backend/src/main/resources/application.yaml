@@ -18,27 +18,27 @@ paths:
 
   #============= INTERPRETER ============================
 
-  /interpreter/uploadFile:
-    post:
-      summary: "Endpoint for the Upload File use case of the Interpreter subsystem"
-      tags:
-        - "Interpreter"
-      description: uploadFile
-      operationId: uploadFile
-      requestBody:
-        description: "Request for uploadFile"
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/interpreterUploadFileRequest'
-      responses:
-        '200':
-          description: "Upload File Response"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/interpreterUploadFileResponse'
+#  /interpreter/uploadFile:
+#    post:
+#      summary: "Endpoint for the Upload File use case of the Interpreter subsystem"
+#      tags:
+#        - "Interpreter"
+#      description: uploadFile
+#      operationId: uploadFile
+#      requestBody:
+#        description: "Request for uploadFile"
+#        content:
+#          application/octet-stream:
+#              schema:
+#                type: string
+#                format: binary
+#      responses:
+#        '200':
+#          description: "Upload File Response"
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/interpreterUploadFileResponse'
 
 
   /interpreter/processFile:
@@ -47,7 +47,7 @@ paths:
       tags:
         - "Interpreter"
       description: ProcessFile
-      operationId: ProcessFIle
+      operationId: ProcessFile
       requestBody:
         description: "Request for processFile"
         required: true
@@ -62,52 +62,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/interpreterProcessFileResponse'
-
-  /interpreter/parseJSON:
-    post:
-      summary: "Endpoint for parsing an JSON of the Interpreter subsystem"
-      tags:
-        - "Interpreter"
-      description: parse to JSON file
-      operationId: ParseJSON
-      requestBody:
-        description: "Request for parseJSON"
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/interpreterParseJSONRequest'
-      responses:
-        '200':
-          description: "parseJSON Response"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/interpreterParseJSONResponse'
-        '401':
-          description: Invalid File
-
-  /interpreter/parseStaccato:
-    post:
-      summary: "API endpoint for parsing a file to Staccato"
-      tags:
-        - "Interpreter"
-      description: parseStaccato
-      operationId: ParseStaccato
-      requestBody:
-        description: "Request for parseStaccato"
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/interpreterParseStaccatoRequest'
-      responses:
-        '200':
-          description: "parseStaccato Response"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/interpreterParseStaccatoResponse'
 
   /display/getPieceMetadata:
     post:
@@ -131,50 +85,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/displayGetPieceMetadataResponse'
 
-
-  /interpreter/interpretMetre:
-    post:
-      summary: "Endpoint for the Interpret Metre use case of the Interpreter subsystem"
-      tags:
-        - "Interpreter"
-      description: interpretMetre
-      operationId: interpretMetre
-      requestBody:
-        description: "Request for interpretMetre"
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/interpreterInterpretMetreRequest'
-      responses:
-        '200':
-          description: "Interpret Metre Response"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/interpreterInterpretMetreResponse'
-
-  /interpreter/interpretTempo:
-    post:
-      summary: "Endpoint for the Interpret Tempo use case of the Interpreter subsystem"
-      tags:
-        - "Interpreter"
-      description: interpretTempo
-      operationId: interpretTempo
-      requestBody:
-        description: "Request for interpretTempo"
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/interpreterInterpretTempoRequest'
-      responses:
-        '200':
-          description: "Interpret Tempo Response"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/interpreterInterpretTempoResponse'
 
   /display/getTrackInfo:
     post:
@@ -249,15 +159,6 @@ paths:
 components:
   schemas:
 
-    errorObject:
-      description: "The object returned when an error is encountered."
-      type: object
-      properties:
-        message:
-          type: string
-        cause:
-          type: string
-
     interpreterUploadFileRequest:
       description: "Description Here"
       type: object
@@ -288,37 +189,6 @@ components:
         message:
           type: string
 
-
-    interpreterParseJSONRequest:
-      description: "Description Here"
-      type: object
-      properties:
-        fileContents:
-          type: array
-          items:
-            type: integer
-
-    interpreterParseJSONResponse:
-      type: object
-      properties:
-        fileDesignator:
-          type: string
-
-    interpreterParseStaccatoRequest:
-      description: "request for parseStaccato"
-      type: object
-      properties:
-        fileContents:
-          type: array
-          items:
-            type: integer
-
-    interpreterParseStaccatoResponse:
-      type: object
-      properties:
-        fileDesignator:
-          type: string
-
     displayGetPieceMetadataRequest:
       type: object
       properties:
@@ -339,37 +209,6 @@ components:
               type: integer
             beatValue:
               type: integer
-
-    interpreterInterpretMetreRequest:
-      description: "Description Here"
-      type: object
-      properties:
-        fileDesignator:
-          type: string
-
-    interpreterInterpretMetreResponse:
-      type: object
-      properties:
-        timeSignature:
-          type: object
-          properties:
-            numBeats:
-              type: integer
-            beatValue:
-              type: integer
-
-    interpreterInterpretTempoRequest:
-      description: "Description Here"
-      type: object
-      properties:
-        fileDesignator:
-          type: string
-
-    interpreterInterpretTempoResponse:
-      type: object
-      properties:
-        tempoIndication:
-          type: integer
 
     displayGetTrackInfoRequest:
       description: "Request Track Info"
