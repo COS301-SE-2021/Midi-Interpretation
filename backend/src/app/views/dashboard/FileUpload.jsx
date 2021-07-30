@@ -2,20 +2,11 @@ import React, {Component, Fragment, useMemo} from "react";
 import {Grid, Card, Button, Fab, Icon} from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "matx";
 import Dropzone, {useDropzone} from 'react-dropzone'
-import Avatar from '@material-ui/core/Avatar';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 
 import { withStyles } from "@material-ui/styles";
 import {makeStyles} from "@material-ui/core/styles";
-import {Text} from "victory";
+import 'react-responsive-combo-box/dist/index.css'
+import Select from "react-select";
 
 class FileUpload extends Component {
 
@@ -39,6 +30,7 @@ class FileUpload extends Component {
           trackOverview: null,
           trackIndex: 0
       }
+
 
       this.uploadFile = () => {
           //get the file
@@ -71,6 +63,7 @@ class FileUpload extends Component {
       }
 
       this.processFile = () => {
+          alert('Beginning processing file')
           const request = new Request("http://localhost:8080/interpreter/processFile", {
               method: 'POST',
               body: JSON.stringify({
@@ -85,8 +78,10 @@ class FileUpload extends Component {
               .then(res=>res.json())
               .then((res)=>{
                   console.log(res)
+                  alert('Your file has successfully been interpreted')
               }, (error)=>{
                   console.log(error)
+                  alert('Failed to interpret the given file.')
               })
       }
 
@@ -145,7 +140,7 @@ class FileUpload extends Component {
           fetch(request)
               .then(res=>res.json())
               .then((res)=>{
-                  this.display.trackMetadata = res
+                  this.display.trackMetadata = res['trackString']
               }, (error)=>{
                   console.log(error)
               })
@@ -171,9 +166,19 @@ class FileUpload extends Component {
                   console.log(error)
               })
       }
+
   }
 
+  componentDidMount() {
+        this.getPieceMetadata()
+        this.getTrackInfo()
+        this.getTrackMetadata()
+        this.getTrackOverview()
+  }
 
+    shouldComponentUpdate() {
+        return true;
+    }
 
 
   render() {
@@ -185,6 +190,12 @@ class FileUpload extends Component {
               {file.name} - {file.size} bytes
           </li>
       ));
+
+      const options = [{
+          key: 'Jenny Hess',
+          text: 'Jenny Hess',
+          value: 'Jenny Hess',
+      }]
 
       return (
 
@@ -216,29 +227,59 @@ class FileUpload extends Component {
                       {this.fileUpload.uploadButtonText}
                   </Button>
               </SimpleCard>
-              <SimpleCard title="Upload File">
+              <SimpleCard title="Process File">
                   <Button onClick={this.processFile}> Process Your File</Button>
               </SimpleCard>
 
-              <SimpleCard title="Get Piece Metadata">
-                  <div>{JSON.stringify(this.display.pieceMetadata)}</div>
-                  <Button onClick={this.getPieceMetadata}> Get MetaData</Button>
+              <SimpleCard title="Piece Metadata">
+                  <div id="music_container">
+                      <div>
+                          <table border={1}>
+                              <thead>
+                              <tr>
+                                  <th>Element</th>
+                                  <th>Value</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr>
+                                  <td>Key Signature</td>
+                                  <td >{(this.display.pieceMetadata!=null)?this.display.pieceMetadata['keySignature']:"loading..."}</td>
+                              </tr>
+                              <tr>
+                                  <td rowSpan={2}>Time Signature</td>
+                                  <td >{(this.display.pieceMetadata!=null)?this.display.pieceMetadata['timeSignature']['numBeats']:"loading..."}</td>
+                              </tr>
+                              <tr>
+                                  <td >{(this.display.pieceMetadata!=null)?this.display.pieceMetadata['timeSignature']['beatValue']:"loading..."}</td>
+                              </tr>
+                              <tr>
+                                  <td rowSpan={2}>Tempo Indication</td>
+                                  <td >{(this.display.pieceMetadata!=null)?this.display.pieceMetadata['tempoIndication']:"loading..."}</td>
+                              </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
               </SimpleCard>
 
-              <SimpleCard title="Get Track Info">
-                  <div>{JSON.stringify(this.display.trackInfo)}</div>
-                  <Button onClick={this.getTrackInfo}> Get Track Info </Button>
-              </SimpleCard>
-
-              <SimpleCard title="Get Track Metadata">
-                  <div>{JSON.stringify(this.display.trackMetadata)}</div>
-                  <Button onClick={this.getTrackMetadata}> Get Track Metadata </Button>
+              <SimpleCard title={"Track Parts"}>
+                  <div>
+                      {(this.display.trackInfo==null)?"Loading...":this.display.trackInfo.map((item) => <div color={"grey"}>{item['trackName']}</div>)}
+                  </div>
               </SimpleCard>
 
               <SimpleCard title="Get Track Overview">
-                  <div>{JSON.stringify(this.display.trackOverview)}</div>
-                  <Button onClick={this.getTrackOverview}> Get Track Overview </Button>
+                  <p>Track {this.display.trackIndex+1} : {(this.display.trackInfo==null)?"Loading...":this.display.trackInfo[this.display.trackIndex]['trackName']}</p>
+                  <div>{(this.display.trackInfo==null)?"Loading...":JSON.stringify(this.display.trackOverview)}</div>
               </SimpleCard>
+
+              <SimpleCard title="Get Track Metadata">
+                  <p>Track {this.display.trackIndex+1} : {(this.display.trackInfo==null)?"Loading...":this.display.trackInfo[this.display.trackIndex]['trackName']}</p>
+                  <div>{(this.display.trackInfo==null)?"Loading...":JSON.stringify(this.display.trackMetadata)}</div>
+              </SimpleCard>
+
+
 
           </div>
 
