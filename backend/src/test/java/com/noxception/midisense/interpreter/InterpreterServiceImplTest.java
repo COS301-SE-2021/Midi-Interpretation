@@ -1,108 +1,274 @@
 package com.noxception.midisense.interpreter;
 
-import com.noxception.midisense.TestingDictionary;
+import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.dataclass.MIDISenseUnitTest;
+import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.*;
-import org.junit.jupiter.api.Assertions;
+import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.beans.Beans;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import javax.transaction.Transactional;
+import java.io.FileWriter;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
+class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
-class InterpreterServiceImplTest {
+    @Autowired
+    private InterpreterServiceImpl interpreterService;
 
-
-    //TODO: @Autowired
-    InterpreterServiceImpl interpreterService = new InterpreterServiceImpl();
-
-    @Test
-    public void testUploadFileValidFile(){
-        byte[] validFileContents = TestingDictionary.interpreter_uploadFile_validFileContents;
-        UploadFileRequest req = new UploadFileRequest(validFileContents);
-        try {
-            UploadFileResponse res = interpreterService.uploadFile(req);
-            assertEquals(res.getFileDesignator().getClass(), UUID.class);
-            assertNotEquals(res.getFileDesignator(), null);
-        } catch (InvalidUploadException e) {
-        }
+    @BeforeEach
+    public void setUp() {
+        LogType[] monitorList = {LogType.DEBUG};
+        this.monitor(monitorList);
     }
 
+    @Ignore
     @Test
+    @DisplayName("Tests uploading with a valid file byte array, should store in MIDIPool.")
+    @Tag(TestTags.VALID_INPUT)
+    public void testUploadFileValidFile() throws InvalidUploadException{
+        byte[] validFileContents = TestingDictionary.interpreter_uploadFile_validFileContents;
+        UploadFileRequest req = new UploadFileRequest(validFileContents);
+        UploadFileResponse res = interpreterService.uploadFile(req);
+        log(res.getFileDesignator(),LogType.DEBUG);
+    }
+
+    @Ignore
+    @Test
+    @DisplayName("Tests uploading with an invalid file byte array, should throw exception.")
+    @Tag(TestTags.MALFORMED_INPUT)
     public void testUploadFileInvalidFile(){
         byte[] validFileContents = TestingDictionary.interpreter_uploadFile_invalidFileContents;
         UploadFileRequest req = new UploadFileRequest(validFileContents);
         InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
                 ()->interpreterService.uploadFile(req),
-                "[File System Failure] ");
-        assertTrue(thrown.getMessage().contains("[File System Failure] "));
+                "An empty file should not be saved.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_FILE_EXCEPTION_TEXT));
     }
 
+    @Ignore
     @Test
+    @DisplayName("Tests uploading with an empty request object, should throw exception.")
+    @Tag(TestTags.EMPTY_INPUT)
     public void testUploadFileEmptyRequest(){
-        UploadFileRequest req = null;
-        try {
-            UploadFileResponse res = interpreterService.uploadFile(req);
-        } catch (InvalidUploadException e) {
+        InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
+            ()->interpreterService.uploadFile(null),
+            "A null request should not be processed.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
 
-            InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
-                    ()->interpreterService.uploadFile(req),
-                    "[Bad Request] No request made");
-            assertTrue(thrown.getMessage().contains("[Bad Request] No request made"));
-        }
     }
 
     @Test
-    public void testInterpretMetreValidFile(){
+    @DisplayName("Tests interpreting metre with a valid file designator, should return a valid metre object.")
+    @Tag(TestTags.VALID_INPUT)
+    public void testInterpretMetreValidFile() throws Exception {
         InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
-        InterpretMetreResponse res = null;
-        try {
-            res = interpreterService.interpretMetre(req);
-            System.out.println(res.getMetre());
-            assertNotEquals(res.getMetre(),null);
-        } catch (InvalidDesignatorException e) {
-            e.printStackTrace();
-        }
+        InterpretMetreResponse res = interpreterService.interpretMetre(req);
+        log(res.getMetre(),LogType.DEBUG);
     }
 
     @Test
-    public void testInterpretTempoValidFile(){
+    @DisplayName("Tests interpreting tempo with a valid file designator, should return a valid tempo object.")
+    @Tag(TestTags.VALID_INPUT)
+    public void testInterpretTempoValidFile() throws InvalidDesignatorException {
         InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
-        InterpretTempoResponse res = null;
-        try {
-            res = interpreterService.interpretTempo(req);
-            System.out.println(res.getTempo());
-            assertNotEquals(res.getTempo(),null);
-        } catch (InvalidDesignatorException e) {
-            e.printStackTrace();
-        }
+        InterpretTempoResponse res = interpreterService.interpretTempo(req);
+        log(res.getTempo(),LogType.DEBUG);
     }
 
     @Test
+    @DisplayName("Tests interpreting key signature with a valid file designator, should return a valid key signature object.")
+    @Tag(TestTags.VALID_INPUT)
+    public void testInterpretKeySignatureValidFile() throws InvalidDesignatorException {
+        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
+        log(res.getKeySignature(),LogType.DEBUG);
+        System.out.println(res.getKeySignature());
+    }
+
+    @Test
+    @DisplayName("Tests interpreting metre with an invalid file designator, should throw an exception.")
+    @Tag(TestTags.MALFORMED_INPUT)
     public void testInterpretMetreInvalidFile(){
-        /*InterpretMetreRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.interpretTempo(req),
-                "[File System Failure]");
-        assertTrue(thrown.getMessage().contains("[File System Failure]"));*/
+                ()->interpreterService.interpretMetre(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
     }
 
     @Test
+    @DisplayName("Tests interpreting tempo with an invalid file designator, should throw an exception.")
+    @Tag(TestTags.MALFORMED_INPUT)
     public void testInterpretTempoInvalidFile(){
         InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretTempo(req),
-                "[File System Failure]");
-        assertTrue(thrown.getMessage().contains("[File System Failure]"));
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
     }
+    @Test
+    @DisplayName("Tests interpreting Key Signature with an invalid file designator, should throw an exception.")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testInterpretKeySignatureInvalidFile(){
+        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.interpretKeySignature(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests interpreting metre with an empty request, should throw an exception.")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testInterpretMetreEmptyRequest(){
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.interpretMetre(null),
+                "A null request should not be processed.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests interpreting metre with an empty request, should throw an exception.")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testInterpretTempoEmptyRequest(){
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.interpretTempo(null),
+                "A null request should not be processed.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests interpreting Key Signature with an empty request, should throw an exception.")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testInterpretKeySignatureEmptyRequest(){
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.interpretKeySignature(null),
+                "A null request should not be processed.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests parsing Staccato with a valid file, should return an xml tree")
+    @Tag(TestTags.VALID_INPUT)
+    public void testParseStaccatoValidFile() throws Exception{
+        ParseStaccatoRequest req = new ParseStaccatoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        ParseStaccatoResponse res = interpreterService.parseStaccato(req);
+        log(res.getStaccatoSequence(),LogType.DEBUG);
+    }
+
+    @Test
+    @DisplayName("Tests parsing Staccato with a invalid file, should return an xml tree")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testParseStaccatoInvalidFile() throws Exception{
+        ParseStaccatoRequest req = new ParseStaccatoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.parseStaccato(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests parsing Staccato with a empty file, should return an xml tree")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testParseStaccatoEmptyFile() throws Exception{
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.parseStaccato(null),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
+
+
+
+
+    @Test
+    @DisplayName("Tests parsing JSON with a valid file, should return a JSON tree")
+    @Tag(TestTags.VALID_INPUT)
+    public void testParseJSONValidFile() throws Exception{
+        ParseJSONRequest req = new ParseJSONRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        ParseJSONResponse res = interpreterService.parseJSON(req);
+        FileWriter myWriter = new FileWriter("ParseJSONSuccess.txt");
+        myWriter.write(res.getParsedScore().toString());
+        myWriter.close();
+    }
+
+
+    @Test
+    @DisplayName("Tests parsing JSON with an invalid file, should return a JSON tree")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testParseJSONInvalidFile() throws Exception{
+        ParseJSONRequest req = new ParseJSONRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.parseJSON(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+    }
+
+    @Test
+    @DisplayName("Tests parsing JSON with an empty file, should return a JSON tree")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testParseJSONEmptyFile() throws Exception{
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.parseJSON(null),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
+
+
+
+    @Test
+    @Transactional
+    @Rollback(value = true)
+    @DisplayName("Tests processing with a valid file, should return true")
+    @Tag(TestTags.VALID_INPUT)
+    public void testProcessFileValidFile() throws Exception{
+        ProcessFileRequest request = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        ProcessFileResponse response = interpreterService.processFile(request);
+        log(response.getMessage(),LogType.DEBUG);
+        assertEquals(true,response.getSuccess());
+    }
+
+    @Test
+    @Transactional
+    @Rollback(value = true)
+    @DisplayName("Tests processing with an invalid file, should return true")
+    @Tag(TestTags.MALFORMED_INPUT)
+    public void testProcessFileInvalidFile() throws Exception {
+        ProcessFileRequest req = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
+        ProcessFileResponse response = interpreterService.processFile(req);
+        log(response.getMessage(),LogType.DEBUG);
+        assertEquals(false, response.getSuccess());
+        assertEquals(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT, response.getMessage());
+    }
+
+    @Test
+    @Transactional
+    @Rollback(value = true)
+    @DisplayName("Tests processing with an empty file, should return true")
+    @Tag(TestTags.EMPTY_INPUT)
+    public void testProcessFileEmptyFile() throws Exception{
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.processFile(null),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+    }
+
+
+
+
 
 }
