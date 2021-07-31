@@ -29,13 +29,7 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @Autowired
     ScoreRepository scoreRepository;
 
-    @DevelopmentNote(
-            taskName = "getPieceMetadata Use Case",
-            developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.COMPLETED,
-            lastModified = "2021/06/19 22:37",
-            comments = "Reviewed ~Claudio"
-    )
+
     @Transactional
     @Override
     public GetPieceMetadataResponse getPieceMetadata(GetPieceMetadataRequest request) throws InvalidDesignatorException {
@@ -60,13 +54,7 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
         return new GetPieceMetadataResponse(keySignature,timeSignature,tempoIndication);
     }
 
-    @DevelopmentNote(
-            taskName = "getTrackInfo Use Case",
-            developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.COMPLETED,
-            lastModified = "2021/06/19 22:37",
-            comments = "Reviewed ~Claudio"
-    )
+
     @Transactional
     @Override
     public GetTrackInfoResponse getTrackInfo(GetTrackInfoRequest request) throws InvalidDesignatorException {
@@ -84,13 +72,7 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
         return getTrackInfoResponse;
     }
 
-    @DevelopmentNote(
-            taskName = "getTrackMetadata Use Case",
-            developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.COMPLETED,
-            lastModified = "2021/06/19 22:37",
-            comments = "Reviewed ~Claudio"
-    )
+
     @Transactional
     @Override
     public GetTrackMetadataResponse getTrackMetadata(GetTrackMetadataRequest request) throws InvalidDesignatorException, InvalidTrackException {
@@ -106,13 +88,7 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
         return new GetTrackMetadataResponse(richString);
     }
 
-    @DevelopmentNote(
-            taskName = "getPieceOverview Use Case",
-            developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.COMPLETED,
-            lastModified = "2021/06/19 22:37",
-            comments = "Reviewed ~Claudio"
-    )
+
     @Transactional
     @Override
     public GetTrackOverviewResponse getTrackOverview(GetTrackOverviewRequest request) throws InvalidDesignatorException, InvalidTrackException {
