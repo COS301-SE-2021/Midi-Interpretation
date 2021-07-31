@@ -52,24 +52,48 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @Transactional
     @Override
     public GetPieceMetadataResponse getPieceMetadata(GetPieceMetadataRequest request) throws InvalidDesignatorException {
-        //METHOD 1 - EXISTING INTERPRETER METHODS
-//        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+
+        //METHOD 1 - Non-persistent lookup: deprecated
+
+//        if (request==null)
+//            //an empty request should reflect as a null designator
+//            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+//
+//        //else get the designator
 //        UUID fileDesignator = request.getFileDesignator();
+//
+//        //interpret the piece-wise metadata individually
 //        TempoIndication tempo = interpreterService.interpretTempo(new InterpretTempoRequest(fileDesignator)).getTempo();
 //        TimeSignature timeSignature = interpreterService.interpretMetre(new InterpretMetreRequest(fileDesignator)).getMetre();
 //        KeySignature keySignature = interpreterService.interpretKeySignature(new InterpretKeySignatureRequest(fileDesignator)).getKeySignature();
+//
 //        return new GetPieceMetadataResponse(keySignature,timeSignature,tempo);
-        //METHOD 2 - NEW PERSISTENCE LOOKUP
-        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+
+        //METHOD 2 - Persistent lookup
+
+        if(request==null)
+            //an empty request should reflect as a null designator
+            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+
+        //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
-        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+
+        if(searchResults.isEmpty())
+            //no such file exists - has yet to be interpreted
+            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+
+        //else refer to score and get the metadata
         ScoreEntity score = searchResults.get();
+        //key signature
         KeySignature keySignature = new KeySignature(score.getKeySignature());
+        //metre
         String metre = score.getTimeSignature();
         int numBeats = Integer.parseInt(metre.substring(0, metre.indexOf("/")));
         int beatValue = Integer.parseInt(metre.substring(metre.indexOf("/")+1));
         TimeSignature timeSignature = new TimeSignature(numBeats,beatValue);
+        //tempo
         TempoIndication tempoIndication = new TempoIndication(score.getTempoIndication());
+
         return new GetPieceMetadataResponse(keySignature,timeSignature,tempoIndication);
     }
 
@@ -81,17 +105,30 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @Transactional
     @Override
     public GetTrackInfoResponse getTrackInfo(GetTrackInfoRequest request) throws InvalidDesignatorException {
-        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+
+        if(request==null)
+            //an empty request should reflect as a null designator
+            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+
+        //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
-        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
-        GetTrackInfoResponse getTrackInfoResponse = new GetTrackInfoResponse();
+
+        if(searchResults.isEmpty())
+            //no such file exists - has yet to be interpreted
+            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+
+        //get the score and its associated tracks
         ScoreEntity score = searchResults.get();
         List<TrackEntity> tracks = score.getTracks();
+
+        //create a response and add the appropriate tracks
+        GetTrackInfoResponse getTrackInfoResponse = new GetTrackInfoResponse();
         for(TrackEntity track: tracks){
             byte index = (byte) tracks.indexOf(track);
             String trackName = track.getInstrumentName();
             getTrackInfoResponse.addTrack(index,trackName);
         }
+
         return getTrackInfoResponse;
     }
 
@@ -105,15 +142,31 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @Transactional
     @Override
     public GetTrackMetadataResponse getTrackMetadata(GetTrackMetadataRequest request) throws InvalidDesignatorException, InvalidTrackException {
-        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+
+        if(request==null)
+            //an empty request should reflect as a null designator
+            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+
+        //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
-        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+
+        if(searchResults.isEmpty())
+            //no such file exists - has yet to be interpreted
+            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+
+        //get the index of the requested track, the score and the corresponding tracks
         byte trackIndex = request.getTrackIndex();
         ScoreEntity score = searchResults.get();
         List<TrackEntity> tracks = score.getTracks();
-        if(trackIndex >= tracks.size()) throw new InvalidTrackException(MIDISenseConfig.INVALID_TRACK_INDEX_EXCEPTION_TEXT);
+
+        if(trackIndex >= tracks.size())
+            //cannot refer to a track that does not exist
+            throw new InvalidTrackException(MIDISenseConfig.INVALID_TRACK_INDEX_EXCEPTION_TEXT);
+
+        //get a rich text version of the track
         TrackEntity track = tracks.get(trackIndex);
         String richString = track.getRichTextNotes();
+
         return new GetTrackMetadataResponse(richString);
     }
 
@@ -126,14 +179,30 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @Transactional
     @Override
     public GetTrackOverviewResponse getTrackOverview(GetTrackOverviewRequest request) throws InvalidDesignatorException, InvalidTrackException {
-        if(request==null) throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+
+        if(request==null)
+            //an empty request should reflect as a null designator
+            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+
+        //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
-        if(searchResults.isEmpty()) throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+
+        if(searchResults.isEmpty())
+            //no such file exists - has yet to be interpreted
+            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+
+        //get the track index requested, the score and corresponding track
         byte trackIndex = request.getTrackIndex();
         ScoreEntity score = searchResults.get();
         List<TrackEntity> tracks = score.getTracks();
-        if(trackIndex >= tracks.size()) throw new InvalidTrackException(MIDISenseConfig.INVALID_TRACK_INDEX_EXCEPTION_TEXT);
+
+        if(trackIndex >= tracks.size())
+            //cannot refer to a track that does not exist
+            throw new InvalidTrackException(MIDISenseConfig.INVALID_TRACK_INDEX_EXCEPTION_TEXT);
+
+        //get a text overview of the track
         TrackEntity track = tracks.get(trackIndex);
+        
         return new GetTrackOverviewResponse(track.getNoteSummary());
     }
 }
