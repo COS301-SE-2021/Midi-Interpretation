@@ -4,21 +4,35 @@ import com.noxception.midisense.config.dataclass.ResponseObject;
 import com.noxception.midisense.interpreter.dataclass.KeySignature;
 
 public class InterpretKeySignatureResponse extends ResponseObject {
-    private final KeySignature keySignature;
 
+    /** ATTRIBUTE */
+    private final KeySignature keySignature; //Key signature of piece
+
+    /**
+     * CONSTRUCTOR
+     * @param ks key signature of piece
+     */
     public InterpretKeySignatureResponse(KeySignature ks) {
         this.keySignature = ks;
     }
 
+    /**
+     * CONSTRUCTOR
+     * @param accidentals -placefolder-
+     */
     public InterpretKeySignatureResponse(int accidentals){
         this.keySignature = new KeySignature(accidentals);
     }
 
+    /**
+     * CONSTRUCTOR
+     * @param signatureName name of key signature
+     */
     public InterpretKeySignatureResponse(String signatureName){
         this.keySignature = new KeySignature(signatureName);
     }
 
-
+    /** GET Method */
     public KeySignature getKeySignature() {
         return keySignature;
     }

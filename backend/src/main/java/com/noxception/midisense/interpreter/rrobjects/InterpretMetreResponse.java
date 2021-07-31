@@ -4,16 +4,28 @@ import com.noxception.midisense.config.dataclass.ResponseObject;
 import com.noxception.midisense.interpreter.dataclass.TimeSignature;
 
 public class InterpretMetreResponse extends ResponseObject {
-    private final TimeSignature metre;
 
+    /** ATTRIBUTE */
+    private final TimeSignature metre; //response rythmic pattern of the piece
+
+    /**
+     * CONSTRUCTOR
+     * @param metre rythmic pattern of the piece
+     */
     public InterpretMetreResponse(TimeSignature metre) {
         this.metre = metre;
     }
 
+    /**
+     * CONSTRUCTOR
+     * @param numBeats -placeholder-
+     * @param beatValue -placeholder-
+     */
     public InterpretMetreResponse(int numBeats, int beatValue) {
         this.metre = new TimeSignature(numBeats,beatValue);
     }
 
+    /** GET Method */
     public TimeSignature getMetre() {
         return metre;
     }
