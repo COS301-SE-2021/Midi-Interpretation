@@ -28,21 +28,41 @@ import java.io.*;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Class that is used for uploading a midi file to a specified storage location temporarily.
+ * In addition it allows the interpretation of works whose corresponding metadata can be persisted to an external CRUD repository by way of a JPA extension
+ *
+ * @author Adrian Rae
+ * @author Claudio Teixeira
+ * @author Hendro Smit
+ * @author Mbuso Shakoane
+ * @author Rearabetswe Maeko
+ * @since 1.0.0
+ */
 @Service
 public class InterpreterServiceImpl extends LoggableObject implements InterpreterService{
+
 
     @Autowired
     private ScoreRepository scoreRepository;
 
     private final int maximumUploadSize = kilobytesToBytes(MIDISenseConfig.MAX_FILE_UPLOAD_SIZE);
 
+    //=================================
+    // MAIN SERVICE USE CASES
+    //=================================
 
-
-    //================================
-    // FRONT END USE CASES
-    //================================
-
-
+    /**Handles the uploading of an incoming MIDI file saved to a temporary storage location
+     *
+     * @param request an object encapsulating the file to be uploaded
+     * @return an object encapsulating the success of the upload by means of a valid identifier generated to refer to the file
+     * @throws InvalidUploadException if any one of the following criterion are met:
+     * <ul>
+     *     <li>The file is empty</li>
+     *     <li>The file exceeds the maximum upload size</li>
+     *     <li>The file storage system is unable to process the file</li>
+     * </ul>
+     */
     @Transactional
     @Override
     public UploadFileResponse uploadFile(UploadFileRequest request) throws InvalidUploadException {
@@ -65,7 +85,13 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         }
     }
 
-
+    /**Handles the interpretation of a MIDI file saved to temporary storage, initiates parsing of the work and persists
+     * the interpreted work to an external database
+     *
+     * @param request an object encapsulating a reference to the file uploaded in temporary storage
+     * @return an object encapsulating the successfulness of interpretation, along with a descriptive message
+     * @throws InvalidDesignatorException if the designator does not refer to an existing file in file storage
+     */
     @Transactional
     @Override
     public ProcessFileResponse processFile(ProcessFileRequest request) throws InvalidDesignatorException{
@@ -98,11 +124,16 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
 
     }
 
-    //================================
-    // AUXILIARY METHODS
-    //================================
+    //=================================
+    // AUX SERVICE USE CASES
+    //=================================
 
-
+    /**Handles the retrieval of a midi file's metre (time signature and beat encoding)
+     *
+     * @param request an object encapsulating a reference to the file uploaded in persisted storage
+     * @return an object encapsulating the metre of the interpreted work
+     * @throws InvalidDesignatorException if the designator does not refer to an existing file in persisted storage
+     */
     @Override
     public InterpretMetreResponse interpretMetre(InterpretMetreRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
@@ -116,7 +147,12 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         return new InterpretMetreResponse(numBeats,beatValue);
     }
 
-
+    /**Handles the retrieval of a midi file's tempo indication
+     *
+     * @param request an object encapsulating a reference to the file uploaded in persisted storage
+     * @return an object encapsulating the tempo indication of the interpreted work
+     * @throws InvalidDesignatorException if the designator does not refer to an existing file in persisted storage
+     */
     @Override
     public InterpretTempoResponse interpretTempo(InterpretTempoRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
@@ -128,7 +164,12 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         return new InterpretTempoResponse(tempoIndication);
     }
 
-
+    /**Handles the retrieval of a midi file's key signature
+     *
+     * @param request an object encapsulating a reference to the file uploaded in persisted storage
+     * @return an object encapsulating the key signature of the interpreted work
+     * @throws InvalidDesignatorException if the designator does not refer to an existing file in persisted storage
+     */
     @Override
     public InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
@@ -140,7 +181,12 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         return new InterpretKeySignatureResponse(sigName);
     }
 
-
+    /**Produces a human-readable string representation of a midi file stored in temporary storage
+     *
+     * @param request an object encapsulating a reference to the file uploaded in temporary storage
+     * @return an object encapsulating the string representation of the interpreted work
+     * @throws InvalidDesignatorException if the designator does not refer to an existing file in persisted storage
+     */
     @Override
     public ParseStaccatoResponse parseStaccato(ParseStaccatoRequest request) throws InvalidDesignatorException{
         //check to see if there is a valid request object
@@ -157,7 +203,12 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         }
     }
 
-
+    /**Produces a complete tree-based representation of a midi file and its track sequences stored in temporary storage
+     *
+     * @param request an object encapsulating a reference to the file uploaded in temporary storage
+     * @return an object encapsulating the tempo indication of the interpreted work
+     * @throws InvalidDesignatorException if the designator does not refer to an existing file in persisted storage
+     */
     @Override
     public ParseJSONResponse parseJSON(ParseJSONRequest request) throws InvalidDesignatorException, InvalidMidiDataException {
         //check to see if there is a valid request object
@@ -181,11 +232,21 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
     // HELPER METHODS
     //================================
 
-
+    /** A converter between kilobyte and byte measure
+     *
+     * @param n the number of kilobytes
+     * @return the number of bytes
+     */
     private static int kilobytesToBytes(int n){
         return (int) (n*Math.pow(2,10));
     }
 
+    /** writes a file, in the form of a byte stream, to temporary storage
+     *
+     * @param fileContents a byte string representing the contents of a file
+     * @return a uniquely generated value corresponding to the name of the stored file
+     * @throws IOException if the OS file system produces an error while writing to the file
+     */
     private UUID writeFileToStorage(byte[] fileContents) throws IOException{
         //generate unique fileDesignator
         UUID fileDesignator = UUID.randomUUID();
@@ -195,13 +256,27 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         return fileDesignator;
     }
 
+    /** deletes a file from temporary storage
+     *
+     * @param fileDesignator the unique reference to a stored file
+     * @throws IOException if the OS file system cannot delete the file, due to:
+     * <ul>
+     *     <li>The file not existing</li>
+     *     <li>The OS File System throwing an error </li>
+     * </ul>
+     */
     private void deleteFileFromStorage(UUID fileDesignator) throws IOException{
         File file = new File(MIDISenseConfig.MIDI_FILE_STORAGE+fileDesignator+".mid");
         if (!file.delete()) throw new IOException("Unable to delete file "+file.getName());
     }
 
 
-
+    /** Persists a score object to an external repository
+     *
+     * @param score encapsulates the interpreted midi file
+     * @param fileDesignator the unique identifier corresponding to the file in temporary storage
+     * @return whether or not the score is successfully persisted
+     */
     @Transactional
     public boolean saveScore(Score score, UUID fileDesignator){
         ScoreEntity scoreEntity = new ScoreEntity();
