@@ -1,4 +1,7 @@
 package com.noxception.midisense.intelligence.rrobjects;
 
-public class AnalyseTonalityResponse {
+import com.noxception.midisense.config.dataclass.ResponseObject;
+
+public class AnalyseTonalityResponse extends ResponseObject {
+    //Tonality
 }

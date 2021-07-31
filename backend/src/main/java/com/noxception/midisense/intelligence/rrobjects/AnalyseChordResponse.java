@@ -1,4 +1,7 @@
 package com.noxception.midisense.intelligence.rrobjects;
 
-public class AnalyseChordResponse {
+import com.noxception.midisense.config.dataclass.ResponseObject;
+
+public class AnalyseChordResponse extends ResponseObject {
+    //chord name
 }
