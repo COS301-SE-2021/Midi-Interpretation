@@ -19,6 +19,22 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class that is used for delivering structured responses to queries concerning:
+ *
+ * <ul>
+ * <li>Composition Metadata </li>
+ * <li>Midi Track Listing and Information</li>
+ * <li>Midi Track Overview</li>
+ * </ul>
+ *
+ * @author Adrian Rae
+ * @author Claudio Teixeira
+ * @author Hendro Smit
+ * @author Mbuso Shakoane
+ * @author Rearabetswe Maeko
+ * @since 1.0.0
+ */
 @Service
 public class DisplayServiceImpl extends LoggableObject implements DisplayService{
 
@@ -28,7 +44,11 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     @Autowired
     ScoreRepository scoreRepository;
 
-
+    /**Used to retrieve the Metadata of an existing interpreted piece
+     * @param request encapsulates a request with the designator of the work
+     * @return an object encapsulating the key signature, time signature and tempo indication of the work
+     * @throws InvalidDesignatorException if the designator does not correspond to an existing file
+     */
     @Transactional
     @Override
     public GetPieceMetadataResponse getPieceMetadata(GetPieceMetadataRequest request) throws InvalidDesignatorException {
@@ -53,7 +73,11 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
         return new GetPieceMetadataResponse(keySignature,timeSignature,tempoIndication);
     }
 
-
+    /**Used to retrieve a list of all track sequences of an interpreted work
+     * @param request encapsulates a request with the designator of the work
+     * @return an object encapsulating a map between sequence indices and their instruments
+     * @throws InvalidDesignatorException if the designator does not correspond to an existing file
+     */
     @Transactional
     @Override
     public GetTrackInfoResponse getTrackInfo(GetTrackInfoRequest request) throws InvalidDesignatorException {
@@ -72,6 +96,12 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
     }
 
 
+     /**Used to retrieve the Metadata of an arbitrary track within an existing interpreted piece
+     * @param request encapsulates a request with the designator of the work and the index of the track
+     * @return an object encapsulating a sequence of note objects corresponding to the tracks
+     * @throws InvalidDesignatorException if the designator does not correspond to an existing file
+     * @throws InvalidTrackException if the track index does not exist
+     */
     @Transactional
     @Override
     public GetTrackMetadataResponse getTrackMetadata(GetTrackMetadataRequest request) throws InvalidDesignatorException, InvalidTrackException {
@@ -87,7 +117,12 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
         return new GetTrackMetadataResponse(richString);
     }
 
-
+    /**Used to retrieve a pitch summary of an arbitrary track within an existing interpreted piece
+     * @param request encapsulates a request with the designator of the work and the index of the track
+     * @return an object encapsulating a sequence of basic note objects corresponding to the tracks
+     * @throws InvalidDesignatorException if the designator does not correspond to an existing file
+     * @throws InvalidTrackException if the track index does not exist
+     */
     @Transactional
     @Override
     public GetTrackOverviewResponse getTrackOverview(GetTrackOverviewRequest request) throws InvalidDesignatorException, InvalidTrackException {
