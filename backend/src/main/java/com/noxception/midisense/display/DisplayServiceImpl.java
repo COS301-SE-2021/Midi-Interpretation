@@ -1,6 +1,5 @@
 package com.noxception.midisense.display;
 
-import com.noxception.midisense.config.DevelopmentNote;
 import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.config.dataclass.LoggableObject;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;

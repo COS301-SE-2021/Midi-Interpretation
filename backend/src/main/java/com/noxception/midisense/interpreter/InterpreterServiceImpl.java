@@ -1,6 +1,5 @@
 package com.noxception.midisense.interpreter;
 
-import com.noxception.midisense.config.DevelopmentNote;
 import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.config.dataclass.LoggableObject;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
@@ -26,9 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.transaction.Transactional;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.UUID;
 
