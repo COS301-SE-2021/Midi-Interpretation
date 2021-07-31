@@ -5,9 +5,6 @@ import org.jfugue.parser.ParserListener;
 import org.jfugue.theory.Chord;
 import org.jfugue.theory.Note;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public class MIDISenseParserListener extends LoggableObject implements ParserListener{
     private int trackIndex = -1;
 
