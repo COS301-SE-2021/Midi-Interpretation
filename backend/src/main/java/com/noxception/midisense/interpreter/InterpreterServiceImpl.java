@@ -46,13 +46,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
     // FRONT END USE CASES
     //================================
 
-    @DevelopmentNote(
-            taskName = "uploadFile Use Case",
-            developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.COMPLETED,
-            lastModified = "2021/06/12",
-            comments = "Successfully reconstructs and saves file."
-    )
+
     @Transactional
     @Override
     public UploadFileResponse uploadFile(UploadFileRequest request) throws InvalidUploadException {
@@ -75,13 +69,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         }
     }
 
-    @DevelopmentNote(
-            taskName = "processFile Use Case",
-            developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.IN_PROGRESS,
-            lastModified = "2021/06/19",
-            comments = "Added method"
-    )
+
     @Transactional
     @Override
     public ProcessFileResponse processFile(ProcessFileRequest request) throws InvalidDesignatorException{
@@ -118,13 +106,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
     // AUXILIARY METHODS
     //================================
 
-    @DevelopmentNote(
-            taskName = "interpretMetre Use Case",
-            developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.COMPLETED,
-            lastModified = "2021/06/12 21:55",
-            comments = "Reviewed method and tests~Claudio"
-    )
+
     @Override
     public InterpretMetreResponse interpretMetre(InterpretMetreRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
@@ -138,13 +120,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         return new InterpretMetreResponse(numBeats,beatValue);
     }
 
-    @DevelopmentNote(
-            taskName = "interpretTempo Use Case",
-            developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.COMPLETED,
-            lastModified = "2021/06/12 21:55",
-            comments = "Reviewed method and tests~Claudio"
-    )
+
     @Override
     public InterpretTempoResponse interpretTempo(InterpretTempoRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
@@ -156,13 +132,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         return new InterpretTempoResponse(tempoIndication);
     }
 
-    @DevelopmentNote(
-            taskName = "interpretKeySignature Use Case",
-            developers = {DevelopmentNote.Developers.CLAUDIO, DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.PENDING_REVIEW,
-            lastModified = "2021/06/13 9:33",
-            comments = "Finished method and testing"
-    )
+
     @Override
     public InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException {
         //check to see if there is a valid request object
@@ -174,13 +144,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         return new InterpretKeySignatureResponse(sigName);
     }
 
-    @DevelopmentNote(
-            taskName = "parseStaccato Use Case",
-            developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.PENDING_REVIEW,
-            lastModified = "2021/06/12 21:55",
-            comments = "Added method"
-    )
+
     @Override
     public ParseStaccatoResponse parseStaccato(ParseStaccatoRequest request) throws InvalidDesignatorException{
         //check to see if there is a valid request object
@@ -197,13 +161,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         }
     }
 
-    @DevelopmentNote(
-            taskName = "parseJSON Use Case",
-            developers = {DevelopmentNote.Developers.ADRIAN},
-            status = DevelopmentNote.WorkState.IN_PROGRESS,
-            lastModified = "2021/06/17 22:24",
-            comments = "Added method - relies upon a  custom parser listener. Will work on further"
-    )
+
     @Override
     public ParseJSONResponse parseJSON(ParseJSONRequest request) throws InvalidDesignatorException, InvalidMidiDataException {
         //check to see if there is a valid request object
