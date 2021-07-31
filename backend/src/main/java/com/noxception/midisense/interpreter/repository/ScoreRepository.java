@@ -8,6 +8,13 @@ import java.util.UUID;
 
 /**
  * An interface for defining interaction with score entities and an external CRUD repository
+ *
+ * @author Adrian Rae
+ * @author Claudio Teixeira
+ * @author Hendro Smit
+ * @author Mbuso Shakoane
+ * @author Rearabetswe Maeko
+ * @since 1.0.0
  */
 public interface ScoreRepository extends CrudRepository<ScoreEntity, Long> {
 

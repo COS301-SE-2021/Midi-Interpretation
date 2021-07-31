@@ -8,6 +8,13 @@ import java.util.List;
 
 /** Class that represents an entity equivalent of the {@link com.noxception.midisense.interpreter.parser.Track} class
  * that can be saved as a record in a CRUD repository
+ *
+ * @author Adrian Rae
+ * @author Claudio Teixeira
+ * @author Hendro Smit
+ * @author Mbuso Shakoane
+ * @author Rearabetswe Maeko
+ * @since 1.0.0
  */
 @Entity
 public class TrackEntity {

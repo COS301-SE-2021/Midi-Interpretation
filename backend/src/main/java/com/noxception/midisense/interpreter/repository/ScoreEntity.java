@@ -6,7 +6,15 @@ import java.util.List;
 
 /** Class that represents an entity equivalent of the {@link com.noxception.midisense.interpreter.parser.Score} class
  * that can be saved as a record in a CRUD repository, with one or more additional methods for referring to the a file designator
+ *
+ * @author Adrian Rae
+ * @author Claudio Teixeira
+ * @author Hendro Smit
+ * @author Mbuso Shakoane
+ * @author Rearabetswe Maeko
+ * @since 1.0.0
  */
+
 @Entity
 public class ScoreEntity {
 
