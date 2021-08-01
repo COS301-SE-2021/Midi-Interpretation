@@ -76,7 +76,7 @@ const subscribarList = [
   }
 ];
 
-const PaginationTable = () => {
+const Display = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [page, setPage] = React.useState(0);
 
@@ -151,4 +151,4 @@ const PaginationTable = () => {
   );
 };
 
-export default PaginationTable;
+export default Display;

@@ -1,8 +1,13 @@
 export const navigations = [
   {
-    name: "File Upload",
-    path: "/FileUpload",
-    icon: "music_note",
-    badge: { value: "demo", color: "secondary" },
+    name: "Upload",
+    path: "/Upload",
+    icon: "cloud_upload"
+    // badge: { value: "demo", color: "secondary" },
+  },
+  {
+    name: "Display",
+    path: "/Display",
+    icon: "music_note"
   }
 ];
