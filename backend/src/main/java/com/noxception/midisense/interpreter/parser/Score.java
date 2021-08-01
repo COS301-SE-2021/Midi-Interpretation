@@ -8,52 +8,106 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/** Class that represents an abstraction of the musical elements of a piece, as extracted from a midi file during parsing.
+ *  The class provides methods that allow for a high-level interaction with musical elements and not low-level sequence data of a midi file
+ *
+ * For more information on parsing, see {@link MIDISenseParserListener}
+ * @author Adrian Rae
+ * @since 1.0.0
+ */
 public class Score {
     private final HashMap<Integer,Track> trackMap = new HashMap<>();
     private KeySignature keySignature;
     private TimeSignature timeSignature;
     private TempoIndication tempoIndication;
 
+    /** Associates a new track with the score, with the given index
+     *
+     * @param trackNumber the index of a track in the score
+     */
     public void addTrack(int trackNumber){
         trackMap.put(trackNumber,new Track());
     }
 
+    /** Associates a new track with the score, with the given index and corresponding track
+     *
+     * @param trackNumber the index of a track in the score
+     * @param track the track corresponding to the given index
+     */
     public void addTrack(int trackNumber, Track track){
         trackMap.put(trackNumber,track);
     }
 
+    /** Associates a key signature to the score
+     *
+     * @param x the tonal center of the key
+     * @param y the key signature relative to number of accidentals
+     */
     public void setKeySignature(byte x, byte y){
+        //TODO: revise use
         this.keySignature = new KeySignature();
     }
 
+    /** Associates a key signature to the score
+     *
+     * @param x the beat value of the signature
+     * @param y the beat duration of the signature
+     */
     public void setTimeSignature(byte x, byte y){
         this.timeSignature = new TimeSignature((int) x, (int) Math.pow(2,(int) y));
     }
 
+    /** Associates a tempo indication to the score
+     *
+     * @param tempoIndication the tempo
+     */
     public void setTempoIndication(int tempoIndication){
         this.tempoIndication = new TempoIndication(tempoIndication);
     }
 
+
+    /** Returns a track corresponding to a certain index
+     *
+     * @param trackNumber the index of the track in the score
+     * @return the track corresponding to the index, or null if none exists
+     */
     public Track getTrack(int trackNumber){
         return trackMap.get(trackNumber);
     }
 
+    /** A method that returns a lookup of tracks and their indices
+     *
+     * @return a map of track indices to their tracks
+     */
     public HashMap<Integer, Track> getTrackMap() {
         return trackMap;
     }
 
+    /**
+     * @return the key signature of the score
+     */
     public KeySignature getKeySignature() {
         return keySignature;
     }
 
+    /**
+     * @return the time signature of the score
+     */
     public TimeSignature getTimeSignature() {
         return timeSignature;
     }
 
+    /**
+     * @return the tempo indication of the score
+     */
     public TempoIndication getTempoIndication() {
         return tempoIndication;
     }
 
+    /** A method that returns a high-level, hierarchical representation of a work
+     *
+     * @return the JSON-serialised representation of the score
+     */
     @Override
     public String toString() {
         List<String> trackList = new ArrayList<>();
