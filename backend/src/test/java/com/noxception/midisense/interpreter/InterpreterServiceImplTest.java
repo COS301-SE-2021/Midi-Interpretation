@@ -39,7 +39,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Ignore
     @Test
     @DisplayName("Tests uploading with a valid file byte array, should store in MIDIPool.")
-    @Tag(TestTags.VALID_INPUT)
     public void testUploadFileValidFile() throws InvalidUploadException{
         byte[] validFileContents = TestingDictionary.interpreter_uploadFile_validFileContents;
         UploadFileRequest req = new UploadFileRequest(validFileContents);
@@ -50,7 +49,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Ignore
     @Test
     @DisplayName("Tests uploading with an invalid file byte array, should throw exception.")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testUploadFileInvalidFile(){
         byte[] validFileContents = TestingDictionary.interpreter_uploadFile_invalidFileContents;
         UploadFileRequest req = new UploadFileRequest(validFileContents);
@@ -63,7 +61,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Ignore
     @Test
     @DisplayName("Tests uploading with an empty request object, should throw exception.")
-    @Tag(TestTags.EMPTY_INPUT)
     public void testUploadFileEmptyRequest(){
         InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
             ()->interpreterService.uploadFile(null),
@@ -74,7 +71,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests interpreting metre with a valid file designator, should return a valid metre object.")
-    @Tag(TestTags.VALID_INPUT)
     public void testInterpretMetreValidFile() throws Exception {
         InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretMetreResponse res = interpreterService.interpretMetre(req);
@@ -83,7 +79,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests interpreting tempo with a valid file designator, should return a valid tempo object.")
-    @Tag(TestTags.VALID_INPUT)
     public void testInterpretTempoValidFile() throws InvalidDesignatorException {
         InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretTempoResponse res = interpreterService.interpretTempo(req);
@@ -92,7 +87,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests interpreting key signature with a valid file designator, should return a valid key signature object.")
-    @Tag(TestTags.VALID_INPUT)
     public void testInterpretKeySignatureValidFile() throws InvalidDesignatorException {
         InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
@@ -102,7 +96,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests interpreting metre with an invalid file designator, should throw an exception.")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testInterpretMetreInvalidFile(){
         InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -113,7 +106,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests interpreting tempo with an invalid file designator, should throw an exception.")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testInterpretTempoInvalidFile(){
         InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -123,7 +115,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
     @Test
     @DisplayName("Tests interpreting Key Signature with an invalid file designator, should throw an exception.")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testInterpretKeySignatureInvalidFile(){
         InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -134,7 +125,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests interpreting metre with an empty request, should throw an exception.")
-    @Tag(TestTags.EMPTY_INPUT)
     public void testInterpretMetreEmptyRequest(){
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretMetre(null),
@@ -144,7 +134,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests interpreting metre with an empty request, should throw an exception.")
-    @Tag(TestTags.EMPTY_INPUT)
     public void testInterpretTempoEmptyRequest(){
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretTempo(null),
@@ -154,7 +143,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests interpreting Key Signature with an empty request, should throw an exception.")
-    @Tag(TestTags.EMPTY_INPUT)
     public void testInterpretKeySignatureEmptyRequest(){
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretKeySignature(null),
@@ -164,7 +152,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests parsing Staccato with a valid file, should return an xml tree")
-    @Tag(TestTags.VALID_INPUT)
     public void testParseStaccatoValidFile() throws Exception{
         ParseStaccatoRequest req = new ParseStaccatoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         ParseStaccatoResponse res = interpreterService.parseStaccato(req);
@@ -173,7 +160,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests parsing Staccato with a invalid file, should return an xml tree")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testParseStaccatoInvalidFile() throws Exception{
         ParseStaccatoRequest req = new ParseStaccatoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -184,7 +170,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests parsing Staccato with a empty file, should return an xml tree")
-    @Tag(TestTags.EMPTY_INPUT)
     public void testParseStaccatoEmptyFile() throws Exception{
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.parseStaccato(null),
@@ -197,7 +182,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests parsing JSON with a valid file, should return a JSON tree")
-    @Tag(TestTags.VALID_INPUT)
     public void testParseJSONValidFile() throws Exception{
         ParseJSONRequest req = new ParseJSONRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         ParseJSONResponse res = interpreterService.parseJSON(req);
@@ -209,7 +193,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests parsing JSON with an invalid file, should return a JSON tree")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testParseJSONInvalidFile() throws Exception{
         ParseJSONRequest req = new ParseJSONRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -220,7 +203,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests parsing JSON with an empty file, should return a JSON tree")
-    @Tag(TestTags.EMPTY_INPUT)
     public void testParseJSONEmptyFile() throws Exception{
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.parseJSON(null),
@@ -234,7 +216,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Transactional
     @Rollback(value = true)
     @DisplayName("Tests processing with a valid file, should return true")
-    @Tag(TestTags.VALID_INPUT)
     public void testProcessFileValidFile() throws Exception{
         ProcessFileRequest request = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         ProcessFileResponse response = interpreterService.processFile(request);
@@ -246,7 +227,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Transactional
     @Rollback(value = true)
     @DisplayName("Tests processing with an invalid file, should return true")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testProcessFileInvalidFile() throws Exception {
         ProcessFileRequest req = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         ProcessFileResponse response = interpreterService.processFile(req);
@@ -259,7 +239,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Transactional
     @Rollback(value = true)
     @DisplayName("Tests processing with an empty file, should return true")
-    @Tag(TestTags.EMPTY_INPUT)
     public void testProcessFileEmptyFile() throws Exception{
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.processFile(null),
