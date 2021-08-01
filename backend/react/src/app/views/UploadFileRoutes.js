@@ -1,10 +1,10 @@
 import React from "react";
 
-const dashboardRoutes = [
+const uploadFileRoutes = [
   {
     path: "/FileUpload",
     component: React.lazy(() => import("./FileUpload")),
   }
 ];
 
-export default dashboardRoutes;
+export default uploadFileRoutes;

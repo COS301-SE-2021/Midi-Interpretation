@@ -8,17 +8,3 @@ export function getNavigation(user) {
     type: GET_NAVIGATION
   }
 }
-
-export function logoutUser() {
-  return dispatch => {
-    jwtAuthService.logout();
-
-    history.push({
-      pathname: "/session/signin"
-    });
-
-    dispatch({
-      type: USER_LOGGED_OUT
-    });
-  };
-}
