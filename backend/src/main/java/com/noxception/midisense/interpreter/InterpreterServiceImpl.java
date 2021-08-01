@@ -48,8 +48,6 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
     @Autowired
     private ScoreRepository scoreRepository;
 
-    private final int maximumUploadSize = kilobytesToBytes(MIDISenseConfig.MAX_FILE_UPLOAD_SIZE);
-
     //=================================
     // MAIN SERVICE USE CASES
     //=================================
@@ -71,18 +69,19 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
 
         if (request==null)
             //an empty request cannot be processed
-            throw new InvalidUploadException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+            throw new InvalidUploadException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         try {
             //get the contents of the file
             byte[] fileContents = request.getFileContents();
 
+            final int maximumUploadSize = kilobytesToBytes(Integer.parseInt(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MAX_FILE_UPLOAD_SIZE)));
             //check to see that it isn't empty, or is of maximum length
             if (fileContents.length==0)
-                throw new InvalidUploadException(MIDISenseConfig.EMPTY_FILE_EXCEPTION_TEXT);
+                throw new InvalidUploadException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_FILE_EXCEPTION_TEXT));
 
             else if (fileContents.length > maximumUploadSize)
-                throw new InvalidUploadException(MIDISenseConfig.FILE_TOO_LARGE_EXCEPTION_TEXT);
+                throw new InvalidUploadException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_TOO_LARGE_EXCEPTION_TEXT));
 
             //write the file to temporary storage
             UUID fileDesignator = writeFileToStorage(fileContents);
@@ -92,7 +91,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         }
         catch (IOException e) {
             //If the file cannot be written to by the file system, then the method should be deemed to have failed
-            throw new InvalidUploadException(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
+            throw new InvalidUploadException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_SYSTEM_EXCEPTION_TEXT));
         }
     }
 
@@ -109,7 +108,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
 
         if(request==null)
             //an empty request cannot be processed
-            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         try {
             //parse file to rich format and get the corresponding score
@@ -120,15 +119,15 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             //persist score details to database
             saveScore(parsedScore,fileDesignator);
 
-            return new ProcessFileResponse(true,MIDISenseConfig.SUCCESSFUL_PARSING_TEXT);
+            return new ProcessFileResponse(true,MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.SUCCESSFUL_PARSING_TEXT));
         }
         catch(InvalidMidiDataException m){
             //The file is not a valid midi format and interpretation fails
-            return new ProcessFileResponse(false, MIDISenseConfig.INVALID_MIDI_EXCEPTION_TEXT);
+            return new ProcessFileResponse(false, MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
         }
         catch(InvalidDesignatorException d){
             //The specified file does not exist
-            return new ProcessFileResponse(false, MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+            return new ProcessFileResponse(false, MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
         }
 
     }
@@ -148,14 +147,14 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
 
         if (request==null)
             //an empty request cannot be processed
-            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
 
         if (searchResults.isEmpty())
             //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
 
         //get the persisted data
         String metre = searchResults.get().getTimeSignature();
@@ -176,14 +175,14 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
 
         if (request==null)
             //an empty request cannot be processed
-            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
 
         if(searchResults.isEmpty())
             //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
 
         //get the persisted data
         int tempoIndication = searchResults.get().getTempoIndication();
@@ -202,14 +201,14 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
 
         if (request==null)
             //an empty request cannot be processed
-            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
 
         if(searchResults.isEmpty())
             //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
 
         //get the persisted data
         String sigName = searchResults.get().getKeySignature();
@@ -228,21 +227,21 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
 
         if (request==null)
             //an empty request cannot be processed
-            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
         try {
             //get the designator for the file being stored temporarily
             UUID fileDesignator = request.getFileDesignator();
-            File sourceFile = new File(MIDISenseConfig.MIDI_FILE_STORAGE+fileDesignator+".mid");
+            File sourceFile = new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignator+MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT));
             Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
             return new ParseStaccatoResponse(pattern.toString());
         }
         catch (IOException e) {
             //If the file doesn't exist or cannot be written to by the file system, then the method should be deemed to have failed
-            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
         }
         catch (InvalidMidiDataException e) {
             //The file is not a valid midi format and interpretation fails
-            throw new InvalidDesignatorException(MIDISenseConfig.INVALID_MIDI_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
         }
     }
 
@@ -260,12 +259,12 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
 
         if (request==null)
             //an empty request cannot be processed
-            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
         try {
 
             //get the designator for the file being stored temporarily
             UUID fileDesignator = request.getFileDesignator();
-            File sourceFile = new File(MIDISenseConfig.MIDI_FILE_STORAGE+fileDesignator+".mid");
+            File sourceFile = new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignator+MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT));
 
             //create a parser and corresponding listener
             MidiParser parser = new MidiParser();
@@ -279,11 +278,11 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         }
         catch (IOException e) {
             //If the file doesn't exist or cannot be written to by the file system, then the method should be deemed to have failed
-            throw new InvalidDesignatorException(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_SYSTEM_EXCEPTION_TEXT));
         }
         catch (InvalidMidiDataException e) {
             //The file is not a valid midi format and interpretation fails
-            throw new InvalidMidiDataException(MIDISenseConfig.INVALID_MIDI_EXCEPTION_TEXT);
+            throw new InvalidMidiDataException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
         }
     }
 
@@ -312,7 +311,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         UUID fileDesignator = UUID.randomUUID();
 
         //create target file and write to it
-        String fileName = MIDISenseConfig.MIDI_FILE_STORAGE+fileDesignator+".mid";
+        String fileName = MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignator+MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
         FileOutputStream os = new FileOutputStream(fileName);
         os.write(fileContents);
 
@@ -329,7 +328,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
      * </ul>
      */
     private void deleteFileFromStorage(UUID fileDesignator) throws IOException{
-        File file = new File(MIDISenseConfig.MIDI_FILE_STORAGE+fileDesignator+".mid");
+        File file = new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignator+MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT));
         if (!file.delete())
             throw new IOException("Unable to delete file "+file.getName());
     }

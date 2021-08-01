@@ -55,7 +55,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
                 ()->interpreterService.uploadFile(req),
                 "An empty file should not be saved.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_FILE_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_FILE_EXCEPTION_TEXT)));
     }
 
     @Ignore
@@ -65,7 +65,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
             ()->interpreterService.uploadFile(null),
             "A null request should not be processed.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
 
     }
 
@@ -101,7 +101,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretMetre(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
 
     @Test
@@ -111,7 +111,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretTempo(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
     @Test
     @DisplayName("Tests interpreting Key Signature with an invalid file designator, should throw an exception.")
@@ -120,7 +120,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretKeySignature(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
 
     @Test
@@ -129,7 +129,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretMetre(null),
                 "A null request should not be processed.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
     @Test
@@ -138,7 +138,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretTempo(null),
                 "A null request should not be processed.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
     @Test
@@ -147,7 +147,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretKeySignature(null),
                 "A null request should not be processed.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
     @Test
@@ -165,7 +165,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.parseStaccato(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
 
     @Test
@@ -174,7 +174,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.parseStaccato(null),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
 
@@ -198,7 +198,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.parseJSON(req),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.FILE_SYSTEM_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_SYSTEM_EXCEPTION_TEXT)));
     }
 
     @Test
@@ -207,7 +207,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.parseJSON(null),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
 
@@ -232,7 +232,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         ProcessFileResponse response = interpreterService.processFile(req);
         log(response.getMessage(),LogType.DEBUG);
         assertEquals(false, response.getSuccess());
-        assertEquals(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT, response.getMessage());
+        assertEquals(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT), response.getMessage());
     }
 
     @Test
@@ -243,7 +243,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.processFile(null),
                 "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
 
