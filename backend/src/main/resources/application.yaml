@@ -277,3 +277,14 @@ components:
       type: array
       items:
         type: string
+
+    intelligenceAnalyseGenreRequest:
+      description: "Request for analyse genre"
+      type: object
+      properties:
+        fileDesignator: Sting
+
+    intelligenceAnalyseGenreResponse:
+      type: array
+      items:
+        type: Sting
