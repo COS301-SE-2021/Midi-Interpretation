@@ -10,70 +10,74 @@ import {
   TablePagination
 } from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "../../matx";
+import SimpleExpansionPanel from "../../matx/components/SimpleExpansionPanel";
+import MaxHeightMenu from "../../matx/components/MaxHeightMenu";
+import DiscreteSlider from "../../matx/components/DiscreteSlider";
+import SelectedMenu from "../../matx/components/SelectedMenu";
 
 const subscribarList = [
   {
-    name: "john doe",
+    name: "1",
     date: "18 january, 2019",
     amount: 1000,
     status: "close",
-    company: "ABC Fintech LTD."
+    company: "A D Em"
   },
   {
-    name: "kessy bryan",
+    name: "2",
     date: "10 january, 2019",
     amount: 9000,
     status: "open",
-    company: "My Fintech LTD."
+    company: "C A"
   },
   {
-    name: "kessy bryan",
+    name: "3",
     date: "10 january, 2019",
     amount: 9000,
     status: "open",
-    company: "My Fintech LTD."
+    company: "Em D"
   },
   {
-    name: "james cassegne",
+    name: "4",
     date: "8 january, 2019",
     amount: 5000,
     status: "close",
-    company: "Collboy Tech LTD."
+    company: "F#"
   },
   {
-    name: "lucy brown",
+    name: "5",
     date: "1 january, 2019",
     amount: 89000,
     status: "open",
-    company: "ABC Fintech LTD."
+    company: "G E"
   },
   {
-    name: "lucy brown",
+    name: "6",
     date: "1 january, 2019",
     amount: 89000,
     status: "open",
-    company: "ABC Fintech LTD."
+    company: "E F"
   },
   {
-    name: "lucy brown",
+    name: "7",
     date: "1 january, 2019",
     amount: 89000,
     status: "open",
-    company: "ABC Fintech LTD."
+    company: "A D Em"
   },
   {
-    name: "lucy brown",
+    name: "8",
     date: "1 january, 2019",
     amount: 89000,
     status: "open",
-    company: "ABC Fintech LTD."
+    company: "F#"
   },
   {
-    name: "lucy brown",
+    name: "9",
     date: "1 january, 2019",
     amount: 89000,
     status: "open",
-    company: "ABC Fintech LTD."
+    company: "G E"
   }
 ];
 
@@ -99,16 +103,31 @@ const Display = () => {
               ]}
           />
         </div>
+        <SimpleCard title="Analysis">
+          <h1>Song Title</h1>
+          <br/>
+          <h4>
+            Piece Meta Data:
+          </h4>
+          <p>
+            <li>Key: <i>example</i></li>
+            <li>Time Signature: <i>example</i></li>
+          </p>
+        </SimpleCard>
+        <br/>
+        <SimpleCard>
+          <h4>Track</h4>
+          <SelectedMenu></SelectedMenu>
+          <DiscreteSlider></DiscreteSlider>
+        </SimpleCard>
+        <br/>
         <SimpleCard title="Display">
           <Table className="whitespace-pre">
             <TableHead>
               <TableRow>
-                <TableCell className="px-0">Name</TableCell>
-                <TableCell className="px-0">Company</TableCell>
-                <TableCell className="px-0">Start Date</TableCell>
-                <TableCell className="px-0">Status</TableCell>
-                <TableCell className="px-0">Amount</TableCell>
-                <TableCell className="px-0">Action</TableCell>
+                <TableCell className="px-0">Bar</TableCell>
+                <TableCell className="px-0">Chords</TableCell>
+                <TableCell className="px-0">Notes</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -122,19 +141,8 @@ const Display = () => {
                     <TableCell className="px-0 capitalize" align="left">
                       {subscriber.company}
                     </TableCell>
-                    <TableCell className="px-0 capitalize" align="left">
-                      {subscriber.date}
-                    </TableCell>
-                    <TableCell className="px-0 capitalize">
-                      {subscriber.status}
-                    </TableCell>
-                    <TableCell className="px-0 capitalize">
-                      ${subscriber.amount}
-                    </TableCell>
                     <TableCell className="px-0">
-                      <IconButton>
-                        <Icon color="error">close</Icon>
-                      </IconButton>
+                      <SimpleExpansionPanel></SimpleExpansionPanel>
                     </TableCell>
                   </TableRow>
                 ))}

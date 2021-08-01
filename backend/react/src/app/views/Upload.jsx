@@ -2,7 +2,6 @@ import React, {Component, Fragment, useMemo, useState} from "react";
 import {Grid, Card, Button, Fab, Icon} from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "matx";
 import Dropzone, {useDropzone} from 'react-dropzone'
-
 import { withStyles } from "@material-ui/styles";
 import {makeStyles} from "@material-ui/core/styles";
 import 'react-responsive-combo-box/dist/index.css'
@@ -200,7 +199,11 @@ class Upload extends Component {
                       ]}
                   />
               </div>
-              <SimpleCard title="Welcome to MIDISense">
+              <SimpleCard>
+                  <div className={"w-400"}>
+                      <img src={process.env.PUBLIC_URL + '/assets/images/logo-full.png'}></img>
+                  </div>
+                  <br/>
                   <p>MIDISense is an interactive system that helps composers and enthusiasts the ability to leverage
                       the power of Midi as well as a powerful AI in order to gain insight into your music.
                   </p>
@@ -222,7 +225,7 @@ class Upload extends Component {
 
                           <Grid>
                               <div
-                                  className={`h-132 w-full border-radius-8 elevation-z6 bg-light-gray flex justify-center items-center cursor-pointer`}
+                                  className={`h-200 w-full border-radius-8 elevation-z6 bg-light-gray flex justify-center items-center cursor-pointer`}
                               >
                                   <div >
                                       <Dropzone onDrop={this.onDrop}>
