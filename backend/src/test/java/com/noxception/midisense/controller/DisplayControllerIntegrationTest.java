@@ -28,7 +28,6 @@ public class DisplayControllerIntegrationTest {
 
     @Test
     @DisplayName("Tests getting piece metadata with a valid file designator")
-    @Tag(MIDISenseUnitTest.TestTags.VALID_INPUT)
     public void testGetPieceMetadataValidDesignator() throws Exception {
         DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
         request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
@@ -38,7 +37,6 @@ public class DisplayControllerIntegrationTest {
 
     @Test
     @DisplayName("Tests getting track info with a valid file designator")
-    @Tag(MIDISenseUnitTest.TestTags.VALID_INPUT)
     public void testGetTrackInfoValidDesignator() throws Exception {
         DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
         request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
@@ -48,7 +46,6 @@ public class DisplayControllerIntegrationTest {
 
     @Test
     @DisplayName("Tests getting track metadata with a valid file designator")
-    @Tag(MIDISenseUnitTest.TestTags.VALID_INPUT)
     public void testGetTrackMetadataValidDesignator() throws Exception {
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
         request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
@@ -59,7 +56,6 @@ public class DisplayControllerIntegrationTest {
 
     @Test
     @DisplayName("Tests getting track overview with a valid file designator")
-    @Tag(MIDISenseUnitTest.TestTags.VALID_INPUT)
     public void testGetTrackOverviewValidDesignator() throws Exception {
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
         request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
@@ -70,7 +66,6 @@ public class DisplayControllerIntegrationTest {
 
     @Test
     @DisplayName("Tests getting piece metadata with an invalid file designator")
-    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
     public void testGetPieceMetadataInvalidDesignator() throws Exception {
         DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
         request.setFileDesignator(TestingDictionary.display_all_invalidFileDesignator);
@@ -80,7 +75,6 @@ public class DisplayControllerIntegrationTest {
 
     @Test
     @DisplayName("Tests getting track info with an invalid file designator")
-    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
     public void testGetTrackInfoInvalidDesignator() throws Exception {
         DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
         request.setFileDesignator(TestingDictionary.display_all_invalidFileDesignator);
@@ -90,7 +84,6 @@ public class DisplayControllerIntegrationTest {
 
     @Test
     @DisplayName("Tests getting track metadata with an invalid file designator")
-    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
     public void testGetTrackMetadataInvalidDesignator() throws Exception {
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
         request.setFileDesignator(TestingDictionary.display_all_invalidFileDesignator);
@@ -101,7 +94,6 @@ public class DisplayControllerIntegrationTest {
 
     @Test
     @DisplayName("Tests getting track overview with an invalid file designator")
-    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
     public void testGetTrackOverviewInvalidDesignator() throws Exception {
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
         request.setFileDesignator(TestingDictionary.display_all_invalidFileDesignator);
@@ -112,7 +104,6 @@ public class DisplayControllerIntegrationTest {
 
     @Test
     @DisplayName("Tests getting track metadata with an invalid track index and valid file")
-    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
     public void testGetTrackMetadataInvalidTrackIndex() throws Exception {
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
         request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
@@ -123,7 +114,6 @@ public class DisplayControllerIntegrationTest {
 
     @Test
     @DisplayName("Tests getting track overview with an invalid track index and valid file")
-    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
     public void testGetTrackOverviewInvalidTrackIndex() throws Exception {
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
         request.setFileDesignator(TestingDictionary.display_all_validFileDesignator);
