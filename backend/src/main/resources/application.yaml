@@ -172,7 +172,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/intelligenceAnalyseGenreResponse
+                $ref: '#/components/schemas/intelligenceAnalyseGenreResponse'
 
   #=================================================
   # SCHEMAS + OBJECTS
@@ -277,6 +277,7 @@ components:
       type: array
       items:
         type: string
+
 
     intelligenceAnalyseGenreRequest:
       description: "Request for analyse genre"
