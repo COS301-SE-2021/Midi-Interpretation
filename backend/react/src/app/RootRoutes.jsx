@@ -1,13 +1,14 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import uploadFileRoutes from "./views/UploadFileRoutes";
+import uploadRoutes from "./views/UploadRoutes";
+import displayRoutes from "./views/DisplayRoutes";
 
 const redirectRoute = [
   {
     path: "/",
     exact: true,
-    component: () => <Redirect to="/FileUpload" />
+    component: () => <Redirect to="/Upload" />
   }
 ];
 
@@ -18,7 +19,8 @@ const errorRoute = [
 ];
 
 const routes = [
-  ...uploadFileRoutes,
+  ...uploadRoutes,
+  ...displayRoutes,
   ...redirectRoute,
   ...errorRoute
 ];

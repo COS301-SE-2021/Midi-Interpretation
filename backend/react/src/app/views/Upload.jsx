@@ -8,7 +8,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import 'react-responsive-combo-box/dist/index.css'
 
 
-class FileUpload extends Component {
+class Upload extends Component {
 
   constructor(props){
       super(props);
@@ -291,4 +291,4 @@ class FileUpload extends Component {
 
 }
 
-export default withStyles({}, { withTheme: true })(FileUpload);
+export default withStyles({}, { withTheme: true })(Upload);
