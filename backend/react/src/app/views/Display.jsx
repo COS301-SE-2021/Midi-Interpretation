@@ -9,6 +9,7 @@ import {
   Icon,
   TablePagination
 } from "@material-ui/core";
+import {Breadcrumb, SimpleCard} from "../../matx";
 
 const subscribarList = [
   {
@@ -90,63 +91,74 @@ const Display = () => {
 
   return (
     <div className="w-full overflow-auto">
-      <Table className="whitespace-pre">
-        <TableHead>
-          <TableRow>
-            <TableCell className="px-0">Name</TableCell>
-            <TableCell className="px-0">Company</TableCell>
-            <TableCell className="px-0">Start Date</TableCell>
-            <TableCell className="px-0">Status</TableCell>
-            <TableCell className="px-0">Amount</TableCell>
-            <TableCell className="px-0">Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {subscribarList
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((subscriber, index) => (
-              <TableRow key={index}>
-                <TableCell className="px-0 capitalize" align="left">
-                  {subscriber.name}
-                </TableCell>
-                <TableCell className="px-0 capitalize" align="left">
-                  {subscriber.company}
-                </TableCell>
-                <TableCell className="px-0 capitalize" align="left">
-                  {subscriber.date}
-                </TableCell>
-                <TableCell className="px-0 capitalize">
-                  {subscriber.status}
-                </TableCell>
-                <TableCell className="px-0 capitalize">
-                  ${subscriber.amount}
-                </TableCell>
-                <TableCell className="px-0">
-                  <IconButton>
-                    <Icon color="error">close</Icon>
-                  </IconButton>
-                </TableCell>
+      <div className="m-sm-30" >
+        <div className="mb-sm-30">
+          <Breadcrumb
+              routeSegments={[
+                { name: "Display" }
+              ]}
+          />
+        </div>
+        <SimpleCard title="Display">
+          <Table className="whitespace-pre">
+            <TableHead>
+              <TableRow>
+                <TableCell className="px-0">Name</TableCell>
+                <TableCell className="px-0">Company</TableCell>
+                <TableCell className="px-0">Start Date</TableCell>
+                <TableCell className="px-0">Status</TableCell>
+                <TableCell className="px-0">Amount</TableCell>
+                <TableCell className="px-0">Action</TableCell>
               </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+            </TableHead>
+            <TableBody>
+              {subscribarList
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((subscriber, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="px-0 capitalize" align="left">
+                      {subscriber.name}
+                    </TableCell>
+                    <TableCell className="px-0 capitalize" align="left">
+                      {subscriber.company}
+                    </TableCell>
+                    <TableCell className="px-0 capitalize" align="left">
+                      {subscriber.date}
+                    </TableCell>
+                    <TableCell className="px-0 capitalize">
+                      {subscriber.status}
+                    </TableCell>
+                    <TableCell className="px-0 capitalize">
+                      ${subscriber.amount}
+                    </TableCell>
+                    <TableCell className="px-0">
+                      <IconButton>
+                        <Icon color="error">close</Icon>
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
 
-      <TablePagination
-        className="px-4"
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={subscribarList.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        backIconButtonProps={{
-          "aria-label": "Previous Page"
-        }}
-        nextIconButtonProps={{
-          "aria-label": "Next Page"
-        }}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+          <TablePagination
+            className="px-4"
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={subscribarList.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{
+              "aria-label": "Previous Page"
+            }}
+            nextIconButtonProps={{
+              "aria-label": "Next Page"
+            }}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </SimpleCard>
+      </div>
     </div>
   );
 };
