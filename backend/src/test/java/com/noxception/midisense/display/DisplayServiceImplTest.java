@@ -38,7 +38,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting metadata with a valid file designator, should return a trio of key sig, time sig and tempo.")
-    @Tag(TestTags.VALID_INPUT)
     public void testGetPieceMetadataValidFile() throws InvalidDesignatorException {
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
@@ -47,7 +46,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting track info with a valid file designator, should return a list of instrument lines.")
-    @Tag(TestTags.VALID_INPUT)
     public void testGetTrackInfoValidFile() throws InvalidDesignatorException {
         GetTrackInfoRequest req = new GetTrackInfoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         GetTrackInfoResponse res = displayService.getTrackInfo(req);
@@ -56,7 +54,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting metadata with a valid file designator, should return a trio of key sig, time sig and tempo")
-    @Tag(TestTags.VALID_INPUT)
     public void testGetTrackMetadataValidFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator),TestingDictionary.display_all_valid_track_index);
         GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
@@ -68,7 +65,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting metadata with a valid file designator, should return a trio of key sig, time sig and tempo")
-    @Tag(TestTags.VALID_INPUT)
     public void testGetPieceOverviewValidFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator),TestingDictionary.display_all_valid_track_index);
         GetTrackOverviewResponse res = displayService.getTrackOverview(req);
@@ -78,7 +74,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting metadata with an invalid file designator")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testGetPieceMetadataInvalidFile() throws InvalidDesignatorException {
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -89,7 +84,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting track info with an invalid file designator")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testGetTrackInfoInvalidFile() throws InvalidDesignatorException {
         GetTrackInfoRequest req = new GetTrackInfoRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -100,7 +94,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting metadata with an invalid file designator")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testGetTrackMetadataInvalidFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator),TestingDictionary.display_all_valid_track_index);
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -111,7 +104,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting metadata with an invalid file designator")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testGetPieceOverviewInvalidFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.interpreter_all_invalidFileDesignator),TestingDictionary.display_all_valid_track_index);
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -124,7 +116,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting metadata with an invalid track index and valid file")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testGetTrackMetadataInvalidIndex() throws InvalidDesignatorException, InvalidTrackException, IOException {
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator),TestingDictionary.display_all_invalid_track_index);
         InvalidTrackException thrown = assertThrows(InvalidTrackException.class,
@@ -135,7 +126,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting metadata with an invalid track index and valid file")
-    @Tag(TestTags.MALFORMED_INPUT)
     public void testGetPieceOverviewInvalidIndex() throws InvalidDesignatorException, InvalidTrackException, IOException {
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator), TestingDictionary.display_all_invalid_track_index);
         InvalidTrackException thrown = assertThrows(InvalidTrackException.class,
@@ -148,7 +138,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting metadata with an empty file designator")
-    @Tag(TestTags.EMPTY_INPUT)
     public void testGetPieceMetadataEmptyFile() throws InvalidDesignatorException {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->displayService.getPieceMetadata(null),
@@ -158,7 +147,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting track info with an empty file designator")
-    @Tag(TestTags.EMPTY_INPUT)
     public void testGetTrackInfoEmptyFile() throws InvalidDesignatorException {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->displayService.getTrackInfo(null),
@@ -168,7 +156,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting metadata with an empty file designator")
-    @Tag(TestTags.EMPTY_INPUT)
     public void testGetTrackMetadataEmptyFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->displayService.getTrackMetadata(null),
@@ -178,7 +165,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Tests getting metadata with an empty file designator")
-    @Tag(TestTags.EMPTY_INPUT)
     public void testGetPieceOverviewEmptyFile() throws InvalidDesignatorException, InvalidTrackException, IOException {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->displayService.getTrackOverview(null),
