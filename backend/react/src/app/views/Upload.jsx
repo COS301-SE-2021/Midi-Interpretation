@@ -5,7 +5,7 @@ import Dropzone, {useDropzone} from 'react-dropzone'
 import { withStyles } from "@material-ui/styles";
 import {makeStyles} from "@material-ui/core/styles";
 import 'react-responsive-combo-box/dist/index.css'
-
+import MidiSenseService from "../services/MidiSenseService";
 
 class Upload extends Component {
 
@@ -30,149 +30,16 @@ class Upload extends Component {
           trackIndex: 0
       }
 
-
-      this.uploadFile = () => {
-          //get the file
-          const file = this.fileUpload.files[0];
-          console.log(file);
-          const formData = new FormData();
-
-          // Update the formData object
-          formData.append(
-              "myFile",
-              file,
-              file.name
-          );
-
-          const request = new Request("http://localhost:8080/interpreter/uploadFile", {
-              method: 'POST',
-              body: formData,
-              headers: new Headers({
-                  'accept': '*/*',
-                  'Content-Type': 'multipart/form-data'
-              })
-          });
-          fetch(request)
-              .then(res=>res.json())
-              .then((res)=>{
-                  console.log(res)
-              }, (error)=>{
-                  console.log(error)
-              })
-      }
-
-      this.processFile = () => {
-          alert('Beginning processing file')
-          const request = new Request("http://localhost:8080/interpreter/processFile", {
-              method: 'POST',
-              body: JSON.stringify({
-                  "fileDesignator": this.fileUpload.fileDesignator
-              }),
-              headers: new Headers({
-                  'accept': 'application/json',
-                  'Content-Type': 'application/json'
-              })
-          });
-          fetch(request)
-              .then(res=>res.json())
-              .then((res)=>{
-                  console.log(res)
-                  alert('Your file has successfully been interpreted')
-              }, (error)=>{
-                  console.log(error)
-                  alert('Failed to interpret the given file.')
-              })
-      }
-
-      this.getPieceMetadata = () => {
-          const request = new Request("http://localhost:8080/display/getPieceMetadata", {
-              method: 'POST',
-              body: JSON.stringify({
-                  "fileDesignator": this.fileUpload.fileDesignator
-              }),
-              headers: new Headers({
-                  'accept': 'application/json',
-                  'Content-Type': 'application/json'
-              })
-          });
-          fetch(request)
-              .then(res=>res.json())
-              .then((res)=>{
-                  this.display.pieceMetadata = res
-              }, (error)=>{
-                  console.log(error)
-              })
-      }
-
-      this.getTrackInfo = () => {
-          const request = new Request("http://localhost:8080/display/getTrackInfo", {
-              method: 'POST',
-              body: JSON.stringify({
-                  "fileDesignator": this.fileUpload.fileDesignator
-              }),
-              headers: new Headers({
-                  'accept': 'application/json',
-                  'Content-Type': 'application/json'
-              })
-          });
-          fetch(request)
-              .then(res=>res.json())
-              .then((res)=>{
-                  this.display.trackInfo = res
-              }, (error)=>{
-                  console.log(error)
-              })
-      }
-
-      this.getTrackMetadata = () => {
-          const request = new Request("http://localhost:8080/display/getTrackMetadata", {
-              method: 'POST',
-              body: JSON.stringify({
-                  "fileDesignator": this.fileUpload.fileDesignator,
-                  "trackIndex": this.display.trackIndex
-              }),
-              headers: new Headers({
-                  'accept': 'application/json',
-                  'Content-Type': 'application/json'
-              })
-          });
-          fetch(request)
-              .then(res=>res.json())
-              .then((res)=>{
-                  this.display.trackMetadata = res['trackString']
-              }, (error)=>{
-                  console.log(error)
-              })
-      }
-
-      this.getTrackOverview = () => {
-          const request = new Request("http://localhost:8080/display/getTrackOverview", {
-              method: 'POST',
-              body: JSON.stringify({
-                  "fileDesignator": this.fileUpload.fileDesignator,
-                  "trackIndex": this.display.trackIndex
-              }),
-              headers: new Headers({
-                  'accept': 'application/json',
-                  'Content-Type': 'application/json'
-              })
-          });
-          fetch(request)
-              .then(res=>res.json())
-              .then((res)=>{
-                  this.display.trackOverview = res
-              }, (error)=>{
-                  console.log(error)
-              })
-      }
-
   }
 
   componentDidMount() {
-        this.getPieceMetadata()
-        this.getTrackInfo()
-        this.getTrackMetadata()
-        this.getTrackOverview()
+      this.backendService = new MidiSenseService()
+      alert('Starting interpretation')
+      this.backendService.interpreterProcessFile(
+          "0bc8dcc5-79a0-4b5a-9be5-b9978b9febe1",
+          (res)=>{alert(res)},
+          (error)=>{alert(error)}
+      )
   }
 
     shouldComponentUpdate() {

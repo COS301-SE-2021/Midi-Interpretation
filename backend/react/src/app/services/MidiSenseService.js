@@ -3,6 +3,10 @@
  * and automates specific requests for service functions.
  */
 class MidiSenseService {
+    // private targetHeaders;
+    // private targetURL: string;
+    // private uploadHeaders: { accept: string; "Content-Type": string };
+    // private targetMethod: string;
 
     constructor() {
         this.targetURL = "http://localhost:8080"
@@ -25,7 +29,7 @@ class MidiSenseService {
         const endpoint = "/display/getPieceMetadata"
         this.genericRequest(
             this.targetURL+endpoint,
-            {"fileDesignator": String(fileDesignator)},
+            {"fileDesignator": fileDesignator},
             this.targetHeaders,
             this.targetMethod,
             onSuccess,
@@ -37,7 +41,7 @@ class MidiSenseService {
         const endpoint = "/display/getTrackInfo"
         this.genericRequest(
             this.targetURL+endpoint,
-            {"fileDesignator": String(fileDesignator)},
+            {"fileDesignator": fileDesignator},
             this.targetHeaders,
             this.targetMethod,
             onSuccess,
@@ -49,7 +53,7 @@ class MidiSenseService {
         const endpoint = "/display/getTrackMetadata"
         this.genericRequest(
             this.targetURL+endpoint,
-            {"fileDesignator": String(fileDesignator), "trackIndex": 1*trackIndex },
+            {"fileDesignator": fileDesignator, "trackIndex": trackIndex },
             this.targetHeaders,
             this.targetMethod,
             onSuccess,
@@ -61,7 +65,7 @@ class MidiSenseService {
         const endpoint = "/display/getTrackOverview"
         this.genericRequest(
             this.targetURL+endpoint,
-            {"fileDesignator": String(fileDesignator), "trackIndex": 1*trackIndex },
+            {"fileDesignator": fileDesignator, "trackIndex": trackIndex },
             this.targetHeaders,
             this.targetMethod,
             onSuccess,
@@ -77,7 +81,7 @@ class MidiSenseService {
         const endpoint = "/intelligence/analyseGenre"
         this.genericRequest(
             this.targetURL+endpoint,
-            {"fileDesignator": String(fileDesignator)},
+            {"fileDesignator": fileDesignator},
             this.targetHeaders,
             this.targetMethod,
             onSuccess,
@@ -91,9 +95,10 @@ class MidiSenseService {
 
     interpreterProcessFile(fileDesignator, onSuccess = (res)=>{}, onFailure= (res)=>{}){
         const endpoint = "/interpreter/processFile"
+
         this.genericRequest(
             this.targetURL+endpoint,
-            {"fileDesignator": String(fileDesignator)},
+            {"fileDesignator": fileDesignator},
             this.targetHeaders,
             this.targetMethod,
             onSuccess,
@@ -114,7 +119,7 @@ class MidiSenseService {
 
         this.genericRequest(
             this.targetURL+endpoint,
-            {"fileDesignator": String(fileDesignator)},
+            formData,
             this.uploadHeaders,
             this.targetMethod,
             onSuccess,
@@ -166,7 +171,6 @@ class MidiSenseService {
                 onFailure(error)
             })
     }
-
-
-
 }
+
+export default MidiSenseService

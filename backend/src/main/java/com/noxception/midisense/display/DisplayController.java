@@ -35,7 +35,7 @@ import java.util.UUID;
  *  * @author Rearabetswe Maeko
  *  * @since 1.0.0
  */
-//@CrossOrigin(value = MIDISenseConfig.CROSS_ORIGIN)
+@CrossOrigin("*")
 @RestController
 public class DisplayController implements DisplayApi {
 
