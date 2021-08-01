@@ -73,14 +73,14 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
 
         if(request==null)
             //an empty request should reflect as a null designator
-            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
 
         if(searchResults.isEmpty())
             //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
 
         //else refer to score and get the metadata
         ScoreEntity score = searchResults.get();
@@ -108,14 +108,14 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
 
         if(request==null)
             //an empty request should reflect as a null designator
-            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
 
         if(searchResults.isEmpty())
             //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
 
         //get the score and its associated tracks
         ScoreEntity score = searchResults.get();
@@ -145,14 +145,14 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
 
         if(request==null)
             //an empty request should reflect as a null designator
-            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
 
         if(searchResults.isEmpty())
             //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
 
         //get the index of the requested track, the score and the corresponding tracks
         byte trackIndex = request.getTrackIndex();
@@ -161,7 +161,7 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
 
         if(trackIndex >= tracks.size())
             //cannot refer to a track that does not exist
-            throw new InvalidTrackException(MIDISenseConfig.INVALID_TRACK_INDEX_EXCEPTION_TEXT);
+            throw new InvalidTrackException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
 
         //get a rich text version of the track
         TrackEntity track = tracks.get(trackIndex);
@@ -182,14 +182,14 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
 
         if(request==null)
             //an empty request should reflect as a null designator
-            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
 
         if(searchResults.isEmpty())
             //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(MIDISenseConfig.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT);
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
 
         //get the track index requested, the score and corresponding track
         byte trackIndex = request.getTrackIndex();
@@ -198,7 +198,7 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
 
         if(trackIndex >= tracks.size())
             //cannot refer to a track that does not exist
-            throw new InvalidTrackException(MIDISenseConfig.INVALID_TRACK_INDEX_EXCEPTION_TEXT);
+            throw new InvalidTrackException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
 
         //get a text overview of the track
         TrackEntity track = tracks.get(trackIndex);
