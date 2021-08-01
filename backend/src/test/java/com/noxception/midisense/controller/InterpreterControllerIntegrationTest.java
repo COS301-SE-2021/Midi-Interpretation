@@ -40,7 +40,6 @@ class InterpreterControllerIntegrationTest {
     @Ignore
     @Test
     @DisplayName("Tests uploading a valid file")
-    @Tag(MIDISenseUnitTest.TestTags.VALID_INPUT)
     void testUploadFileValidFile() throws Exception{
         //TODO: USE SWAGGER UI FOR NOW - FIGURE OUT WHY HTTP 415
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
@@ -52,7 +51,6 @@ class InterpreterControllerIntegrationTest {
     @Ignore
     @Test
     @DisplayName("Tests uploading an invalid file")
-    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
     void testUploadFileInvalidFile() throws Exception{
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
         List<Integer> newByteArray = new ArrayList<>();
@@ -67,7 +65,6 @@ class InterpreterControllerIntegrationTest {
     @Transactional
     @Rollback(value = true)
     @DisplayName("Tests processing a valid file")
-    @Tag(MIDISenseUnitTest.TestTags.VALID_INPUT)
     void testProcessFileValidFileDesignator() throws Exception{
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
         request.setFileDesignator(TestingDictionary.interpreter_all_validFileDesignator);
@@ -79,7 +76,6 @@ class InterpreterControllerIntegrationTest {
     @Transactional
     @Rollback(value = true)
     @DisplayName("Tests processing an invalid file")
-    @Tag(MIDISenseUnitTest.TestTags.MALFORMED_INPUT)
     void testProcessFileInvalidFileDesignator() throws Exception{
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
         request.setFileDesignator(TestingDictionary.interpreter_all_invalidFileDesignator);
