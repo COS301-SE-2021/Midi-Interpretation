@@ -2,6 +2,7 @@ package com.noxception.midisense.intelligence.rrobjects;
 
 import com.noxception.midisense.config.dataclass.ResponseObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AnalyseGenreResponse extends ResponseObject {
