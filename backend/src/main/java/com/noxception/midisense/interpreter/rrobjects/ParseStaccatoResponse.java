@@ -9,13 +9,16 @@ public class ParseStaccatoResponse extends ResponseObject {
 
     /**
      * CONSTRUCTOR
-     * @param staccatoSequence -placeholder-
+     * @param staccatoSequence sequence in Staccato format
      */
     public ParseStaccatoResponse(String staccatoSequence) {
         this.staccatoSequence = staccatoSequence;
     }
 
-    /** GET Method */
+    /**
+     *  GET Method
+     * @return staccatoSequence
+     */
     public String getStaccatoSequence() {
         return staccatoSequence;
     }

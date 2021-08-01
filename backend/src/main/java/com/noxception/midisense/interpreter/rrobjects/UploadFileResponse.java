@@ -17,7 +17,10 @@ public class UploadFileResponse extends ResponseObject {
         this.fileDesignator = fileDesignator;
     }
 
-    /** GET Method */
+    /**
+     *  GET Method
+     * @return fileDesignator
+     */
     public UUID getFileDesignator() {
         return fileDesignator;
     }

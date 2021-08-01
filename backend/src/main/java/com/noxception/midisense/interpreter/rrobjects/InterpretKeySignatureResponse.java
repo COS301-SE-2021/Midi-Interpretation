@@ -18,7 +18,7 @@ public class InterpretKeySignatureResponse extends ResponseObject {
 
     /**
      * CONSTRUCTOR
-     * @param accidentals -placefolder-
+     * @param accidentals number of accidentals
      */
     public InterpretKeySignatureResponse(int accidentals){
         this.keySignature = new KeySignature(accidentals);
@@ -32,7 +32,10 @@ public class InterpretKeySignatureResponse extends ResponseObject {
         this.keySignature = new KeySignature(signatureName);
     }
 
-    /** GET Method */
+    /**
+     *  GET Method
+     * @return keySignature
+     */
     public KeySignature getKeySignature() {
         return keySignature;
     }

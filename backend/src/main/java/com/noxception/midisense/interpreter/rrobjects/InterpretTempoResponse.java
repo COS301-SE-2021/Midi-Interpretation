@@ -24,7 +24,10 @@ public class InterpretTempoResponse extends ResponseObject {
         this.tempo = new TempoIndication(tempo);
     }
 
-    /** GET Method */
+    /**
+     *  GET Method
+     * @return tempo
+     */
     public TempoIndication getTempo() {
         return tempo;
     }

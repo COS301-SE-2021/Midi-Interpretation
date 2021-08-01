@@ -16,7 +16,10 @@ public class ParseJSONResponse extends ResponseObject {
         this.parsedScore = parsedScore;
     }
 
-    /** GET Method */
+    /**
+     *  GET Method
+     * @return parsedScore
+     */
     public Score getParsedScore() {
         return parsedScore;
     }

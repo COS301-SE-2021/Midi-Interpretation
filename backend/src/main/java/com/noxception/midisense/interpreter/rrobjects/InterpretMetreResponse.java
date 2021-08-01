@@ -18,14 +18,17 @@ public class InterpretMetreResponse extends ResponseObject {
 
     /**
      * CONSTRUCTOR
-     * @param numBeats -placeholder-
-     * @param beatValue -placeholder-
+     * @param numBeats numerator of metre
+     * @param beatValue denominator of metre
      */
     public InterpretMetreResponse(int numBeats, int beatValue) {
         this.metre = new TimeSignature(numBeats,beatValue);
     }
 
-    /** GET Method */
+    /**
+     *  GET Method
+     * @return metre
+     */
     public TimeSignature getMetre() {
         return metre;
     }

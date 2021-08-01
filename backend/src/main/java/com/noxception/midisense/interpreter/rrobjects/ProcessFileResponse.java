@@ -18,11 +18,18 @@ public class ProcessFileResponse extends ResponseObject {
         this.message = message;
     }
 
-    /** GETTERS */
+    /**
+     *  GET Method
+     * @return success
+     */
     public Boolean getSuccess() {
         return success;
     }
 
+    /**
+     *  GET Method
+     * @return message
+     */
     public String getMessage() {
         return message;
     }
