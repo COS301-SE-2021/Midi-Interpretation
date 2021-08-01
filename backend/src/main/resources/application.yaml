@@ -152,6 +152,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/displayGetTrackOverviewResponse'
 
+  /intelligence/analyseGenre:
+    post:
+      summary: "Endpoint for analysing the genre of midi file"
+      tags:
+        - "Intelligence"
+      description: analyseGenre
+      operationID: analyseGenre
+      requestBody:
+        description: "Request endpoint to analyse genre"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/intelligenceAnalyseGenreRequest'
+      responses:
+        '200':
+          description: "analyseGenre response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/intelligenceAnalyseGenreResponse
+
   #=================================================
   # SCHEMAS + OBJECTS
   #=================================================
