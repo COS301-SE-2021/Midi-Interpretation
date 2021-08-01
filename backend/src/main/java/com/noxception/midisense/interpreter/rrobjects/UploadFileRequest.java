@@ -15,7 +15,10 @@ public class UploadFileRequest extends RequestObject {
         this.fileContents = fileContents;
     }
 
-    /** GET Method */
+    /**
+     *  GET Method
+     * @return fileContents
+     */
     public byte[] getFileContents() {
         return fileContents;
     }

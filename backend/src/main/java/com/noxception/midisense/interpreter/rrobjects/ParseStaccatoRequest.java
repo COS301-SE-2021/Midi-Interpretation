@@ -17,7 +17,9 @@ public class ParseStaccatoRequest extends RequestObject {
         this.fileDesignator = fileDesignator;
     }
 
-    /** GET Method */
+    /** GET Method
+     * @return fileDesignator
+     */
     public UUID getFileDesignator() {
         return fileDesignator;
     }
