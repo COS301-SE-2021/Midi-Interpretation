@@ -84,6 +84,7 @@
     "react-app-rewired": "^2.1.8",
     "react-dropzone": "^11.3.2",
     "react-responsive-combo-box": "^1.2.4",
+    "redux-form": "^8.3.7",
     "semantic-ui-react": "^2.0.3"
   }
 }

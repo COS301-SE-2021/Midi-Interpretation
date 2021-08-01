@@ -1,4 +1,4 @@
-import React, {Component, Fragment, useMemo} from "react";
+import React, {Component, Fragment, useMemo, useState} from "react";
 import {Grid, Card, Button, Fab, Icon} from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "matx";
 import Dropzone, {useDropzone} from 'react-dropzone'
@@ -191,16 +191,7 @@ class Upload extends Component {
           </li>
       ));
 
-      const options = [{
-          key: 'Jenny Hess',
-          text: 'Jenny Hess',
-          value: 'Jenny Hess',
-      }]
-
       return (
-
-
-
           <div className="m-sm-30" >
               <div className="mb-sm-30">
                   <Breadcrumb
@@ -209,78 +200,63 @@ class Upload extends Component {
                       ]}
                   />
               </div>
+              <SimpleCard title="Welcome to MIDISense">
+                  <p>MIDISense is an interactive system that helps composers and enthusiasts the ability to leverage
+                      the power of Midi as well as a powerful AI in order to gain insight into your music.
+                  </p>
+                  <br/>
+                  <div>
+                      <h6>
+                        To use MIDISense
+                      </h6>
+                      <li>Upload a midi file below</li>
+                      <li>Push the process button</li>
+                      <li>Review the details of your piece</li>
+                  </div>
+                  <br/>
+              </SimpleCard>
+
+              <br/>
+
               <SimpleCard title="Upload File">
-                  <Dropzone onDrop={this.onDrop}>
-                      {({getRootProps, getInputProps}) => (
-                          <section className="container">
-                              <div {...getRootProps({className: 'dropzone'})}>
-                                  <input {...getInputProps()} />
-                                  <p>Drag your midi file here, or click to browse for a file</p>
+
+                          <Grid>
+                              <div
+                                  className={`h-132 w-full border-radius-8 elevation-z6 bg-light-gray flex justify-center items-center cursor-pointer`}
+                              >
+                                  <div >
+                                      <Dropzone onDrop={this.onDrop}>
+                                          {({getRootProps, getInputProps}) => (
+                                              <section className="container">
+                                                  <div {...getRootProps({className: 'dropzone'})}>
+                                                      <input {...getInputProps()} />
+                                                      <div className={"mx-10"}>
+                                                          <Icon className={"center"} fontSize="large">backup</Icon>
+                                                          <p>Drag your midi file here, or click to browse for a file</p>
+                                                      </div>
+                                                  </div>
+                                                  <aside>
+                                                      <ul>{files}</ul>
+                                                  </aside>
+                                              </section>
+                                          )}
+                                      </Dropzone>
+                                  </div>
                               </div>
-                              <aside>
-                                  <ul>{files}</ul>
-                              </aside>
-                          </section>
-                      )}
-                  </Dropzone>
+                          </Grid>
+
+                  <br/>
                   <Button disabled={!this.fileUpload.isSet} color="secondary" onClick={this.uploadFile}>
                       {this.fileUpload.uploadButtonText}
                   </Button>
+                  <Button
+                      variant="outlined"
+                      color="primary"
+                      className={classes.button}
+                      onClick={this.processFile}>
+                      Process Your File
+                  </Button>
               </SimpleCard>
-              <SimpleCard title="Process File">
-                  <Button onClick={this.processFile}> Process Your File</Button>
-              </SimpleCard>
-
-              <SimpleCard title="Piece Metadata">
-                  <div id="music_container">
-                      <div>
-                          <table border={1}>
-                              <thead>
-                              <tr>
-                                  <th>Element</th>
-                                  <th>Value</th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                              <tr>
-                                  <td>Key Signature</td>
-                                  <td >{(this.display.pieceMetadata!=null)?this.display.pieceMetadata['keySignature']:"loading..."}</td>
-                              </tr>
-                              <tr>
-                                  <td rowSpan={2}>Time Signature</td>
-                                  <td >{(this.display.pieceMetadata!=null)?this.display.pieceMetadata['timeSignature']['numBeats']:"loading..."}</td>
-                              </tr>
-                              <tr>
-                                  <td >{(this.display.pieceMetadata!=null)?this.display.pieceMetadata['timeSignature']['beatValue']:"loading..."}</td>
-                              </tr>
-                              <tr>
-                                  <td rowSpan={2}>Tempo Indication</td>
-                                  <td >{(this.display.pieceMetadata!=null)?this.display.pieceMetadata['tempoIndication']:"loading..."}</td>
-                              </tr>
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
-              </SimpleCard>
-
-              <SimpleCard title={"Track Parts"}>
-                  <div>
-                      {(this.display.trackInfo==null)?"Loading...":this.display.trackInfo.map((item) => <div color={"grey"}>{item['trackName']}</div>)}
-                  </div>
-              </SimpleCard>
-
-              <SimpleCard title="Get Track Overview">
-                  <p>Track {this.display.trackIndex+1} : {(this.display.trackInfo==null)?"Loading...":this.display.trackInfo[this.display.trackIndex]['trackName']}</p>
-                  <div>{(this.display.trackInfo==null)?"Loading...":JSON.stringify(this.display.trackOverview)}</div>
-              </SimpleCard>
-
-              <SimpleCard title="Get Track Metadata">
-                  <p>Track {this.display.trackIndex+1} : {(this.display.trackInfo==null)?"Loading...":this.display.trackInfo[this.display.trackIndex]['trackName']}</p>
-                  <div>{(this.display.trackInfo==null)?"Loading...":JSON.stringify(this.display.trackMetadata)}</div>
-              </SimpleCard>
-
-
-
           </div>
 
 
