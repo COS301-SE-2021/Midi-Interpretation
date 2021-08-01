@@ -47,7 +47,7 @@ import java.util.UUID;
  *  * @since 1.0.0
  */
 
-@CrossOrigin(value = MIDISenseConfig.CROSS_ORIGIN)
+//@CrossOrigin(value = MIDISenseConfig.CROSS_ORIGIN)
 @RestController
 public class InterpreterController implements InterpreterApi {
 
