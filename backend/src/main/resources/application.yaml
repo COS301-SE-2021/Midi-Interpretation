@@ -289,4 +289,9 @@ components:
     intelligenceAnalyseGenreResponse:
       type: array
       items:
-        type: string
+        type: object
+        properties:
+          Name:
+            type: string
+          Certainty:
+            type: float
