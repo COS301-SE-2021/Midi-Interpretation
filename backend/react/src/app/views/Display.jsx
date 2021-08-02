@@ -11,7 +11,6 @@ import {
 } from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "../../matx";
 import SimpleExpansionPanel from "../../matx/components/SimpleExpansionPanel";
-import MaxHeightMenu from "../../matx/components/MaxHeightMenu";
 import DiscreteSlider from "../../matx/components/DiscreteSlider";
 import SelectedMenu from "../../matx/components/SelectedMenu";
 
