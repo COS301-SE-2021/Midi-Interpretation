@@ -34,6 +34,82 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         LogType[] monitorList = {LogType.DEBUG};
         this.monitor(monitorList);
     }
+    /** ************************************************************************************ */
+
+    /**GetPieceMetaData*/
+    @Test
+    public void test_GetPieceMetaData_IfPresentInDatabase_ThenAccurateInfo() {
+
+    }
+    @Test
+    public void test_GetPieceMetaData_IfNotInDatabase_ThenException() {
+
+    }
+    @Test
+    public void test_GetPieceMetaData_IfEmptyRequest_ThenException() {
+
+    }
+
+    /**GetTrackInfo*/
+    @Test
+    public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() {
+
+    }
+    @Test
+    public void test_GetTrackInfo_IfNotInDatabase_ThenException() {
+
+    }
+    @Test
+    public void test_GetTrackInfo_IfEmptyRequest_ThenException() {
+
+    }
+
+
+    /**GetTrackMetadata*/
+    @Test
+    public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() {
+
+    }
+    @Test
+    public void test_GetTrackMetadata_IfPresentInDatabaseWithInValidTrackAndInvalidID_ThenAccurateInfo() {
+
+    }
+    @Test
+    public void test_GetTrackMetadata_IfNotInDatabaseAndInvalidTrack_ThenException() {
+
+    }
+    @Test
+    public void test_GetTrackMetadata_IfNotInDatabaseAndValidTrack_ThenException() {
+
+    }
+    @Test
+    public void test_GetTrackMetadata_IfEmptyRequest_ThenException() {
+
+    }
+
+    /**GetTrackOverview*/
+    @Test
+    public void test_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() {
+
+    }
+    @Test
+    public void test_GetTrackOverview_IfPresentInDatabaseWithInValidTrackAndInvalidID_ThenAccurateInfo() {
+
+    }
+    @Test
+    public void test_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() {
+
+    }
+    @Test
+    public void test_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() {
+
+    }
+    @Test
+    public void test_GetTrackOverview_IfEmptyRequest_ThenException() {
+
+    }
+
+    /** ************************************************************************************ */
 
 
     @Test
