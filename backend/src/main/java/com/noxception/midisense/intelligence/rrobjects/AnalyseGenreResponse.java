@@ -9,13 +9,13 @@ public class AnalyseGenreResponse extends ResponseObject {
     /**
      * ATTRIBUTE
      */
-    private final List<String> genreArray;
+    private final String[] genreArray;
 
     /**
      * CONSTRUCTOR
      * @param genreArray an array consisting of the most prevelant genres in the piece
      */
-    public AnalyseGenreResponse(List<String> genreArray) {
+    public AnalyseGenreResponse(String[] genreArray) {
         this.genreArray = genreArray;
     }
 
@@ -23,7 +23,7 @@ public class AnalyseGenreResponse extends ResponseObject {
      * GET method
      * @return genreArray
      */
-    public List<String> getGenreArray() {
+    public String[] getGenreArray() {
         return genreArray;
     }
 }

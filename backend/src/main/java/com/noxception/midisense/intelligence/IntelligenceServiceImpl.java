@@ -1,9 +1,6 @@
 package com.noxception.midisense.intelligence;
 
-import com.noxception.midisense.display.exceptions.InvalidTrackException;
-import com.noxception.midisense.intelligence.rrobjects.AnalyseGenreRequest;
-import com.noxception.midisense.intelligence.rrobjects.AnalyseGenreResponse;
-import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.intelligence.rrobjects.*;
 import org.springframework.stereotype.Service;
 
 
@@ -19,8 +16,19 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class IntelligenceServiceImpl implements IntelligenceService{
+
     @Override
-    public AnalyseGenreResponse analyseGenre(AnalyseGenreRequest request) throws InvalidDesignatorException, InvalidTrackException {
+    public AnalyseGenreResponse analyseGenre(AnalyseGenreRequest req) {
+        return null;
+    }
+
+    @Override
+    public AnalyseChordResponse analyseChord(AnalyseChordRequest req) {
+        return null;
+    }
+
+    @Override
+    public AnalyseTonalityResponse analyseTonality(AnalyseTonalityRequest req) {
         return null;
     }
 }
