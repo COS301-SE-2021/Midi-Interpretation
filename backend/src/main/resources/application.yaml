@@ -283,9 +283,9 @@ components:
       description: "Request for analyse genre"
       type: object
       properties:
-        fileDesignator: Sting
+        fileDesignator: string
 
     intelligenceAnalyseGenreResponse:
       type: array
       items:
-        type: Sting
+        type: string
