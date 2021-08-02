@@ -1,11 +1,13 @@
 package com.noxception.midisense.interpreter.dataclass;
 
 public class KeySignature {
+
     private String signatureName;
     private static final String[] majorSignatures =
             {"Cbmaj","Gbmaj","Dbmaj","Abmaj","Ebmaj","Bbmaj","Fmaj","Cmaj","Gmaj","Dmaj","Amaj","Emaj","Bmaj","F#maj","C#maj"};
     private static final String[] minorSignatures =
             {"Abmin","Ebmin","Bbmin","Fmin","Cmin","Gmin","Dmin","Amin","Emin","Bmin","F#min","C#min","G#min","D#min","A#min"};
+
 
     public KeySignature(){
         this.signatureName = "Cmaj";

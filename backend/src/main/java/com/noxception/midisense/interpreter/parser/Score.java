@@ -16,6 +16,7 @@ import java.util.List;
  * @since 1.0.0
  */
 public class Score {
+
     private final HashMap<Integer,Track> trackMap = new HashMap<>();
     private KeySignature keySignature;
     private TimeSignature timeSignature;
@@ -116,4 +117,5 @@ public class Score {
         }
         return String.format("{\"key_signature\": \"%s\", \"time_signature\": \"%s\", \"tempo_indication\": %d, \"tracks\": [%s]}",this.keySignature,this.timeSignature,this.tempoIndication.getTempo(),String.join(", ",trackList));
     }
+
 }

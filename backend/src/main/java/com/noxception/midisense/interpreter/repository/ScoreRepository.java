@@ -26,4 +26,5 @@ public interface ScoreRepository extends CrudRepository<ScoreEntity, Long> {
      */
     @Query("SELECT s FROM ScoreEntity s WHERE s.fileDesignator=?1")
     Optional<ScoreEntity> findByFileDesignator(String fileDesignator);
+
 }

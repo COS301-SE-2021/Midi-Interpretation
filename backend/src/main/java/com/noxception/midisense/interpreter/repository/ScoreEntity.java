@@ -117,4 +117,5 @@ public class ScoreEntity {
     public void setTempoIndication(int tempoIndication) {
         this.tempoIndication = tempoIndication;
     }
+
 }

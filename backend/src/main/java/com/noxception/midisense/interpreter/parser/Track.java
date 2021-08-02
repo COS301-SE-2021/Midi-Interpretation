@@ -110,4 +110,5 @@ public class Track {
 
         return String.format("{ \"instrument\": \"%s\", \"notes\": [%s]}",getInstrumentString(),notes);
     }
+
 }
