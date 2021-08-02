@@ -5,10 +5,10 @@ import com.noxception.midisense.config.dataclass.RequestObject;
 import java.util.UUID;
 
 public class GetPieceMetadataRequest extends RequestObject {
+
     /**
      * ATTRIBUTE
      */
-
     private final UUID fileDesignator;
 
     /**

@@ -5,6 +5,7 @@ import com.noxception.midisense.config.dataclass.RequestObject;
 import java.util.UUID;
 
 public class GetTrackInfoRequest extends RequestObject {
+
     /**
      * ATTRIBUTE
      */
@@ -25,4 +26,5 @@ public class GetTrackInfoRequest extends RequestObject {
     public UUID getFileDesignator() {
         return fileDesignator;
     }
+
 }

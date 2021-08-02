@@ -5,6 +5,7 @@ import com.noxception.midisense.config.dataclass.RequestObject;
 import java.util.UUID;
 
 public class GetTrackMetadataRequest extends RequestObject {
+
     /**
      * ATTRIBUTES
      */
@@ -36,4 +37,5 @@ public class GetTrackMetadataRequest extends RequestObject {
     public byte getTrackIndex() {
         return trackIndex;
     }
+
 }

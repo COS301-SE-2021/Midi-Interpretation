@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GetTrackInfoResponse extends ResponseObject {
+
     /**
      * ATTRIBUTE
      */
@@ -59,4 +60,5 @@ public class GetTrackInfoResponse extends ResponseObject {
     public String getTrack(byte trackIndex){
        return this.trackMap.get(trackIndex);
     }
+
 }

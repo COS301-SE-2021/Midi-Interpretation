@@ -208,4 +208,5 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
         
         return new GetTrackOverviewResponse(track.getNoteSummary());
     }
+
 }

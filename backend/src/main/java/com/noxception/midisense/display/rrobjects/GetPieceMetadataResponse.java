@@ -6,6 +6,7 @@ import com.noxception.midisense.interpreter.dataclass.TempoIndication;
 import com.noxception.midisense.interpreter.dataclass.TimeSignature;
 
 public class GetPieceMetadataResponse extends ResponseObject {
+
     /**
      * ATTRIBUTES
      */
@@ -48,4 +49,5 @@ public class GetPieceMetadataResponse extends ResponseObject {
     public TempoIndication getTempoIndication() {
         return tempoIndication;
     }
+
 }

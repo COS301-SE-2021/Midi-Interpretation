@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetTrackOverviewResponse extends ResponseObject {
+
     /**
      * ATTRIBUTE
      */
@@ -26,4 +27,5 @@ public class GetTrackOverviewResponse extends ResponseObject {
     public List<String> getPitchArray() {
         return pitchArray;
     }
+
 }
