@@ -84,13 +84,16 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
 
         //else refer to score and get the metadata
         ScoreEntity score = searchResults.get();
+
         //key signature
         KeySignature keySignature = new KeySignature(score.getKeySignature());
+
         //metre
         String metre = score.getTimeSignature();
         int numBeats = Integer.parseInt(metre.substring(0, metre.indexOf("/")));
         int beatValue = Integer.parseInt(metre.substring(metre.indexOf("/")+1));
         TimeSignature timeSignature = new TimeSignature(numBeats,beatValue);
+
         //tempo
         TempoIndication tempoIndication = new TempoIndication(score.getTempoIndication());
 
