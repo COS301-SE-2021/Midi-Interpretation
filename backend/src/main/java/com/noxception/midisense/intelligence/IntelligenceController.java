@@ -31,7 +31,10 @@ public class IntelligenceController implements IntelligenceApi {
             AnalyseGenreRequest req = new AnalyseGenreRequest(fileDesignator);
             AnalyseGenreResponse res = intelligenceService.analyseGenre(req);
             //=======================
-            responseObject.addAll(res.getGenreArray());
+            //responseObject.addAll(res.getGenreArray());
+            for(String genre: res.getGenreArray()){
+                responseObject.add(genre);
+            }
         }
         catch(InvalidDesignatorException | IllegalArgumentException e){
             returnStatus = HttpStatus.BAD_REQUEST;
