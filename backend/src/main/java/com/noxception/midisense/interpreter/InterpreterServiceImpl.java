@@ -113,6 +113,10 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         try {
             //parse file to rich format and get the corresponding score
             UUID fileDesignator = request.getFileDesignator();
+
+            //if the file already exists, then throw error
+            if(scoreExists(fileDesignator)) throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT));
+
             ParseJSONResponse parserResponse = this.parseJSON(new ParseJSONRequest(fileDesignator));
             Score parsedScore = parserResponse.getParsedScore();
 
@@ -127,7 +131,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         }
         catch(InvalidDesignatorException d){
             //The specified file does not exist
-            return new ProcessFileResponse(false, MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+            return new ProcessFileResponse(false, d.getMessage());
         }
 
     }
@@ -364,6 +368,16 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         ScoreEntity savedScore = scoreRepository.save(scoreEntity);
 
         return scoreEntity == savedScore;
+    }
+
+    /** Method to see if a designator already corresponds to an interpreted file
+     *
+     * @param fileDesignator the designator of the work
+     * @return the existence and uniqueness of the interpreted work
+     */
+    public boolean scoreExists(UUID fileDesignator){
+        Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(fileDesignator.toString());
+        return searchResults.isPresent();
     }
 
 }
