@@ -12,6 +12,7 @@ import java.util.Map;
 public class MIDISenseConfig {
 
     public static Map<ConfigurationName, String> configurations = new HashMap<>();
+
     public static enum ConfigurationName {
             CROSS_ORIGIN,
 
@@ -30,9 +31,9 @@ public class MIDISenseConfig {
 
             SUCCESSFUL_PARSING_TEXT
     };
-    public static boolean isSet(ConfigurationName key){
-        return configurations.containsKey(key);
-    }
+
+    public static boolean isSet(ConfigurationName key){ return configurations.containsKey(key); }
+
     public static String configuration(ConfigurationName key){
         return configurations.get(key);
     }

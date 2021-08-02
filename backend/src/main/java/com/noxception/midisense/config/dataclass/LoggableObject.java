@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LoggableObject {
+
     protected List<LogType> monitorList = new ArrayList<>();
 
     protected void monitor(LogType[] types){
