@@ -111,15 +111,11 @@ class MidiSenseService {
         const formData = new FormData();
 
         // Update the formData object
-        formData.append(
-            "myFile",
-            file,
-            file.name
-        );
+        formData.append("file",file);
 
         this.genericRequest(
             this.targetURL+endpoint,
-            formData,
+            file,
             this.uploadHeaders,
             this.targetMethod,
             onSuccess,
@@ -147,8 +143,8 @@ class MidiSenseService {
         body={},
         headers={},
         method="POST",
-        onFailure = (error)=>{},
-        onSuccess = (res)=>{})
+        onSuccess = (res)=>{},
+        onFailure = (error)=>{})
     {
 
         //create a request parametrisation

@@ -9,20 +9,14 @@ import MidiSenseService from "../services/MidiSenseService";
 
 class Upload extends Component {
 
+
   constructor(props){
       super(props);
-      this.onDrop = (files) => {
-          this.fileUpload.uploadButtonText = "UploadFile"
-          this.fileUpload.isSet = true
-          this.fileUpload.files = files
-      };
-      this.fileUpload = {
+      this.state = {
           files: [],
-          isSet: false,
+          isFileSet: false,
           uploadButtonText: "Please upload a file to continue.",
-          fileDesignator: "a1d7a79c-c22a-4ba3-ba7a-5a269dd8da98"
-      };
-      this.display = {
+          fileDesignator: "",
           pieceMetadata: null,
           trackInfo: null,
           trackMetadata: null,
@@ -30,28 +24,72 @@ class Upload extends Component {
           trackIndex: 0
       }
 
+      this.backendService = new MidiSenseService()
+
+      this.onDrop = (files) => {
+          this.setState({
+              files: files,
+              isFileSet: true,
+              uploadButtonText: "UploadFile"
+          })
+      };
+
+      this.uploadFile = () => {
+          const uploadFile = this.state.files[0]
+          console.log("Call to upload file : "+JSON.stringify(uploadFile))
+          this.backendService.interpreterUploadFile(
+              uploadFile,
+
+              (res)=>{
+                  const designator = res['fileDesignator']
+                  localStorage.setItem("fileDesignator", designator)
+                  console.log("Upload successful : assigned designator "+designator)
+                  alert("Successfully uploaded, beginning interpretation")
+                  this.beginInterpretation()
+              },
+
+              (error)=>{
+                  console.error("File upload failed : "+error)
+              }
+          )
+      }
+
+      this.beginInterpretation = () => {
+          const designator = localStorage.getItem("fileDesignator")
+          this.backendService = new MidiSenseService()
+          console.log("Call to interpret current file")
+          this.backendService.interpreterProcessFile(
+              designator,
+
+              (res)=>{
+                  const success = res['success']
+                  const message = res['message']
+                  console.log("Interpretation request "+(success===true?"accepted":"declined")+": "+message)
+
+              },
+
+              (error)=>{
+                  console.error("Interpretation request failed : "+JSON.stringify(error))
+              }
+          )
+      }
   }
+
+
 
   componentDidMount() {
-      this.backendService = new MidiSenseService()
-      alert('Starting interpretation')
-      this.backendService.interpreterProcessFile(
-          "0bc8dcc5-79a0-4b5a-9be5-b9978b9febe1",
-          (res)=>{alert(res)},
-          (error)=>{alert(error)}
-      )
+
   }
 
-    shouldComponentUpdate() {
-        return true;
-    }
-
+  shouldComponentUpdate() {
+    return true;
+  }
 
   render() {
       const classes = makeStyles;
       let { theme } = this.props;
 
-      const files = this.fileUpload.files.map(file => (
+      const files = this.state.files.map(file => (
           <li key={file.name}>
               {file.name} - {file.size} bytes
           </li>
@@ -68,7 +106,7 @@ class Upload extends Component {
               </div>
               <SimpleCard>
                   <div className={"w-400"}>
-                      <img src={process.env.PUBLIC_URL + '/assets/images/logo-full.png'}></img>
+                      <img src={process.env.PUBLIC_URL + '/assets/images/logo-full.png'} alt={"MidiSense Logo"}/>
                   </div>
                   <br/>
                   <p>MIDISense is an interactive system that helps composers and enthusiasts the ability to leverage
@@ -106,7 +144,7 @@ class Upload extends Component {
                                                       </div>
                                                   </div>
                                                   <aside>
-                                                      <ul>{files}</ul>
+                                                      <ul>{JSON.stringify(this.state.files) }</ul>
                                                   </aside>
                                               </section>
                                           )}
@@ -116,14 +154,12 @@ class Upload extends Component {
                           </Grid>
 
                   <br/>
-                  <Button disabled={!this.fileUpload.isSet} color="secondary" onClick={this.uploadFile}>
-                      {this.fileUpload.uploadButtonText}
-                  </Button>
                   <Button
                       variant="outlined"
+                      disabled={!this.state.isFileSet}
                       color="primary"
                       className={classes.button}
-                      onClick={this.processFile}>
+                      onClick={()=>{/*INSERT UPLOAD FILE HERE*/}}>
                       Process Your File
                   </Button>
               </SimpleCard>
