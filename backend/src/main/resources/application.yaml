@@ -283,7 +283,8 @@ components:
       description: "Request for analyse genre"
       type: object
       properties:
-        fileDesignator: string
+        fileDesignator:
+          type: string
 
     intelligenceAnalyseGenreResponse:
       type: array
