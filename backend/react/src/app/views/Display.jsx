@@ -13,6 +13,7 @@ import {Breadcrumb, SimpleCard} from "../../matx";
 import SimpleExpansionPanel from "../../matx/components/SimpleExpansionPanel";
 import DiscreteSlider from "../../matx/components/DiscreteSlider";
 import SelectedMenu from "../../matx/components/SelectedMenu";
+import MidiSenseService from "../services/MidiSenseService";
 
 const subscribarList = [
   {
@@ -80,9 +81,55 @@ const subscribarList = [
   }
 ];
 
+//THESE ARE HARD CODED
+localStorage.setItem("songTitle","This is a song")
+localStorage.setItem("fileDesignator", "0bc8dcc5-79a0-4b5a-9be5-b9978b9febe1")
+//==============================================
+
 const Display = () => {
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5)
+  const [page, setPage] = React.useState(0)
+  const [songTitle, setSongTitle] = React.useState("Song Title")
+  const [keySignature, setKeySignature] = React.useState("Unknown")
+  const [tempoIndication, setTempoIndication] = React.useState("Unknown")
+  const [timeSignature, setTimeSignature] = React.useState({})
+  const [currentTrack, setCurrentTrack] = React.useState({trackNumber: "No Track Selected",trackInstrument:"No Instrument"})
+  const [trackListing, setTrackListing] = React.useState([])
+  const midisenseService = new MidiSenseService()
+
+  const getScoreMetadata = () => {
+    const fileDesignator = localStorage.getItem("fileDesignator")
+    midisenseService.displayGetPieceMetadata(fileDesignator,
+        (res)=>{
+            const keySignature = res['keySignature']
+            const tempoIndication = res['tempoIndication']
+            const timeSignature = res['timeSignature']
+            setKeySignature(keySignature)
+            setTempoIndication(tempoIndication)
+            setTimeSignature(timeSignature)
+        },
+        (error)=>{
+
+        })
+    midisenseService.displayGetTrackInfo(fileDesignator,
+        (res)=>{
+          for (const track of res) {
+              let currentListing = trackListing
+              currentListing.push((track['index']+1)+". "+track['trackName'])
+              setTrackListing(currentListing)
+          }
+        },
+        (error)=>{
+
+        })
+
+  }
+
+  const refreshScoreDetails = ()=>{
+    setSongTitle(localStorage.getItem("songTitle"))
+    getScoreMetadata()
+
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -102,21 +149,25 @@ const Display = () => {
               ]}
           />
         </div>
+        <div>
+          <button onClick={refreshScoreDetails}></button>
+        </div>
         <SimpleCard title="Analysis">
-          <h1>Song Title</h1>
+          <h1>{songTitle}</h1>
           <br/>
           <h4>
             Piece Meta Data:
           </h4>
           <p>
-            <li>Key: <i>example</i></li>
-            <li>Time Signature: <i>example</i></li>
+            <li>Key: {keySignature} </li>
+            <li>Time Signature: {timeSignature['numBeats']+"/"+timeSignature['beatValue']}</li>
+            <li>Tempo Indication: {tempoIndication}</li>
           </p>
         </SimpleCard>
         <br/>
         <SimpleCard>
           <h4>Track</h4>
-          <SelectedMenu></SelectedMenu>
+          <SelectedMenu inputOptions={trackListing}></SelectedMenu>
           <DiscreteSlider></DiscreteSlider>
         </SimpleCard>
         <br/>

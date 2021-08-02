@@ -14,17 +14,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const options = [
-  "Track 1",
-  "Track 2",
-  "Track 3",
-  "Track 4"
-];
-
-export default function SelectedMenu() {
+export default function SelectedMenu({inputOptions}) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const options = inputOptions
+
 
   function handleClickListItem(event) {
     setAnchorEl(event.currentTarget);
@@ -65,7 +60,7 @@ export default function SelectedMenu() {
         {options.map((option, index) => (
           <MenuItem
             key={option}
-            disabled={index === 0}
+            //disabled={index === 0}
             selected={index === selectedIndex}
             onClick={event => handleMenuItemClick(event, index)}
           >
