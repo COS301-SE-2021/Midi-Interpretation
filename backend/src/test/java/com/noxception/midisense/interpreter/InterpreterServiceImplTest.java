@@ -36,6 +36,94 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         this.monitor(monitorList);
     }
 
+    /** ************************************************************************************ */
+
+    /**UploadFile*/
+    @Test
+    public void test_UploadFile_IfValidFile_ThenAccurateInfo() {
+
+    }
+    @Test
+    public void test_UploadFile_IfEmptyFile_ThenException() {
+
+    }
+    @Test
+    public void test_UploadFile_IfHugeFile_ThenException() {
+
+    }
+    @Test
+    public void test_UploadFile_IfNonMidiFile_ThenException() {
+
+    }
+
+    /**ProcessFile*/
+    @Test
+    public void test_ProcessFile_IfNotInStorage_ThenException() {
+
+    }
+    @Test
+    public void test_ProcessFile_IfInStorage_ThenAccurate() {
+
+    }
+    @Test
+    public void test_ProcessFile_IfAlreadyInDatabase_ThenException() {
+
+    }
+
+    /**InterpretMetre*/
+    @Test
+    public void test_InterpretMetre_IfNotInDatabase_ThenException() {
+
+    }
+    @Test
+    public void test_ProcessFile_IfInDatabase_ThenAccurate() {
+
+    }
+    @Test
+    public void test_ProcessFile_IfEmptyRequest_ThenException() {
+
+    }
+
+    /**InterpretTempo*/
+    @Test
+    public void test_InterpretTempo_IfNotInDatabase_ThenException() {
+
+    }
+    @Test
+    public void test_InterpretTempo_IfInDatabase_ThenAccurate() {
+
+    }
+    @Test
+    public void test_InterpretTempo_IfEmptyRequest_ThenException() {
+
+    }
+
+    /**InterpretKeySignature*/
+    @Test
+    public void test_InterpretKeySignature_IfNotInDatabase_ThenException() {
+
+    }
+    @Test
+    public void test_InterpretKeySignature_IfInDatabase_ThenAccurate() {
+
+    }
+    @Test
+    public void test_InterpretKeySignature_IfEmptyRequest_ThenException() {
+
+    }
+
+    /**ParseJSON*/
+    @Test
+    public void test_ParseJSON_IfNotInStorage_ThenException() {
+
+    }
+    @Test
+    public void test_ParseJSON_IfInStorage_ThenAccurate() {
+
+    }
+
+    /** ************************************************************************************ */
+
     @Ignore
     @Test
     @DisplayName("Tests uploading with a valid file byte array, should store in MIDIPool.")
