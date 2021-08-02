@@ -226,6 +226,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
      * @return an object encapsulating the string representation of the interpreted work
      * @throws InvalidDesignatorException if the designator does not refer to an existing file in persisted storage
      */
+    @Deprecated
     @Override
     public ParseStaccatoResponse parseStaccato(ParseStaccatoRequest request) throws InvalidDesignatorException{
 
