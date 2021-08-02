@@ -45,7 +45,7 @@ public class Score {
      */
     public void setKeySignature(byte x, byte y){
         //TODO: revise use
-        this.keySignature = new KeySignature();
+        this.keySignature = new KeySignature((int) x, ((int) y == 1));
     }
 
     /** Associates a key signature to the score
