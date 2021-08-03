@@ -45,7 +45,10 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
     @Test
     public void test_UploadFile_IfEmptyFile_ThenException() {
-
+        InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
+                ()->interpreterService.uploadFile(null),
+                "A null request should not be processed.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
     @Test
     public void test_UploadFile_IfHugeFile_ThenException() {
@@ -67,6 +70,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
     @Test
     public void test_ProcessFile_IfAlreadyInDatabase_ThenException() {
+        ProcessFileRequest req = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.processFile(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT)));
 
     }
 
