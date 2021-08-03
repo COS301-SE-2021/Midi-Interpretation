@@ -7,6 +7,7 @@ import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
+import com.noxception.midisense.interpreter.parser.Track;
 import com.noxception.midisense.interpreter.rrobjects.InterpretMetreRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +21,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,9 +43,31 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     /**GetPieceMetaData*/
     @Test
-    public void test_GetPieceMetaData_IfPresentInDatabase_ThenAccurateInfo() {
+    public void test_GetPieceMetaData_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
+        GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator));
+        GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
+
+        //key sig
+        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
+        boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().getSignatureName());
+        assertTrue(b);
+
+        //tempo
+        assertTrue(res.getTempoIndication().getTempo()>0);
+
+
+        // beat val for time sig
+        int beatValue = res.getTimeSignature().getBeatValue();
+        double c = Math.log(beatValue)/Math.log(2);
+        assertEquals(c,Math.floor(c));
+
+
+        // beat num for time sig
+        int numBeats = res.getTimeSignature().getNumBeats();
+        assertTrue(numBeats>0);
 
     }
+
     @Test
     public void test_GetPieceMetaData_IfNotInDatabase_ThenException() {
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
@@ -51,6 +76,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if a file doesn't exist.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
+
     @Test
     public void test_GetPieceMetaData_IfEmptyRequest_ThenException() {
         InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
@@ -67,6 +93,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         GetTrackInfoResponse res = displayService.getTrackInfo(req);
         assertFalse(res.getTrackMap().isEmpty());
     }
+
     @Test
     public void test_GetTrackInfo_IfNotInDatabase_ThenException() {
         GetTrackInfoRequest req = new GetTrackInfoRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
