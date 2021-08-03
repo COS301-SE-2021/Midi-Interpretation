@@ -89,16 +89,34 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     }
     @Test
     public void test_GetTrackMetadata_IfPresentInDatabaseWithInValidTrackAndInvalidID_ThenAccurateInfo() {
-
-    }
-    @Test
-    public void test_GetTrackMetadata_IfNotInDatabaseAndInvalidTrack_ThenException() {
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator),TestingDictionary.display_all_invalid_track_index);
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackMetadata(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT)));
 
     }
     @Test
     public void test_GetTrackMetadata_IfNotInDatabaseAndValidTrack_ThenException() {
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator),TestingDictionary.display_all_valid_track_index);
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackMetadata(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
 
     }
+
+    @Test
+    public void test_GetTrackMetadata_IfNotInDatabaseAndInvalidTrack_ThenException() {
+        UUID fileDesignator = UUID.randomUUID();
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,TestingDictionary.display_all_invalid_track_index);
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackMetadata(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
+
+    }
+
     @Test
     public void test_GetTrackMetadata_IfEmptyRequest_ThenException() {
         InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
