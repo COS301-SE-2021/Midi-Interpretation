@@ -50,10 +50,14 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     /** ************************************************************************************ */
 
     /**UploadFile*/
+    @Transactional
+    @Rollback(value = true)
     @Test
     public void test_UploadFile_IfValidFile_ThenAccurateInfo() {
 
     }
+    @Transactional
+    @Rollback(value = true)
     @Test
     public void test_UploadFile_IfEmptyFile_ThenException() {
         InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
@@ -61,26 +65,40 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
+    @Transactional
+    @Rollback(value = true)
     @Test
     public void test_UploadFile_IfHugeFile_ThenException() {
 
     }
+    @Transactional
+    @Rollback(value = true)
     @Test
     public void test_UploadFile_IfNonMidiFile_ThenException() {
 
     }
 
     /**ProcessFile*/
+
+    @Transactional
+    @Rollback(value = true)
     @Test
     public void test_ProcessFile_IfNotInStorage_ThenException() {
 
     }
+
+    @Transactional
+    @Rollback(value = true)
     @Test
     public void test_ProcessFile_IfInStorage_ThenAccurate() {
 
     }
+
+    @Transactional
+    @Rollback(value = true)
     @Test
     public void test_ProcessFile_IfAlreadyInDatabase_ThenException() {
+        //TODO: MAKE SURE THE DESIGNATOR PASSED IN IS ALREADY IN DATABASE
         ProcessFileRequest req = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.processFile(req),
@@ -98,6 +116,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if a file doesn't exist.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
+
     @Test
     public void test_InterpretMetre_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
         InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
@@ -110,6 +129,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         int numBeats = res.getMetre().getNumBeats();
         assertTrue(numBeats>0);
     }
+
     @Test
     public void test_InterpretMetre_IfEmptyRequest_ThenException() {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -117,6 +137,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
+
 
     /**InterpretTempo*/
     @Test
@@ -143,6 +164,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
+
 
     /**InterpretKeySignature*/
     @Test
@@ -174,6 +196,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
+
     /**ParseJSON*/
     @Test
     public void test_ParseJSON_IfNotInStorage_ThenException() {
@@ -186,7 +209,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Transactional
-    @Rollback
+    @Rollback(value = true)
     @Test
     public void test_ParseJSON_IfInStorage_ThenAccurate() throws Exception {
 
