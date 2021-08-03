@@ -50,6 +50,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - returned data is accurate
      */
     @Test
+    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
     public void test_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
         //Make request
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator));
@@ -84,6 +85,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Piece Metadata: input [designator for a file not in DB] expect [file does not exist exception]")
     public void test_GetPieceMetadata_IfNotInDatabase_ThenException() {
         //make request
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
@@ -103,6 +105,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Piece Metadata: input [empty] expect [empty request exception]")
     public void test_GetPieceMetadata_IfEmptyRequest_ThenException() {
         // Check that the error is thrown
         InvalidUploadException thrown = assertThrows(
@@ -122,6 +125,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - returned data is accurate
      */
     @Test
+    @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of atleast 1 track]")
     public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
         //Make request
         GetTrackInfoRequest req = new GetTrackInfoRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
@@ -139,6 +143,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Track Info: input [Designator for file not in DB] expect [file does not exist exception]")
     public void test_GetTrackInfo_IfNotInDatabase_ThenException() {
         //Make request
         GetTrackInfoRequest req = new GetTrackInfoRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
@@ -157,6 +162,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Track Info: input [empty] expect [empty request exception]")
     public void test_GetTrackInfo_IfEmptyRequest_ThenException() {
         // Check that the error is thrown
         InvalidUploadException thrown = assertThrows(
@@ -176,6 +182,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - returned data is accurate
      */
     @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
     public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
 
         //Get the designator of a file in the DB
@@ -203,6 +210,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
     public void test_GetTrackMetadata_IfPresentInDatabaseWithInValidTrackAndInvalidID_ThenAccurateInfo() {
         //Make request
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator),TestingDictionary.display_all_invalid_track_index);
