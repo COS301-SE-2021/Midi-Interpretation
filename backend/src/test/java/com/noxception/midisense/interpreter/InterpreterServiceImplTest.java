@@ -99,8 +99,16 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
     @Test
-    public void test_InterpretMetre_IfInDatabase_ThenAccurate() {
+    public void test_InterpretMetre_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
+        InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        InterpretMetreResponse res = interpreterService.interpretMetre(req);
 
+        int beatValue = res.getMetre().getBeatValue();
+        double c = Math.log(beatValue)/Math.log(2);
+        assertEquals(c,Math.floor(c));
+
+        int numBeats = res.getMetre().getNumBeats();
+        assertTrue(numBeats>0);
     }
     @Test
     public void test_InterpretMetre_IfEmptyRequest_ThenException() {
