@@ -6,6 +6,7 @@ import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -43,11 +44,18 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     }
     @Test
     public void test_GetPieceMetaData_IfNotInDatabase_ThenException() {
-
+        GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getPieceMetadata(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
     @Test
     public void test_GetPieceMetaData_IfEmptyRequest_ThenException() {
-
+        InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
+                ()->displayService.getPieceMetadata(null),
+                "A null request should not be processed.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
     /**GetTrackInfo*/
@@ -57,11 +65,18 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     }
     @Test
     public void test_GetTrackInfo_IfNotInDatabase_ThenException() {
-
+        GetTrackInfoRequest req = new GetTrackInfoRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackInfo(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
     @Test
     public void test_GetTrackInfo_IfEmptyRequest_ThenException() {
-
+        InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
+                ()->displayService.getTrackInfo(null),
+                "A null request should not be processed.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
 
@@ -84,6 +99,10 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     }
     @Test
     public void test_GetTrackMetadata_IfEmptyRequest_ThenException() {
+        InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
+                ()->displayService.getTrackMetadata(null),
+                "A null request should not be processed.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
 
     }
 
@@ -106,6 +125,10 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     }
     @Test
     public void test_GetTrackOverview_IfEmptyRequest_ThenException() {
+        InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
+                ()->displayService.getTrackOverview(null),
+                "A null request should not be processed.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
 
     }
 
