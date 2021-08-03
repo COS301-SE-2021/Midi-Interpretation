@@ -7,6 +7,7 @@ import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
+import com.noxception.midisense.interpreter.rrobjects.InterpretMetreRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -58,6 +59,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
+
     /**GetTrackInfo*/
     @Test
     public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() {
@@ -106,6 +108,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     }
 
+
     /**GetTrackOverview*/
     @Test
     public void test_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() {
@@ -116,13 +119,25 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     }
     @Test
-    public void test_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() {
-
-    }
-    @Test
     public void test_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() {
+        GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator),TestingDictionary.display_all_valid_track_index);
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackOverview(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
+    }
+
+    @Test
+    public void test_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() {
+        UUID fileDesignator = UUID.randomUUID();
+        GetTrackOverviewRequest req = new GetTrackOverviewRequest(fileDesignator,TestingDictionary.display_all_invalid_track_index);
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackOverview(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
 
     }
+
     @Test
     public void test_GetTrackOverview_IfEmptyRequest_ThenException() {
         InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
