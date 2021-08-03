@@ -79,13 +79,13 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 ()->interpreterService.processFile(req),
                 "No processing should happen if a file doesn't exist.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT)));
-
     }
 
     /**InterpretMetre*/
     @Test
     public void test_InterpretMetre_IfNotInDatabase_ThenException() {
-        InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        UUID fileDesignator = UUID.randomUUID();
+        InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretMetre(req),
                 "No processing should happen if a file doesn't exist.");
@@ -106,7 +106,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     /**InterpretTempo*/
     @Test
     public void test_InterpretTempo_IfNotInDatabase_ThenException() {
-        InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        UUID fileDesignator = UUID.randomUUID();
+        InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretTempo(req),
                 "No processing should happen if a file doesn't exist.");
@@ -127,7 +128,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     /**InterpretKeySignature*/
     @Test
     public void test_InterpretKeySignature_IfNotInDatabase_ThenException() {
-        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        UUID fileDesignator = UUID.randomUUID();
+        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
                 ()->interpreterService.interpretKeySignature(req),
                 "No processing should happen if a file doesn't exist.");
@@ -146,13 +148,16 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     /**ParseJSON*/
+    @Transactional
+    @Rollback
     @Test
     public void test_ParseJSON_IfNotInStorage_ThenException() {
         UUID fileDesignator = UUID.randomUUID();
+        ParseJSONRequest req = new ParseJSONRequest(fileDesignator);
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.interpretKeySignature(null),
+                ()->interpreterService.parseJSON(req),
                 "A null request should not be processed.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
 
     }
 
