@@ -10,6 +10,7 @@ import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.parser.Score;
 import com.noxception.midisense.interpreter.parser.Track;
 import com.noxception.midisense.interpreter.rrobjects.*;
+import jdk.jfr.Label;
 import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,6 +53,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     /**UploadFile*/
     @Test
+    @DisplayName("Uploading File: input [valid byte stream] expect [valid UUID corresponding to file with same contents]")
     public void test_UploadFile_IfValidFile_ThenAccurateInfo() throws InvalidUploadException, IOException {
 
         // Generate Valid File, put it in request
@@ -81,6 +83,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Uploading File: input [empty byte stream] expect [empty file exception]")
     public void test_UploadFile_IfEmptyFile_ThenException() {
 
         // Generate Empty File, put it in request
@@ -98,9 +101,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         ));
     }
 
-    @Transactional
-    @Rollback(value = true)
     @Test
+    @DisplayName("Uploading File: input [long byte stream] expect [file too large exception]")
     public void test_UploadFile_IfHugeFile_ThenException() {
         // Generate Big File, put it in request
 
@@ -138,6 +140,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Transactional
     @Rollback(value = true)
     @Test
+    @DisplayName("Processing File: input [designator for a non-midi file] expect [file mistype exception]")
     public void test_ProcessFile_IfNonMidiFile_ThenException() throws IOException, InvalidDesignatorException {
 
         //Create a temporary file to parse
@@ -163,6 +166,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Transactional
     @Rollback(value = true)
     @Test
+    @DisplayName("Processing File: input [designator for a file that doesnt exist] expect [file does not exist exception]")
     public void test_ProcessFile_IfNotInStorage_ThenException() {
 
         //Create a fake designator
@@ -187,6 +191,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Transactional
     @Rollback(value = true)
     @Test
+    @DisplayName("Processing File: input [designator for a file that exists] expect [success value and message]")
     public void test_ProcessFile_IfInStorage_ThenAccurate() throws IOException, InvalidDesignatorException {
         //Create a temporary file to parse
         UUID fileDesignator = UUID.randomUUID();
@@ -212,8 +217,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Transactional
     @Rollback(value = true)
     @Test
+    @DisplayName("Processing File: input [designator for a file that has already been processed] expect [file already processed exception]")
     public void test_ProcessFile_IfAlreadyInDatabase_ThenException() {
-        //TODO: MAKE SURE THE DESIGNATOR PASSED IN IS ALREADY IN DATABASE
 
         //Get a designator corresponding to a score in the database - whether or not it actually exists
         UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
@@ -237,6 +242,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     /**InterpretMetre*/
     @Test
+    @DisplayName("Interpret Metre: input [designator for a file not in DB] expect [file does not exist exception]")
     public void test_InterpretMetre_IfNotInDatabase_ThenException() {
 
         //Create a fake designator
@@ -259,6 +265,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
     public void test_InterpretMetre_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
         //Get a designator corresponding to a score in the database - whether or not it actually exists
@@ -283,6 +290,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Interpret Metre: input [empty] expect [empty request exception]")
     public void test_InterpretMetre_IfEmptyRequest_ThenException() {
         //Check that the right error is thrown
         InvalidDesignatorException thrown = assertThrows(
@@ -299,6 +307,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     /**InterpretTempo*/
     @Test
+    @DisplayName("Interpret Tempo: input [designator for a file not in DB] expect [file does not exist exception]")
     public void test_InterpretTempo_IfNotInDatabase_ThenException() {
 
         //Create a fake designator
@@ -321,6 +330,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     }
     @Test
+    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a positive integer]")
     public void test_InterpretTempo_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
         //Get a designator corresponding to a score in the database - whether or not it actually exists
@@ -338,6 +348,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Interpret Tempo: input [empty] expect [empty request exception]")
     public void test_InterpretTempo_IfEmptyRequest_ThenException() {
         //Check that the right error is thrown
         InvalidDesignatorException thrown = assertThrows(
@@ -354,6 +365,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     /**InterpretKeySignature*/
     @Test
+    @DisplayName("Interpret Key Signature: input [designator for a file not in DB] expect [file does not exist exception]")
     public void test_InterpretKeySignature_IfNotInDatabase_ThenException() {
         
         //Create a fake designator
@@ -376,6 +388,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a valid key signature string]")
     public void test_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
         //Get a designator corresponding to a score in the database - whether or not it actually exists
@@ -394,6 +407,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Interpret Key Signature: input [empty] expect [empty request exception]")
     public void test_InterpretKeySignature_IfEmptyRequest_ThenException() {
         //Check that the right error is thrown
         InvalidDesignatorException thrown = assertThrows(
@@ -410,6 +424,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     /**ParseJSON*/
     @Test
+    @DisplayName("Parsing JSON: input [designator for a file that doesnt exist] expect [file does not exist exception]")
     public void test_ParseJSON_IfNotInStorage_ThenException(){
 
         // Generate a new UUID - is unique and so is different from all existing in storage
@@ -435,6 +450,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Transactional
     @Rollback(value = true)
     @Test
+    @DisplayName("Parsing JSON: input [designator for a file that exists] expect [a score with several details met]")
     public void test_ParseJSON_IfInStorage_ThenAccurate() throws Exception {
 
         //Create a temporary file to parse
@@ -454,32 +470,34 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         //delete the temporary file
         assertTrue(new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+testName).delete());
 
-        //1.1 checking size
+        //1.1 There are at most 16 tracks
         Map<Integer, Track> trackMap = score.getTrackMap();
         assertTrue(trackMap.keySet().size()<=16);
 
-        //1.2 key sig
+        //1.2 There is a valid key signature
         String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
         boolean b = Arrays.asList(keyArray).contains(score.getKeySignature().getSignatureName());
         assertTrue(b);
 
-        //1.3 tempo
+        //1.3 The tempo is a positive integer
         assertTrue(score.getTempoIndication().getTempo()>0);
 
 
-        //1.4 beat val for time sig
+        //1.4 The beat value is an integer power of two
         int beatValue = score.getTimeSignature().getBeatValue();
         double c = Math.log(beatValue)/Math.log(2);
         assertEquals(c,Math.floor(c));
 
 
-        //1.5 beat num for time sig
+        //1.5 The beat number is positive
         int numBeats = score.getTimeSignature().getNumBeats();
         assertTrue(numBeats>0);
 
-
+        //1.6 For all tracks
         for (Track t: trackMap.values()){
+            //There is an instrument line
             assertNotEquals(t.getInstrumentString(),"");
+            //There is a sequence of notes
             assertTrue(t.getNoteSequence().size()>0);
         }
 

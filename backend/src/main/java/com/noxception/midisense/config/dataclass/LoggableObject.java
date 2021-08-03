@@ -16,7 +16,7 @@ public class LoggableObject {
     }
 
     //PERTAINING TO LOGGING
-    protected static final Logger logger = LoggerFactory.getLogger(LoggableObject.class);
+    protected final Logger logger = LoggerFactory.getLogger(LoggableObject.class);
     protected void log(String message, LogType logType){
         switch(logType){
             case INFO: if(monitorList.contains(LogType.INFO)) logger.info(message); break;
