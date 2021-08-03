@@ -3,6 +3,7 @@ package com.noxception.midisense.interpreter;
 import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.TestingDictionary;
+import com.noxception.midisense.interpreter.dataclass.KeySignature;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.parser.Score;
@@ -139,9 +140,17 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if a file doesn't exist.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
+    @Transactional
+    @Rollback
     @Test
-    public void test_InterpretKeySignature_IfInDatabase_ThenAccurate() {
+    public void test_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
+        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
+
+        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
+        boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().getSignatureName());
+        assertTrue(b);
     }
     @Test
     public void test_InterpretKeySignature_IfEmptyRequest_ThenException() {
@@ -162,7 +171,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 ()->interpreterService.parseJSON(req),
                 "A null request should not be processed.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
-
     }
 
     @Transactional
