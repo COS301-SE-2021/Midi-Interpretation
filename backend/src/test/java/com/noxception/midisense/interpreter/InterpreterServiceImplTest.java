@@ -5,11 +5,12 @@ import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
+import com.noxception.midisense.interpreter.parser.Score;
+import com.noxception.midisense.interpreter.parser.Track;
 import com.noxception.midisense.interpreter.rrobjects.*;
 import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,10 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.FileWriter;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -144,10 +148,63 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     /**ParseJSON*/
     @Test
     public void test_ParseJSON_IfNotInStorage_ThenException() {
+        UUID fileDesignator = UUID.randomUUID();
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->interpreterService.interpretKeySignature(null),
+                "A null request should not be processed.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
 
     }
+
+    @Transactional
+    @Rollback
     @Test
-    public void test_ParseJSON_IfInStorage_ThenAccurate() {
+    public void test_ParseJSON_IfInStorage_ThenAccurate() throws Exception {
+
+        File file = new File("testData/testData.mid");
+
+
+        UUID fileDesignator = UUID.randomUUID();
+        String testname = fileDesignator.toString()+".mid";
+        File rename = new File("testData/"+testname);
+
+        boolean flag = file.renameTo(rename);
+        if(!flag){
+            throw new Exception("Unable to access file structure");
+        }
+
+        ParseJSONRequest req = new ParseJSONRequest(fileDesignator);
+        ParseJSONResponse res = interpreterService.parseJSON(req);
+        Score score = res.getParsedScore();
+
+        //1.1 checking size
+        Map<Integer, Track> trackMap = score.getTrackMap();
+        assertTrue(trackMap.keySet().size()<=16);
+
+        //1.2 key sig
+        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
+        boolean b = Arrays.asList(keyArray).contains(score.getKeySignature().getSignatureName());
+        assertTrue(b);
+
+        //1.3 tempo
+        assertTrue(score.getTempoIndication().getTempo()>0);
+
+
+        //1.4 beat val for time sig
+        int beatValue = score.getTimeSignature().getBeatValue();
+        double c = Math.log(beatValue)/Math.log(2);
+        assertEquals(c,Math.floor(c));
+
+
+        //1.5 beat num for time sig
+        int numBeats = score.getTimeSignature().getNumBeats();
+        assertTrue(numBeats>0);
+
+
+        for (Track t: trackMap.values()){
+            assertNotEquals(t.getInstrumentString(),"");
+            assertTrue(t.getNoteSequence().size()>0);
+        }
 
     }
 
