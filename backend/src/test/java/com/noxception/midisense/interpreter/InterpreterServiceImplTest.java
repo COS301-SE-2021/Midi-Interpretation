@@ -4,6 +4,7 @@ import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.interpreter.dataclass.KeySignature;
+import com.noxception.midisense.interpreter.dataclass.TempoIndication;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.parser.Score;
@@ -22,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -119,9 +121,13 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
     @Test
-    public void test_InterpretTempo_IfInDatabase_ThenAccurate() {
-
+    public void test_InterpretTempo_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
+        InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        InterpretTempoResponse res = interpreterService.interpretTempo(req);
+        TempoIndication t = res.getTempo();
+        assertTrue(t.getTempo()>0);
     }
+
     @Test
     public void test_InterpretTempo_IfEmptyRequest_ThenException() {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -140,8 +146,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if a file doesn't exist.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
-    @Transactional
-    @Rollback
+
     @Test
     public void test_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
@@ -152,6 +157,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().getSignatureName());
         assertTrue(b);
     }
+
     @Test
     public void test_InterpretKeySignature_IfEmptyRequest_ThenException() {
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
@@ -161,8 +167,6 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     /**ParseJSON*/
-    @Transactional
-    @Rollback
     @Test
     public void test_ParseJSON_IfNotInStorage_ThenException() {
         UUID fileDesignator = UUID.randomUUID();
