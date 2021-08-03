@@ -112,12 +112,21 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     /**GetTrackOverview*/
     @Test
     public void test_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() {
+        GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator),TestingDictionary.display_all_valid_track_index);
+        GetTrackOverviewResponse res = displayService.getTrackOverview(req);
+
 
     }
     @Test
     public void test_GetTrackOverview_IfPresentInDatabaseWithInValidTrackAndInvalidID_ThenAccurateInfo() {
+        GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator),TestingDictionary.display_all_invalid_track_index);
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
+                ()->displayService.getTrackOverview(req),
+                "No processing should happen if a file doesn't exist.");
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT)));
 
     }
+
     @Test
     public void test_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() {
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator),TestingDictionary.display_all_valid_track_index);
