@@ -34,7 +34,7 @@ public class IntelligenceServiceImpl implements IntelligenceService{
         //get the file corresponding to the designator
         UUID fileDesignator = req.getFileDesignator();
 
-        //open the file, get contents as byte stream
+        //TODO: open the file, get contents as byte stream
         //====================================
         byte[] fileContents = new byte[]{0,1};
         //====================================
