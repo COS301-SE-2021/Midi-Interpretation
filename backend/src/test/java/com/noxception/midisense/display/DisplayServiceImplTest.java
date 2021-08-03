@@ -89,25 +89,39 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     /**GetTrackInfo*/
     @Test
     public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
+        //Make request
         GetTrackInfoRequest req = new GetTrackInfoRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
+
+        //Get response
         GetTrackInfoResponse res = displayService.getTrackInfo(req);
+
+        //Check we receive an array back with at least one entry in it
         assertFalse(res.getTrackMap().isEmpty());
     }
 
     @Test
     public void test_GetTrackInfo_IfNotInDatabase_ThenException() {
+        //Make request
         GetTrackInfoRequest req = new GetTrackInfoRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
-        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->displayService.getTrackInfo(req),
-                "No processing should happen if a file doesn't exist.");
+
+        // Check that the error is thrown
+        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,//for a request
+                ()->displayService.getTrackInfo(req),//when function called
+                "No processing should happen if id not in the database.");//because
+
+        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
 
     @Test
     public void test_GetTrackInfo_IfEmptyRequest_ThenException() {
-        InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
-                ()->displayService.getTrackInfo(null),
-                "A null request should not be processed.");
+        // Check that the error is thrown
+        InvalidUploadException thrown = assertThrows(
+                InvalidUploadException.class,//for an empty request
+                ()->displayService.getTrackInfo(null),//when function called
+                "A null request should not be processed.");//because
+
+        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
