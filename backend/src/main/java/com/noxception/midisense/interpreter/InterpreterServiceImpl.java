@@ -129,10 +129,6 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
             //The file is not a valid midi format and interpretation fails
             return new ProcessFileResponse(false, MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
         }
-        catch(InvalidDesignatorException d){
-            //The specified file does not exist
-            return new ProcessFileResponse(false, d.getMessage());
-        }
 
     }
 
@@ -319,6 +315,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         String fileName = MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignator+MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
         FileOutputStream os = new FileOutputStream(fileName);
         os.write(fileContents);
+        os.close();
 
         return fileDesignator;
     }

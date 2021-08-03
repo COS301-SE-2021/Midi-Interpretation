@@ -52,9 +52,34 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     /**UploadFile*/
     @Test
-    public void test_UploadFile_IfValidFile_ThenAccurateInfo() {
+    public void test_UploadFile_IfValidFile_ThenAccurateInfo() throws InvalidUploadException, IOException {
 
+        // Generate Valid File, put it in request
+        byte[] validFile = new byte[]{1,2,3,4,5};
+        UploadFileRequest req = new UploadFileRequest(validFile);
+
+        // Upload the file and get the designator
+        UploadFileResponse res = interpreterService.uploadFile(req);
+        UUID fileDesignator = res.getFileDesignator();
+
+        //check the designator is not null
+        assertNotNull(fileDesignator);
+
+        //check that the resultant file can be opened : was saved to the right directory
+        String filename = MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)
+                +fileDesignator
+                +MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
+        File newlyCreated = new File(filename);
+
+        //check to see that the file contents are the same
+        byte[] newContents = Files.readAllBytes(newlyCreated.toPath());
+        assertArrayEquals(newContents,validFile);
+
+        newlyCreated = new File(filename);
+        //delete the file
+        assertTrue(newlyCreated.delete());
     }
+
     @Test
     public void test_UploadFile_IfEmptyFile_ThenException() {
 
@@ -67,9 +92,9 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 ()->interpreterService.uploadFile(req), //when uploading
                 "An empty file should not be processed"); //because
 
-        // Finally, see that the right message was delivered - File does not exist
+        // Finally, see that the right message was delivered - EMPTY_FILE_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)
+                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_FILE_EXCEPTION_TEXT)
         ));
     }
 
@@ -77,30 +102,35 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Rollback(value = true)
     @Test
     public void test_UploadFile_IfHugeFile_ThenException() {
-
-
         // Generate Big File, put it in request
-        byte[] bigFile = new byte[524290];
-        for(byte i : bigFile) bigFile[i]
 
-        UploadFileRequest req = new UploadFileRequest(new byte[]{});
+        //max file size in Kb
+        int bigIndex = Integer.parseInt(
+                MIDISenseConfig.configuration(
+                        MIDISenseConfig.ConfigurationName.MAX_FILE_UPLOAD_SIZE
+                )
+        );
+
+        //max file size in bytes to be bigger than maximum - 1 larger than specified max
+        bigIndex = 1 + (int) ( bigIndex*Math.pow(2,10));
+        byte[] bigFile = new byte[bigIndex];
+
+        //fill with 0s
+        for(int i=0; i<bigIndex; i++)
+            bigFile[i] = 0;
+
+        UploadFileRequest req = new UploadFileRequest(bigFile);
 
         // Check that the error is thrown
         InvalidUploadException thrown = assertThrows(
-                InvalidUploadException.class, //for an empty file
+                InvalidUploadException.class, //for a huge file
                 ()->interpreterService.uploadFile(req), //when uploading
-                "An empty file should not be processed"); //because
+                "A file exceeding the maximum size should not be processed"); //because
 
-        // Finally, see that the right message was delivered - File does not exist
+        // Finally, see that the right message was delivered - FILE_TOO_LARGE_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)
+                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_TOO_LARGE_EXCEPTION_TEXT)
         ));
-    }
-    @Transactional
-    @Rollback(value = true)
-    @Test
-    public void test_UploadFile_IfNonMidiFile_ThenException() {
-
     }
 
     /**ProcessFile*/
@@ -108,14 +138,74 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Transactional
     @Rollback(value = true)
     @Test
+    public void test_ProcessFile_IfNonMidiFile_ThenException() throws IOException, InvalidDesignatorException {
+
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator +MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+testName);
+        Path originalPath = new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_INVALID_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+
+        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+        ProcessFileResponse res = interpreterService.processFile(req);
+
+        //check that the result is not permitted
+        assertEquals(res.getSuccess(),false);
+        assertEquals(res.getMessage(),MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
+
+        //delete the temporary file
+        assertTrue(new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+testName).delete());
+    }
+
+    @Transactional
+    @Rollback(value = true)
+    @Test
     public void test_ProcessFile_IfNotInStorage_ThenException() {
+
+        //Create a fake designator
+        UUID fileDesignator = UUID.randomUUID();
+
+        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+
+        // Check that the error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for a file that does not exist
+                ()->interpreterService.processFile(req), //when processing
+                "A file that does not exist cannot be interpreted"); //because
+
+        // Finally, see that the right message was delivered - FILE_TOO_LARGE_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(
+                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
+        ));
+
 
     }
 
     @Transactional
     @Rollback(value = true)
     @Test
-    public void test_ProcessFile_IfInStorage_ThenAccurate() {
+    public void test_ProcessFile_IfInStorage_ThenAccurate() throws IOException, InvalidDesignatorException {
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator +MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+testName);
+        Path originalPath = new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+
+        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+        ProcessFileResponse res = interpreterService.processFile(req);
+
+        //Check that the processing is successful
+        assertEquals(res.getSuccess(),true);
+        assertEquals(res.getMessage(),MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.SUCCESSFUL_PARSING_TEXT));
+
+        //delete the temporary file
+        assertTrue(new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+testName).delete());
 
     }
 
@@ -124,90 +214,180 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Test
     public void test_ProcessFile_IfAlreadyInDatabase_ThenException() {
         //TODO: MAKE SURE THE DESIGNATOR PASSED IN IS ALREADY IN DATABASE
-        //ProcessFileRequest req = new ProcessFileRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
-        //InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-         //       ()->interpreterService.processFile(req),
-          //      "No processing should happen if a file doesn't exist.");
-        //assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT)));
+
+        //Get a designator corresponding to a score in the database - whether or not it actually exists
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //make the request
+        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+
+        // Check that the error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for a file that already exists in DB
+                ()->interpreterService.processFile(req), //when processing
+                "A file that already exists in the database cannot be interpreted"); //because
+
+        // Finally, see that the right message was delivered - FILE_ALREADY_EXISTS_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(
+                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT)
+        ));
     }
 
     /**InterpretMetre*/
     @Test
     public void test_InterpretMetre_IfNotInDatabase_ThenException() {
+
+        //Create a fake designator
         UUID fileDesignator = UUID.randomUUID();
+
+        //make the request
         InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
-        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.interpretMetre(req),
-                "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
+
+        // Check that the error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for a file that hasn't been interpreted
+                ()->interpreterService.interpretMetre(req), //when interpreting metre
+                "No processing should happen if a file doesn't exist." //because
+        );
+
+        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(
+                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
+        ));
     }
 
     @Test
     public void test_InterpretMetre_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-        InterpretMetreRequest req = new InterpretMetreRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+
+        //Get a designator corresponding to a score in the database - whether or not it actually exists
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //make a request
+        InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
         InterpretMetreResponse res = interpreterService.interpretMetre(req);
 
+        //TODO: ASK ANDREW ABOUT SPECIFIC VALUES VERSUS CONCRETE SATISFACTION CONDITIONS
+
+        //check that the beat value is a positive power of two
         int beatValue = res.getMetre().getBeatValue();
         double c = Math.log(beatValue)/Math.log(2);
         assertEquals(c,Math.floor(c));
 
+        //check that the number of beats is positive
         int numBeats = res.getMetre().getNumBeats();
         assertTrue(numBeats>0);
     }
 
     @Test
     public void test_InterpretMetre_IfEmptyRequest_ThenException() {
-        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.interpretMetre(null),
-                "A null request should not be processed.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
+        //Check that the right error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for a null request
+                ()->interpreterService.interpretMetre(null), //when interpreting metre
+                "A null request should not be processed."); //because
+
+        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
+        )));
     }
 
 
     /**InterpretTempo*/
     @Test
     public void test_InterpretTempo_IfNotInDatabase_ThenException() {
+
+        //Create a fake designator
         UUID fileDesignator = UUID.randomUUID();
+
+        //make the request
         InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
-        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.interpretTempo(req),
-                "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
+
+        // Check that the error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for a file that hasn't been interpreted
+                ()->interpreterService.interpretTempo(req), //when interpreting tempo
+                "No processing should happen if a file doesn't exist." //because
+        );
+
+        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(
+                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
+        ));
+
     }
     @Test
     public void test_InterpretTempo_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-        InterpretTempoRequest req = new InterpretTempoRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+
+        //Get a designator corresponding to a score in the database - whether or not it actually exists
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //make a request
+        InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
         InterpretTempoResponse res = interpreterService.interpretTempo(req);
+
+        //see that the tempo is a positive integer
         TempoIndication t = res.getTempo();
         assertTrue(t.getTempo()>0);
     }
 
     @Test
     public void test_InterpretTempo_IfEmptyRequest_ThenException() {
-        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.interpretTempo(null),
-                "A null request should not be processed.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
+        //Check that the right error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for a null request
+                ()->interpreterService.interpretTempo(null), //when interpreting Tempo
+                "A null request should not be processed."); //because
+
+        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
+        )));
     }
 
 
     /**InterpretKeySignature*/
     @Test
     public void test_InterpretKeySignature_IfNotInDatabase_ThenException() {
+        
+        //Create a fake designator
         UUID fileDesignator = UUID.randomUUID();
+
+        //make the request
         InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
-        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.interpretKeySignature(req),
-                "No processing should happen if a file doesn't exist.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
+
+        // Check that the error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for a file that hasn't been interpreted
+                ()->interpreterService.interpretKeySignature(req), //when interpreting KeySignature
+                "No processing should happen if a file doesn't exist." //because
+        );
+
+        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(
+                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
+        ));
     }
 
     @Test
     public void test_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
-        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(UUID.fromString(TestingDictionary.interpreter_all_validFileDesignator));
+        //Get a designator corresponding to a score in the database - whether or not it actually exists
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //make a request
+        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
         InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
 
+        //Check that the key is valid
         String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
         boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().getSignatureName());
         assertTrue(b);
@@ -215,10 +395,16 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     public void test_InterpretKeySignature_IfEmptyRequest_ThenException() {
-        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->interpreterService.interpretKeySignature(null),
-                "A null request should not be processed.");
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
+        //Check that the right error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for a null request
+                ()->interpreterService.interpretKeySignature(null), //when interpreting KeySignature
+                "A null request should not be processed."); //because
+
+        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
+        )));
     }
 
 
@@ -236,7 +422,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         InvalidDesignatorException thrown = assertThrows(
                 InvalidDesignatorException.class, //for invalid designator - no file
                 ()->interpreterService.parseJSON(req), //when parsing
-                "No file with this designator should exists in storage"); //because
+                "No file with this designator should exists in storage" //because
+        );
 
         // Finally, see that the right message was delivered - File does not exist
         assertTrue(thrown.getMessage().contains(

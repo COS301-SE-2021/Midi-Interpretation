@@ -17,10 +17,14 @@ public class MIDISenseConfig {
             CROSS_ORIGIN,
 
             MIDI_STORAGE_ROOT,
-            MIDI_TESTING_FILE,
             FILE_FORMAT,
             MAX_FILE_UPLOAD_SIZE,
             DELETE_UPON_INTERPRET,
+
+            MIDI_TESTING_ROOT,
+            MIDI_TESTING_FILE,
+            MIDI_INVALID_TESTING_FILE,
+            MIDI_TESTING_DESIGNATOR,
 
             EMPTY_REQUEST_EXCEPTION_TEXT,
             FILE_TOO_LARGE_EXCEPTION_TEXT,
