@@ -44,25 +44,28 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     /**GetPieceMetaData*/
     @Test
     public void test_GetPieceMetaData_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
+        //Make request
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator));
+
+        //Get response
         GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
 
-        //key sig
+        //Check that the key signature is valid
         String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
         boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().getSignatureName());
         assertTrue(b);
 
-        //tempo
+        //Check the tempo is an integer greater than 0
         assertTrue(res.getTempoIndication().getTempo()>0);
 
 
-        // beat val for time sig
+        // Check the beat value for time signature is a power of two (Greater than one)
         int beatValue = res.getTimeSignature().getBeatValue();
         double c = Math.log(beatValue)/Math.log(2);
         assertEquals(c,Math.floor(c));
 
 
-        // beat num for time sig
+        //Check the beat number for time signature is a positive integer
         int numBeats = res.getTimeSignature().getNumBeats();
         assertTrue(numBeats>0);
 
@@ -70,18 +73,28 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     @Test
     public void test_GetPieceMetaData_IfNotInDatabase_ThenException() {
+        //make request
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
-        InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,
-                ()->displayService.getPieceMetadata(req),
-                "No processing should happen if a file doesn't exist.");
+
+        // Check that the error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class,//for a request
+                ()->displayService.getPieceMetadata(req),//when function called
+                "No processing should happen if a file doesn't exist in the database.");//because
+
+        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
 
     @Test
     public void test_GetPieceMetaData_IfEmptyRequest_ThenException() {
-        InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
-                ()->displayService.getPieceMetadata(null),
-                "A null request should not be processed.");
+        // Check that the error is thrown
+        InvalidUploadException thrown = assertThrows(
+                InvalidUploadException.class,//for an empty request
+                ()->displayService.getPieceMetadata(null),//when function called
+                "A null request should not be processed.");//because
+
+        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT)));
     }
 
@@ -107,7 +120,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         // Check that the error is thrown
         InvalidDesignatorException thrown = assertThrows(InvalidDesignatorException.class,//for a request
                 ()->displayService.getTrackInfo(req),//when function called
-                "No processing should happen if id not in the database.");//because
+                "No processing should happen if file not in the database.");//because
 
         // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
