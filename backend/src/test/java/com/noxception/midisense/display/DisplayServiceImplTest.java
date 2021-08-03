@@ -62,8 +62,10 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     /**GetTrackInfo*/
     @Test
-    public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() {
-
+    public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
+        GetTrackInfoRequest req = new GetTrackInfoRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
+        GetTrackInfoResponse res = displayService.getTrackInfo(req);
+        assertFalse(res.getTrackMap().isEmpty());
     }
     @Test
     public void test_GetTrackInfo_IfNotInDatabase_ThenException() {
@@ -73,6 +75,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if a file doesn't exist.");
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
+
     @Test
     public void test_GetTrackInfo_IfEmptyRequest_ThenException() {
         InvalidUploadException thrown = assertThrows(InvalidUploadException.class,
@@ -84,9 +87,12 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     /**GetTrackMetadata*/
     @Test
-    public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() {
-
+    public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator),TestingDictionary.display_all_valid_track_index);
+        GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
+        assertTrue(res.getTrackString().contains("trackString"));
     }
+
     @Test
     public void test_GetTrackMetadata_IfPresentInDatabaseWithInValidTrackAndInvalidID_ThenAccurateInfo() {
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator),TestingDictionary.display_all_invalid_track_index);
