@@ -283,7 +283,7 @@ public class InterpreterServiceImpl extends LoggableObject implements Interprete
         }
         catch (IOException e) {
             //If the file doesn't exist or cannot be written to by the file system, then the method should be deemed to have failed
-            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_SYSTEM_EXCEPTION_TEXT));
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
         }
         catch (InvalidMidiDataException e) {
             //The file is not a valid midi format and interpretation fails
