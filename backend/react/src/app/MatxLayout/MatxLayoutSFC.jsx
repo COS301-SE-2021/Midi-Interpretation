@@ -13,6 +13,10 @@ import { isEqual, merge } from "lodash";
 import { isMdScreen } from "utils";
 import { MatxSuspense } from "matx";
 
+/**
+ * TODO: commenting and refining
+ */
+
 let tempSettings;
 
 const MatxLayoutSFC = props => {

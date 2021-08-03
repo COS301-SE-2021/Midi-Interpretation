@@ -9,6 +9,13 @@ import { navigations } from "../../navigations";
 import { MatxVerticalNav } from "matx";
 import { setLayoutSettings } from "app/redux/actions/LayoutActions";
 
+/**
+ * TODO: flesh out commenting and add functionality
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 const Sidenav = props => {
   const updateSidebarMode = sidebarSettings => {
     let { settings, setLayoutSettings } = props;

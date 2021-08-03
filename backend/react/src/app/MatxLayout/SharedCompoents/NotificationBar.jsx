@@ -18,6 +18,13 @@ import {
   deleteNotification
 } from "../../redux/actions/NotificationActions";
 
+/**
+ * TODO: Remove or rework
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 const NotificationBar = props => {
   const {
     container,

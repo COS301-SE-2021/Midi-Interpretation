@@ -11,6 +11,12 @@ import SidenavTheme from "../MatxTheme/SidenavTheme/SidenavTheme";
 import { isMdScreen } from "utils";
 import { merge } from "lodash";
 
+/**
+ * TODO: cleanup and commenting
+ * @param theme
+ * @returns {{}}
+ */
+
 const styles = theme => ({});
 
 const IconButtonWhite = withStyles(theme => ({
@@ -76,9 +82,6 @@ class Layout1Sidenav extends Component {
     this.updateSidebarMode({ mode: mode === "compact" ? "full" : "compact" });
   };
 
-  handleSignOut = () => {
-    this.props.logoutUser();
-  };
 
   renderLogoSwitch = () => (
     // Open Brand component file to replace logo and text
@@ -118,16 +121,12 @@ class Layout1Sidenav extends Component {
 Layout1Sidenav.propTypes = {
   setLayoutSettings: PropTypes.func.isRequired,
   setDefaultSettings: PropTypes.func.isRequired,
-  logoutUser: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
   settings: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   setDefaultSettings: PropTypes.func.isRequired,
   setLayoutSettings: PropTypes.func.isRequired,
-  logoutUser: PropTypes.func.isRequired,
-  user: state.user,
   settings: state.layout.settings
 });
 

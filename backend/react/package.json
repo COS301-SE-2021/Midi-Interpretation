@@ -74,6 +74,7 @@
   ],
   "devDependencies": {
     "@babel/runtime": "^7.5.5",
+    "@openapitools/openapi-generator-cli": "^2.3.9",
     "@reach/combobox": "^0.15.1",
     "axios-mock-adapter": "^1.17.0",
     "babel-plugin-import": "^1.13.0",
@@ -85,6 +86,7 @@
     "react-dropzone": "^11.3.2",
     "react-responsive-combo-box": "^1.2.4",
     "redux-form": "^8.3.7",
-    "semantic-ui-react": "^2.0.3"
+    "semantic-ui-react": "^2.0.3",
+    "swagger-ui": "^3.51.2"
   }
 }

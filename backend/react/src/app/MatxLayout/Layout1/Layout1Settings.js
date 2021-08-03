@@ -1,3 +1,8 @@
+/**
+ * TODO: cleanup and commenting
+ * @type {{leftSidebar: {mode: string, bgImgURL: string, show: boolean, theme: string}, topbar: {show: boolean, fixed: boolean, theme: string}}}
+ */
+
 const Layout1Settings = {
   leftSidebar: {
     show: true,

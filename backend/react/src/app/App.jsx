@@ -9,6 +9,12 @@ import routes from "./RootRoutes";
 import { Store } from "./redux/Store";
 import MatxLayout from "./MatxLayout/MatxLayoutSFC";
 
+/**
+ * TODO: flesh out commenting
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 
 const App = () => {
   return (

@@ -10,6 +10,10 @@ import { isEqual, merge } from "lodash";
 import { isMdScreen, getQueryParam } from "utils";
 import { MatxSuspense } from "matx";
 
+/**
+ * TODO: commenting and refining
+ */
+
 class MatxLayout extends Component {
   constructor(props, context) {
     super(props);

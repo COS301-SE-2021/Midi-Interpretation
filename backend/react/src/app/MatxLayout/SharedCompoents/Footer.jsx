@@ -4,6 +4,14 @@ import { Button, Toolbar, AppBar } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
+/**
+ * TODO: Remove or rework
+ * @param theme
+ * @param settings
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 const Footer = ({ theme, settings }) => {
   const footerTheme = settings.themes[settings.footer.theme] || theme;
   return (

@@ -10,6 +10,12 @@ import Layout1Sidenav from "./Layout1Sidenav";
 import AppContext from "app/appContext";
 import { MatxSuspense } from "matx";
 
+/**
+ * TODO: flesh out commenting
+ * @param theme
+ * @returns {{layout: {backgroundColor}}}
+ */
+
 const styles = theme => {
   return {
     layout: {

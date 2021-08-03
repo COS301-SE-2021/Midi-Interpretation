@@ -4,6 +4,11 @@ import { createMuiTheme } from "@material-ui/core/styles";
 import { forEach, merge } from "lodash";
 import themeOptions from "./MatxTheme/themeOptions";
 
+/**
+ * TODO: commenting and refining (remove unnecessary parts)
+ * @returns {{}}
+ */
+
 function createMatxThemes() {
   let themes = {};
 

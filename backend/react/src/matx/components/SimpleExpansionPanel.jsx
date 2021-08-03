@@ -8,6 +8,11 @@ import {Icon, Tooltip} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 
+/**
+ * TODO: flesh out commenting
+ * @type {(props?: any) => ClassNameMap<string>}
+ */
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%"

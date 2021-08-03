@@ -1,3 +1,7 @@
+/**
+ * TODO: flesh out commenting
+ */
+
 class localStorageService {
   ls = window.localStorage
 

@@ -1,3 +1,8 @@
+/**
+ * TODO: flesh out commenting
+ * @type {[{path: string, name: string, icon: string}, {path: string, name: string, icon: string}]}
+ */
+
 export const navigations = [
   {
     name: "Upload",

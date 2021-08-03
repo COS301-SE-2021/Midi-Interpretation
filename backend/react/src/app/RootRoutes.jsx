@@ -4,6 +4,11 @@ import { Redirect } from "react-router-dom";
 import uploadRoutes from "./views/UploadRoutes";
 import displayRoutes from "./views/DisplayRoutes";
 
+/**
+ * TODO: commenting and refining
+ * @type {[{path: string, component: (function()), exact: boolean}]}
+ */
+
 const redirectRoute = [
   {
     path: "/",

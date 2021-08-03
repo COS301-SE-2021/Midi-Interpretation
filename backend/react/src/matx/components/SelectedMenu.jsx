@@ -6,6 +6,11 @@ import ListItemText from "@material-ui/core/ListItemText";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 
+/**
+ * TODO: flesh out commenting
+ * @type {(props?: any) => ClassNameMap<string>}
+ */
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
