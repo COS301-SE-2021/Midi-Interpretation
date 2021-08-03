@@ -42,8 +42,13 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     /** ************************************************************************************ */
 
     /**GetPieceMetaData*/
+    /**Description: tests the getPieceMetadata() function by passing in a valid UUID and
+     * the entry is in the database
+     * precondition - valid UUID in database passed in
+     * post condition - returned data is accurate
+     */
     @Test
-    public void test_GetPieceMetaData_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
+    public void test_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
         //Make request
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator));
 
@@ -71,8 +76,13 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     }
 
+    /**Description: tests the getPieceMetadata() function by passing in a valid UUID
+     * and the entry is not in the database
+     * precondition - valid UUID not in database passed in
+     * post condition - correct exception thrown
+     */
     @Test
-    public void test_GetPieceMetaData_IfNotInDatabase_ThenException() {
+    public void test_GetPieceMetadata_IfNotInDatabase_ThenException() {
         //make request
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator));
 
@@ -86,8 +96,12 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
 
+    /**Description: tests the getTPieceMetadata() function by passing in an empty request
+     * precondition - empty request passed in
+     * post condition - correct exception thrown
+     */
     @Test
-    public void test_GetPieceMetaData_IfEmptyRequest_ThenException() {
+    public void test_GetPieceMetadata_IfEmptyRequest_ThenException() {
         // Check that the error is thrown
         InvalidUploadException thrown = assertThrows(
                 InvalidUploadException.class,//for an empty request
@@ -100,6 +114,11 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
 
     /**GetTrackInfo*/
+    /**Description: tests the getTrackInfo() function by passing in a valid UUID and
+     * the entry is in the database
+     * precondition - valid UUID in database passed in
+     * post condition - returned data is accurate
+     */
     @Test
     public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
         //Make request
@@ -112,6 +131,11 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         assertFalse(res.getTrackMap().isEmpty());
     }
 
+    /**Description: tests the getTrackInfo() function by passing in a valid UUID
+     * and the entry is not in the database
+     * precondition - valid UUID not in database passed in
+     * post condition - correct exception thrown
+     */
     @Test
     public void test_GetTrackInfo_IfNotInDatabase_ThenException() {
         //Make request
@@ -126,6 +150,10 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
 
+    /**Description: tests the getTrackInfo() function by passing in an empty request
+     * precondition - empty request passed in
+     * post condition - correct exception thrown
+     */
     @Test
     public void test_GetTrackInfo_IfEmptyRequest_ThenException() {
         // Check that the error is thrown
@@ -199,7 +227,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     }
 
-    /**Description: tests the getTMetadata() function by passing in a valid UUID and Invalid Track
+    /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track
      * but the entry is not in the database
      * precondition - valid UUID, invalid Track passed in
      * post condition - correct exception thrown
