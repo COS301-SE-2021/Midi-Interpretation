@@ -232,6 +232,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Track Metadata: input [Designator for file not in DB and valid track index] expect [invalid designator exception]")
     public void test_GetTrackMetadata_IfNotInDatabaseAndValidTrack_ThenException() {
         //Make request
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator),TestingDictionary.display_all_valid_track_index);
@@ -253,6 +254,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Track Metadata: input [Designator for file not in DB and invalid track index] expect [invalid designator and invalid track index exceptions]")
     public void test_GetTrackMetadata_IfNotInDatabaseAndInvalidTrack_ThenException() {
         //Generate random UUID
         UUID fileDesignator = UUID.randomUUID();
@@ -275,6 +277,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Track Metadata: input [empty] expect [empty request exception]")
     public void test_GetTrackMetadata_IfEmptyRequest_ThenException() {
         // Check that the error is thrown
         InvalidUploadException thrown = assertThrows(
@@ -295,6 +298,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - returned data is accurate
      */
     @Test
+    @DisplayName("Get Track Overview: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
     public void test_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
         //Make request
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator),TestingDictionary.display_all_valid_track_index);
@@ -312,6 +316,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
     public void test_GetTrackOverview_IfPresentInDatabaseWithInValidTrackAndInvalidID_ThenException() {
         //Make request
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator),TestingDictionary.display_all_invalid_track_index);
@@ -333,6 +338,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Track Overview: input [Designator for file not in DB and valid track index] expect [invalid designator exception]")
     public void test_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() {
         //Make request
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.display_all_invalidFileDesignator),TestingDictionary.display_all_valid_track_index);
@@ -353,6 +359,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Track Overview: input [Designator for file not in DB and invalid track index] expect [invalid designator and invalid track index exceptions]")
     public void test_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() {
         //Generate random UUID
         UUID fileDesignator = UUID.randomUUID();
@@ -376,6 +383,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      * post condition - correct exception thrown
      */
     @Test
+    @DisplayName("Get Track Overview: input [empty] expect [empty request exception]")
     public void test_GetTrackOverview_IfEmptyRequest_ThenException() {
         // Check that the error is thrown
         InvalidUploadException thrown = assertThrows(
