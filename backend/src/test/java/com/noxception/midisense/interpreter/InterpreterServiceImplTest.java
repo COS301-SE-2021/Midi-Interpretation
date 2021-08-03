@@ -52,6 +52,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     /** ************************************************************************************ */
 
     /**UploadFile*/
+    /**Description: tests the uploadFile() function by passing in a valid file and saving
+     * to the right directory
+     * precondition - valid byte stream passed in
+     * post condition - valid UUID from the right directory with the sames contents
+     */
     @Test
     @DisplayName("Uploading File: input [valid byte stream] expect [valid UUID corresponding to file with same contents]")
     public void test_UploadFile_IfValidFile_ThenAccurateInfo() throws InvalidUploadException, IOException {
@@ -82,6 +87,10 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(newlyCreated.delete());
     }
 
+    /**Description: tests the uploadFile() function by passing in an empty file
+     * precondition - empty byte stream passed in
+     * post condition - correct exception thrown
+     */
     @Test
     @DisplayName("Uploading File: input [empty byte stream] expect [empty file exception]")
     public void test_UploadFile_IfEmptyFile_ThenException() {
@@ -101,6 +110,10 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         ));
     }
 
+    /**Description: tests the uploadFile() function by passing in a file that's too large
+     * precondition - byte stream of the max file size passed in
+     * post condition - correct exception thrown
+     */
     @Test
     @DisplayName("Uploading File: input [long byte stream] expect [file too large exception]")
     public void test_UploadFile_IfHugeFile_ThenException() {
@@ -136,7 +149,10 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     /**ProcessFile*/
-
+    /**Description: tests the processFile() function by passing in a non-midi file
+     * precondition - fileDesignator for a non-midi file passed in
+     * post condition - correct exception thrown
+     */
     @Transactional
     @Rollback(value = true)
     @Test
@@ -163,6 +179,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+testName).delete());
     }
 
+    /**Description: tests the processFile() function by passing in a midi file designator
+     * that is not in storage
+     * precondition - fileDesignator for a midi file that doesn't exist in storage passed in
+     * post condition - correct exception thrown
+     */
     @Transactional
     @Rollback(value = true)
     @Test
@@ -188,6 +209,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     }
 
+    /**Description: tests the processFile() function by passing in a midi file designator that
+     * exists in storage
+     * precondition - valid fileDesignator in storage passed in
+     * post condition - appropriate success message returned
+     */
     @Transactional
     @Rollback(value = true)
     @Test
@@ -214,6 +240,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     }
 
+    /**Description: tests the processFile() function by passing in a midi file designator that
+     * already exists in the database
+     * precondition - fileDesignator for file already processed is passed in
+     * post condition - appropriate exception thrown
+     */
     @Transactional
     @Rollback(value = true)
     @Test
@@ -241,6 +272,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     }
 
     /**InterpretMetre*/
+    /**Description: tests the interpretMetre() function by passing in a midi file designator that
+     * does not exist in the database
+     * precondition - fileDesignator for file not in Database passed in
+     * post condition - appropriate exception thrown
+     */
     @Test
     @DisplayName("Interpret Metre: input [designator for a file not in DB] expect [file does not exist exception]")
     public void test_InterpretMetre_IfNotInDatabase_ThenException() {
@@ -264,6 +300,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         ));
     }
 
+    /**Description: tests the interpretMetre() function by passing in a midi file designator that
+     * does exist in the database
+     * precondition - fileDesignator for midi-file in Database passed in
+     * post condition - Receive beat value and beat number
+     */
     @Test
     @DisplayName("Interpret Metre: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
     public void test_InterpretMetre_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
