@@ -31,7 +31,9 @@ public class MIDISenseConfig {
             INVALID_MIDI_EXCEPTION_TEXT,
             INVALID_TRACK_INDEX_EXCEPTION_TEXT,
 
-            SUCCESSFUL_PARSING_TEXT
+            SUCCESSFUL_PARSING_TEXT,
+
+            MISSING_ANALYSIS_STRATEGY_EXCEPTION_TEXT
     };
 
     public static boolean isSet(ConfigurationName key){ return configurations.containsKey(key); }

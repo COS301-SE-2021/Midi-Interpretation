@@ -1,6 +1,8 @@
 package com.noxception.midisense.intelligence;
 
 import com.noxception.midisense.api.IntelligenceApi;
+import com.noxception.midisense.intelligence.dataclass.GenrePredication;
+import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @CrossOrigin("*")
@@ -32,11 +35,14 @@ public class IntelligenceController implements IntelligenceApi {
             AnalyseGenreResponse res = intelligenceService.analyseGenre(req);
             //=======================
             //responseObject.addAll(res.getGenreArray());
-            for(String genre: res.getGenreArray()){
-                responseObject.add(genre);
+            for(GenrePredication genre: res.getGenreArray()){
+                IntelligenceAnalyseGenreResponseInner inner = new IntelligenceAnalyseGenreResponseInner();
+                inner.setName(genre.getGenreName());
+                inner.setCertainty((float) genre.getCertainty());
+                responseObject.add(inner);
             }
         }
-        catch(InvalidDesignatorException | IllegalArgumentException e){
+        catch(InvalidDesignatorException | IllegalArgumentException | MissingStrategyException e){
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject = null;
         }
