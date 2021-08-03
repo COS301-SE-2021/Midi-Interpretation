@@ -140,6 +140,11 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
 
     /**GetTrackMetadata*/
+    /**Description: tests the getTrackMetadata() function by passing in a valid UUID and valid Track
+     * and the entry is in the database
+     * precondition - valid UUID, valid Track passed in
+     * post condition - returned data is accurate
+     */
     @Test
     public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
         //Make request
@@ -152,6 +157,11 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         assertTrue(res.getTrackString().contains("trackString"));
     }
 
+    /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track
+     * and the entry is in the database
+     * precondition - valid UUID, invalid Track passed in
+     * post condition - correct exception thrown
+     */
     @Test
     public void test_GetTrackMetadata_IfPresentInDatabaseWithInValidTrackAndInvalidID_ThenAccurateInfo() {
         //Make request
@@ -167,6 +177,12 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT)));
 
     }
+
+    /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Valid Track
+     * but the entry is not in the database
+     * precondition - valid UUID, valid Track passed in
+     * post condition - correct exception thrown
+     */
     @Test
     public void test_GetTrackMetadata_IfNotInDatabaseAndValidTrack_ThenException() {
         //Make request
@@ -183,6 +199,11 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     }
 
+    /**Description: tests the getTMetadata() function by passing in a valid UUID and Invalid Track
+     * but the entry is not in the database
+     * precondition - valid UUID, invalid Track passed in
+     * post condition - correct exception thrown
+     */
     @Test
     public void test_GetTrackMetadata_IfNotInDatabaseAndInvalidTrack_ThenException() {
         //Generate random UUID
@@ -201,6 +222,10 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     }
 
+    /**Description: tests the getTrackMetadata() function by passing in an empty request
+     * precondition - empty request passed in
+     * post condition - correct exception thrown
+     */
     @Test
     public void test_GetTrackMetadata_IfEmptyRequest_ThenException() {
         // Check that the error is thrown
@@ -216,6 +241,11 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
 
     /**GetTrackOverview*/
+    /**Description: tests the getTrackOverview() function by passing in a valid UUID and valid Track
+     * and the entry is in the database
+     * precondition - valid UUID, valid Track passed in
+     * post condition - returned data is accurate
+     */
     @Test
     public void test_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
         //Make request
@@ -228,8 +258,13 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         assertFalse(res.getPitchArray().isEmpty());
     }
 
+    /**Description: tests the getTrackOverview() function by passing in a valid UUID and Invalid Track
+     * and the entry is in the database
+     * precondition - valid UUID, invalid Track passed in
+     * post condition - correct exception thrown
+     */
     @Test
-    public void test_GetTrackOverview_IfPresentInDatabaseWithInValidTrackAndInvalidID_ThenAccurateInfo() {
+    public void test_GetTrackOverview_IfPresentInDatabaseWithInValidTrackAndInvalidID_ThenException() {
         //Make request
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator),TestingDictionary.display_all_invalid_track_index);
 
@@ -244,6 +279,11 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     }
 
+    /**Description: tests the getTrackOverview() function by passing in a valid UUID and Valid Track
+     * but the entry is not in the database
+     * precondition - valid UUID, valid Track passed in
+     * post condition - correct exception thrown
+     */
     @Test
     public void test_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() {
         //Make request
@@ -259,6 +299,11 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
     }
 
+    /**Description: tests the getTrackOverview() function by passing in a valid UUID and Invalid Track
+     * but the entry is not in the database
+     * precondition - valid UUID, invalid Track passed in
+     * post condition - correct exception thrown
+     */
     @Test
     public void test_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() {
         //Generate random UUID
@@ -278,6 +323,10 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
     }
 
+    /**Description: tests the getTrackOverview() function by passing in an empty request
+     * precondition - empty request passed in
+     * post condition - correct exception thrown
+     */
     @Test
     public void test_GetTrackOverview_IfEmptyRequest_ThenException() {
         // Check that the error is thrown
