@@ -17,6 +17,7 @@ public class MIDISenseConfig {
             CROSS_ORIGIN,
 
             MIDI_STORAGE_ROOT,
+            MIDI_TESTING_FILE,
             FILE_FORMAT,
             MAX_FILE_UPLOAD_SIZE,
             DELETE_UPON_INTERPRET,

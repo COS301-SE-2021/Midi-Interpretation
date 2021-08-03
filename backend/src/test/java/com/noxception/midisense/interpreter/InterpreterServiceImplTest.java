@@ -21,6 +21,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
@@ -166,21 +170,22 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     @Test
     public void test_ParseJSON_IfInStorage_ThenAccurate() throws Exception {
 
-        File file = new File("testData/testData.mid");
-
-
+        //Create a temporary file to parse
         UUID fileDesignator = UUID.randomUUID();
         String testname = fileDesignator.toString()+".mid";
-        File rename = new File("testData/"+testname);
 
-        boolean flag = file.renameTo(rename);
-        if(!flag){
-            throw new Exception("Unable to access file structure");
-        }
+        //copy temp file from testing data
+        Path copied = Paths.get(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+testname);
+        Path originalPath = new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
 
+        //interpret the work
         ParseJSONRequest req = new ParseJSONRequest(fileDesignator);
         ParseJSONResponse res = interpreterService.parseJSON(req);
         Score score = res.getParsedScore();
+
+        //delete the temporary file
+        assertTrue(new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)+testname).delete());
 
         //1.1 checking size
         Map<Integer, Track> trackMap = score.getTrackMap();
