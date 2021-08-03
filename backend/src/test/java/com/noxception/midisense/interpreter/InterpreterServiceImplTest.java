@@ -330,6 +330,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(numBeats>0);
     }
 
+    /**
+     * Description: tests the interpretMetre() function by passing in a midi fileDesignator that does not exist in the database
+     * precondition - no fileDesignator was passed into the function
+     * post condition - appropriate exception thrown
+     */
     @Test
     @DisplayName("Interpret Metre: input [empty] expect [empty request exception]")
     public void test_InterpretMetre_IfEmptyRequest_ThenException() {
@@ -345,8 +350,12 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         )));
     }
 
-
     /**InterpretTempo*/
+    /**
+     * Description: tests the interpretTempo() function by passing in a midi fileDesignator that does not exist in the database
+     * precondition - fileDesignator given is not in the database
+     * post condition - appropriate exception thrown
+     */
     @Test
     @DisplayName("Interpret Tempo: input [designator for a file not in DB] expect [file does not exist exception]")
     public void test_InterpretTempo_IfNotInDatabase_ThenException() {
@@ -370,6 +379,12 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         ));
 
     }
+
+    /**
+     * Description: tests the interpretTempo() function by passing in a midi fileDesignator that exists in the database
+     * precondition - fileDesignator for midi-file in Database passed in
+     * post condition - appropriate exception thrown
+     */
     @Test
     @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a positive integer]")
     public void test_InterpretTempo_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
@@ -388,6 +403,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(t.getTempo()>0);
     }
 
+    /**
+     * Description: tests the interpretTempo() function by passing in no parameters
+     * precondition - no parameters passed in
+     * post condition - appropriate exception thrown
+     */
     @Test
     @DisplayName("Interpret Tempo: input [empty] expect [empty request exception]")
     public void test_InterpretTempo_IfEmptyRequest_ThenException() {
@@ -405,6 +425,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
 
     /**InterpretKeySignature*/
+    /**
+     * Description: tests the interpretSignature() function by passing in a fileDesignator that is not in the database
+     * precondition - fileDesignator is not in the database
+     * post condition - appropriate exception thrown
+     */
     @Test
     @DisplayName("Interpret Key Signature: input [designator for a file not in DB] expect [file does not exist exception]")
     public void test_InterpretKeySignature_IfNotInDatabase_ThenException() {
@@ -427,7 +452,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
         ));
     }
-
+    /**
+     * Description: tests the interpretSignature() function by passing in a fileDesignator that is in the database
+     * precondition - fileDesignator is in the database
+     * post condition - Receive key signature and signature name
+     */
     @Test
     @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a valid key signature string]")
     public void test_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
@@ -447,6 +476,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         assertTrue(b);
     }
 
+    /**
+     * Description: tests the interpretSignature() function by passing in no parameters
+     * precondition - no parameters passed in
+     * post condition - appropriate exception thrown
+     */
     @Test
     @DisplayName("Interpret Key Signature: input [empty] expect [empty request exception]")
     public void test_InterpretKeySignature_IfEmptyRequest_ThenException() {
@@ -464,6 +498,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
 
     /**ParseJSON*/
+    /**
+     * Description: tests the parseJSON() function by passing in a midi file designator that is not in storage
+     * precondition - fileDesignator for a midi file that doesn't exist in storage passed in
+     * post condition - appropriate exception thrown
+     */
     @Test
     @DisplayName("Parsing JSON: input [designator for a file that doesnt exist] expect [file does not exist exception]")
     public void test_ParseJSON_IfNotInStorage_ThenException(){
@@ -488,6 +527,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
     }
 
+    /**
+     * Description: tests the parseJSON() function by passing in a midi file designator that is in storage
+     * precondition - fileDesignator for a midi file that exists in storage passed in
+     * post condition - appropriate success message received
+     */
     @Transactional
     @Rollback(value = true)
     @Test
