@@ -93,7 +93,7 @@ public class Track {
         }
         String notes = String.join(", ",items);
 
-        return String.format("{\"notes\": [%s]}",notes);
+        return String.format("{"+"\"notes\": [%s]"+"}",notes);
     }
 
     /** A method that returns a high-level, hierarchical representation of a Track

@@ -24,6 +24,8 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -175,14 +177,24 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
      */
     @Test
     public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
         //Make request
-        GetTrackMetadataRequest req = new GetTrackMetadataRequest(UUID.fromString(TestingDictionary.display_all_validFileDesignator),TestingDictionary.display_all_valid_track_index);
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator, (byte) 0);
 
         //Get response
         GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
 
-        //Check that the substring is in the Track Metadata
-        assertTrue(res.getTrackString().contains("trackString"));
+        //Check that there is a substring for an inner array with at least one item
+        Pattern validResponse = Pattern.compile("\\{\\\"notes\\\": \\[(\\{.+\\})*\\]\\}",Pattern.MULTILINE);
+        Matcher matcher = validResponse.matcher(res.getTrackString());
+
+        //see that the substring is present
+        assertTrue(matcher.find());
     }
 
     /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track
