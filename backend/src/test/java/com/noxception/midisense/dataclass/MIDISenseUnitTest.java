@@ -1,13 +1,9 @@
 package com.noxception.midisense.dataclass;
 
 
-import com.noxception.midisense.config.dataclass.LoggableObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Field;
 
-public class MIDISenseUnitTest extends LoggableObject {
+public class MIDISenseUnitTest {
 
     protected void logAllFields(Object o){
         for (Field field : o.getClass().getDeclaredFields()) {

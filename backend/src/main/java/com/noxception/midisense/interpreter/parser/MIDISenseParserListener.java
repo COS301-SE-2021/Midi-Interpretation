@@ -1,6 +1,5 @@
 package com.noxception.midisense.interpreter.parser;
 
-import com.noxception.midisense.config.dataclass.LoggableObject;
 import org.jfugue.parser.ParserListener;
 import org.jfugue.theory.Chord;
 import org.jfugue.theory.Note;
@@ -28,7 +27,7 @@ import org.jfugue.theory.Note;
  * @author Adrian Rae
  * @since 1.0.0
  */
-public class MIDISenseParserListener extends LoggableObject implements ParserListener{
+public class MIDISenseParserListener implements ParserListener{
 
 
     private int trackIndex = -1;

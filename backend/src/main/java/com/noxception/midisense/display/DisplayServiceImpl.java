@@ -1,7 +1,6 @@
 package com.noxception.midisense.display;
 
 import com.noxception.midisense.config.MIDISenseConfig;
-import com.noxception.midisense.config.dataclass.LoggableObject;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.InterpreterServiceImpl;
@@ -36,7 +35,7 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Service
-public class DisplayServiceImpl extends LoggableObject implements DisplayService{
+public class DisplayServiceImpl implements DisplayService{
 
     @Autowired
     InterpreterServiceImpl interpreterService;

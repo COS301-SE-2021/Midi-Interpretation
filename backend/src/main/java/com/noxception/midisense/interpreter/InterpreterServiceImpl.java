@@ -1,7 +1,6 @@
 package com.noxception.midisense.interpreter;
 
 import com.noxception.midisense.config.MIDISenseConfig;
-import com.noxception.midisense.config.dataclass.LoggableObject;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.parser.MIDISenseParserListener;
@@ -16,11 +15,6 @@ import org.jfugue.midi.MidiParser;
 import org.jfugue.pattern.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.transaction.Transactional;
@@ -42,7 +36,7 @@ import java.util.UUID;
  * @since 1.0.0
  */
 @Service
-public class InterpreterServiceImpl extends LoggableObject implements InterpreterService{
+public class InterpreterServiceImpl implements InterpreterService{
 
 
     @Autowired
