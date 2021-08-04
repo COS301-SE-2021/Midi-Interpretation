@@ -4,6 +4,7 @@ import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import com.noxception.midisense.models.InterpreterUploadFileRequest;
+import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -20,10 +21,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -57,7 +55,13 @@ class InterpreterControllerIntegrationTest extends MidiSenseIntegrationTest{
         Assertions.assertEquals(200,result.getResponse().getStatus());
 
         //TODO: Want a designator
-        String designator = "Get designator here";
+        List<Integer> contents = request.getFileContents();
+        StringBuilder des = new StringBuilder();
+        Iterator<Integer> i = contents.iterator();
+        while(i.hasNext()){
+            des.append(i.next());
+        }
+        String designator = des.toString();
 
         //Check to see whether is valid
         UUID fileDesignator = UUID.fromString(designator);
