@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class DisplayControllerIntegrationTest {
+public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
 
     @Autowired
     private MockMvc mvc;

@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+@Deprecated
 public class TestingDictionary {
 
     //naming convention is <subsystem>_<use case>_<association>

@@ -24,10 +24,22 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class InterpreterControllerIntegrationTest {
+class InterpreterControllerIntegrationTest extends MidiSenseIntegrationTest{
 
     @Autowired
     private MockMvc mvc;
+
+//    @Transactional
+//    @Rollback(value = true)
+//    @Test
+//    void test_UploadFile_IfValidFileContents_ThenPresentDesignator(){
+//
+//        InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
+//        //Generate a list of integer that corresponds to valid byte stream.
+//
+//        MvcResult result = mockRequest("interpreter","uploadFile",request, mvc)
+//    }
+
 
     @Ignore
     @Test
