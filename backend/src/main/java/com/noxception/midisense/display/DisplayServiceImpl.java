@@ -51,25 +51,7 @@ public class DisplayServiceImpl implements DisplayService{
     @Transactional
     @Override
     public GetPieceMetadataResponse getPieceMetadata(GetPieceMetadataRequest request) throws InvalidDesignatorException {
-
-        //METHOD 1 - Non-persistent lookup: deprecated
-
-//        if (request==null)
-//            //an empty request should reflect as a null designator
-//            throw new InvalidDesignatorException(MIDISenseConfig.EMPTY_REQUEST_EXCEPTION_TEXT);
-//
-//        //else get the designator
-//        UUID fileDesignator = request.getFileDesignator();
-//
-//        //interpret the piece-wise metadata individually
-//        TempoIndication tempo = interpreterService.interpretTempo(new InterpretTempoRequest(fileDesignator)).getTempo();
-//        TimeSignature timeSignature = interpreterService.interpretMetre(new InterpretMetreRequest(fileDesignator)).getMetre();
-//        KeySignature keySignature = interpreterService.interpretKeySignature(new InterpretKeySignatureRequest(fileDesignator)).getKeySignature();
-//
-//        return new GetPieceMetadataResponse(keySignature,timeSignature,tempo);
-
-        //METHOD 2 - Persistent lookup
-
+        
         if(request==null)
             //an empty request should reflect as a null designator
             throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
