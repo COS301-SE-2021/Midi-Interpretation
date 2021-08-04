@@ -1,45 +1,70 @@
 package com.noxception.midisense.interpreter.repository;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
+
+/** Class that represents an entity equivalent of the {@link com.noxception.midisense.interpreter.parser.Track} class
+ * that can be saved as a record in a CRUD repository
+ *
+ * @author Adrian Rae
+ * @author Claudio Teixeira
+ * @author Hendro Smit
+ * @author Mbuso Shakoane
+ * @author Rearabetswe Maeko
+ * @since 1.0.0
+ */
 @Entity
 public class TrackEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long trackID;
+
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<byte[]> notes = new ArrayList<>();
+    private final List<byte[]> notes = new ArrayList<>();
+
     private String instrumentName;
 
     public TrackEntity() {
     }
 
+    /**
+     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
+     */
     public Long getTrackID() {
         return trackID;
     }
 
+    /**
+     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
+     */
     public List<byte[]> getNotes() {
         return notes;
     }
 
+    /**
+     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
+     */
     public String getInstrumentName() {
         return instrumentName;
     }
 
+    /** A method that allocates a string of interpreted notes to a lookup table of note BLOB objects
+     * where windows of 255 bytes are used
+     *
+     * @param notes the interpreted string of note data
+     */
     public void setNotes(String notes) {
         byte[] inArray = notes.getBytes();
         int len = inArray.length;
         int segmentSize = 255;
         int i = 0;
         int window = len/segmentSize;
-        while(i<= window){
-            if(i != window){
+        while (i<= window){
+            if (i != window){
                 byte[] portion = Arrays.copyOfRange(inArray,i*segmentSize,(i+1)*segmentSize);
                 this.notes.add(portion);
             }
@@ -51,6 +76,10 @@ public class TrackEntity {
         }
     }
 
+    /** Method to reconstruct a string of interpreted notes based on windows of byte arrays stored in the repository
+     *
+     * @return the interpreted string of notes corresponding to the collection of BLOB data
+     */
     public String getRichTextNotes(){
         List<Byte> reconstruct = new ArrayList<>();
         for(byte[] part: notes){
@@ -62,6 +91,9 @@ public class TrackEntity {
 
     }
 
+    /**
+     * Is a condensed version of the corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
+     */
     public List<String> getNoteSummary(){
         String stepSensitive = "\"step\": \"";
         String octaveSensitive = "\"octave\": ";
@@ -84,7 +116,11 @@ public class TrackEntity {
         return newList;
     }
 
+    /**
+     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
+     */
     public void setInstrumentName(String instrumentName) {
         this.instrumentName = instrumentName;
     }
+
 }
