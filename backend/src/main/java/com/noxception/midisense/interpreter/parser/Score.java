@@ -45,7 +45,6 @@ public class Score {
      * @param y the key signature relative to number of accidentals
      */
     public void setKeySignature(byte x, byte y){
-        //TODO: revise use
         this.keySignature = new KeySignature((int) x, ((int) y == 1));
     }
 
