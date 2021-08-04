@@ -51,8 +51,6 @@ import java.util.UUID;
 @RestController
 public class InterpreterController implements InterpreterApi {
 
-    //TODO: WORK ON CONTROLLER
-
     @Autowired
     InterpreterServiceImpl interpreterService;
 
@@ -67,9 +65,12 @@ public class InterpreterController implements InterpreterApi {
 
     @Override
     public ResponseEntity<InterpreterProcessFileResponse> processFile(InterpreterProcessFileRequest body) {
+
         InterpreterProcessFileResponse responseObject = new InterpreterProcessFileResponse();
         HttpStatus returnStatus = HttpStatus.OK;
+
         try{
+
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
@@ -77,11 +78,15 @@ public class InterpreterController implements InterpreterApi {
 
             responseObject.setMessage(res.getMessage());
             responseObject.setSuccess(res.getSuccess());
+
         }
         catch (InvalidDesignatorException | IllegalArgumentException e) {
+
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject = null;
+
         }
+
         return new ResponseEntity<>(responseObject,returnStatus);
     }
 
@@ -99,59 +104,36 @@ public class InterpreterController implements InterpreterApi {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<InterpreterUploadFileResponse> uploadFile(@RequestParam("file") MultipartFile file) {
-        //method body
+
         InterpreterUploadFileResponse responseObject = new InterpreterUploadFileResponse();
         HttpStatus returnStatus = HttpStatus.OK;
+
         try{
+
             byte[] fileContents = file.getBytes();
+
             UploadFileRequest req = new UploadFileRequest(fileContents);
             UploadFileResponse res = interpreterService.uploadFile(req);
+
             responseObject.setFileDesignator(res.getFileDesignator().toString());
+
         }
         catch (IllegalArgumentException | InvalidUploadException | IOException e) {
+
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject = null;
+
         }
+
         return new ResponseEntity<>(responseObject,returnStatus);
 
     }
 
-//    @Override
-//    public ResponseEntity<InterpreterUploadFileResponse> uploadFile(Object body) {
-//        InterpreterUploadFileResponse responseObject = new InterpreterUploadFileResponse();
-//        HttpStatus returnStatus = HttpStatus.OK;
-//        try{
-//            UploadFileRequest req = new UploadFileRequest(body);
-//            UploadFileResponse res = interpreterService.uploadFile(req);
-//            responseObject.setFileDesignator(res.getFileDesignator().toString());
-//        }
-//        catch (IllegalArgumentException | InvalidUploadException e) {
-//            returnStatus = HttpStatus.BAD_REQUEST;
-//            responseObject = null;
-//        }
-//        return new ResponseEntity<>(responseObject,returnStatus);
-//    }
+    //================================
+    // HELPER METHODS
+    //================================
 
-//    @Override
-//    public ResponseEntity<InterpreterUploadFileResponse> uploadFile(InterpreterUploadFileRequest body) {
-//        InterpreterUploadFileResponse responseObject = new InterpreterUploadFileResponse();
-//        HttpStatus returnStatus = HttpStatus.OK;
-//        try{
-//            List<Integer> intArray = body.getFileContents();
-//            byte[] byteArray = intArrayToByteArray(intArray);
-//            UploadFileRequest req = new UploadFileRequest(byteArray);
-//            UploadFileResponse res = interpreterService.uploadFile(req);
-//            responseObject.setFileDesignator(res.getFileDesignator().toString());
-//        }
-//        catch (IllegalArgumentException | InvalidUploadException e) {
-//            returnStatus = HttpStatus.BAD_REQUEST;
-//            responseObject = null;
-//        }
-//        return new ResponseEntity<>(responseObject,returnStatus);
-//    }
 
-    // HELPER METHODS BELOW THIS LINE
-    //----------------------------------------------------------------------------------------------------
     /** Method that invokes the intArrayToByteArray method of the Interpreter service and allows for the conversion
      * from an int array to a byte array
      *

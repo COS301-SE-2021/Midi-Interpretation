@@ -26,26 +26,36 @@ public class IntelligenceController implements IntelligenceApi {
 
     @Override
     public ResponseEntity<IntelligenceAnalyseGenreResponse> intelligenceAnalyseGenrePost(IntelligenceAnalyseGenreRequest body) {
+
         IntelligenceAnalyseGenreResponse responseObject = new IntelligenceAnalyseGenreResponse();
         HttpStatus returnStatus = HttpStatus.OK;
+
         try{
+
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
-            //========================
+
             AnalyseGenreRequest req = new AnalyseGenreRequest(fileDesignator);
             AnalyseGenreResponse res = intelligenceService.analyseGenre(req);
+
             //=======================
             //responseObject.addAll(res.getGenreArray());
+            //=======================
+
             for(GenrePredication genre: res.getGenreArray()){
                 IntelligenceAnalyseGenreResponseInner inner = new IntelligenceAnalyseGenreResponseInner();
                 inner.setName(genre.getGenreName());
                 inner.setCertainty((float) genre.getCertainty());
                 responseObject.add(inner);
             }
+
         }
         catch(InvalidDesignatorException | IllegalArgumentException | MissingStrategyException e){
+
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject = null;
+
         }
+
         return new ResponseEntity<>(responseObject,returnStatus);
     }
 }

@@ -52,27 +52,34 @@ public class DisplayController implements DisplayApi {
      */
     @Override
     public ResponseEntity<DisplayGetPieceMetadataResponse> getPieceMetadata(DisplayGetPieceMetadataRequest body) {
+
         DisplayGetPieceMetadataResponse responseObject = new DisplayGetPieceMetadataResponse();
         HttpStatus returnStatus = HttpStatus.OK;
+
         try{
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
-            //========================
+
             GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
             GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
-            //========================
+
             responseObject.setKeySignature(res.getKeySignature().toString());
+
             responseObject.setTempoIndication(res.getTempoIndication().getTempo());
-            //-------
+
             DisplayGetPieceMetadataResponseTimeSignature timeSignature = new DisplayGetPieceMetadataResponseTimeSignature();
             timeSignature.setBeatValue(res.getTimeSignature().getBeatValue());
             timeSignature.setNumBeats(res.getTimeSignature().getNumBeats());
+
             responseObject.setTimeSignature(timeSignature);
-            //-------
+
         }
         catch(InvalidDesignatorException | IllegalArgumentException e){
+
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject = null;
+
         }
+
         return new ResponseEntity<>(responseObject,returnStatus);
     }
 
@@ -86,25 +93,33 @@ public class DisplayController implements DisplayApi {
      */
     @Override
     public ResponseEntity<DisplayGetTrackInfoResponse> getTrackInfo(DisplayGetTrackInfoRequest body) {
+
         DisplayGetTrackInfoResponse responseObject = new DisplayGetTrackInfoResponse();
         HttpStatus returnStatus = HttpStatus.OK;
+
         try{
+
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
-            //========================
+
             GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
             GetTrackInfoResponse res = displayService.getTrackInfo(req);
-            //========================
+
             for(byte index: res.getTrackIndices()){
+
                 String trackName = res.getTrackMap().get(index);
                 DisplayGetTrackInfoResponseInner inner = new DisplayGetTrackInfoResponseInner();
+
                 inner.setIndex((int) index);
                 inner.setTrackName(trackName);
+
                 responseObject.add(inner);
             }
         }
         catch(InvalidDesignatorException | IllegalArgumentException e){
+
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject = null;
+
         }
         return new ResponseEntity<>(responseObject,returnStatus);
     }
@@ -119,20 +134,26 @@ public class DisplayController implements DisplayApi {
      */
     @Override
     public ResponseEntity<DisplayGetTrackMetadataResponse> getTrackMetadata(DisplayGetTrackMetadataRequest body) {
+
         DisplayGetTrackMetadataResponse responseObject = new DisplayGetTrackMetadataResponse();
         HttpStatus returnStatus = HttpStatus.OK;
+
         try{
+
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
             int trackIndex = body.getTrackIndex();
-            //========================
+
             GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,(byte) trackIndex);
             GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
-            //========================
+
             responseObject.setTrackString(res.getTrackString());
+
         }
         catch(InvalidDesignatorException | IllegalArgumentException | InvalidTrackException e){
+
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject = null;
+
         }
         return new ResponseEntity<>(responseObject,returnStatus);
     }
@@ -147,20 +168,26 @@ public class DisplayController implements DisplayApi {
      */
     @Override
     public ResponseEntity<DisplayGetTrackOverviewResponse> getTrackOverview(DisplayGetTrackOverviewRequest body) {
+
         DisplayGetTrackOverviewResponse responseObject = new DisplayGetTrackOverviewResponse();
         HttpStatus returnStatus = HttpStatus.OK;
+
         try{
+
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
             int trackIndex = body.getTrackIndex();
-            //========================
+
             GetTrackOverviewRequest req = new GetTrackOverviewRequest(fileDesignator,(byte) trackIndex);
             GetTrackOverviewResponse res = displayService.getTrackOverview(req);
-            //========================
+
             responseObject.addAll(res.getPitchArray());
+            
         }
         catch(InvalidDesignatorException | IllegalArgumentException | InvalidTrackException e){
+
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject = null;
+
         }
         return new ResponseEntity<>(responseObject,returnStatus);
     }
