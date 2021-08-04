@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public interface IntelligenceService {
 
     public AnalyseGenreResponse analyseGenre(AnalyseGenreRequest req) throws InvalidDesignatorException, MissingStrategyException;
-    public AnalyseChordResponse analyseChord(AnalyseChordRequest req);
-    public AnalyseTonalityResponse analyseTonality(AnalyseTonalityRequest req);
+    public AnalyseChordResponse analyseChord(AnalyseChordRequest req) throws MissingStrategyException;
+    public AnalyseTonalityResponse analyseTonality(AnalyseTonalityRequest req) throws InvalidDesignatorException, MissingStrategyException;
 
 }

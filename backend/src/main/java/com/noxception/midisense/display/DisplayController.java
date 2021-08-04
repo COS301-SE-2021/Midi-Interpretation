@@ -181,7 +181,7 @@ public class DisplayController implements DisplayApi {
             GetTrackOverviewResponse res = displayService.getTrackOverview(req);
 
             responseObject.addAll(res.getPitchArray());
-            
+
         }
         catch(InvalidDesignatorException | IllegalArgumentException | InvalidTrackException e){
 

@@ -28,6 +28,14 @@ public class IntelligenceServiceImpl implements IntelligenceService{
 
     private GenreAnalysisStrategy genreAnalysisStrategy;
 
+    /**Method that creates a list of genre classifications based on a byte stream of file features, according to a predefined
+     * strategy
+     *
+     * @param req encapsulates a file designator for the midi song in question
+     * @return an objects encapsulating a list of genres along with their certainty
+     * @throws InvalidDesignatorException if the specified file does not exist
+     * @throws MissingStrategyException if there is no predefined analysis strategy
+     */
     @Override
     public AnalyseGenreResponse analyseGenre(AnalyseGenreRequest req) throws InvalidDesignatorException, MissingStrategyException {
 
@@ -50,16 +58,36 @@ public class IntelligenceServiceImpl implements IntelligenceService{
         return new AnalyseGenreResponse(classifications);
     }
 
+    /**Method that creates a list of chord classifications based on a list of pitch data, according to a predefined
+     * strategy
+     *
+     * @param req encapsulates an array of pitches encoded as bytes in agreement with the standard midi file format
+     * @return an objects encapsulating a list of chord along with their certainty
+     * @throws MissingStrategyException if there is no predefined analysis strategy
+     */
     @Override
-    public AnalyseChordResponse analyseChord(AnalyseChordRequest req) {
+    public AnalyseChordResponse analyseChord(AnalyseChordRequest req) throws MissingStrategyException{
         return null;
     }
 
+    /**Method that creates a list of tonal (key) classifications based on a byte stream of file features, according to a predefined
+     * strategy
+     *
+     * @param req encapsulates a file designator for the midi song in question
+     * @return an objects encapsulating a list of tonalities along with their certainty
+     * @throws InvalidDesignatorException if the specified file does not exist
+     * @throws MissingStrategyException if there is no predefined analysis strategy
+     */
     @Override
-    public AnalyseTonalityResponse analyseTonality(AnalyseTonalityRequest req) {
+    public AnalyseTonalityResponse analyseTonality(AnalyseTonalityRequest req) throws InvalidDesignatorException, MissingStrategyException{
         return null;
     }
 
+
+    /**Method to attach a genre analysis strategy to the service
+     *
+     * @param gs a valid genre analysis strategy
+     */
     private void attachGenreStrategy(GenreAnalysisStrategy gs){
         this.genreAnalysisStrategy = gs;
     }
