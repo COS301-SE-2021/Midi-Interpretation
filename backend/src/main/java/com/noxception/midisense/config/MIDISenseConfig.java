@@ -25,6 +25,7 @@ public class MIDISenseConfig {
             MIDI_TESTING_FILE,
             MIDI_INVALID_TESTING_FILE,
             MIDI_TESTING_DESIGNATOR,
+            MIDI_TESTING_TRACK_INDEX,
 
             EMPTY_REQUEST_EXCEPTION_TEXT,
             FILE_TOO_LARGE_EXCEPTION_TEXT,

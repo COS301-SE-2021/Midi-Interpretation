@@ -162,9 +162,10 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
         ScoreEntity score = searchResults.get();
         List<TrackEntity> tracks = score.getTracks();
 
-        if(trackIndex >= tracks.size())
+        if(trackIndex >= tracks.size() || trackIndex < 0)
             //cannot refer to a track that does not exist
             throw new InvalidTrackException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
+
 
         //get a rich text version of the track
         TrackEntity track = tracks.get(trackIndex);
@@ -199,7 +200,7 @@ public class DisplayServiceImpl extends LoggableObject implements DisplayService
         ScoreEntity score = searchResults.get();
         List<TrackEntity> tracks = score.getTracks();
 
-        if(trackIndex >= tracks.size())
+        if(trackIndex >= tracks.size() || trackIndex < 0)
             //cannot refer to a track that does not exist
             throw new InvalidTrackException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
 
