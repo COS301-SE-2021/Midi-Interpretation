@@ -110,7 +110,6 @@ public class MIDISenseParserListener implements ParserListener{
      */
     @Override
     public void onKeySignatureParsed(byte b, byte b1) {
-        //TODO: Revise use
         parsedScore.setKeySignature(b,b1);
     }
 

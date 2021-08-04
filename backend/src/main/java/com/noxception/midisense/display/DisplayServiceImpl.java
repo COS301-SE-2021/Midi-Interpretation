@@ -51,7 +51,7 @@ public class DisplayServiceImpl implements DisplayService{
     @Transactional
     @Override
     public GetPieceMetadataResponse getPieceMetadata(GetPieceMetadataRequest request) throws InvalidDesignatorException {
-        
+
         if(request==null)
             //an empty request should reflect as a null designator
             throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
