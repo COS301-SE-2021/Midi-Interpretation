@@ -1,5 +1,6 @@
 package com.noxception.midisense.controller;
 
+import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import com.noxception.midisense.models.InterpreterUploadFileRequest;
@@ -17,9 +18,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -29,16 +36,47 @@ class InterpreterControllerIntegrationTest extends MidiSenseIntegrationTest{
     @Autowired
     private MockMvc mvc;
 
-//    @Transactional
-//    @Rollback(value = true)
-//    @Test
-//    void test_UploadFile_IfValidFileContents_ThenPresentDesignator(){
-//
-//        InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
-//        //Generate a list of integer that corresponds to valid byte stream.
-//
-//        MvcResult result = mockRequest("interpreter","uploadFile",request, mvc)
-//    }
+    @Transactional
+    @Rollback(value = true)
+    @Test
+    void test_UploadFile_IfValidFileContents_ThenPresentDesignator() throws Exception {
+
+        byte[] validFile = new byte[]{1,2,3,4,5};
+
+        InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
+
+        //Generate a list of integer that corresponds to valid byte stream.
+        List<Integer> fileContents = new ArrayList<>();
+        for(byte b: validFile)
+            fileContents.add((int) b);
+
+        request.setFileContents(fileContents);
+        MvcResult result = mockRequest("interpreter","uploadFile",request, mvc);
+
+        //Successful request
+        Assertions.assertEquals(200,result.getResponse().getStatus());
+
+        //TODO: Want a designator
+        String designator = "Get designator here";
+
+        //Check to see whether is valid
+        UUID fileDesignator = UUID.fromString(designator);
+
+        //check that the resultant file can be opened : was saved to the right directory
+        String filename = MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)
+                +fileDesignator
+                +MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
+        File newlyCreated = new File(filename);
+
+        //check to see that the file contents are the same
+        byte[] newContents = Files.readAllBytes(newlyCreated.toPath());
+        assertArrayEquals(newContents,validFile);
+
+        newlyCreated = new File(filename);
+        //delete the file
+        assertTrue(newlyCreated.delete());
+
+    }
 
 
     @Ignore
