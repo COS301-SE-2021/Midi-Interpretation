@@ -18,29 +18,6 @@ paths:
 
   #============= INTERPRETER ============================
 
-#  /interpreter/uploadFile:
-#    post:
-#      summary: "Endpoint for the Upload File use case of the Interpreter subsystem"
-#      tags:
-#        - "Interpreter"
-#      description: uploadFile
-#      operationId: uploadFile
-#      requestBody:
-#        description: "Request for uploadFile"
-#        content:
-#          application/octet-stream:
-#              schema:
-#                type: string
-#                format: binary
-#      responses:
-#        '200':
-#          description: "Upload File Response"
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/interpreterUploadFileResponse'
-
-
   /interpreter/processFile:
     post:
       summary: "API endpoint to process File"
