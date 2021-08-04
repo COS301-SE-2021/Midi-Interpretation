@@ -1,6 +1,7 @@
 package com.noxception.midisense.interpreter.dataclass;
 
 public class TempoIndication {
+
     private int tempo;
 
     public TempoIndication(int tempo) {
@@ -15,4 +16,5 @@ public class TempoIndication {
     public String toString() {
         return tempo+" bpm";
     }
+
 }

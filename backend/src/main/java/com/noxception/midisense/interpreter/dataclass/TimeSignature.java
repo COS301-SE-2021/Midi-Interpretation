@@ -1,8 +1,9 @@
 package com.noxception.midisense.interpreter.dataclass;
 
 public class TimeSignature {
-    private int numBeats;
-    private int beatValue;
+
+    private final int numBeats;
+    private final int beatValue;
 
     public TimeSignature(int numBeats, int beatValue) {
         this.numBeats = numBeats;
@@ -21,4 +22,5 @@ public class TimeSignature {
     public String toString() {
         return numBeats +"/"+beatValue;
     }
+
 }

@@ -18,29 +18,6 @@ paths:
 
   #============= INTERPRETER ============================
 
-#  /interpreter/uploadFile:
-#    post:
-#      summary: "Endpoint for the Upload File use case of the Interpreter subsystem"
-#      tags:
-#        - "Interpreter"
-#      description: uploadFile
-#      operationId: uploadFile
-#      requestBody:
-#        description: "Request for uploadFile"
-#        content:
-#          application/octet-stream:
-#              schema:
-#                type: string
-#                format: binary
-#      responses:
-#        '200':
-#          description: "Upload File Response"
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/interpreterUploadFileResponse'
-
-
   /interpreter/processFile:
     post:
       summary: "API endpoint to process File"
@@ -152,6 +129,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/displayGetTrackOverviewResponse'
 
+  /intelligence/analyseGenre:
+    post:
+      summary: "Endpoint for analysing the genre of midi file"
+      tags:
+        - "Intelligence"
+      description: analyseGenre
+      operationID: analyseGenre
+      requestBody:
+        description: "Request endpoint to analyse genre"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/intelligenceAnalyseGenreRequest'
+      responses:
+        '200':
+          description: "analyseGenre response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/intelligenceAnalyseGenreResponse'
+
   #=================================================
   # SCHEMAS + OBJECTS
   #=================================================
@@ -255,3 +254,21 @@ components:
       type: array
       items:
         type: string
+
+
+    intelligenceAnalyseGenreRequest:
+      description: "Request for analyse genre"
+      type: object
+      properties:
+        fileDesignator:
+          type: string
+
+    intelligenceAnalyseGenreResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          Name:
+            type: string
+          Certainty:
+            type: float
