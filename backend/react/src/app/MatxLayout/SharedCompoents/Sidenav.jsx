@@ -10,7 +10,8 @@ import { MatxVerticalNav } from "matx";
 import { setLayoutSettings } from "app/redux/actions/LayoutActions";
 
 /**
- * TODO: flesh out commenting and add functionality
+ * The default sidebar of the application
+ *
  * @param props
  * @returns {JSX.Element}
  * @constructor
@@ -34,12 +35,21 @@ const Sidenav = props => {
     });
   };
 
+  /**
+   * Render the sidebar as an overlay
+   * @returns {JSX.Element}
+   */
+
   const renderOverlay = () => (
     <div
       onClick={() => updateSidebarMode({ mode: "close" })}
       className="sidenav__overlay"
     />
   );
+
+  /**
+   * The UI representation being returned
+   */
 
   return (
     <Fragment>
@@ -55,15 +65,28 @@ const Sidenav = props => {
   );
 };
 
+/**
+ * Sidenav props
+ */
+
 Sidenav.propTypes = {
   setLayoutSettings: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired
 };
 
+/**
+ * Mapping state to props
+ * @param state
+ */
+
 const mapStateToProps = state => ({
   setLayoutSettings: PropTypes.func.isRequired,
   settings: state.layout.settings
 });
+
+/**
+ * Export with router
+ */
 
 export default withRouter(
   connect(mapStateToProps, {

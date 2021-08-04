@@ -7,8 +7,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 
 /**
- * TODO: flesh out commenting
- * @type {(props?: any) => ClassNameMap<string>}
+ * Styling for the component
  */
 
 const useStyles = makeStyles(theme => ({
@@ -19,25 +18,52 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+/**
+ * Menu for selecting an item from a dropdown menu.
+ * Adds styling and functionality to @material-ui Menu
+ *
+ * @param inputOptions - An array of strings that makes up the options that are selectable by the menu
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 export default function SelectedMenu({inputOptions}) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const options = inputOptions
 
+  /**
+   * Handle the list being clicked
+   * @param event - The click event
+   */
 
   function handleClickListItem(event) {
     setAnchorEl(event.currentTarget);
   }
+
+  /**
+   * Select an item on the menu, change the index of the current item and change the displayed item
+   * @param event - The click event
+   * @param index - the index of the selected menu item
+   */
 
   function handleMenuItemClick(event, index) {
     setSelectedIndex(index);
     setAnchorEl(null);
   }
 
+  /**
+   * Close the menu
+   */
+
   function handleClose() {
     setAnchorEl(null);
   }
+
+  /**
+   * The UI element that is returned to the view calling Selected Menu
+   */
 
   return (
     <div className={classes.root}>

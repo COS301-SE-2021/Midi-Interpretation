@@ -9,8 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 
 /**
- * TODO: flesh out commenting
- * @type {(props?: any) => ClassNameMap<string>}
+ * Styling for the component
  */
 
 const useStyles = makeStyles(theme => ({
@@ -22,6 +21,13 @@ const useStyles = makeStyles(theme => ({
     fontWeight: theme.typography.fontWeightRegular
   }
 }));
+
+/**
+ * An expansion panel that allows the hiding and display of UI elements
+ *
+ * @returns {JSX.Element}
+ * @constructor
+ */
 
 export default function SimpleExpansionPanel() {
   const classes = useStyles();

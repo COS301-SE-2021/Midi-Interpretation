@@ -13,11 +13,15 @@ import { isEqual, merge } from "lodash";
 import { isMdScreen } from "utils";
 import { MatxSuspense } from "matx";
 
-/**
- * TODO: commenting and refining
- */
-
 let tempSettings;
+
+/**
+ * The functional aspect of a layout especially with regard to handling cross platform usage
+ *
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 
 const MatxLayoutSFC = props => {
   let appContext = useContext(AppContext);
@@ -29,6 +33,10 @@ const MatxLayoutSFC = props => {
   } = props;
 
   tempSettings = settings;
+
+  /**
+   * Window resizing listeners
+   */
 
   useEffect(() => {
     listenWindowResize();
@@ -44,9 +52,17 @@ const MatxLayoutSFC = props => {
     };
   }, []);
 
+  /**
+   * Use routing updater
+   */
+
   useEffect(() => {
     updateSettingsFromRouter();
   }, [props.location]);
+
+  /**
+   * Window resizing
+   */
 
   const listenWindowResize = () => {
     let settings = tempSettings;
@@ -57,6 +73,10 @@ const MatxLayoutSFC = props => {
       );
     }
   };
+
+  /**
+   * Routing settings updater
+   */
 
   const updateSettingsFromRouter = () => {
     const { routes } = appContext;
@@ -84,12 +104,22 @@ const MatxLayoutSFC = props => {
   );
 };
 
+/**
+ * State to props mapping
+ *
+ * @param state
+ */
+
 const mapStateToProps = state => ({
   setLayoutSettings: PropTypes.func.isRequired,
   setDefaultSettings: PropTypes.func.isRequired,
   settings: state.layout.settings,
   defaultSettings: state.layout.defaultSettings
 });
+
+/**
+ * Router
+ */
 
 export default withRouter(
   connect(mapStateToProps, { setLayoutSettings, setDefaultSettings })(

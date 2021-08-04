@@ -12,12 +12,17 @@ import { isMdScreen } from "utils";
 import { merge } from "lodash";
 
 /**
- * TODO: cleanup and commenting
+ * Styling for the layout 1 sidebar
+ *
  * @param theme
  * @returns {{}}
  */
 
 const styles = theme => ({});
+
+/**
+ *  Icon button white styling
+ */
 
 const IconButtonWhite = withStyles(theme => ({
   root: {
@@ -26,16 +31,28 @@ const IconButtonWhite = withStyles(theme => ({
   }
 }))(IconButton);
 
+/**
+ * Small icon styling
+ */
+
 const IconSmall = withStyles(() => ({
   root: {
     fontSize: "1rem"
   }
 }))(Icon);
 
+/**
+ * Layout 1 sidebar
+ */
+
 class Layout1Sidenav extends Component {
   state = {
     hidden: true
   };
+
+  /**
+   * Close sidebar on route change on mobile
+   */
 
   componentDidMount() {
     // CLOSE SIDENAV ON ROUTE CHANGE ON MOBILE
@@ -54,6 +71,12 @@ class Layout1Sidenav extends Component {
     this.unlistenRouteChange();
   }
 
+  /**
+   * Sidebar update mode
+   *
+   * @param sidebarSettings
+   */
+
   updateSidebarMode = sidebarSettings => {
     let { settings, setLayoutSettings, setDefaultSettings } = this.props;
     const updatedSettings = merge({}, settings, {
@@ -67,6 +90,11 @@ class Layout1Sidenav extends Component {
     setLayoutSettings(updatedSettings);
     setDefaultSettings(updatedSettings);
   };
+
+  /**
+   * Sidebar toggle
+   * Is the bar permanently open or does it collapse
+   */
 
   handleSidenavToggle = () => {
     let {
@@ -82,9 +110,13 @@ class Layout1Sidenav extends Component {
     this.updateSidebarMode({ mode: mode === "compact" ? "full" : "compact" });
   };
 
+  /**
+   * Open Brand component file to replace logo and text
+   *
+   * @returns {JSX.Element}
+   */
 
   renderLogoSwitch = () => (
-    // Open Brand component file to replace logo and text
     <Brand>
       <Switch
         className="sidenav__toggle show-on-pc"
@@ -96,6 +128,12 @@ class Layout1Sidenav extends Component {
       />
     </Brand>
   );
+
+  /**
+   * The UI representation being returned
+   *
+   * @returns {JSX.Element}
+   */
 
   render() {
     let { theme, settings } = this.props;
@@ -118,17 +156,31 @@ class Layout1Sidenav extends Component {
   }
 }
 
+/**
+ * Layout 1 sidebar properties
+ */
+
 Layout1Sidenav.propTypes = {
   setLayoutSettings: PropTypes.func.isRequired,
   setDefaultSettings: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired
 };
 
+/**
+ * Mapping state to properties
+ *
+ * @param state
+ */
+
 const mapStateToProps = state => ({
   setDefaultSettings: PropTypes.func.isRequired,
   setLayoutSettings: PropTypes.func.isRequired,
   settings: state.layout.settings
 });
+
+/**
+ * Export with styles
+ */
 
 export default withStyles(styles, { withTheme: true })(
   withRouter(

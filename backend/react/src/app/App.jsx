@@ -10,7 +10,10 @@ import { Store } from "./redux/Store";
 import MatxLayout from "./MatxLayout/MatxLayoutSFC";
 
 /**
- * TODO: flesh out commenting
+ * The core "wrapper" of the application
+ *
+ * MatxLaout -> Layout of the application
+ *
  * @returns {JSX.Element}
  * @constructor
  */

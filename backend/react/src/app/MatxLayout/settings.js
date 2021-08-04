@@ -5,7 +5,8 @@ import { forEach, merge } from "lodash";
 import themeOptions from "./MatxTheme/themeOptions";
 
 /**
- * TODO: commenting and refining (remove unnecessary parts)
+ * Settings to ensure colours and layouts are consistent throughout the system
+ *
  * @returns {{}}
  */
 
@@ -19,23 +20,23 @@ function createMatxThemes() {
 }
 const themes = createMatxThemes();
 
+/**
+ * The application settings
+ *
+ * @type {{themes: {}, activeTheme: string, layout1Settings: {leftSidebar: {mode: string, bgImgURL: string, show: boolean, theme: string}, topbar: {show: boolean, fixed: boolean, theme: string}}, activeLayout: string, perfectScrollbar: boolean, secondarySidebar: {show: boolean, theme: string, open: boolean}}}
+ */
+
 export const MatxLayoutSettings = {
-  activeLayout: "layout1", // layout1, layout2
-  activeTheme: "purple1", // View all valid theme colors inside MatxTheme/themeColors.js
+  activeLayout: "layout1",
+  activeTheme: "purple1",
   perfectScrollbar: true,
 
   themes: themes,
-  layout1Settings, // open Layout1/Layout1Settings.js
+  layout1Settings, // Layout1/Layout1Settings.js
 
   secondarySidebar: {
     show: true,
     open: true,
-    theme: "slateDark1" // View all valid theme colors inside MatxTheme/themeColors.js
-  },
-  // Footer options
-  footer: {
-    show: true,
-    fixed: false,
-    theme: "slateDark1" // View all valid theme colors inside MatxTheme/themeColors.js
+    theme: "slateDark1"
   }
 };

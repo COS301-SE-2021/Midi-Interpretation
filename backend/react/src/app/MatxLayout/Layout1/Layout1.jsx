@@ -11,7 +11,8 @@ import AppContext from "app/appContext";
 import { MatxSuspense } from "matx";
 
 /**
- * TODO: flesh out commenting
+ * The styling for the layout
+ *
  * @param theme
  * @returns {{layout: {backgroundColor}}}
  */
@@ -24,6 +25,15 @@ const styles = theme => {
   };
 };
 
+/**
+ * Layout 1 that can be swapped out for another layout
+ * Defines the common parts of a the layout
+ *
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 const Layout1 = props => {
   const { routes } = useContext(AppContext);
   let { settings, classes, theme } = props;
@@ -32,6 +42,10 @@ const Layout1 = props => {
     [classes.layout]: true,
     [`${settings.activeLayout} sidenav-${layout1Settings.leftSidebar.mode} theme-${theme.palette.type} flex`]: true
   };
+
+  /**
+   * The UI representation being returned
+   */
 
   return (
     <div className={classList(layoutClasses)}>
@@ -62,14 +76,27 @@ const Layout1 = props => {
   );
 };
 
+/**
+ * Layout 1 props
+ */
+
 Layout1.propTypes = {
   settings: PropTypes.object.isRequired
 };
+
+/**
+ * mapping state to props
+ * @param state
+ */
 
 const mapStateToProps = state => ({
   setLayoutSettings: PropTypes.func.isRequired,
   settings: state.layout.settings
 });
+
+/**
+ * Export with styles
+ */
 
 export default withStyles(styles, { withTheme: true })(
   connect(mapStateToProps, { setLayoutSettings })(Layout1)
