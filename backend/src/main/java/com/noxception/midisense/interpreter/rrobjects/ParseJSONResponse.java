@@ -4,12 +4,22 @@ import com.noxception.midisense.config.dataclass.ResponseObject;
 import com.noxception.midisense.interpreter.parser.Score;
 
 public class ParseJSONResponse extends ResponseObject {
-    private final Score parsedScore;
 
+    /** ATTRIBUTE */
+    private final Score parsedScore; //Json score response object
+
+    /**
+     * CONSTRUCTOR
+     * @param parsedScore response score as JSON object
+     */
     public ParseJSONResponse(Score parsedScore) {
         this.parsedScore = parsedScore;
     }
 
+    /**
+     *  GET Method
+     * @return parsedScore
+     */
     public Score getParsedScore() {
         return parsedScore;
     }

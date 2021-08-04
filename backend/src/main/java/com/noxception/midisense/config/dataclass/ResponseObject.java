@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public class ResponseObject {
+
     private final UUID designator = UUID.randomUUID();
     private final Date timestamp = new Date();
 
