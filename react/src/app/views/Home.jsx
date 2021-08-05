@@ -3,7 +3,7 @@ import {SimpleCard} from "matx";
 import { withStyles } from "@material-ui/styles";
 import {makeStyles} from "@material-ui/core/styles";
 import 'react-responsive-combo-box/dist/index.css';
-import { Grid } from '@material-ui/core';
+import { Grid, Container } from '@material-ui/core';
 
 
 /**
@@ -62,14 +62,16 @@ class Upload extends Component {
         const classes = makeStyles;
         return (
             <div className="m-sm-30" >
+                <SimpleCard>
                 <Grid container justify="space-evenly" spacing={3}>
                     <Grid item >
                         <div className={"max-w-400"}>
                             <img src={process.env.PUBLIC_URL + '/assets/images/logo-full.png'} alt={"MidiSense Logo"}/>
                         </div>
                     </Grid>
-                <SimpleCard>
-                    <h4>About Us</h4>
+                <Container>
+                    <h3>About Us</h3>
+                    <br/>
                         <Grid item >
                             <div className={"max-w-400 min-w-200"}>
                                 <img src={process.env.PUBLIC_URL + '/assets/images/illustrations/Laptop_character_2.svg'} alt={"Person on laptop"}/>
@@ -97,15 +99,14 @@ class Upload extends Component {
                             </div>
                             <br/>
                         </Grid>
-                    </SimpleCard>
+                </Container>
                 </Grid>
 
                 <br/>
-
-                <SimpleCard>
-                    <h4>How To Use MIDISense</h4>
-                    <Grid container justify="space-between" alignItems="center" >
+                    <Grid container justify="space-evenly" spacing={3} >
                         <Grid item >
+                            <h3>How To Use MIDISense</h3>
+                            <br/>
                             <div className="text-16">
                                 <li>Navigate to the Upload page using the navigation bar on the left</li>
                                 <li>Find a midi file you want to know more about.</li>
@@ -118,7 +119,7 @@ class Upload extends Component {
                             <br/>
                         </Grid>
                         <Grid item >
-                            <div className={"max-w-300 min-w-200"} style={{transform: [{ scaleY: -1 }]}}>
+                            <div className={"max-w-300 min-w-200"}>
                                 <img src={process.env.PUBLIC_URL + '/assets/images/illustrations/Singing_character.svg'} alt={"Person singing"}/>
                             </div>
                         </Grid>
