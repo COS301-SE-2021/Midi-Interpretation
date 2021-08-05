@@ -538,12 +538,37 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
-//    @Test
-//    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too low)] expect [invalid track index exception]")
-//    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenAccurateInfo() {
-//
-//    }
-//
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too low)] expect [invalid track index exception]")
+    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenAccurateInfo() throws Exception{
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get track index too high
+        int trackIndex = -1;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
 //    @Test
 //    @DisplayName("Get Track Metadata: input [Designator for file not in DB and valid track index] expect [invalid designator exception]")
 //    public void test_GetTrackMetadata_IfNotInDatabaseAndValidTrack_ThenException() {
