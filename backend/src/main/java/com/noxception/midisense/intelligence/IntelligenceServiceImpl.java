@@ -88,7 +88,7 @@ public class IntelligenceServiceImpl implements IntelligenceService{
      *
      * @param gs a valid genre analysis strategy
      */
-    private void attachGenreStrategy(GenreAnalysisStrategy gs){
+    public void attachGenreStrategy(GenreAnalysisStrategy gs){
         this.genreAnalysisStrategy = gs;
     }
 }

@@ -3,6 +3,7 @@ package com.noxception.midisense.intelligence;
 import com.noxception.midisense.api.IntelligenceApi;
 import com.noxception.midisense.intelligence.dataclass.GenrePredication;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
+import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalysisStrategy;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
@@ -35,11 +36,9 @@ public class IntelligenceController implements IntelligenceApi {
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             AnalyseGenreRequest req = new AnalyseGenreRequest(fileDesignator);
-            AnalyseGenreResponse res = intelligenceService.analyseGenre(req);
 
-            //=======================
-            //responseObject.addAll(res.getGenreArray());
-            //=======================
+            intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy());
+            AnalyseGenreResponse res = intelligenceService.analyseGenre(req);
 
             for(GenrePredication genre: res.getGenreArray()){
                 IntelligenceAnalyseGenreResponseInner inner = new IntelligenceAnalyseGenreResponseInner();

@@ -10,6 +10,11 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
      */
     @Override
     public GenrePredication[] classify(byte[] features) {
-        return new GenrePredication[0];
+        // TODO: replace mock with working classifier
+        return new GenrePredication[]{
+                new GenrePredication("Rock",0.98),
+                new GenrePredication("Pop",0.92),
+                new GenrePredication("Ska",0.56)
+        };
     }
 }

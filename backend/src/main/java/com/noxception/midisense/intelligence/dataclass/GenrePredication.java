@@ -16,4 +16,12 @@ public class GenrePredication {
     public double getCertainty() {
         return certainty;
     }
+
+    @Override
+    public String toString() {
+        return "GenrePredication{" +
+                "genreName='" + genreName + '\'' +
+                ", certainty=" + certainty +
+                '}';
+    }
 }
