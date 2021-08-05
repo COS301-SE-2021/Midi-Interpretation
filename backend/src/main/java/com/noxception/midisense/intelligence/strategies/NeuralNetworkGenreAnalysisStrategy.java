@@ -10,7 +10,6 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
 
     private final int inputLayerSize = 100;
     private final int hiddenLayerSize = 100;
-    private final int classificationClasses = 100;
 
     // Network Weights
     private SimpleMatrix w1;
