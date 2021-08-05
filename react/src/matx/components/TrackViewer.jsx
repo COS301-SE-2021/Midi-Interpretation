@@ -1,6 +1,6 @@
 import {
-        BarChart,
-        Bar,
+        LineChart,
+        Line,
         Brush,
         ReferenceLine,
         XAxis,
@@ -64,7 +64,7 @@ const data = [
 const TrackViewer = () => {
         return (
             <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
+                    <LineChart
                         width={500}
                         height={300}
                         data={data}
@@ -81,10 +81,9 @@ const TrackViewer = () => {
                             <Tooltip />
                             <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
                             <ReferenceLine y={0} stroke="#000" />
-                            <Brush dataKey="name" height={30} stroke="#8884d8" />
-                            <Bar dataKey="pv" fill="#7467ef" />
-                            <Bar dataKey="uv" fill="#ff9e43" />
-                    </BarChart>
+                            <Brush dataKey="name" height={30} stroke="#7467ef" />
+                            <Line dataKey="uv" stroke="#ff9e43" type="monotone" strokeWidth={2} />
+                    </LineChart>
             </ResponsiveContainer>
 
         );

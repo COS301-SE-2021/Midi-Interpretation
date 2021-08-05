@@ -2,13 +2,15 @@ import React, { useContext } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { setLayoutSettings } from "app/redux/actions/LayoutActions";
-import { withStyles, ThemeProvider } from "@material-ui/core/styles";
+import { withStyles} from "@material-ui/core/styles";
 import Scrollbar from "react-perfect-scrollbar";
 import { classList } from "utils";
 import { renderRoutes } from "react-router-config";
 import Layout1Sidenav from "./Layout1Sidenav";
 import AppContext from "app/appContext";
 import { MatxSuspense } from "matx";
+
+
 
 /**
  * The styling for the layout
@@ -18,11 +20,18 @@ import { MatxSuspense } from "matx";
  */
 
 const styles = theme => {
-  return {
-    layout: {
-      backgroundColor: theme.palette.background.default
-    }
-  };
+    return {
+        layout: {
+            backgroundColor: theme.palette.background.default
+        },
+        topbar: {
+            top: 0,
+                zIndex: 96,
+                background:
+            'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 44%, rgba(247, 247, 247, 0.4) 50%, rgba(255, 255, 255, 0))',
+                transition: 'all 0.3s ease',
+        }
+    };
 };
 
 /**
@@ -35,45 +44,45 @@ const styles = theme => {
  */
 
 const Layout1 = props => {
-  const { routes } = useContext(AppContext);
-  let { settings, classes, theme } = props;
-  let { layout1Settings } = settings;
-  let layoutClasses = {
-    [classes.layout]: true,
-    [`${settings.activeLayout} sidenav-${layout1Settings.leftSidebar.mode} theme-${theme.palette.type} flex`]: true
-  };
+    const { routes } = useContext(AppContext);
+    let { settings, classes, theme } = props;
+    let { layout1Settings } = settings;
+    let layoutClasses = {
+        [classes.layout]: true,
+        [`${settings.activeLayout} sidenav-${layout1Settings.leftSidebar.mode} theme-${theme.palette.type} flex`]: true
+    };
 
-  /**
-   * The UI representation being returned
-   */
+    /**
+     * The UI representation being returned
+     */
 
-  return (
-    <div className={classList(layoutClasses)}>
-      {layout1Settings.leftSidebar.show && <Layout1Sidenav />}
+    return (
+        <div className={classList(layoutClasses)}>
+            {layout1Settings.leftSidebar.show && <Layout1Sidenav />}
 
-      <div className="content-wrap position-relative">
+            <div className="content-wrap position-relative">
 
-        {settings.perfectScrollbar && (
-          <Scrollbar className="scrollable-content">
-            <div className="content">
-              <MatxSuspense>{renderRoutes(routes)}</MatxSuspense>
+                {settings.perfectScrollbar && (
+                    <Scrollbar className="scrollable-content">
+                        <div className="content">
+                            <MatxSuspense>{renderRoutes(routes)}</MatxSuspense>
+                        </div>
+                        <div className="my-auto" />
+                    </Scrollbar>
+                )}
+
+                {!settings.perfectScrollbar && (
+                    <div className="scrollable-content">
+                        <div className="content">
+                            <MatxSuspense>{renderRoutes(routes)}</MatxSuspense>
+                        </div>
+                        <div className="my-auto" />
+                    </div>
+                )}
+
             </div>
-            <div className="my-auto" />
-          </Scrollbar>
-        )}
-
-        {!settings.perfectScrollbar && (
-          <div className="scrollable-content">
-            <div className="content">
-              <MatxSuspense>{renderRoutes(routes)}</MatxSuspense>
-            </div>
-            <div className="my-auto" />
-          </div>
-        )}
-
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 /**
@@ -81,7 +90,7 @@ const Layout1 = props => {
  */
 
 Layout1.propTypes = {
-  settings: PropTypes.object.isRequired
+    settings: PropTypes.object.isRequired
 };
 
 /**
@@ -90,8 +99,8 @@ Layout1.propTypes = {
  */
 
 const mapStateToProps = state => ({
-  setLayoutSettings: PropTypes.func.isRequired,
-  settings: state.layout.settings
+    setLayoutSettings: PropTypes.func.isRequired,
+    settings: state.layout.settings
 });
 
 /**
@@ -99,5 +108,5 @@ const mapStateToProps = state => ({
  */
 
 export default withStyles(styles, { withTheme: true })(
-  connect(mapStateToProps, { setLayoutSettings })(Layout1)
+    connect(mapStateToProps, { setLayoutSettings })(Layout1)
 );
