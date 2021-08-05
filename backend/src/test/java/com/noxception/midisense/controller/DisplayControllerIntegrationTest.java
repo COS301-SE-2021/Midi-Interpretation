@@ -671,7 +671,7 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         //make a request
         MvcResult response = mockRequest(
                 "display",
-                "getTrackMetadata",
+                "getTrackOverview",
                 request,
                 mvc
         );
@@ -679,35 +679,148 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         //check for failed response
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
-//
-//    @Test
-//    @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
-//    public void test_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenException() {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
-//    public void test_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Get Track Overview: input [Designator for file not in DB and valid track index] expect [invalid designator exception]")
-//    public void test_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Get Track Overview: input [Designator for file not in DB and invalid track index] expect [invalid designator and invalid track index exceptions]")
-//    public void test_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Get Track Overview: input [empty] expect [empty request exception]")
-//    public void test_GetTrackOverview_IfEmptyRequest_ThenException() {
-//    }
+
+    @Test
+    @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
+    public void test_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get track index too high
+        int trackIndex = 99999;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
+    public void test_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get track index too high
+        int trackIndex = -1;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Get Track Overview: input [Designator for file not in DB and valid track index] expect [invalid designator exception]")
+    public void test_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.randomUUID();
+
+        //Get track index too high
+        int trackIndex = 0;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Get Track Overview: input [Designator for file not in DB and invalid track index] expect [invalid designator and invalid track index exceptions]")
+    public void test_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.randomUUID();
+
+        //Get track index too high
+        int trackIndex = 99999;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Get Track Overview: input [empty] expect [empty request exception]")
+    public void test_GetTrackOverview_IfEmptyRequest_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //pass into request
+        request.setFileDesignator("");
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
 
 
     //=================================================
