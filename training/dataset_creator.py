@@ -10,7 +10,6 @@ import numpy as np
     after <max_file_size> kilobytes
 """
 
-
 def file_to_features(file, max_file_size):
     # Read in a MIDI file as byte stream
     fb = ar.array('B')
