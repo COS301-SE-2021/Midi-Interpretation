@@ -1,12 +1,11 @@
 import React, {Component} from "react";
-import {Table, TableHead, TableBody, TableRow, TableCell, TablePagination} from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "../../matx";
-import SimpleExpansionPanel from "../../matx/components/SimpleExpansionPanel";
-import DiscreteSlider from "../../matx/components/DiscreteSlider";
 import SelectedMenu from "../../matx/components/SelectedMenu";
 import MidiSenseService from "../services/MidiSenseService";
 import {withStyles} from "@material-ui/styles";
 import localStorage from "../services/localStorageService";
+import TrackViewer from "../../matx/components/TrackViewer";
+import {Container} from "@material-ui/core";
 
 
 const BarList = [
@@ -308,52 +307,16 @@ class Display extends Component {
                   <SimpleCard>
                       <h4>Track</h4>
                       <SelectedMenu inputOptions={this.state.trackListing}/>
-                      <DiscreteSlider/>
+
+
                   </SimpleCard>
                   <br/>
                   <SimpleCard title="Display">
-                      <Table className="whitespace-pre">
-                          <TableHead>
-                              <TableRow>
-                                  <TableCell className="px-0">Bar</TableCell>
-                                  <TableCell className="px-0">Chords</TableCell>
-                                  <TableCell className="px-0">Notes</TableCell>
-                              </TableRow>
-                          </TableHead>
-                          <TableBody>
-                              {BarList
-                                  .slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
-                                  .map((bar, index) => (
-                                      <TableRow key={index}>
-                                          <TableCell className="px-0 capitalize" align="left">
-                                              {bar.number}
-                                          </TableCell>
-                                          <TableCell className="px-0 capitalize" align="left">
-                                              {bar.chords}
-                                          </TableCell>
-                                          <TableCell className="px-0">
-                                            <SimpleExpansionPanel/>
-                                          </TableCell>
-                                      </TableRow>
-                                  ))}
-                          </TableBody>
-                      </Table>
-                      <TablePagination
-                          className="px-4"
-                          rowsPerPageOptions={[5, 10, 25]}
-                          component="div"
-                          count={BarList.length}
-                          rowsPerPage={this.state.rowsPerPage}
-                          page={this.state.page}
-                          backIconButtonProps={{
-                            "aria-label": "Previous Page"
-                          }}
-                          nextIconButtonProps={{
-                            "aria-label": "Next Page"
-                          }}
-                          onChangePage={this.handleChangePage}
-                          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                      />
+
+                          <div style={{ height: '400px', width: '100%'}}>
+                              <TrackViewer/>
+                          </div>
+
                   </SimpleCard>
               </div>
           </div>
