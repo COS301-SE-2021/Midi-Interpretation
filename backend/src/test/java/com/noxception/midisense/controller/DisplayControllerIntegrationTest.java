@@ -326,57 +326,220 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
 
     //TODO: ============ NEW FRAMEWORK TO IMPLEMENT ======================
 
+    @Test
+    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
+    public void test_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+
+        //make a request
+        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getPieceMetadata",
+                request,
+                mvc
+        );
+
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Get Piece Metadata: input [designator for a file not in DB] expect [file does not exist exception]")
+    public void test_GetPieceMetadata_IfNotInDatabase_ThenException() throws Exception{
+        //make a request
+        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
+
+        //Get the designator of a file not in the DB
+        UUID fileDesignator = UUID.randomUUID();
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make request
+        MvcResult response = mockRequest(
+                "display",
+                "getPieceMetadata",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Get Piece Metadata: input [empty] expect [empty request exception]")
+    public void test_GetPieceMetadata_IfEmptyRequest_ThenException() throws Exception {
+
+        //make an empty request
+        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
+
+        //pass into request
+        request.setFileDesignator("");
+
+        //make request
+        MvcResult response = mockRequest(
+                "display",
+                "getPieceMetadata",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+
+    @Test
+    @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
+    public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+
+        //make a request
+        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackInfo",
+                request,
+                mvc
+        );
+
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Get Track Info: input [Designator for file not in DB] expect [file does not exist exception]")
+    public void test_GetTrackInfo_IfNotInDatabase_ThenException() throws Exception{
+
+        //make a request
+        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
+
+        //Get the designator of a file not in the DB
+        UUID fileDesignator = UUID.randomUUID();
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackInfo",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Get Track Info: input [empty] expect [empty request exception]")
+    public void test_GetTrackInfo_IfEmptyRequest_ThenException() throws Exception{
+
+        //make a request
+        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
+
+        //pass into request
+        request.setFileDesignator("");
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackInfo",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
+    public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception{
+
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get an valid track index
+        int trackIndex = 0;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [invalid track index exception]")
+    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenAccurateInfo() throws Exception {
+
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
+                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get track index too high
+        int trackIndex = 16;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
 //    @Test
-//    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
-//    public void test_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Get Piece Metadata: input [designator for a file not in DB] expect [file does not exist exception]")
-//    public void test_GetPieceMetadata_IfNotInDatabase_ThenException() {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Get Piece Metadata: input [empty] expect [empty request exception]")
-//    public void test_GetPieceMetadata_IfEmptyRequest_ThenException() {
-//
-//    }
-//
-//
-//    @Test
-//    @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
-//    public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Get Track Info: input [Designator for file not in DB] expect [file does not exist exception]")
-//    public void test_GetTrackInfo_IfNotInDatabase_ThenException() {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Get Track Info: input [empty] expect [empty request exception]")
-//    public void test_GetTrackInfo_IfEmptyRequest_ThenException() {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
-//    public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo(){
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [invalid track index exception]")
-//    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenAccurateInfo() {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [invalid track index exception]")
+//    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too low)] expect [invalid track index exception]")
 //    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenAccurateInfo() {
 //
 //    }
