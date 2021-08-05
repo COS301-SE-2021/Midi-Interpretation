@@ -5,47 +5,9 @@ import MidiSenseService from "../services/MidiSenseService";
 import {withStyles} from "@material-ui/styles";
 import localStorage from "../services/localStorageService";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Container} from "@material-ui/core";
+import {Container, Grid} from "@material-ui/core";
+import GenrePie from "../../matx/components/GenrePie";
 
-
-const BarList = [
-  {
-    number: "1",
-    chords: "A D Em"
-  },
-  {
-    number: "2",
-    chords: "C A"
-  },
-  {
-    number: "3",
-    chords: "Em D"
-  },
-  {
-    number: "4",
-    chords: "F#"
-  },
-  {
-    number: "5",
-    chords: "G E"
-  },
-  {
-    number: "6",
-    chords: "E F"
-  },
-  {
-    number: "7",
-    chords: "A D Em"
-  },
-  {
-    number: "8",
-    chords: "F#"
-  },
-  {
-    number: "9",
-    chords: "G E"
-  }
-];
 
 //THESE ARE HARD CODED
 localStorage.setItem("songTitle","This is a song")
@@ -292,16 +254,28 @@ class Display extends Component {
                       <button onClick={this.refreshScoreDetails}/>
                   </div>
                   <SimpleCard title="Analysis">
-                      <h1>{this.state.songTitle}</h1>
-                      <br/>
-                      <h4>
-                          Piece Meta Data:
-                      </h4>
-                      <p>
-                          <li>Key: {this.state.keySignature} </li>
-                          <li>Time Signature: {this.state.timeSignature['numBeats'] + "/" + this.state.timeSignature['beatValue']}</li>
-                          <li>Tempo Indication: {this.state.tempoIndication}</li>
-                      </p>
+                      <Grid container justify="space-evenly">
+                          <Grid item>
+                              <h1>{this.state.songTitle}</h1>
+                              <br/>
+                              <h4>
+                                  Piece Meta Data:
+                              </h4>
+                              <p>
+                                  <li>Key: {this.state.keySignature} </li>
+                                  <li>Time Signature: {this.state.timeSignature['numBeats'] + "/" + this.state.timeSignature['beatValue']}</li>
+                                  <li>Tempo Indication: {this.state.tempoIndication}</li>
+                              </p>
+                          </Grid>
+                          <Grid item>
+                              <h4>
+                                  Genre:
+                              </h4>
+                              <div style={{ height: '200px', width: '200px'}}>
+                                <GenrePie/>
+                              </div>
+                          </Grid>
+                      </Grid>
                   </SimpleCard>
                   <br/>
                   <SimpleCard>
