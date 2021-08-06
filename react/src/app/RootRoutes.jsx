@@ -1,5 +1,6 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
+import homeRoutes from "./views/HomeRoutes";
 import uploadRoutes from "./views/UploadRoutes";
 import displayRoutes from "./views/DisplayRoutes";
 import notFoundRoutes from "./views/NotFoundRoutes";
@@ -17,7 +18,7 @@ const redirectRoute = [
   {
     path: "/",
     exact: true,
-    component: () => <Redirect to="/Upload" />
+    component: () => <Redirect to="/Home" />
   }
 ];
 
@@ -37,6 +38,7 @@ const errorRoute = [
  */
 
 const routes = [
+  ...homeRoutes,
   ...uploadRoutes,
   ...displayRoutes,
   ...notFoundRoutes,

@@ -163,32 +163,12 @@ class Upload extends Component {
                       ]}
                   />
               </div>
-              <SimpleCard>
-                  <div className={"w-400"}>
-                      <img src={process.env.PUBLIC_URL + '/assets/images/logo-full.png'} alt={"MidiSense Logo"}/>
-                  </div>
-                  <br/>
-                  <p>
-                      MIDISense is an interactive system that helps composers and enthusiasts the ability to leverage
-                      the power of Midi as well as a powerful AI in order to gain insight into your music.
-                  </p>
-                  <br/>
-                  <div>
-                      <h6>
-                          To use MIDISense
-                      </h6>
-                      <li>Upload a midi file below</li>
-                      <li>Push the process button</li>
-                      <li>Review the details of your piece</li>
-                  </div>
-                  <br/>
-              </SimpleCard>
 
-              <br/>
+              <Grid container justify="space-evenly" spacing={3} alignItems="centre">
 
               <SimpleCard title="Upload File">
 
-                  <Grid>
+                      <Grid item>
                       <div
                           className={`h-200 w-full border-radius-8 elevation-z6 bg-light-gray flex justify-center items-center cursor-pointer`}
                       >
@@ -211,7 +191,7 @@ class Upload extends Component {
                               </Dropzone>
                           </div>
                       </div>
-                  </Grid>
+                      </Grid>
 
                   <br/>
                   <Button
@@ -228,6 +208,12 @@ class Upload extends Component {
                       Process Your File
                   </Button>
               </SimpleCard>
+                  <Grid item>
+                      <div className={"max-w-500 min-w-300"}>
+                          <img src={process.env.PUBLIC_URL + '/assets/images/illustrations/Technical_character.svg'} alt={"Person singing"}/>
+                      </div>
+                  </Grid>
+              </Grid>
           </div>
       );
   };
