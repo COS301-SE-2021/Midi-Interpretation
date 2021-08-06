@@ -193,7 +193,8 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
 
         @Override
         public int compare(GenrePredication o1, GenrePredication o2) {
-            return (int) Math.round(100*(o1.getCertainty()-o2.getCertainty()));
+            // sorted by 3 decimal places worth of accuracy
+            return (int) Math.round(100000*(o1.getCertainty()-o2.getCertainty()));
         }
     }
 
