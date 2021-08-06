@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, useRef} from "react";
 import {Grid, Button, Icon} from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "matx";
 import Dropzone from 'react-dropzone'
@@ -7,6 +7,10 @@ import {makeStyles} from "@material-ui/core/styles";
 import 'react-responsive-combo-box/dist/index.css'
 import MidiSenseService from "../services/MidiSenseService";
 import localStorage from "../services/localStorageService";
+import Cookies from 'universal-cookie';
+import {Redirect} from "react-router-dom";
+import ResponsiveDialog from "./ResponsiveDialog";
+
 
 /**
  * This class defines the first view that a user will be presented with
@@ -25,7 +29,6 @@ import localStorage from "../services/localStorageService";
  */
 
 class Upload extends Component {
-
     /**
      * The main constructor for the Upload view
      * The state values are defined here as well as the methods for the view
@@ -36,6 +39,7 @@ class Upload extends Component {
 
   constructor(props){
       super(props);
+      this.cookies = new Cookies();
       this.state = {
           files: [],
           isFileSet: false,
@@ -45,9 +49,11 @@ class Upload extends Component {
           trackInfo: null,
           trackMetadata: null,
           trackOverview: null,
-          trackIndex: 0
+          trackIndex: 0,
+          cookies: this.cookies.get('allowCookies')
       }
       this.backendService = new MidiSenseService()
+
 
         /**
          * onDrop handles files being added to the dropzone
@@ -58,7 +64,7 @@ class Upload extends Component {
       this.onDrop = (files) => {
           this.setState({
               files: files,
-              isFileSet: true,
+              isFileSet: this.cookies.get('allowCookies') !== undefined,
               uploadButtonText: "UploadFile"
           })
       };
@@ -83,6 +89,7 @@ class Upload extends Component {
               (res)=>{
                   const designator = res['fileDesignator']
                   localStorage.setItem("fileDesignator", designator)
+                  this.cookies.set('fileDesignator', designator, { path: '/' });
                   console.log("Upload successful : assigned designator "+designator)
                   alert("Successfully uploaded, beginning interpretation")
                   this.beginInterpretation()
@@ -102,7 +109,7 @@ class Upload extends Component {
          */
 
       this.beginInterpretation = () => {
-          const designator = localStorage.getItem("fileDesignator")
+          const designator = this.cookies.get('fileDesignator')
           this.backendService = new MidiSenseService()
           console.log("Call to interpret current file")
           this.backendService.interpreterProcessFile(
@@ -119,7 +126,26 @@ class Upload extends Component {
                   console.error("Interpretation request failed : "+JSON.stringify(error))
               }
           )
-    }
+      }
+
+      // this.allowCookies = () => {
+      //     this.cookies.set('allowCookies', 'true', { path: '/' });
+      //     return true
+      // }
+
+      this.ProcessFile = () => {
+          if(this.cookies.get('allowCookies') !== undefined) {
+              console.log(this.cookies.get('allowCookies'))
+              if (this.state.isFileSet) {
+                  this.uploadFile()
+                  this.beginInterpretation()
+                  return <Redirect to="/Loading"/>
+              }
+          }
+          else{
+              this.cookies.set('allowCookies', 'true', { path: '/' });
+          }
+      }
   }
 
     /**
@@ -164,7 +190,7 @@ class Upload extends Component {
                   />
               </div>
 
-              <Grid container justify="space-evenly" spacing={3} alignItems="centre">
+              <Grid container justify="space-evenly" spacing={3} alignItems="center">
 
               <SimpleCard title="Upload File">
 
@@ -199,12 +225,8 @@ class Upload extends Component {
                       disabled={!this.state.isFileSet}
                       color="primary"
                       className={classes.button}
-                      onClick={()=>{
-                          if(this.state.isFileSet){
-                              this.uploadFile()
-                              this.beginInterpretation()
-                          }
-                      }}>
+                      onClick={()=>{ this.ProcessFile() }
+                      }>
                       Process Your File
                   </Button>
               </SimpleCard>
@@ -214,6 +236,11 @@ class Upload extends Component {
                       </div>
                   </Grid>
               </Grid>
+              {
+                  this.cookies.get('allowCookies') === undefined ?
+                  <ResponsiveDialog/> :
+                  <div/>
+              }
           </div>
       );
   };

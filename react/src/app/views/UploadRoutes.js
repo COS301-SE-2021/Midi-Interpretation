@@ -9,6 +9,10 @@ const uploadRoutes = [
   {
     path: "/Upload",
     component: React.lazy(() => import("./Upload")),
+  },
+  {
+    path: "/Loading",
+    component: React.lazy(() => import("./Home")),
   }
 ];
 

@@ -4,8 +4,10 @@ import { Dialog, Button } from "@material-ui/core";
 const ConfirmationDialog = ({
   open,
   onConfirmDialogClose,
-  text,
-  title = "confirm",
+  text = "Cookies allow us to keep track of the files you've uploaded and the interpretation our system has " +
+  "generated for you. We do not track your browsing, identity or give information to advertisers. Please consent to " +
+  "the cookies as stipulated to continue.",
+  title = "We Use Cookies",
   onYesClick
 }) => {
   return (
