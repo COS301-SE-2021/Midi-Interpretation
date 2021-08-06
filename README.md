@@ -30,6 +30,7 @@ For a high-level overview of how to use the system and the development process, 
 
 ## Demonstrations
 
+The following give a chronology of program development: focusing on the development of particular subsystems at any one time.
 For a demonstration of how to use the appropriate system functions, please consider watching the latest demonstration.
 
 * :tv: [Demonstration 1](https://drive.google.com/file/d/1u3yPmhA9ue9AsGq7qqYW6PU98itxFXpb/view)
@@ -40,8 +41,8 @@ For a demonstration of how to use the appropriate system functions, please consi
 ## Project Management
 
 * :open_book: [Administration](https://github.com/COS301-SE-2021/Midi-Interpretation/projects/1)
-* :open_book: [Development](https://github.com/COS301-SE-2021/Midi-Interpretation/projects/2)
-
+* :open_book: [Backend Development](https://github.com/COS301-SE-2021/Midi-Interpretation/projects/2)
+* :open_book: [Frontend Development](https://github.com/COS301-SE-2021/Midi-Interpretation/projects/3)
 ---
 
 ## The team
