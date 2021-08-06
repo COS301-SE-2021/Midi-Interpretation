@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import {PieChart, Pie, Sector, Cell, ResponsiveContainer, Tooltip} from 'recharts';
+import {PieChart, Pie, Sector, Cell, ResponsiveContainer, Tooltip, Legend} from 'recharts';
 
 const data = [
     { name: 'Rock', value: 40 },
@@ -34,7 +34,7 @@ const GenrePie = () => {
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                     </Pie>
-                    <legend/>
+                    <Legend verticalAlign="top" height={36}/>
                     <Tooltip/>
                 </PieChart>
             </ResponsiveContainer>

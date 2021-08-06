@@ -2,7 +2,6 @@ import {
         LineChart,
         Line,
         Brush,
-        ReferenceLine,
         XAxis,
         YAxis,
         CartesianGrid,
@@ -11,6 +10,7 @@ import {
         ResponsiveContainer,
 } from 'recharts';
 import React from "react";
+
 
 const data = [
         { name: '1', pitch: 300, velocity: 456, octave: 2 },
@@ -61,11 +61,13 @@ const CustomTooltip = ({ active, payload, label}) => {
                 const velocity = data[label-1].velocity
                 const octave = data[label-1].octave
                 return (
-                    <div className="custom-tooltip bg-white text-primary elevation-z3" >
-                            <p className="label">{`Note : ${label}`}</p>
-                            <p className="desc">{`Pitch : ${pitch}`}</p>
-                            <p className="desc">{`Velocity : ${velocity}`}</p>
-                            <p className="desc">{`Octave : ${octave}`}</p>
+                    <div className="custom-tooltip bg-white text-primary elevation-z3 " >
+                            <div className="m-3">
+                                    <p className="label">{`Note : ${label}`}</p>
+                                    <p className="desc">{`Pitch : ${pitch}`}</p>
+                                    <p className="desc">{`Velocity : ${velocity}`}</p>
+                                    <p className="desc">{`Octave : ${octave}`}</p>
+                            </div>
                     </div>
                 );
         }
@@ -101,11 +103,9 @@ const TrackViewer = () => {
                             <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
                             <Brush dataKey="name" height={30} stroke="#7467ef" />
                             <Line dataKey="pitch" stroke="#ff9e43" type="monotone" strokeWidth={2} />
-
                     </LineChart>
             </ResponsiveContainer>
-
-        );
-};
+        )
+}
 
 export default TrackViewer;
