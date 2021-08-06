@@ -52,9 +52,7 @@ public class NeuralNetworkTest extends MIDISenseUnitTest {
     public void test_classify_IfValidByteArray_ThenThreeFullSolutions(){
         byte[] testFile = new byte[]{1,2,3,4};
         GenrePredication[] predictions = strategy.classify(testFile);
-        for(GenrePredication genrePredication : predictions){
-            System.out.println(genrePredication);
-        }
+        Assertions.assertTrue(predictions.length > 0);
 
     }
 
