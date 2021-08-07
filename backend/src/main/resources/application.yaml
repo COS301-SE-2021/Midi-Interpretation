@@ -198,7 +198,7 @@ components:
           type: string
 
     displayGetPieceMetadataResponse:
-      description: "Returns a TempoIndication, KeySignature and Time Signature in the form of an integer, string and object"
+      description: "Returns a TempoIndication, KeySignature and Time Signature in the form of an integer, string and object respectively"
       type: object
       properties:
         tempoIndication:
