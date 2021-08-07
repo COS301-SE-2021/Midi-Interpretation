@@ -1,9 +1,13 @@
 import React, {Component} from "react";
 import {SimpleCard} from "matx";
 import { withStyles } from "@material-ui/styles";
-import {makeStyles} from "@material-ui/core/styles";
 import 'react-responsive-combo-box/dist/index.css';
 import { Grid, Container } from '@material-ui/core';
+import 'react-piano/dist/styles.css';
+import InteractiveDemo from "../services/InteractiveDemo";
+import PlaybackDemo from "../services/PlaybackDemo";
+import { lostWoods } from '../services/songs';
+
 
 
 /**
@@ -59,10 +63,22 @@ class Upload extends Component {
      */
 
     render() {
-        const classes = makeStyles;
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const soundfontHostname = 'https://d1pzp51pvbm36p.cloudfront.net';
+
         return (
             <div className="m-sm-30" >
                 <SimpleCard>
+                    <div className="mt-5">
+                        <InteractiveDemo audioContext={audioContext} soundfontHostname={soundfontHostname} />
+                        <br/>
+                        <PlaybackDemo
+                            audioContext={audioContext}
+                            soundfontHostname={soundfontHostname}
+                            song={lostWoods}
+                        />
+                        <br/>
+                    </div>
                 <Grid container justify="space-evenly" spacing={3}>
                     <Grid item >
                         <div className={"max-w-400"}>
@@ -129,6 +145,7 @@ class Upload extends Component {
         );
     };
 }
+
 
 /**
  * The final export of our view
