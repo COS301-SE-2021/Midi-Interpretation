@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import 'react-piano/dist/styles.css';
+import "../services/styles.css"
 import InteractiveDemo from "../services/InteractiveDemo";
 import Typical from 'react-typical'
+import {Button} from "@material-ui/core";
 
 /**
  * Styling for the page
@@ -125,6 +126,15 @@ class Loading extends Component {
                     <div className="w-full-screen ">
                         <InteractiveDemo audioContext={audioContext} soundfontHostname={soundfontHostname} />
                     </div>
+                    <br/>
+                    <Button
+                        className="capitalize"
+                        variant="contained"
+                        color="primary"
+                        onClick={() => this.props.history.push("/")}
+                    >
+                        Back to Home
+                    </Button>
                 </div>
             </div>
         );
