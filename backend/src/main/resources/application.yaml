@@ -99,7 +99,8 @@ paths:
       description: getTrackMetadata
       operationId: getTrackMetadata
       requestBody:
-        description: "Request for getTrackMetadata"
+        description: "Request body of getTrackMetadata endpoint, request must be sent in
+                      JSON and references displayGetTrackMetadataRequest in the schema"
         required: true
         content:
           application/json:
@@ -107,7 +108,8 @@ paths:
               $ref: '#/components/schemas/displayGetTrackMetadataRequest'
       responses:
         '200':
-          description: "getTrackMetadata Response"
+          description: "Describes response of getTrackMetadata endpoint, will respond if
+                        successful and references displayGetTrackMetadataResponse"
           content:
             application/json:
               schema:
@@ -121,7 +123,8 @@ paths:
       description: getTrackOverview
       operationId: getTrackOverview
       requestBody:
-        description: "Request for getTrackOverview"
+        description: "Request body of getTrackOverview endpoint, request must be sent in
+                      JSON and references displayGetTrackOverviewRequest in the schema"
         required: true
         content:
           application/json:
@@ -129,7 +132,8 @@ paths:
               $ref: '#/components/schemas/displayGetTrackOverviewRequest'
       responses:
         '200':
-          description: "getTrackOverview response"
+          description: "Describes response of getTrackOverview endpoint, will respond if
+                        successful and references displayGetTrackOverviewResponse"
           content:
             application/json:
               schema:
@@ -143,7 +147,8 @@ paths:
       description: analyseGenre
       operationID: analyseGenre
       requestBody:
-        description: "Request endpoint to analyse genre"
+        description: "Request body of analyseGenre endpoint, request must be sent in
+                      JSON and references intelligenceAnalyseGenreRequest in the schema"
         required: true
         content:
           application/json:
@@ -151,7 +156,8 @@ paths:
               $ref: '#/components/schemas/intelligenceAnalyseGenreRequest'
       responses:
         '200':
-          description: "analyseGenre response"
+          description: "Describes response of analyseGenre endpoint, will respond if
+                        successful and references intelligenceAnalyseGenreResponse"
           content:
             application/json:
               schema:
