@@ -26,7 +26,8 @@ paths:
       description: ProcessFile
       operationId: ProcessFile
       requestBody:
-        description: "Request for processFile"
+        description: "Request body of processFile endpoint, request must be sent in
+                      JSON and references interpreterProcessFileRequest in the schema"
         required: true
         content:
           application/json:
@@ -34,7 +35,8 @@ paths:
               $ref: '#/components/schemas/interpreterProcessFileRequest'
       responses:
         '200':
-          description: "processFile Response"
+          description: "Describes response of processFile endpoint, will respond if
+                        successful and references interpreterProcessFileResponse"
           content:
             application/json:
               schema:
@@ -48,7 +50,8 @@ paths:
       description: getPieceMetadata
       operationId: getPieceMetadata
       requestBody:
-        description: "Request for getPieceMetadata"
+        description: "Request body of getPieceMetadata endpoint, request must be sent in
+                      JSON and references displayGetPieceMetadataRequest in the schema"
         required: true
         content:
           application/json:
@@ -56,7 +59,8 @@ paths:
               $ref: '#/components/schemas/displayGetPieceMetadataRequest'
       responses:
         '200':
-          description: "getPieceMetadata Response"
+          description: "Describes response of getPieceMetadata endpoint, will respond if
+                        successful and references displayGetPieceMetadataResponse"
           content:
             application/json:
               schema:
@@ -71,7 +75,8 @@ paths:
       description: getTrackInfo
       operationId: getTrackInfo
       requestBody:
-        descripiton: "Request for getTrackInfo"
+        descripiton: "Request body of getTrackInfo endpoint, request must be sent in
+                      JSON and references displayGetTrackInfoRequest in the schema"
         required: true
         content:
           application/json:
@@ -79,7 +84,8 @@ paths:
               $ref: '#/components/schemas/displayGetTrackInfoRequest'
       responses:
         '200':
-          description: "GetTrackInfo Response"
+          description: "Describes response of getTrackInfo endpoint, will respond if
+                        successful and references displayGetTrackInfoResponse"
           content:
             application/json:
               schema:
