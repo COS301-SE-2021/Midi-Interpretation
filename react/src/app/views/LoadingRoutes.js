@@ -1,4 +1,4 @@
-import NotFound from "./NotFound";
+import Loading from "./Loading";
 
 /**
  * Theme settings
@@ -19,12 +19,12 @@ const settings = {
  * Route of the 404 page
  */
 
-const notFoundRoutes = [
+const loadingRoutes = [
     {
-        path: "/404",
-        component: NotFound,
+        path: "/Loading",
+        component: Loading,
         settings
     }
 ];
 
-export default notFoundRoutes;
+export default loadingRoutes;
