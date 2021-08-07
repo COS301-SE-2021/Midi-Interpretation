@@ -227,6 +227,7 @@ components:
           type: string
 
     displayGetTrackInfoResponse:
+      description: "Returns a string hash map and track indices of the piece as integers"
       type: array
       items:
         type: object
@@ -237,7 +238,7 @@ components:
             type: string
 
     displayGetTrackMetadataRequest:
-      description: "Request Track Metadata"
+      description: "Expects UUID file designator and integer track index"
       type: object
       properties:
         fileDesignator:
@@ -246,13 +247,14 @@ components:
           type: integer
 
     displayGetTrackMetadataResponse:
+      description: "Returns a string trackString"
       type: object
       properties:
         trackString:
           type: String
 
     displayGetTrackOverviewRequest:
-      description: "Request for Track Overview"
+      description: "Expects UUID file designator and integer track index"
       type: object
       properties:
         fileDesignator:
@@ -261,19 +263,21 @@ components:
           type: integer
 
     displayGetTrackOverviewResponse:
+      description: "Returns a string of the pitch arrays"
       type: array
       items:
         type: string
 
 
     intelligenceAnalyseGenreRequest:
-      description: "Request for analyse genre"
+      description: "Expects UUID file designator"
       type: object
       properties:
         fileDesignator:
           type: string
 
     intelligenceAnalyseGenreResponse:
+      description: "Returns an array consisting of the most prevalent genres in the piece"
       type: array
       items:
         type: object
