@@ -53,26 +53,7 @@ class InteractiveDemo extends React.Component {
                 )}
               </DimensionsProvider>
             </div>
-            <div className="row mt-5">
-              <div className="col-lg-8 offset-lg-2">
-                <InstrumentListProvider
-                  hostname={this.props.soundfontHostname}
-                  render={(instrumentList) => (
-                    <PianoConfig
-                      config={this.state.config}
-                      setConfig={(config) => {
-                        this.setState({
-                          config: Object.assign({}, this.state.config, config),
-                        });
-                        stopAllNotes();
-                      }}
-                      instrumentList={instrumentList || [this.state.config.instrumentName]}
-                      keyboardShortcuts={keyboardShortcuts}
-                    />
-                  )}
-                />
-              </div>
-            </div>
+
           </div>
         )}
       />

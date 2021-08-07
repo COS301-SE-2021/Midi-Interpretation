@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import 'react-piano/dist/styles.css';
 import InteractiveDemo from "../services/InteractiveDemo";
 import Typical from 'react-typical'
 
@@ -22,7 +23,7 @@ const styles = theme => ({
     },
     inner: {
         flexDirection: "column",
-        maxWidth: "320px"
+        maxWidth: "80%"
     }
 });
 
@@ -114,13 +115,16 @@ class Loading extends Component {
                     <CircularProgress />
                     <br/>
                     <h1>Loading...</h1>
+                    <br/>
                     <Typical
                         steps={shuffleArray(lyrics)}
                         loop={Infinity}
                         wrapper="b"
                     />
                     <br/>
-                    <InteractiveDemo audioContext={audioContext} soundfontHostname={soundfontHostname} />
+                    <div className="w-full-screen ">
+                        <InteractiveDemo audioContext={audioContext} soundfontHostname={soundfontHostname} />
+                    </div>
                 </div>
             </div>
         );
