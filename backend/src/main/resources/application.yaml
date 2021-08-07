@@ -159,7 +159,7 @@ components:
   schemas:
 
     interpreterUploadFileRequest:
-      description: "Description Here"
+      description: "Expects a byte array representation of a midi file"
       type: object
       properties:
         fileContents:
@@ -168,19 +168,21 @@ components:
             type: integer
 
     interpreterUploadFileResponse:
+      description: "Returns a file designator UUID"
       type: object
       properties:
         fileDesignator:
           type: string
 
     interpreterProcessFileRequest:
-      description: "Request the ProcessFile"
+      description: "Expects UUID file designator"
       type: object
       properties:
         fileDesignator:
           type: string
 
     interpreterProcessFileResponse:
+      description: "Returns a success status boolean and message string"
       type: object
       properties:
         success:
@@ -189,12 +191,14 @@ components:
           type: string
 
     displayGetPieceMetadataRequest:
+      description: "Expects UUID file designator"
       type: object
       properties:
         fileDesignator:
           type: string
 
     displayGetPieceMetadataResponse:
+      description: "Returns a TempoIndication, KeySignature and Time Signature in the form of an integer, string and object"
       type: object
       properties:
         tempoIndication:
@@ -210,7 +214,7 @@ components:
               type: integer
 
     displayGetTrackInfoRequest:
-      description: "Request Track Info"
+      description: "Expects UUID file designator"
       type: object
       properties:
         fileDesignator:
