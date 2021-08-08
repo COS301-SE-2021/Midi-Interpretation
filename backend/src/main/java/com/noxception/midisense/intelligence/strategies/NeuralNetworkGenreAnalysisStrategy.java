@@ -25,7 +25,7 @@ import java.util.Comparator;
  */
 public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy{
 
-    private int unscaledInputSize = (1<<10);
+    private int unscaledInputSize = 64 * (1<<10);
 
     private final int inputLayerSize = 500;
     private final int hiddenLayerSize = 100;

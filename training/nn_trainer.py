@@ -7,7 +7,7 @@ from sklearn.decomposition import PCA
 a = 0.05
 
 # components of reduction
-n_pca = 150
+n_pca = 20
 
 # genres (classification classes)
 ng = 100
@@ -16,7 +16,7 @@ ng = 100
 nh = 100
 
 # iterative descent
-ni = 10000
+ni = 100
 
 # metric to gauge how many components of PCA should be used
 expected_variance_preserved = 0.90
@@ -55,13 +55,14 @@ try:
     X_test = np.load(test_set_name)
     y_train = np.load(training_label_name,allow_pickle=True)
     y_test = np.load(test_label_name,allow_pickle=True)
+
 except (IndexError, FileNotFoundError) as e:
     sys.exit("[ERROR] Could not find specified input files for training and test sets and labels.")
 
 try:
-    a = float(sys.argv[5])
+    n_pca = float(sys.argv[5])
 except IndexError as e:
-    print("[INFO] No learning rate specified, using default:", a)
+    print("[INFO] No PCA reduction specified, using {}".format(n_pca))
 
 print(
     "[INFO] Training set has {} observations of {} features, with {} labels. Test set has {} observations of {} features, with {} labels.".format(
@@ -79,6 +80,8 @@ print(
 
 pca = PCA(n_components=n_pca)
 pca.fit(X_train)
+L = pca.components_
+print(L.shape)
 X_train = pca.transform(X_train)
 X_test = pca.transform(X_test)
 
@@ -190,14 +193,15 @@ for iteration in range(ni):
     test_accuracy = np.sum(successes_test) / successes_test.shape[0]
 
     print(
-        "\r[TRAINING/CLASSIFICATION] Iteration: [{}] | Cost: [{:0.3f}] | Training accuracy: [{:0.3f}%] | Test accuracy: [{:0.3f}%]".format(
-            iteration + 1, J, 100 * train_accuracy, 100 * test_accuracy), end="")
+        "[TRAINING/CLASSIFICATION] Iteration: [{}] | Cost: [{:0.3f}] | Training accuracy: [{:0.3f}%] | Test accuracy: [{:0.3f}%]".format(
+            iteration + 1, J, 100 * train_accuracy, 100 * test_accuracy), end="\r")
 
     if (iteration == (ni - 1)):
         print()
 
         # save the weights and biases to file
-        np.save("W1.npy",W1)
-        np.save("W2.npy",W2)
-        np.save("b1.npy",b1)
-        np.save("b2.npy",b2)
+        np.save("output/W1.npy",W1)
+        np.save("output/W2.npy",W2)
+        np.save("output/b1.npy",b1)
+        np.save("output/b2.npy",b2)
+        np.save("output/L.npy", L)
