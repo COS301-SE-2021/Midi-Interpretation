@@ -9,6 +9,9 @@ import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalys
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +24,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class IntelligenceServiceImplTest extends MIDISenseUnitTest {
 
     IntelligenceServiceImpl intelligenceService;

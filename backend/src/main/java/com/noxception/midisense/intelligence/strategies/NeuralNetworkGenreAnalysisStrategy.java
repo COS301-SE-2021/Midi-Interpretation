@@ -1,8 +1,14 @@
 package com.noxception.midisense.intelligence.strategies;
 
+import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.intelligence.dataclass.GenrePredication;
+import org.ejml.data.Matrix;
 import org.ejml.simple.SimpleMatrix;
+import us.hebi.matlab.mat.ejml.Mat5Ejml;
+import us.hebi.matlab.mat.format.Mat5;
+import us.hebi.matlab.mat.types.MatFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -31,7 +37,7 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
     private final int hiddenLayerSize = 100;
 
     //PCA matrix
-    private SimpleMatrix W;
+    private SimpleMatrix L;
 
     // Network Weights
     private SimpleMatrix w1;
@@ -59,16 +65,25 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
         w2 = new SimpleMatrix(classificationClasses,hiddenLayerSize);
         b2 = new SimpleMatrix(classificationClasses,1);
 
-        W = new SimpleMatrix(unscaledInputSize,inputLayerSize);
+        L = new SimpleMatrix(unscaledInputSize,inputLayerSize);
 
-        //randomise : TODO: replace by loading generated values
-        for(SimpleMatrix caseMatrix: new SimpleMatrix[]{w1, w2, b1, b2, W}){
-            for(int i=0; i<caseMatrix.numRows(); i++){
-                for(int j=0; j<caseMatrix.numCols(); j++){
-                    caseMatrix.set(i,j,Math.random()/100);
+        try{
+            loadStructure();
+        }
+        catch(IOException e){
+
+            //randomise
+            for(SimpleMatrix caseMatrix: new SimpleMatrix[]{w1, w2, b1, b2, L}){
+                for(int i=0; i<caseMatrix.numRows(); i++){
+                    for(int j=0; j<caseMatrix.numCols(); j++){
+                        caseMatrix.set(i,j,Math.random()/100);
+                    }
                 }
             }
+
         }
+
+
 
     }
 
@@ -89,7 +104,7 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
         }
 
         //scale down input using pca
-        SimpleMatrix inputLayer = W.transpose().mult(unscaled);
+        SimpleMatrix inputLayer = L.mult(unscaled);
 
         //feed forward
         SimpleMatrix outputLayer = feedForward(inputLayer);
@@ -211,6 +226,41 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
             // sorted by 3 decimal places worth of accuracy
             return (int) Math.round(100000*(o2.getCertainty()-o1.getCertainty()));
         }
+    }
+
+    /**
+     * Class that loads external matrix data into existing infrastructure
+     */
+    public void loadStructure() throws IOException {
+
+        //load weights
+        MatFile file = Mat5.readFromFile(
+            MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MATRIX_WEIGHT_ROOT)+"W1.mat"
+        );
+        w1 = new SimpleMatrix((Matrix) Mat5Ejml.convert(file.getArray("data")));
+
+        file = Mat5.readFromFile(
+                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MATRIX_WEIGHT_ROOT)+"W2.mat"
+        );
+        w2 = new SimpleMatrix((Matrix) Mat5Ejml.convert(file.getArray("data")));
+
+        //load biases
+        file = Mat5.readFromFile(
+                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MATRIX_WEIGHT_ROOT)+"b1.mat"
+        );
+        b1 = new SimpleMatrix((Matrix) Mat5Ejml.convert(file.getArray("data")));
+
+        file = Mat5.readFromFile(
+                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MATRIX_WEIGHT_ROOT)+"b2.mat"
+        );
+        b2 = new SimpleMatrix((Matrix) Mat5Ejml.convert(file.getArray("data")));
+
+        //load PCA matrix
+        file = Mat5.readFromFile(
+                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MATRIX_WEIGHT_ROOT)+"L.mat"
+        );
+        L = new SimpleMatrix((Matrix) Mat5Ejml.convert(file.getArray("data")));
+
     }
 
 

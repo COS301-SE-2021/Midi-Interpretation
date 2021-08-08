@@ -83,6 +83,18 @@
             <artifactId>ejml-all</artifactId>
             <version>0.41</version>
         </dependency>
+        <!-- Mat file loading -->
+        <dependency>
+            <groupId>us.hebi.matlab.mat</groupId>
+            <artifactId>mfl-core</artifactId>
+            <version>0.5.7</version>
+        </dependency>
+        <dependency>
+            <groupId>us.hebi.matlab.mat</groupId>
+            <artifactId>mfl-ejml</artifactId>
+            <version>0.5.7</version>
+        </dependency>
+
 
     </dependencies>
 

@@ -2,6 +2,7 @@ import sys
 import numpy as np
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.decomposition import PCA
+import scipy.io as sc
 
 # descent rate
 a = 0.05
@@ -60,7 +61,7 @@ except (IndexError, FileNotFoundError) as e:
     sys.exit("[ERROR] Could not find specified input files for training and test sets and labels.")
 
 try:
-    n_pca = float(sys.argv[5])
+    n_pca = int(sys.argv[5])
 except IndexError as e:
     print("[INFO] No PCA reduction specified, using {}".format(n_pca))
 
@@ -199,9 +200,9 @@ for iteration in range(ni):
     if (iteration == (ni - 1)):
         print()
 
-        # save the weights and biases to file
-        np.save("output/W1.npy",W1)
-        np.save("output/W2.npy",W2)
-        np.save("output/b1.npy",b1)
-        np.save("output/b2.npy",b2)
-        np.save("output/L.npy", L)
+
+        sc.savemat("output/W1.mat",{'data':W1})
+        sc.savemat("output/W2.mat",{'data':W2})
+        sc.savemat("output/b1.mat",{'data':b1})
+        sc.savemat("output/b2.mat",{'data':b2})
+        sc.savemat("output/L.mat", {'data':L})
