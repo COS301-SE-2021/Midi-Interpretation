@@ -25,8 +25,13 @@ import java.util.Comparator;
  */
 public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy{
 
-    private final int inputLayerSize = 100;
+    private int unscaledInputSize = (1<<10);
+
+    private final int inputLayerSize = 500;
     private final int hiddenLayerSize = 100;
+
+    //PCA matrix
+    private SimpleMatrix W;
 
     // Network Weights
     private SimpleMatrix w1;
@@ -44,6 +49,9 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
      */
     public NeuralNetworkGenreAnalysisStrategy() {
 
+        //allocate unscaled components
+        unscaledInputSize *= 2;
+
         //allocate weights and biases
         w1 = new SimpleMatrix(hiddenLayerSize,inputLayerSize);
         b1 = new SimpleMatrix(hiddenLayerSize,1);
@@ -51,8 +59,10 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
         w2 = new SimpleMatrix(classificationClasses,hiddenLayerSize);
         b2 = new SimpleMatrix(classificationClasses,1);
 
+        W = new SimpleMatrix(unscaledInputSize,inputLayerSize);
+
         //randomise : TODO: replace by loading generated values
-        for(SimpleMatrix caseMatrix: new SimpleMatrix[]{w1, w2, b1, b2}){
+        for(SimpleMatrix caseMatrix: new SimpleMatrix[]{w1, w2, b1, b2, W}){
             for(int i=0; i<caseMatrix.numRows(); i++){
                 for(int j=0; j<caseMatrix.numCols(); j++){
                     caseMatrix.set(i,j,Math.random()/100);
@@ -70,10 +80,16 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
     @Override
     public GenrePredication[] classify(byte[] features) {
 
-        //forward propagation
-        SimpleMatrix inputLayer = new SimpleMatrix(inputLayerSize,1);
+        //load unscaled vector
+        SimpleMatrix unscaled = new SimpleMatrix(unscaledInputSize,1);
 
-        //set features : TODO fill in the necessary features from the array here
+        int lastIndex = Math.min(features.length,unscaledInputSize);
+        for(int i=0; i<lastIndex; i++){
+            unscaled.set(i,0,features[i]);
+        }
+
+        //scale down input using pca
+        SimpleMatrix inputLayer = W.transpose().mult(unscaled);
 
         //feed forward
         SimpleMatrix outputLayer = feedForward(inputLayer);
@@ -85,7 +101,7 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
         }
 
         //sort the predictions
-        Arrays.sort(totalPredictions,new sortByConfidence());
+        Arrays.sort(totalPredictions,new sortByConfidenceReversed());
 
         //return only the specified amount
         return Arrays.copyOfRange(totalPredictions,0,totalSuggestions);
@@ -133,7 +149,6 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
     }
 
     // Element-Wise Activation
-
 
     /**The single-valued sigmoid logistic value of the specified input
      *
@@ -189,12 +204,12 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
     /**
      * Nested class to implement comparison between two genre predictions based on certainty
      */
-    static class sortByConfidence implements Comparator<GenrePredication>{
+    static class sortByConfidenceReversed implements Comparator<GenrePredication>{
 
         @Override
         public int compare(GenrePredication o1, GenrePredication o2) {
             // sorted by 3 decimal places worth of accuracy
-            return (int) Math.round(100000*(o1.getCertainty()-o2.getCertainty()));
+            return (int) Math.round(100000*(o2.getCertainty()-o1.getCertainty()));
         }
     }
 
