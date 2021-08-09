@@ -13,6 +13,10 @@ It is without a doubt, the most ubiquitous of art forms, permeating through the 
 As with most artistic disciplines, the accessibility of music and a rise in music education among the youth have made its practises an appropriate target for rapid digitisation. As the composition, arrangement and transcription of works are common industry practises, there has been a drive in recent years to marry these processes with technologies that enhance both the sensory and extrasensory perception of a work during such tasks.
 
 ---
+## Credits ##
+Special thanks are made to the jFugue project, whose MIDI parser and listener interfaces are built upon in order to translate between midi events and their musicological counterparts. More about their product and mission can be found at http://www.jfugue.org/.
+
+---
 
 ## Notes and Resources
 
