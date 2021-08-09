@@ -40,9 +40,21 @@ class InterpreterControllerIntegrationTest extends MidiSenseIntegrationTest{
     @Test
     @DisplayName("Tests uploading a valid file")
     void testUploadFileValidFile() throws Exception{
+
+        //make a request
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
+
+        //pass into request
         request.setFileContents(Arrays.asList(1, 2, 3));
-        MvcResult response = mockRequest("interpreter","uploadFile",request, mvc);
+
+        //mock request
+        MvcResult response = mockRequest(
+                "interpreter",
+                "uploadFile",
+                request,
+                mvc);
+
+        //check for successful response
         Assertions.assertEquals(415, response.getResponse().getStatus());
     }
 
@@ -50,12 +62,26 @@ class InterpreterControllerIntegrationTest extends MidiSenseIntegrationTest{
     @Test
     @DisplayName("Tests uploading an invalid file")
     void testUploadFileInvalidFile() throws Exception{
+
+        //create new request, list and byte array
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
         List<Integer> newByteArray = new ArrayList<>();
         byte[] inArray = new byte[]{};
+
+        //add all bytes in inArray to newByteArray
         if(inArray != null) for (byte b : inArray) newByteArray.add((int) b);
+
+        //pass into request
         request.setFileContents(newByteArray);
-        MvcResult response = mockRequest("interpreter","uploadFile",request, mvc);
+
+        //mock request
+        MvcResult response = mockRequest(
+                "interpreter",
+                "uploadFile",
+                request,
+                mvc);
+
+        //check for successful response
         Assertions.assertEquals(415, response.getResponse().getStatus());
     }
 
@@ -64,10 +90,21 @@ class InterpreterControllerIntegrationTest extends MidiSenseIntegrationTest{
     @Rollback(value = true)
     @DisplayName("Tests processing a valid file")
     void testProcessFileValidFileDesignator() throws Exception{
+
+        //create request object
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
 
+        //pass valid file designator into request
         request.setFileDesignator(TestingDictionary.interpreter_all_validFileDesignator);
-        MvcResult response = mockRequest("interpreter","processFile",request, mvc);
+
+        //make a request
+        MvcResult response = mockRequest(
+                "interpreter",
+                "processFile",
+                request,
+                mvc);
+
+        //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
@@ -76,9 +113,21 @@ class InterpreterControllerIntegrationTest extends MidiSenseIntegrationTest{
     @Rollback(value = true)
     @DisplayName("Tests processing an invalid file")
     void testProcessFileInvalidFileDesignator() throws Exception{
+
+        //create request object
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
+
+        //pass invalid file designator into request
         request.setFileDesignator(TestingDictionary.interpreter_all_invalidFileDesignator);
-        MvcResult response = mockRequest("interpreter","processFile",request, mvc);
+
+        //make a request
+        MvcResult response = mockRequest(
+                "interpreter",
+                "processFile",
+                request,
+                mvc);
+
+        //check for failed response
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 

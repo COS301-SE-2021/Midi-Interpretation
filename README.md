@@ -13,6 +13,10 @@ It is without a doubt, the most ubiquitous of art forms, permeating through the 
 As with most artistic disciplines, the accessibility of music and a rise in music education among the youth have made its practises an appropriate target for rapid digitisation. As the composition, arrangement and transcription of works are common industry practises, there has been a drive in recent years to marry these processes with technologies that enhance both the sensory and extrasensory perception of a work during such tasks.
 
 ---
+## Credits ##
+Special thanks are made to the jFugue project, whose MIDI parser and listener interfaces are built upon in order to translate between midi events and their musicological counterparts. More about their product and mission can be found at http://www.jfugue.org/.
+
+---
 
 ## Notes and Resources
 
@@ -30,6 +34,7 @@ For a high-level overview of how to use the system and the development process, 
 
 ## Demonstrations
 
+The following give a chronology of program development: focusing on the development of particular subsystems at any one time.
 For a demonstration of how to use the appropriate system functions, please consider watching the latest demonstration.
 
 * :tv: [Demonstration 1](https://drive.google.com/file/d/1u3yPmhA9ue9AsGq7qqYW6PU98itxFXpb/view)
@@ -40,8 +45,8 @@ For a demonstration of how to use the appropriate system functions, please consi
 ## Project Management
 
 * :open_book: [Administration](https://github.com/COS301-SE-2021/Midi-Interpretation/projects/1)
-* :open_book: [Development](https://github.com/COS301-SE-2021/Midi-Interpretation/projects/2)
-
+* :open_book: [Backend Development](https://github.com/COS301-SE-2021/Midi-Interpretation/projects/2)
+* :open_book: [Frontend Development](https://github.com/COS301-SE-2021/Midi-Interpretation/projects/3)
 ---
 
 ## The team
@@ -63,6 +68,6 @@ and music.
 | :-----: | :-----: | :-----: |
 | ![Hendro Smit](https://dl.dropboxusercontent.com/s/p5cams3icm2iy7c/hendrosmit.png?dl=0 "Hendro Smit") <br/> Hendro Smit <br/> u17004609 | [GitHub](https://github.com/hendrosmit) <br/> [Profile Page](https://hendrosmit.github.io/) <br/> [LinkedIn](https://www.linkedin.com/in/hendro-smit-328ba720b/) <br/> | Project Management <br> C++ <br> C# <br> Java <br> Game Development <br> Writing|
 | ![Claudio Teixiera](documentation/images/ctimg.jpg "Claudio Teixeira") <br/> Claudio Teixiera <br/> u19028581 | [GitHub](https://github.com/Claudio-Uni) <br/>  [LinkedIn](https://www.linkedin.com/in/claudio-teixeira-b9bb9820b/) <br/> | Business Analyst <br> Writing <br> Statistics <br> Exercising <br> |
-| ![Adrian Rae](https://media-exp3.licdn.com/dms/image/C5603AQHC4RAgu2XAeg/profile-displayphoto-shrink_100_100/0/1605105094560?e=1628121600&v=beta&t=4QrI-1B985N_pzd8zItSA9noSq1RDDqUCmw1TtjOJ20 "Adrian Rae") <br/> Adrian Rae <br/> u19004029 | [GitHub](https://github.com/Adrian-Rae-19004029) <br/> [LinkedIn](https://www.linkedin.com/in/adrian-rae-5796b31bb/ ) <br/> | Research <br> Tutoring <br> Music Performance <br> Creative Writing |
+| ![Adrian Rae](documentation/images/arimg.jpg "Adrian Rae") <br/> Adrian Rae <br/> u19004029 | [GitHub](https://github.com/Adrian-Rae-19004029) <br/> [LinkedIn](https://www.linkedin.com/in/adrian-rae-5796b31bb/ ) <br/> | Research <br> Tutoring <br> Music Performance <br> Creative Writing |
 | ![Rearabetswe Maeko](https://i.ibb.co/gDW0kS1/Rea.jpg "Rearabetswe Maeko") <br/> Rearabetswe Maeko <br/> u18179802 | [GitHub](https://github.com/u18094024) <br/> [Profile Page]() <br/> [LinkedIn](https://www.linkedin.com/in/rea-maeko-0b5a4a20b/) <br/> | Web-Development <br> Sport <br> Learning new things! |
 | ![Mbuso Shakoane](https://i.ibb.co/Jpp9Xgc/Issa-Me-adobespark.jpg "Mbuso Shakoane") <br/> Mbuso Shakoane <br/> u18094024 | [GitHub](https://github.com/u18094024) <br/> [Profile Page]() <br/> [LinkedIn](https://www.linkedin.com/in/mbuso-shakoane-049a4920b/) <br/> | Systems design <br> Java <br> c++ <br> Cryptocurrencies |

@@ -5,11 +5,13 @@ import com.noxception.midisense.intelligence.dataclass.GenrePredication;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.*;
 import com.noxception.midisense.intelligence.strategies.GenreAnalysisStrategy;
-import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalysisStrategy;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 
@@ -42,9 +44,22 @@ public class IntelligenceServiceImpl implements IntelligenceService{
         //get the file corresponding to the designator
         UUID fileDesignator = req.getFileDesignator();
 
+        byte[] fileContents;
+
         //TODO: open the file, get contents as byte stream
         //====================================
-        byte[] fileContents = new byte[]{0,1};
+        try{
+            String fileName =
+                    MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)
+                    +fileDesignator
+                    +MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
+
+            Path path = Paths.get(fileName);
+            fileContents = Files.readAllBytes(path);
+        }
+        catch (IOException e) {
+            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+        }
         //====================================
 
         //check to see if there is a strategy
@@ -88,7 +103,7 @@ public class IntelligenceServiceImpl implements IntelligenceService{
      *
      * @param gs a valid genre analysis strategy
      */
-    private void attachGenreStrategy(GenreAnalysisStrategy gs){
+    public void attachGenreStrategy(GenreAnalysisStrategy gs){
         this.genreAnalysisStrategy = gs;
     }
 }
