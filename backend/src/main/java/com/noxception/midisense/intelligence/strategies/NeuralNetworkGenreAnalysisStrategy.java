@@ -61,9 +61,6 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
         //associate program configurations
         this.configurations = conf;
 
-        //allocate unscaled components
-        unscaledInputSize *= 2;
-
         //allocate weights and biases
         w1 = new SimpleMatrix(hiddenLayerSize,inputLayerSize);
         b1 = new SimpleMatrix(hiddenLayerSize,1);
