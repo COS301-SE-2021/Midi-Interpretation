@@ -5,6 +5,11 @@
 
 export const navigations = [
   {
+    name: "Home",
+    path: "/Home",
+    icon: "home"
+  },
+  {
     name: "Upload",
     path: "/Upload",
     icon: "cloud_upload"

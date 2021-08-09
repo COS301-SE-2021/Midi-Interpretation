@@ -1,52 +1,13 @@
 import React, {Component} from "react";
-import {Table, TableHead, TableBody, TableRow, TableCell, TablePagination} from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "../../matx";
-import SimpleExpansionPanel from "../../matx/components/SimpleExpansionPanel";
-import DiscreteSlider from "../../matx/components/DiscreteSlider";
 import SelectedMenu from "../../matx/components/SelectedMenu";
 import MidiSenseService from "../services/MidiSenseService";
 import {withStyles} from "@material-ui/styles";
 import localStorage from "../services/localStorageService";
+import TrackViewer from "../../matx/components/TrackViewer";
+import {Container, Grid} from "@material-ui/core";
+import GenrePie from "../../matx/components/GenrePie";
 
-
-const BarList = [
-  {
-    number: "1",
-    chords: "A D Em"
-  },
-  {
-    number: "2",
-    chords: "C A"
-  },
-  {
-    number: "3",
-    chords: "Em D"
-  },
-  {
-    number: "4",
-    chords: "F#"
-  },
-  {
-    number: "5",
-    chords: "G E"
-  },
-  {
-    number: "6",
-    chords: "E F"
-  },
-  {
-    number: "7",
-    chords: "A D Em"
-  },
-  {
-    number: "8",
-    chords: "F#"
-  },
-  {
-    number: "9",
-    chords: "G E"
-  }
-];
 
 //THESE ARE HARD CODED
 localStorage.setItem("songTitle","This is a song")
@@ -293,67 +254,43 @@ class Display extends Component {
                       <button onClick={this.refreshScoreDetails}/>
                   </div>
                   <SimpleCard title="Analysis">
-                      <h1>{this.state.songTitle}</h1>
-                      <br/>
-                      <h4>
-                          Piece Meta Data:
-                      </h4>
-                      <p>
-                          <li>Key: {this.state.keySignature} </li>
-                          <li>Time Signature: {this.state.timeSignature['numBeats'] + "/" + this.state.timeSignature['beatValue']}</li>
-                          <li>Tempo Indication: {this.state.tempoIndication}</li>
-                      </p>
+                      <Grid container justify="space-evenly">
+                          <Grid item>
+                              <h1>{this.state.songTitle}</h1>
+                              <br/>
+                              <h4>
+                                  Piece Meta Data:
+                              </h4>
+                              <p>
+                                  <li>Key: {this.state.keySignature} </li>
+                                  <li>Time Signature: {this.state.timeSignature['numBeats'] + "/" + this.state.timeSignature['beatValue']}</li>
+                                  <li>Tempo Indication: {this.state.tempoIndication}</li>
+                              </p>
+                          </Grid>
+                          <Grid item>
+                              <h4>
+                                  Genre:
+                              </h4>
+                              <div style={{ height: '200px', width: '200px'}}>
+                                <GenrePie/>
+                              </div>
+                          </Grid>
+                      </Grid>
                   </SimpleCard>
                   <br/>
                   <SimpleCard>
                       <h4>Track</h4>
                       <SelectedMenu inputOptions={this.state.trackListing}/>
-                      <DiscreteSlider/>
+
+
                   </SimpleCard>
                   <br/>
                   <SimpleCard title="Display">
-                      <Table className="whitespace-pre">
-                          <TableHead>
-                              <TableRow>
-                                  <TableCell className="px-0">Bar</TableCell>
-                                  <TableCell className="px-0">Chords</TableCell>
-                                  <TableCell className="px-0">Notes</TableCell>
-                              </TableRow>
-                          </TableHead>
-                          <TableBody>
-                              {BarList
-                                  .slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
-                                  .map((bar, index) => (
-                                      <TableRow key={index}>
-                                          <TableCell className="px-0 capitalize" align="left">
-                                              {bar.number}
-                                          </TableCell>
-                                          <TableCell className="px-0 capitalize" align="left">
-                                              {bar.chords}
-                                          </TableCell>
-                                          <TableCell className="px-0">
-                                            <SimpleExpansionPanel/>
-                                          </TableCell>
-                                      </TableRow>
-                                  ))}
-                          </TableBody>
-                      </Table>
-                      <TablePagination
-                          className="px-4"
-                          rowsPerPageOptions={[5, 10, 25]}
-                          component="div"
-                          count={BarList.length}
-                          rowsPerPage={this.state.rowsPerPage}
-                          page={this.state.page}
-                          backIconButtonProps={{
-                            "aria-label": "Previous Page"
-                          }}
-                          nextIconButtonProps={{
-                            "aria-label": "Next Page"
-                          }}
-                          onChangePage={this.handleChangePage}
-                          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                      />
+
+                          <div style={{ height: '400px', width: '100%'}}>
+                              <TrackViewer/>
+                          </div>
+
                   </SimpleCard>
               </div>
           </div>

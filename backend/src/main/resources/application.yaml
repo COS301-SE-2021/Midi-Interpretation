@@ -26,7 +26,8 @@ paths:
       description: ProcessFile
       operationId: ProcessFile
       requestBody:
-        description: "Request for processFile"
+        description: "Request body of processFile endpoint, request must be sent in
+                      JSON and references interpreterProcessFileRequest in the schema"
         required: true
         content:
           application/json:
@@ -34,7 +35,8 @@ paths:
               $ref: '#/components/schemas/interpreterProcessFileRequest'
       responses:
         '200':
-          description: "processFile Response"
+          description: "Describes response of processFile endpoint, will respond if
+                        successful and references interpreterProcessFileResponse"
           content:
             application/json:
               schema:
@@ -48,7 +50,8 @@ paths:
       description: getPieceMetadata
       operationId: getPieceMetadata
       requestBody:
-        description: "Request for getPieceMetadata"
+        description: "Request body of getPieceMetadata endpoint, request must be sent in
+                      JSON and references displayGetPieceMetadataRequest in the schema"
         required: true
         content:
           application/json:
@@ -56,7 +59,8 @@ paths:
               $ref: '#/components/schemas/displayGetPieceMetadataRequest'
       responses:
         '200':
-          description: "getPieceMetadata Response"
+          description: "Describes response of getPieceMetadata endpoint, will respond if
+                        successful and references displayGetPieceMetadataResponse"
           content:
             application/json:
               schema:
@@ -71,7 +75,8 @@ paths:
       description: getTrackInfo
       operationId: getTrackInfo
       requestBody:
-        descripiton: "Request for getTrackInfo"
+        descripiton: "Request body of getTrackInfo endpoint, request must be sent in
+                      JSON and references displayGetTrackInfoRequest in the schema"
         required: true
         content:
           application/json:
@@ -79,7 +84,8 @@ paths:
               $ref: '#/components/schemas/displayGetTrackInfoRequest'
       responses:
         '200':
-          description: "GetTrackInfo Response"
+          description: "Describes response of getTrackInfo endpoint, will respond if
+                        successful and references displayGetTrackInfoResponse"
           content:
             application/json:
               schema:
@@ -93,7 +99,8 @@ paths:
       description: getTrackMetadata
       operationId: getTrackMetadata
       requestBody:
-        description: "Request for getTrackMetadata"
+        description: "Request body of getTrackMetadata endpoint, request must be sent in
+                      JSON and references displayGetTrackMetadataRequest in the schema"
         required: true
         content:
           application/json:
@@ -101,7 +108,8 @@ paths:
               $ref: '#/components/schemas/displayGetTrackMetadataRequest'
       responses:
         '200':
-          description: "getTrackMetadata Response"
+          description: "Describes response of getTrackMetadata endpoint, will respond if
+                        successful and references displayGetTrackMetadataResponse"
           content:
             application/json:
               schema:
@@ -115,7 +123,8 @@ paths:
       description: getTrackOverview
       operationId: getTrackOverview
       requestBody:
-        description: "Request for getTrackOverview"
+        description: "Request body of getTrackOverview endpoint, request must be sent in
+                      JSON and references displayGetTrackOverviewRequest in the schema"
         required: true
         content:
           application/json:
@@ -123,7 +132,8 @@ paths:
               $ref: '#/components/schemas/displayGetTrackOverviewRequest'
       responses:
         '200':
-          description: "getTrackOverview response"
+          description: "Describes response of getTrackOverview endpoint, will respond if
+                        successful and references displayGetTrackOverviewResponse"
           content:
             application/json:
               schema:
@@ -137,7 +147,8 @@ paths:
       description: analyseGenre
       operationID: analyseGenre
       requestBody:
-        description: "Request endpoint to analyse genre"
+        description: "Request body of analyseGenre endpoint, request must be sent in
+                      JSON and references intelligenceAnalyseGenreRequest in the schema"
         required: true
         content:
           application/json:
@@ -145,7 +156,8 @@ paths:
               $ref: '#/components/schemas/intelligenceAnalyseGenreRequest'
       responses:
         '200':
-          description: "analyseGenre response"
+          description: "Describes response of analyseGenre endpoint, will respond if
+                        successful and references intelligenceAnalyseGenreResponse"
           content:
             application/json:
               schema:
@@ -159,7 +171,7 @@ components:
   schemas:
 
     interpreterUploadFileRequest:
-      description: "Description Here"
+      description: "Expects a byte array representation of a midi file"
       type: object
       properties:
         fileContents:
@@ -168,19 +180,21 @@ components:
             type: integer
 
     interpreterUploadFileResponse:
+      description: "Returns a file designator UUID"
       type: object
       properties:
         fileDesignator:
           type: string
 
     interpreterProcessFileRequest:
-      description: "Request the ProcessFile"
+      description: "Expects UUID file designator"
       type: object
       properties:
         fileDesignator:
           type: string
 
     interpreterProcessFileResponse:
+      description: "Returns a success status boolean and message string"
       type: object
       properties:
         success:
@@ -189,12 +203,14 @@ components:
           type: string
 
     displayGetPieceMetadataRequest:
+      description: "Expects UUID file designator"
       type: object
       properties:
         fileDesignator:
           type: string
 
     displayGetPieceMetadataResponse:
+      description: "Returns a TempoIndication, KeySignature and Time Signature in the form of an integer, string and object respectively"
       type: object
       properties:
         tempoIndication:
@@ -210,13 +226,14 @@ components:
               type: integer
 
     displayGetTrackInfoRequest:
-      description: "Request Track Info"
+      description: "Expects UUID file designator"
       type: object
       properties:
         fileDesignator:
           type: string
 
     displayGetTrackInfoResponse:
+      description: "Returns a string hash map and track indices of the piece as integers"
       type: array
       items:
         type: object
@@ -227,7 +244,7 @@ components:
             type: string
 
     displayGetTrackMetadataRequest:
-      description: "Request Track Metadata"
+      description: "Expects UUID file designator and integer track index"
       type: object
       properties:
         fileDesignator:
@@ -236,13 +253,14 @@ components:
           type: integer
 
     displayGetTrackMetadataResponse:
+      description: "Returns a string trackString"
       type: object
       properties:
         trackString:
           type: String
 
     displayGetTrackOverviewRequest:
-      description: "Request for Track Overview"
+      description: "Expects UUID file designator and integer track index"
       type: object
       properties:
         fileDesignator:
@@ -251,19 +269,21 @@ components:
           type: integer
 
     displayGetTrackOverviewResponse:
+      description: "Returns a string of the pitch arrays"
       type: array
       items:
         type: string
 
 
     intelligenceAnalyseGenreRequest:
-      description: "Request for analyse genre"
+      description: "Expects UUID file designator"
       type: object
       properties:
         fileDesignator:
           type: string
 
     intelligenceAnalyseGenreResponse:
+      description: "Returns an array consisting of the most prevalent genres in the piece"
       type: array
       items:
         type: object
