@@ -7,6 +7,7 @@ import localStorage from "../services/localStorageService";
 import TrackViewer from "../../matx/components/TrackViewer";
 import {Container, Grid} from "@material-ui/core";
 import GenrePie from "../../matx/components/GenrePie";
+import Cookies from "universal-cookie";
 
 
 //THESE ARE HARD CODED
@@ -58,8 +59,8 @@ class Display extends Component {
 
   constructor(props) {
       super(props);
+      this.cookies = new Cookies();
       this.state = {
-        // fileDesignator: "",
         rowsPerPage: 5,
         page: 0,
         songTitle: "Song Title",
@@ -72,7 +73,11 @@ class Display extends Component {
       }
   }
 
-  //====================================
+  componentDidMount() {
+      this.refreshScoreDetails()
+  }
+
+    //====================================
   // DISPLAY STATE VALUE SETTERS
   //====================================
 
@@ -192,7 +197,7 @@ class Display extends Component {
    */
 
   getScoreMetadata = () => {
-     const fileDesignator = "3169d7ac-216a-4400-a530-36525d005fbe"
+     const fileDesignator = this.cookies.get('fileDesignator')
 
      this.state.midisenseService.displayGetPieceMetadata(fileDesignator,
         (res) => {
@@ -226,9 +231,10 @@ class Display extends Component {
    */
 
   refreshScoreDetails = () => {
-    this.setSongTitle(localStorage.getItem("songTitle"))
-    this.getScoreMetadata()
-
+      if(this.cookies.get('fileDesignator') !==undefined) {
+          this.setSongTitle(this.cookies.get('title'))
+          this.getScoreMetadata()
+      }
   }
 
   /**
@@ -249,9 +255,6 @@ class Display extends Component {
                               {name: "Display"}
                           ]}
                       />
-                  </div>
-                  <div>
-                      <button onClick={this.refreshScoreDetails}/>
                   </div>
                   <SimpleCard title="Analysis">
                       <Grid container justify="space-evenly">

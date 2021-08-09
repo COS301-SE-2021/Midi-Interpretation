@@ -117,11 +117,11 @@ class Loading extends Component {
                     <br/>
                     <h1>Loading...</h1>
                     <br/>
-                    <Typical
-                        steps={shuffleArray(lyrics)}
-                        loop={Infinity}
-                        wrapper="b"
-                    />
+                    {/*<Typical*/}
+                    {/*    steps={shuffleArray(lyrics)}*/}
+                    {/*    loop={Infinity}*/}
+                    {/*    wrapper="b"*/}
+                    {/*/>*/}
                     <br/>
                     <div className="w-full-screen ">
                         <InteractiveDemo audioContext={audioContext} soundfontHostname={soundfontHostname} />

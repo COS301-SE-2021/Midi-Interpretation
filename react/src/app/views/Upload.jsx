@@ -69,6 +69,7 @@ class Upload extends Component {
               let response = JSON.parse(xhr.response);
               let designator = response.fileDesignator
               this.cookies.set('fileDesignator', designator, { path: '/' });
+              this.cookies.set('title', file.name, { path: '/' });
               console.log(response)
           }
 
@@ -77,46 +78,12 @@ class Upload extends Component {
       }
       this.getUploadParams = ({ meta }) => { return { url: 'http://localhost:8080/interpreter/uploadFile' } }
 
-      this.onSubmit = (files, allFiles) => {
-          let temp = JSON.parse(JSON.stringify(files))
+      this.onSubmit = () => {
           this.setState({
               isFileSet: this.cookies.get('allowCookies') !== undefined,
               uploadButtonText: "UploadFile",
-              path: temp[0].path
           })
       }
-
-        /**
-         * uploadFile is called when the user presses the process file button
-         * This will send the file to the server, store the file designator and then request interpretation
-         * The view will then be changed to a loading screen until the server responds and then present the display view
-         *
-         * Prerequisite: a file has been uploaded
-         *
-         * @property alert
-         * @property JSON
-         */
-
-      // this.uploadFile = () => {
-      //     const uploadFile = this.state.files[0]
-      //     console.log("Call to upload file : "+JSON.stringify(uploadFile))
-      //     this.backendService.interpreterUploadFile(
-      //         uploadFile,
-      //         (res)=>{
-      //             const designator = res['fileDesignator']
-      //
-      //             this.cookies.set('fileDesignator', designator, { path: '/' });
-      //
-      //             console.log("Upload successful : assigned designator "+designator)
-      //             alert("Successfully uploaded, beginning interpretation - "+this.cookies.get('fileDesignator'))
-      //             this.beginInterpretation()
-      //         },
-      //
-      //         (error)=>{
-      //             console.error("File upload failed : "+error)
-      //         }
-      //     )
-      // }
 
         /**
          * beginInterpretation handles sending a request to the server to begin the interpretation of the uploaded
@@ -136,24 +103,22 @@ class Upload extends Component {
                   const success = res['success']
                   const message = res['message']
                   console.log("Interpretation request "+(success===true?"accepted":"declined")+": "+message)
-
+                  this.props.history.push("/Display");
               },
 
               (error)=>{
                   console.error("Interpretation request failed : "+JSON.stringify(error))
+                  this.props.history.push("/Upload");
               }
           )
       }
 
       this.ProcessFile = () => {
           if(this.cookies.get('allowCookies') !== undefined) {
-              console.log(this.cookies.get('allowCookies'))
               if (this.state.isFileSet) {
+                  this.props.history.push("/Loading");
                   this.beginInterpretation()
                   this.render()
-                  {
-                      return <Redirect to="/Loading"/>
-                  }
               }
           }
       }
@@ -231,10 +196,7 @@ class Upload extends Component {
                                           </aside>
                                       </div>
                                   }
-                                  styles={{
-                                      dropzone: { width: 400, height: 200 },
-                                      dropzoneActive: { borderColor: 'green' },
-                                  }}
+                                  styles={{dropzone: { width: 400, height: 200 },}}
                               />
                           </div>
                       </div>
