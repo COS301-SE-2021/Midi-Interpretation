@@ -1,15 +1,17 @@
 import React, {Component, useRef} from "react";
 import {Grid, Button, Icon} from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "matx";
-import Dropzone from 'react-dropzone'
 import { withStyles } from "@material-ui/styles";
 import {makeStyles} from "@material-ui/core/styles";
 import 'react-responsive-combo-box/dist/index.css'
 import MidiSenseService from "../services/MidiSenseService";
-import localStorage from "../services/localStorageService";
 import Cookies from 'universal-cookie';
 import {Redirect} from "react-router-dom";
 import ResponsiveDialog from "./ResponsiveDialog";
+
+import 'react-dropzone-uploader/dist/styles.css'
+import Dropzone from 'react-dropzone-uploader'
+
 
 
 /**
@@ -50,7 +52,8 @@ class Upload extends Component {
           trackMetadata: null,
           trackOverview: null,
           trackIndex: 0,
-          cookies: this.cookies.get('allowCookies')
+          cookies: this.cookies.get('allowCookies'),
+          path: ""
       }
       this.backendService = new MidiSenseService()
 
@@ -61,13 +64,27 @@ class Upload extends Component {
          * @param files - File to be interpreted
          */
 
-      this.onDrop = (files) => {
+      this.handleChangeStatus = ({ meta, file, xhr }, status) => {
+          if (status === 'done' && this.cookies.get('allowCookies') !== undefined){
+              let response = JSON.parse(xhr.response);
+              let designator = response.fileDesignator
+              this.cookies.set('fileDesignator', designator, { path: '/' });
+              console.log(response)
+          }
+
+          console.log(status, meta, file)
+
+      }
+      this.getUploadParams = ({ meta }) => { return { url: 'http://localhost:8080/interpreter/uploadFile' } }
+
+      this.onSubmit = (files, allFiles) => {
+          let temp = JSON.parse(JSON.stringify(files))
           this.setState({
-              files: files,
               isFileSet: this.cookies.get('allowCookies') !== undefined,
-              uploadButtonText: "UploadFile"
+              uploadButtonText: "UploadFile",
+              path: temp[0].path
           })
-      };
+      }
 
         /**
          * uploadFile is called when the user presses the process file button
@@ -80,26 +97,26 @@ class Upload extends Component {
          * @property JSON
          */
 
-      this.uploadFile = () => {
-          const uploadFile = this.state.files[0]
-          console.log("Call to upload file : "+JSON.stringify(uploadFile))
-          this.backendService.interpreterUploadFile(
-              uploadFile,
-
-              (res)=>{
-                  const designator = res['fileDesignator']
-                  localStorage.setItem("fileDesignator", designator)
-                  this.cookies.set('fileDesignator', designator, { path: '/' });
-                  console.log("Upload successful : assigned designator "+designator)
-                  alert("Successfully uploaded, beginning interpretation")
-                  this.beginInterpretation()
-              },
-
-              (error)=>{
-                  console.error("File upload failed : "+error)
-              }
-          )
-      }
+      // this.uploadFile = () => {
+      //     const uploadFile = this.state.files[0]
+      //     console.log("Call to upload file : "+JSON.stringify(uploadFile))
+      //     this.backendService.interpreterUploadFile(
+      //         uploadFile,
+      //         (res)=>{
+      //             const designator = res['fileDesignator']
+      //
+      //             this.cookies.set('fileDesignator', designator, { path: '/' });
+      //
+      //             console.log("Upload successful : assigned designator "+designator)
+      //             alert("Successfully uploaded, beginning interpretation - "+this.cookies.get('fileDesignator'))
+      //             this.beginInterpretation()
+      //         },
+      //
+      //         (error)=>{
+      //             console.error("File upload failed : "+error)
+      //         }
+      //     )
+      // }
 
         /**
          * beginInterpretation handles sending a request to the server to begin the interpretation of the uploaded
@@ -128,22 +145,16 @@ class Upload extends Component {
           )
       }
 
-      // this.allowCookies = () => {
-      //     this.cookies.set('allowCookies', 'true', { path: '/' });
-      //     return true
-      // }
-
       this.ProcessFile = () => {
           if(this.cookies.get('allowCookies') !== undefined) {
               console.log(this.cookies.get('allowCookies'))
               if (this.state.isFileSet) {
-                  this.uploadFile()
                   this.beginInterpretation()
-                  return <Redirect to="/Loading"/>
+                  this.render()
+                  {
+                      return <Redirect to="/Loading"/>
+                  }
               }
-          }
-          else{
-              this.cookies.set('allowCookies', 'true', { path: '/' });
           }
       }
   }
@@ -193,28 +204,38 @@ class Upload extends Component {
               <Grid container justify="space-evenly" spacing={3} alignItems="center">
 
               <SimpleCard title="Upload File">
-
                       <Grid item>
-                      <div
-                          className={`h-200 w-full border-radius-8 elevation-z6 bg-light-gray flex justify-center items-center cursor-pointer`}
-                      >
-                          <div >
-                              <Dropzone onDrop={this.onDrop}>
-                                  {({getRootProps, getInputProps}) => (
-                                      <section className="container">
-                                          <div {...getRootProps({className: 'dropzone'})}>
-                                              <input {...getInputProps()} />
-                                              <div className={"mx-10"}>
-                                                  <Icon className={"center"} fontSize="large">backup</Icon>
-                                                  <p>Drag your midi file here, or click to browse for a file</p>
-                                              </div>
-                                          </div>
+                          <div
+                              className={`h-200 w-full border-radius-8 elevation-z6 bg-light-gray flex justify-center items-center cursor-pointer`}
+                          >
+                          <div>
+                              <div id="toast">
+
+                              </div>
+
+                              <Dropzone
+                                  disabled={this.cookies.get('allowCookies') === undefined}
+                                  getUploadParams={this.getUploadParams}
+                                  onChangeStatus={this.handleChangeStatus}
+                                  accept=".mid"
+                                  maxFiles={1}
+                                  multiple={false}
+                                  canCancel={false}
+                                  onSubmit={this.onSubmit}
+                                  inputContent={
+                                      <div key="key" className={"m-10"}>
+                                          <Icon className={"center"} fontSize="large">backup</Icon>
+                                          <p>Drag your midi file here, or click to browse for a file</p>
                                           <aside>
-                                              <ul>{JSON.stringify(this.state.files) }</ul>
+                                              {this.state.path}
                                           </aside>
-                                      </section>
-                                  )}
-                              </Dropzone>
+                                      </div>
+                                  }
+                                  styles={{
+                                      dropzone: { width: 400, height: 200 },
+                                      dropzoneActive: { borderColor: 'green' },
+                                  }}
+                              />
                           </div>
                       </div>
                       </Grid>

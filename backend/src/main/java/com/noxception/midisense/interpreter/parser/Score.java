@@ -22,6 +22,12 @@ public class Score {
     private TimeSignature timeSignature;
     private TempoIndication tempoIndication;
 
+    public Score() {
+        this.keySignature = new KeySignature();
+        this.timeSignature = new TimeSignature(4,4);
+        this.tempoIndication = new TempoIndication(0);
+    }
+
     /** Associates a new track with the score, with the given index
      *
      * @param trackNumber the index of a track in the score
