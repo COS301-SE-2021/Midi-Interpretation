@@ -1,11 +1,5 @@
 package com.noxception.midisense.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
-
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +20,8 @@ public class MIDISenseConfig {
             MIDI_INVALID_TESTING_FILE,
             MIDI_TESTING_DESIGNATOR,
             MIDI_TESTING_TRACK_INDEX,
+
+            MATRIX_WEIGHT_ROOT,
 
             EMPTY_REQUEST_EXCEPTION_TEXT,
             FILE_TOO_LARGE_EXCEPTION_TEXT,

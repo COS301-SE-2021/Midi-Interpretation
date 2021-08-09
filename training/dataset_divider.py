@@ -24,17 +24,18 @@ def main():
     # load
     try:
         X = np.load(X_name)
-        Y = np.load(Y_name,allow_pickle=True)
+        Y = np.load(Y_name, allow_pickle=True)
     except Exception:
         sys.exit("Invalid Training and Test set provided")
 
     # partition into training, testing and CV data
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.4, random_state=25)
 
-    np.save("X_train.npy",X_train)
-    np.save("X_test.npy", X_test)
-    np.save("Y_train.npy", Y_train)
-    np.save("Y_test.npy", Y_test)
+    np.save("training_testing_sets/X_train.npy", X_train)
+    np.save("training_testing_sets/X_test.npy", X_test)
+    np.save("training_testing_sets/Y_train.npy", Y_train)
+    np.save("training_testing_sets/Y_test.npy", Y_test)
+
 
 if __name__ == "__main__":
     main()

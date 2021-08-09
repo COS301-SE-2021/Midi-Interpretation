@@ -84,7 +84,7 @@ def main():
 
     except Exception:
         sys.exit("Usage is: python dataset_creator "
-                 "<max file size (kb)> "
+                 "<truncated feature size (kb)> "
                  "<directory containing training data> "
                  "<max no. of genres> "
                  "<genre classification text file> "
@@ -96,7 +96,7 @@ def main():
 
     try:
         fc = open(fc_name, "r")
-        c = [s.split("\t") for s in fc.read().split("\n")[1:-1]]
+        c = [s.split("\t") for s in fc.read().split("\n")[0:-1]]
         c = [{"track": d[0].strip("\""), "genres": d[3][1:-1].split(",")} for d in c]
         c_dash = [f['track'].replace(" ", "").replace(",", "") + ff for f in c]
     except Exception:
@@ -105,7 +105,7 @@ def main():
     try:
         # Get the genres
         fg = open(fg_name, "r")
-        g = fg.read().split('\n')[1:-1]
+        g = fg.read().split('\n')[0:-1]
         g = [k.split(";") for k in g]
         g = [{"genre": m[0], "class": m[1], "weight": m[2]} for m in g]
         g_dash = [p['genre'] for p in g]
@@ -171,11 +171,11 @@ def main():
     print()
 
     # Save the dataset for later use
-    np.save("dataset.npy", X)
+    np.save("training_testing_sets/dataset.npy", X)
 
     # Save the classifications for later use
     Y = np.array(Y, dtype=object)
-    np.save("classifications.npy", Y)
+    np.save("training_testing_sets/classifications.npy", Y)
 
 
 if __name__ == "__main__":

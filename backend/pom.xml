@@ -20,6 +20,13 @@
         <yarn.version>v1.16.0</yarn.version>
         <frontend-maven-plugin.version>1.7.6</frontend-maven-plugin.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>org.sing-group.maven</id>
+            <url>https://maven.sing-group.org/repository/maven/</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -83,6 +90,25 @@
             <artifactId>ejml-all</artifactId>
             <version>0.41</version>
         </dependency>
+        <!-- Mat file loading -->
+        <dependency>
+            <groupId>us.hebi.matlab.mat</groupId>
+            <artifactId>mfl-core</artifactId>
+            <version>0.5.7</version>
+        </dependency>
+        <dependency>
+            <groupId>us.hebi.matlab.mat</groupId>
+            <artifactId>mfl-ejml</artifactId>
+            <version>0.5.7</version>
+        </dependency>
+        <!-- jFugue -->
+        <dependency>
+            <groupId>jfugue</groupId>
+            <artifactId>jfugue</artifactId>
+            <version>5.0.9</version>
+        </dependency>
+
+
 
     </dependencies>
 
