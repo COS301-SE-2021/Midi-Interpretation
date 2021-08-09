@@ -1,6 +1,7 @@
 package com.noxception.midisense.intelligence;
 
-import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.config.ConfigurationName;
+import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.intelligence.dataclass.GenrePredication;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.*;
@@ -28,7 +29,12 @@ import java.util.UUID;
 @Service
 public class IntelligenceServiceImpl implements IntelligenceService{
 
+    private final StandardConfig configurations;
     private GenreAnalysisStrategy genreAnalysisStrategy;
+
+    public IntelligenceServiceImpl(StandardConfig configurations) {
+        this.configurations = configurations;
+    }
 
     /**Method that creates a list of genre classifications based on a byte stream of file features, according to a predefined
      * strategy
@@ -46,25 +52,24 @@ public class IntelligenceServiceImpl implements IntelligenceService{
 
         byte[] fileContents;
 
-        //TODO: open the file, get contents as byte stream
         //====================================
         try{
             String fileName =
-                    MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)
+                    configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)
                     +fileDesignator
-                    +MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
+                    +configurations.configuration(ConfigurationName.FILE_FORMAT);
 
             Path path = Paths.get(fileName);
             fileContents = Files.readAllBytes(path);
         }
         catch (IOException e) {
-            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
         }
         //====================================
 
         //check to see if there is a strategy
         if(this.genreAnalysisStrategy==null)
-            throw new MissingStrategyException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MISSING_ANALYSIS_STRATEGY_EXCEPTION_TEXT));
+            throw new MissingStrategyException(configurations.configuration(ConfigurationName.MISSING_ANALYSIS_STRATEGY_EXCEPTION_TEXT));
 
         //map the file features
         GenrePredication[] classifications = genreAnalysisStrategy.classify(fileContents);
@@ -105,5 +110,9 @@ public class IntelligenceServiceImpl implements IntelligenceService{
      */
     public void attachGenreStrategy(GenreAnalysisStrategy gs){
         this.genreAnalysisStrategy = gs;
+    }
+
+    public boolean hasGenreStrategy(){
+        return this.genreAnalysisStrategy != null;
     }
 }

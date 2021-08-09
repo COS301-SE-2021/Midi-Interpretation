@@ -1,7 +1,9 @@
 package com.noxception.midisense.intelligence;
 
-import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.config.ConfigurationName;
+import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
+import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseGenreRequest;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseGenreResponse;
@@ -9,9 +11,6 @@ import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalys
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,16 +23,16 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class IntelligenceServiceImplTest extends MIDISenseUnitTest {
+public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
-    IntelligenceServiceImpl intelligenceService;
+    private IntelligenceServiceImpl intelligenceService;
+    private StandardConfig configurations;
 
     @BeforeEach
     public void mountModule(){
-        intelligenceService = new IntelligenceServiceImpl();
-        intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy());
+        configurations = new MockConfigurationSettings();
+        intelligenceService = new IntelligenceServiceImpl(configurations);
+        intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy(configurations));
     }
 
     @Test
@@ -41,11 +40,11 @@ public class IntelligenceServiceImplTest extends MIDISenseUnitTest {
 
         //Create a temporary file to analyse
         UUID fileDesignator = UUID.randomUUID();
-        String testName = fileDesignator + MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
 
         //copy temp file from testing data
-        Path copied = Paths.get(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-        Path originalPath = new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
         Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
 
         AnalyseGenreRequest request = new AnalyseGenreRequest(fileDesignator);
@@ -53,7 +52,7 @@ public class IntelligenceServiceImplTest extends MIDISenseUnitTest {
         assertTrue(response.getGenreArray().length > 0);
 
         //delete the temporary file
-        assertTrue(new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
+        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
     }
 
 

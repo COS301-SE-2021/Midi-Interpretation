@@ -1,6 +1,7 @@
 package com.noxception.midisense.intelligence;
 
 import com.noxception.midisense.api.IntelligenceApi;
+import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.intelligence.dataclass.GenrePredication;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseGenreRequest;
@@ -11,6 +12,7 @@ import com.noxception.midisense.models.IntelligenceAnalyseGenreRequest;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreResponse;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreResponseInner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -42,11 +44,16 @@ import java.util.UUID;
 
 @CrossOrigin("*")
 @RestController
+@DependsOn({"configurationLoader"})
 public class IntelligenceController implements IntelligenceApi {
 
-    @Autowired
-    IntelligenceServiceImpl intelligenceService;
 
+    private final IntelligenceServiceImpl intelligenceService;
+
+    @Autowired
+    public IntelligenceController(IntelligenceServiceImpl intelligenceService) {
+        this.intelligenceService = intelligenceService;
+    }
 
     @Override
     public ResponseEntity<IntelligenceAnalyseGenreResponse> intelligenceAnalyseGenrePost(IntelligenceAnalyseGenreRequest body) {
@@ -60,7 +67,8 @@ public class IntelligenceController implements IntelligenceApi {
 
             AnalyseGenreRequest req = new AnalyseGenreRequest(fileDesignator);
 
-            intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy());
+            if(!intelligenceService.hasGenreStrategy())
+                intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy(new MIDISenseConfig()));
             AnalyseGenreResponse res = intelligenceService.analyseGenre(req);
 
             for(GenrePredication genre: res.getGenreArray()){

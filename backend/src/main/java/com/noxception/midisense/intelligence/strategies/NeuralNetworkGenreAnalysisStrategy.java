@@ -1,6 +1,7 @@
 package com.noxception.midisense.intelligence.strategies;
 
-import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.config.ConfigurationName;
+import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.intelligence.dataclass.GenrePredication;
 import org.ejml.data.Matrix;
 import org.ejml.simple.SimpleMatrix;
@@ -31,7 +32,9 @@ import java.util.Comparator;
  */
 public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy{
 
-    private int unscaledInputSize = 64 * (1<<10);
+    private final StandardConfig configurations;
+
+    private int unscaledInputSize = 128 * (1<<10);
 
     private final int inputLayerSize = 500;
     private final int hiddenLayerSize = 100;
@@ -53,7 +56,10 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
      * Generates the two weight and bias elements for the network and loads their predefined training values
      *
      */
-    public NeuralNetworkGenreAnalysisStrategy() {
+    public NeuralNetworkGenreAnalysisStrategy(StandardConfig conf) {
+
+        //associate program configurations
+        this.configurations = conf;
 
         //allocate unscaled components
         unscaledInputSize *= 2;
@@ -235,29 +241,29 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
 
         //load weights
         MatFile file = Mat5.readFromFile(
-            MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MATRIX_WEIGHT_ROOT)+"W1.mat"
+            configurations.configuration(ConfigurationName.MATRIX_WEIGHT_ROOT)+"W1.mat"
         );
         w1 = new SimpleMatrix((Matrix) Mat5Ejml.convert(file.getArray("data")));
 
         file = Mat5.readFromFile(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MATRIX_WEIGHT_ROOT)+"W2.mat"
+                configurations.configuration(ConfigurationName.MATRIX_WEIGHT_ROOT)+"W2.mat"
         );
         w2 = new SimpleMatrix((Matrix) Mat5Ejml.convert(file.getArray("data")));
 
         //load biases
         file = Mat5.readFromFile(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MATRIX_WEIGHT_ROOT)+"b1.mat"
+                configurations.configuration(ConfigurationName.MATRIX_WEIGHT_ROOT)+"b1.mat"
         );
         b1 = new SimpleMatrix((Matrix) Mat5Ejml.convert(file.getArray("data")));
 
         file = Mat5.readFromFile(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MATRIX_WEIGHT_ROOT)+"b2.mat"
+                configurations.configuration(ConfigurationName.MATRIX_WEIGHT_ROOT)+"b2.mat"
         );
         b2 = new SimpleMatrix((Matrix) Mat5Ejml.convert(file.getArray("data")));
 
         //load PCA matrix
         file = Mat5.readFromFile(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MATRIX_WEIGHT_ROOT)+"L.mat"
+                configurations.configuration(ConfigurationName.MATRIX_WEIGHT_ROOT)+"L.mat"
         );
         L = new SimpleMatrix((Matrix) Mat5Ejml.convert(file.getArray("data")));
 

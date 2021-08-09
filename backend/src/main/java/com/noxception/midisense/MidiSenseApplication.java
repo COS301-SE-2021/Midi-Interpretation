@@ -1,15 +1,13 @@
 package com.noxception.midisense;
 
+import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.lang.reflect.Field;
 
 @EnableSwagger2
 @SpringBootApplication
@@ -26,10 +24,10 @@ public class MidiSenseApplication {
     /**
      * Method that loads configuration properties from the respective .properties file into the MidiSenseConfig class
      */
-    @Bean
+    @Bean("configurationLoader")
     ApplicationRunner configurationLoader (Environment environment){
         return args -> {
-            for(MIDISenseConfig.ConfigurationName key : MIDISenseConfig.ConfigurationName.values()){
+            for(ConfigurationName key : ConfigurationName.values()){
                 String property = environment.getProperty("midisense.config."+key.toString());
                 if (property == null) {
                     System.out.println("Missing MidiSense Program Configuration : "+key+" : Exiting");

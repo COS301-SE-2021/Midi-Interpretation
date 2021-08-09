@@ -1,13 +1,15 @@
 package com.noxception.midisense.display;
 
+import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
-import com.noxception.midisense.interpreter.InterpreterServiceImpl;
 import com.noxception.midisense.interpreter.dataclass.KeySignature;
 import com.noxception.midisense.interpreter.dataclass.TempoIndication;
 import com.noxception.midisense.interpreter.dataclass.TimeSignature;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.repository.DatabaseManager;
 import com.noxception.midisense.interpreter.repository.ScoreEntity;
 import com.noxception.midisense.interpreter.repository.ScoreRepository;
 import com.noxception.midisense.interpreter.repository.TrackEntity;
@@ -37,11 +39,23 @@ import java.util.Optional;
 @Service
 public class DisplayServiceImpl implements DisplayService{
 
-    @Autowired
-    InterpreterServiceImpl interpreterService;
+
+    private final DatabaseManager databaseManager;
+    private final StandardConfig configurations;
 
     @Autowired
-    ScoreRepository scoreRepository;
+    public DisplayServiceImpl(ScoreRepository scoreRepository, MIDISenseConfig midiSenseConfig) {
+        databaseManager = new DatabaseManager();
+        databaseManager.attachRepository(scoreRepository);
+        configurations = midiSenseConfig;
+    }
+
+    public DisplayServiceImpl(DatabaseManager databaseManager, StandardConfig configurations) {
+        this.databaseManager = databaseManager;
+        this.configurations = configurations;
+    }
+
+
 
     /**Used to retrieve the Metadata of an existing interpreted piece
      * @param request encapsulates a request with the designator of the work
@@ -54,14 +68,14 @@ public class DisplayServiceImpl implements DisplayService{
 
         if(request==null)
             //an empty request should reflect as a null designator
-            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
+            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         //search the repository for the piece with that designator
-        Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
+        Optional<ScoreEntity> searchResults = databaseManager.findByFileDesignator(request.getFileDesignator().toString());
 
         if(searchResults.isEmpty())
             //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
 
         //else refer to score and get the metadata
         ScoreEntity score = searchResults.get();
@@ -92,14 +106,14 @@ public class DisplayServiceImpl implements DisplayService{
 
         if(request==null)
             //an empty request should reflect as a null designator
-            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
+            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         //search the repository for the piece with that designator
-        Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
+        Optional<ScoreEntity> searchResults = databaseManager.findByFileDesignator(request.getFileDesignator().toString());
 
         if(searchResults.isEmpty())
             //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
 
         //get the score and its associated tracks
         ScoreEntity score = searchResults.get();
@@ -129,14 +143,14 @@ public class DisplayServiceImpl implements DisplayService{
 
         if(request==null)
             //an empty request should reflect as a null designator
-            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
+            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         //search the repository for the piece with that designator
-        Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
+        Optional<ScoreEntity> searchResults = databaseManager.findByFileDesignator(request.getFileDesignator().toString());
 
         if(searchResults.isEmpty())
             //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
 
         //get the index of the requested track, the score and the corresponding tracks
         byte trackIndex = request.getTrackIndex();
@@ -145,7 +159,7 @@ public class DisplayServiceImpl implements DisplayService{
 
         if(trackIndex >= tracks.size() || trackIndex < 0)
             //cannot refer to a track that does not exist
-            throw new InvalidTrackException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
+            throw new InvalidTrackException(configurations.configuration(ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
 
 
         //get a rich text version of the track
@@ -167,14 +181,14 @@ public class DisplayServiceImpl implements DisplayService{
 
         if(request==null)
             //an empty request should reflect as a null designator
-            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
+            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         //search the repository for the piece with that designator
-        Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
+        Optional<ScoreEntity> searchResults = databaseManager.findByFileDesignator(request.getFileDesignator().toString());
 
         if(searchResults.isEmpty())
             //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
 
         //get the track index requested, the score and corresponding track
         byte trackIndex = request.getTrackIndex();
@@ -183,7 +197,7 @@ public class DisplayServiceImpl implements DisplayService{
 
         if(trackIndex >= tracks.size() || trackIndex < 0)
             //cannot refer to a track that does not exist
-            throw new InvalidTrackException(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
+            throw new InvalidTrackException(configurations.configuration(ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
 
         //get a text overview of the track
         TrackEntity track = tracks.get(trackIndex);
