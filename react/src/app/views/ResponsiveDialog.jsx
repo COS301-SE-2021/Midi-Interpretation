@@ -34,6 +34,7 @@ export default function ResponsiveDialog() {
    */
   function confirm(){
     cookies.set('allowCookies', 'true', { path: '/' });
+    window.location.reload(false);
     handleClose()
   }
 

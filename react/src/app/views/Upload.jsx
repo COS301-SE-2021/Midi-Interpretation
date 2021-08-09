@@ -227,7 +227,11 @@ class Upload extends Component {
                       className={classes.button}
                       onClick={()=>{ this.ProcessFile() }
                       }>
-                      Process Your File
+                      {
+                          this.cookies.get('allowCookies') === undefined ?
+                              <div>Cookies Required</div> :
+                              <div>Process File</div>
+                      }
                   </Button>
               </SimpleCard>
                   <Grid item>

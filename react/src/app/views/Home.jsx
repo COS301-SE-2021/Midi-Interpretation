@@ -70,14 +70,14 @@ class Upload extends Component {
             <div className="m-sm-30" >
                 <SimpleCard>
                     <div className="mt-5">
-                        {/*<InteractiveDemo2 audioContext={audioContext} soundfontHostname={soundfontHostname} />*/}
-                        {/*<br/>*/}
-                        {/*<PlaybackDemo*/}
-                        {/*    audioContext={audioContext}*/}
-                        {/*    soundfontHostname={soundfontHostname}*/}
-                        {/*    song={lostWoods}*/}
-                        {/*/>*/}
-                        {/*<br/>*/}
+                        <InteractiveDemo2 audioContext={audioContext} soundfontHostname={soundfontHostname} />
+                        <br/>
+                        <PlaybackDemo
+                            audioContext={audioContext}
+                            soundfontHostname={soundfontHostname}
+                            song={lostWoods}
+                        />
+                        <br/>
                     </div>
                 <Grid container justify="space-evenly" spacing={3}>
                     <Grid item >
