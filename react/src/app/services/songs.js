@@ -1,5 +1,5 @@
 export const lostWoods = [
-  [65],
+  [65, 72],
   [69],
   [71],
   [],

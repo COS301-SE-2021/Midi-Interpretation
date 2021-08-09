@@ -192,7 +192,7 @@ class Display extends Component {
    */
 
   getScoreMetadata = () => {
-     const fileDesignator = localStorage.getItem("fileDesignator")
+     const fileDesignator = "3169d7ac-216a-4400-a530-36525d005fbe"
 
      this.state.midisenseService.displayGetPieceMetadata(fileDesignator,
         (res) => {

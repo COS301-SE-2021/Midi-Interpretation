@@ -4,9 +4,9 @@ import { withStyles } from "@material-ui/styles";
 import 'react-responsive-combo-box/dist/index.css';
 import { Grid, Container } from '@material-ui/core';
 import 'react-piano/dist/styles.css';
-import InteractiveDemo from "../services/InteractiveDemo";
 import PlaybackDemo from "../services/PlaybackDemo";
 import { lostWoods } from '../services/songs';
+import InteractiveDemo2 from "../services/InteractiveDemo2";
 
 
 
@@ -70,14 +70,14 @@ class Upload extends Component {
             <div className="m-sm-30" >
                 <SimpleCard>
                     <div className="mt-5">
-                        <InteractiveDemo audioContext={audioContext} soundfontHostname={soundfontHostname} />
-                        <br/>
-                        <PlaybackDemo
-                            audioContext={audioContext}
-                            soundfontHostname={soundfontHostname}
-                            song={lostWoods}
-                        />
-                        <br/>
+                        {/*<InteractiveDemo2 audioContext={audioContext} soundfontHostname={soundfontHostname} />*/}
+                        {/*<br/>*/}
+                        {/*<PlaybackDemo*/}
+                        {/*    audioContext={audioContext}*/}
+                        {/*    soundfontHostname={soundfontHostname}*/}
+                        {/*    song={lostWoods}*/}
+                        {/*/>*/}
+                        {/*<br/>*/}
                     </div>
                 <Grid container justify="space-evenly" spacing={3}>
                     <Grid item >
