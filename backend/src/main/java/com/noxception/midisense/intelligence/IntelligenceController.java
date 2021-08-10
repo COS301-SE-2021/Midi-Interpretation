@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -74,7 +75,7 @@ public class IntelligenceController implements IntelligenceApi {
             for(GenrePredication genre: res.getGenreArray()){
                 IntelligenceAnalyseGenreResponseInner inner = new IntelligenceAnalyseGenreResponseInner();
                 inner.setName(genre.getGenreName());
-                inner.setCertainty((float) genre.getCertainty());
+                inner.setCertainty(BigDecimal.valueOf(genre.getCertainty()));
                 responseObject.add(inner);
             }
 
