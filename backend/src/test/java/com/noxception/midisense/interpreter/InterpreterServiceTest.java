@@ -10,6 +10,7 @@ import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorExceptio
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.parser.Score;
 import com.noxception.midisense.interpreter.parser.Track;
+import com.noxception.midisense.interpreter.repository.DatabaseManager;
 import com.noxception.midisense.interpreter.rrobjects.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,13 +34,14 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
     private InterpreterService interpreterService;
     private StandardConfig configurations;
+    private DatabaseManager databaseManager;
 
     @BeforeEach
     public void mountModule() {
         configurations = new MockConfigurationSettings();
-        MockRepository mockRepository = new MockRepository();
+        databaseManager = new MockRepository();
 
-        interpreterService = new InterpreterServiceImpl(mockRepository,configurations);
+        interpreterService = new InterpreterServiceImpl(databaseManager,configurations);
     }
 
     /**UploadFile*/
