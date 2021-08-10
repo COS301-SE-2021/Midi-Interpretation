@@ -11,7 +11,6 @@ import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorExceptio
 import com.noxception.midisense.models.IntelligenceAnalyseGenreRequest;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreResponse;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreResponseGenreArray;
-import com.noxception.midisense.models.IntelligenceAnalyseGenreResponseInner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
