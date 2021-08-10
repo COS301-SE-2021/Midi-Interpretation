@@ -56,7 +56,7 @@ public class IntelligenceController implements IntelligenceApi {
     }
 
     @Override
-    public ResponseEntity<IntelligenceAnalyseGenreResponse> intelligenceAnalyseGenrePost(IntelligenceAnalyseGenreRequest body) {
+    public ResponseEntity<IntelligenceAnalyseGenreResponse> analyseGenre(IntelligenceAnalyseGenreRequest body) {
 
         IntelligenceAnalyseGenreResponse responseObject = new IntelligenceAnalyseGenreResponse();
         HttpStatus returnStatus = HttpStatus.OK;
