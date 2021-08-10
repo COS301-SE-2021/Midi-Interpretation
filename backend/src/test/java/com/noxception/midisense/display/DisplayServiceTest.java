@@ -277,6 +277,13 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //Get an invalid track index - too high
         int invalidTrackIndex = 16;
 
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
+
         //Make request
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,(byte) invalidTrackIndex);
 
@@ -309,6 +316,13 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
         //Get an invalid track index - too high
         int invalidTrackIndex = -1;
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
 
         //Make request
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,(byte) invalidTrackIndex);
