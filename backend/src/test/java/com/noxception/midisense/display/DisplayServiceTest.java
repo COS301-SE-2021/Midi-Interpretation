@@ -357,6 +357,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
                 ConfigurationName.MIDI_TESTING_TRACK_INDEX
         ));
 
+
         //Make request
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,TestingDictionary.display_all_valid_track_index);
 
@@ -439,6 +440,14 @@ class DisplayServiceTest extends MIDISenseUnitTest {
                 ConfigurationName.MIDI_TESTING_TRACK_INDEX
         ));
 
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        // CHANGE TO VALID
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
+
         //Make request
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(fileDesignator,(byte) validTrackIndex);
 
@@ -480,6 +489,13 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //Get an invalid track index - too high
         int invalidTrackIndex = 16;
 
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
+
         //Make request
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(fileDesignator, (byte) invalidTrackIndex);
 
@@ -512,6 +528,13 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
         //Get an invalid track index - too high
         int invalidTrackIndex = -1;
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
 
         //Make request
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(fileDesignator, (byte) invalidTrackIndex);
