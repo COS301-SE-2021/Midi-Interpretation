@@ -1597,3 +1597,4 @@ backend/src/main/resources/application.properties
 ### AI TRAINING AND MAPPING ####
 *.npy
 *.csv
+backend/src/main/resources/testing.properties

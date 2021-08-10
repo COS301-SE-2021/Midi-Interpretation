@@ -9,6 +9,8 @@ import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.repository.DatabaseManager;
+import com.noxception.midisense.interpreter.repository.ScoreEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,13 +27,14 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     private DisplayServiceImpl displayService;
     private StandardConfig configurations;
+    private DatabaseManager databaseManager;
 
     @BeforeEach
     public void mountModule() {
-        MockRepository mockRepository = new MockRepository();
+        databaseManager = new MockRepository();
         configurations = new MockConfigurationSettings();
 
-        displayService = new DisplayServiceImpl(mockRepository,configurations);
+        displayService = new DisplayServiceImpl(databaseManager,configurations);
     }
 
     /**GetPieceMetaData*/
@@ -48,6 +51,15 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         UUID fileDesignator = UUID.fromString(configurations.configuration(
                 ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        testEntity.setKeySignature("Cbmaj");
+        testEntity.setTempoIndication(70);
+        testEntity.setTimeSignature("4/4");
+        databaseManager.save(testEntity);
+
 
         //Make request
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
