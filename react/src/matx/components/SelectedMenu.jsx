@@ -27,11 +27,11 @@ const useStyles = makeStyles(theme => ({
  * @constructor
  */
 
-export default function SelectedMenu({inputOptions}) {
+export default function SelectedMenu(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
-  const options = inputOptions
+  const options = props.inputOptions
 
   /**
    * Handle the list being clicked
@@ -50,6 +50,8 @@ export default function SelectedMenu({inputOptions}) {
 
   function handleMenuItemClick(event, index) {
     setSelectedIndex(index);
+    props.setTrack(index)
+    console.log("child "+index)
     setAnchorEl(null);
   }
 

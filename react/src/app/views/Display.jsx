@@ -67,10 +67,14 @@ class Display extends Component {
         keySignature: "Unknown",
         tempoIndication: "Unknown",
         timeSignature: {},
-        currentTrack: {trackNumber: "No Track Selected", trackInstrument: "No Instrument"},
+        currentTrack: 0,
         trackListing: [],
+        trackData:[{index:0, value:0, tone_string: "", octave:0, on_velocity:0}, {index:1, value:0, tone_string: "", octave:0, on_velocity:0}],
+        fileDesignator: this.cookies.get('fileDesignator'),
         midisenseService: new MidiSenseService()
       }
+
+      this.getTrackMetadata(this.state.currentTrack)
   }
 
   componentDidMount() {
@@ -156,6 +160,7 @@ class Display extends Component {
       this.setState({
         currentTrack: ct
       })
+      this.getTrackMetadata(ct)
   }
 
     /**
@@ -166,6 +171,26 @@ class Display extends Component {
   setTrackListing = (tl) => {
       this.setState({
         trackListing: tl
+      })
+  }
+
+    /**
+     *
+     * @property JSON
+     * @param td
+     */
+
+  setTrackData = (td) => {
+      const parsed = JSON.parse(td).notes
+
+      for (let i = 0 ; i < parsed.length ; i++){
+          parsed[i].index = i;
+      }
+
+      console.log(parsed)
+
+      this.setState({
+          trackData: parsed
       })
   }
 
@@ -197,9 +222,8 @@ class Display extends Component {
    */
 
   getScoreMetadata = () => {
-     const fileDesignator = this.cookies.get('fileDesignator')
 
-     this.state.midisenseService.displayGetPieceMetadata(fileDesignator,
+     this.state.midisenseService.displayGetPieceMetadata(this.state.fileDesignator,
         (res) => {
           const keySignature = res['keySignature']
           const tempoIndication = res['tempoIndication']
@@ -212,7 +236,7 @@ class Display extends Component {
 
         })
 
-     this.state.midisenseService.displayGetTrackInfo(fileDesignator,
+     this.state.midisenseService.displayGetTrackInfo(this.state.fileDesignator,
         (res) => {
             for (const track of res) {
               let currentListing = this.state.trackListing
@@ -226,6 +250,19 @@ class Display extends Component {
      )
   }
 
+  getTrackMetadata = (n) =>{
+
+      this.state.midisenseService.displayGetTrackMetadata(this.state.fileDesignator, n,
+          (res) => {
+              const trackString = res['trackString']
+              this.setTrackData(trackString)
+          },
+          (error) => {
+
+          })
+  }
+
+
   /**
    * refreshScoreDetails calls setSongTitle and getScoreMetadata
    */
@@ -234,6 +271,7 @@ class Display extends Component {
       if(this.cookies.get('fileDesignator') !==undefined) {
           this.setSongTitle(this.cookies.get('title'))
           this.getScoreMetadata()
+          this.getTrackMetadata(this.state.currentTrack)
       }
   }
 
@@ -283,7 +321,7 @@ class Display extends Component {
                   <br/>
                   <SimpleCard>
                       <h4>Track</h4>
-                      <SelectedMenu inputOptions={this.state.trackListing}/>
+                      <SelectedMenu setTrack={this.setCurrentTrack} inputOptions={this.state.trackListing}/>
 
 
                   </SimpleCard>
@@ -291,7 +329,7 @@ class Display extends Component {
                   <SimpleCard title="Display">
 
                           <div style={{ height: '400px', width: '100%'}}>
-                              <TrackViewer/>
+                              <TrackViewer trackData={this.state.trackData} />
                           </div>
 
                   </SimpleCard>
@@ -306,4 +344,3 @@ class Display extends Component {
  */
 
 export default withStyles({}, { withTheme: true })(Display);
-
