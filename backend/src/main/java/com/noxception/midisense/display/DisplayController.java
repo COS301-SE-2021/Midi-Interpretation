@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -186,7 +187,7 @@ public class DisplayController implements DisplayApi {
             GetTrackOverviewRequest req = new GetTrackOverviewRequest(fileDesignator,(byte) trackIndex);
             GetTrackOverviewResponse res = displayService.getTrackOverview(req);
 
-            responseObject.addAll(res.getPitchArray());
+            responseObject.setTrackArray(res.getPitchArray());
 
         }
         catch(InvalidDesignatorException | IllegalArgumentException | InvalidTrackException e){
