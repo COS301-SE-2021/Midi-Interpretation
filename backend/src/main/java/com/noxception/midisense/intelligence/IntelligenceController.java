@@ -10,6 +10,7 @@ import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalys
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreRequest;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreResponse;
+import com.noxception.midisense.models.IntelligenceAnalyseGenreResponseGenreArray;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreResponseInner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -72,12 +75,16 @@ public class IntelligenceController implements IntelligenceApi {
                 intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy(new MIDISenseConfig()));
             AnalyseGenreResponse res = intelligenceService.analyseGenre(req);
 
+
+            List<IntelligenceAnalyseGenreResponseGenreArray> list = new ArrayList<>();
             for(GenrePredication genre: res.getGenreArray()){
-                IntelligenceAnalyseGenreResponseInner inner = new IntelligenceAnalyseGenreResponseInner();
+                IntelligenceAnalyseGenreResponseGenreArray inner = new IntelligenceAnalyseGenreResponseGenreArray();
                 inner.setName(genre.getGenreName());
                 inner.setCertainty(BigDecimal.valueOf(genre.getCertainty()));
-                responseObject.add(inner);
+                list.add(inner);
+
             }
+            responseObject.setGenreArray(list);
 
         }
         catch(InvalidDesignatorException | IllegalArgumentException | MissingStrategyException e){
