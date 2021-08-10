@@ -19,7 +19,7 @@ public class MockConfigurationSettings extends StandardConfig {
 
     public MockConfigurationSettings(){
         try {
-            FileInputStream configFile = new FileInputStream("src/main/resources/testing.properties");
+            FileInputStream configFile = new FileInputStream("src/main/resources/application.properties");
             Properties properties = new Properties();
             properties.load(configFile);
             properties.forEach(
