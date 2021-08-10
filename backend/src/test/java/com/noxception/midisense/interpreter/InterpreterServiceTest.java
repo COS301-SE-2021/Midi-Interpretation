@@ -11,6 +11,7 @@ import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.parser.Score;
 import com.noxception.midisense.interpreter.parser.Track;
 import com.noxception.midisense.interpreter.repository.DatabaseManager;
+import com.noxception.midisense.interpreter.repository.ScoreEntity;
 import com.noxception.midisense.interpreter.rrobjects.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -65,6 +66,13 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
         //check the designator is not null
         assertNotNull(fileDesignator);
+
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        testEntity.setKeySignature("Cbmaj");
+        testEntity.setTempoIndication(70);
+        testEntity.setTimeSignature("4/4");
+        databaseManager.save(testEntity);
 
         //check that the resultant file can be opened : was saved to the right directory
         String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)
@@ -259,6 +267,11 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //make the request
         ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
 
+        //mock the database with the designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        databaseManager.save(testEntity);
+
         // Check that the error is thrown
         InvalidDesignatorException thrown = assertThrows(
                 InvalidDesignatorException.class, //for a file that already exists in DB
@@ -315,6 +328,12 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         UUID fileDesignator = UUID.fromString(configurations.configuration(
                 ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
+
+        //mock the database with that designator and timeSignature
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        testEntity.setTimeSignature("4/4");
+        databaseManager.save(testEntity);
 
         //make a request
         InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
@@ -394,6 +413,12 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
                 ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
+        //mock the database with the designator and tempoIndication
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        testEntity.setTempoIndication(50);
+        databaseManager.save(testEntity);
+
         //make a request
         InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
         InterpretTempoResponse res = interpreterService.interpretTempo(req);
@@ -466,6 +491,12 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         UUID fileDesignator = UUID.fromString(configurations.configuration(
                 ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
+
+        //mock the database with the designator and keySignature
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        testEntity.setKeySignature("Ebmaj");
+        databaseManager.save(testEntity);
 
         //make a request
         InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
