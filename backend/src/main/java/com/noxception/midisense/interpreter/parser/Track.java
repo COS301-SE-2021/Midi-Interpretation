@@ -1,7 +1,10 @@
 package com.noxception.midisense.interpreter.parser;
 
+import com.google.common.base.CaseFormat;
 import org.jfugue.theory.Note;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,21 +68,55 @@ public class Track {
      * @return the JSON-serialised representation of the note
      */
     private String noteToString(Note note){
-        return String.format(
-                "{ \"step\": \"%s\", " +
-                        "\"octave\": %d, " +
-                        "\"duration\": %s, " +
-                        "\"is_rest\": %b, " +
-                        "\"is_percussive\": %b, " +
-                        "\"on_velocity\": %d, " +
-                        "\"off_velocity\": %d}",
-                note.getToneString(),
-                note.getOctave(),
-                note.getDuration(),
-                note.isRest(),
-                note.isPercussionNote(),
-                note.getOnVelocity(),
-                note.getOffVelocity());
+
+        //create a list of note properties
+        List<String> innerContent = new ArrayList<>();
+
+        //get a list of note methods
+        for (Method method: note.getClass().getMethods()){
+
+            try {
+
+                //if there is a getter, call it and store the response of the attribute
+                if (method.getName().contains("get") && method.getParameterCount()==0 && !method.getName().contains("Class")){
+                        String field = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE,method.getName().substring(3));
+                        field = "\""+field+"\"";
+                        Object valueObject = method.invoke(note);
+                        String value;
+                        if (valueObject==null){
+                            value = "\"\"";
+                        }
+                        else{
+                            value = valueObject.toString();
+                            if((!isInteger(value) && !isBoolean(value)) || value.length()==0){
+                                value = "\""+value+"\"";
+                            }
+                        }
+                        innerContent.add(field+ ":" + value);
+                }
+                else if (method.getName().contains("is") && method.getParameterCount()==0){
+                    String field = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE,method.getName());
+                    Object valueObject = method.invoke(note);
+                    field = "\""+field+"\"";
+                    String value;
+                    if (valueObject==null){
+                        value = "\"\"";
+                    }
+                    else{
+                        value = valueObject.toString();
+                        if((!isInteger(value) && !isBoolean(value)) || value.length()==0 ){
+                            value = "\""+value+"\"";
+                        }
+                    }
+                    innerContent.add(field+ ":" + value);
+                }
+            }
+            catch(IllegalAccessException | InvocationTargetException ignored){
+
+            }
+        }
+
+        return String.format("{%s}",String.join(",",innerContent));
     }
 
     /** A batch method of noteToString
@@ -109,6 +146,20 @@ public class Track {
         String notes = String.join(", ",items);
 
         return String.format("{ \"instrument\": \"%s\", \"notes\": [%s]}",getInstrumentString(),notes);
+    }
+
+    private boolean isInteger(String o){
+        try{
+            int i = Integer.parseInt(o);
+            return true;
+        }
+        catch (NumberFormatException e){
+            return false;
+        }
+    }
+
+    private boolean isBoolean(String o){
+        return (o.toUpperCase().equals("TRUE")) || (o.toUpperCase().equals("FALSE"));
     }
 
 }

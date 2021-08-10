@@ -1,8 +1,6 @@
 package com.noxception.midisense.interpreter;
 
-import com.noxception.midisense.api.DisplayApi;
 import com.noxception.midisense.api.InterpreterApi;
-import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.ProcessFileRequest;
@@ -13,6 +11,7 @@ import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import com.noxception.midisense.models.InterpreterProcessFileResponse;
 import com.noxception.midisense.models.InterpreterUploadFileResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,10 +48,15 @@ import java.util.UUID;
 
 @CrossOrigin("*")
 @RestController
+@DependsOn({"configurationLoader"})
 public class InterpreterController implements InterpreterApi {
 
+    private final InterpreterServiceImpl interpreterService;
+
     @Autowired
-    InterpreterServiceImpl interpreterService;
+    public InterpreterController(InterpreterServiceImpl interpreterService) {
+        this.interpreterService = interpreterService;
+    }
 
     /** Method that invokes the process method of the Interpreter service and presents the resultant metadata of
      * the work with a specific designator.

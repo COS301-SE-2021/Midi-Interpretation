@@ -1,6 +1,8 @@
 package com.noxception.midisense.intelligence;
 
+import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
+import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.intelligence.dataclass.GenrePredication;
 import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalysisStrategy;
 import org.ejml.simple.SimpleMatrix;
@@ -11,10 +13,12 @@ import org.junit.jupiter.api.Test;
 public class NeuralNetworkTest extends MIDISenseUnitTest {
 
     private NeuralNetworkGenreAnalysisStrategy strategy;
+    private StandardConfig configurations;
 
     @BeforeEach
-    private void setup(){
-        this.strategy = new NeuralNetworkGenreAnalysisStrategy();
+    private void mountModule(){
+        this.configurations = new MockConfigurationSettings();
+        this.strategy = new NeuralNetworkGenreAnalysisStrategy(configurations);
     }
 
     @Test

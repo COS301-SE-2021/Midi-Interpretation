@@ -1,12 +1,12 @@
 package com.noxception.midisense.display;
 
 import com.noxception.midisense.api.DisplayApi;
-import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -37,10 +37,16 @@ import java.util.UUID;
  */
 @CrossOrigin("*")
 @RestController
+@DependsOn({"configurationLoader"})
 public class DisplayController implements DisplayApi {
 
+
+    private final DisplayServiceImpl displayService;
+
     @Autowired
-    DisplayServiceImpl displayService;
+    public DisplayController(DisplayServiceImpl displayService) {
+        this.displayService = displayService;
+    }
 
     /** Method that invokes the getPieceMetadata method of the Display service and presents the resultant metadata of
      * the work with a specific designator.

@@ -4,7 +4,6 @@ import com.noxception.midisense.config.dataclass.ResponseObject;
 
 public class GetTrackMetadataResponse extends ResponseObject {
 
-    //TODO: update to be a more comprehensive class once settled on structure for track
     /**
      * ATTRIBUTE
      */
