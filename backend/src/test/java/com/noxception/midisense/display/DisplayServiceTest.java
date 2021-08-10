@@ -277,8 +277,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //Get an invalid track index - too high
         int invalidTrackIndex = 16;
 
-
-
         //Make request
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,(byte) invalidTrackIndex);
 
