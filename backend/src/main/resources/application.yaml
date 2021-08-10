@@ -171,13 +171,6 @@ paths:
 components:
   schemas:
 
-    basicErrorResponse:
-      description: "Properties shared by all responses"
-      type: object
-      properties:
-        message:
-          type: string
-
     interpreterUploadFileRequest:
       description: "Expects a byte array representation of a midi file"
       type: object
@@ -192,6 +185,10 @@ components:
       type: object
       properties:
         fileDesignator:
+          type: string
+        success:
+          type: boolean
+        message:
           type: string
 
     interpreterProcessFileRequest:
@@ -221,6 +218,10 @@ components:
       description: "Returns a TempoIndication, KeySignature and Time Signature in the form of an integer, string and object respectively"
       type: object
       properties:
+        success:
+          type: boolean
+        message:
+          type: string
         tempoIndication:
           type: integer
         keySignature:
@@ -250,6 +251,10 @@ components:
             type: integer
           trackName:
             type: string
+          success:
+            type: boolean
+          message:
+            type: string
 
     displayGetTrackMetadataRequest:
       description: "Expects UUID file designator and integer track index"
@@ -266,6 +271,10 @@ components:
       properties:
         trackString:
           type: string
+        success:
+          type: boolean
+        message:
+          type: string
 
     displayGetTrackOverviewRequest:
       description: "Expects UUID file designator and integer track index"
@@ -278,9 +287,16 @@ components:
 
     displayGetTrackOverviewResponse:
       description: "Returns a string of the pitch arrays"
-      type: array
-      items:
-        type: string
+      type: object
+      properties:
+        trackArray:
+          type: array
+          items:
+            type: string
+        success:
+          type: boolean
+        message:
+          type: string
 
 
     intelligenceAnalyseGenreRequest:
@@ -292,11 +308,18 @@ components:
 
     intelligenceAnalyseGenreResponse:
       description: "Returns an array consisting of the most prevalent genres in the piece"
-      type: array
-      items:
-        type: object
-        properties:
-          Name:
-            type: string
-          Certainty:
-            type: number
+      type: object
+      properties:
+        genreArray:
+          type: array
+          items:
+            type: object
+            properties:
+              Name:
+                type: string
+              Certainty:
+                type: number
+        success:
+          type: boolean
+        message:
+          type: string
