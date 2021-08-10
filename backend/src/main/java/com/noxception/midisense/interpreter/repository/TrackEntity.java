@@ -69,7 +69,7 @@ public class TrackEntity {
                 this.notes.add(portion);
             }
             else{
-                byte[] portion = Arrays.copyOfRange(inArray,i*segmentSize,len-1);
+                byte[] portion = Arrays.copyOfRange(inArray,i*segmentSize,len);
                 this.notes.add(portion);
             }
             i++;

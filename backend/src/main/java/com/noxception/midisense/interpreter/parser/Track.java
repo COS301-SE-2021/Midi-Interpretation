@@ -74,45 +74,47 @@ public class Track {
 
         //get a list of note methods
         for (Method method: note.getClass().getMethods()){
-                try {
-                    //if there is a getter, call it
-                    if (method.getName().contains("get") && method.getParameterCount()==0 && !method.getName().contains("Class")){
+
+            try {
+
+                //if there is a getter, call it and store the response of the attribute
+                if (method.getName().contains("get") && method.getParameterCount()==0 && !method.getName().contains("Class")){
                         String field = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE,method.getName().substring(3));
                         field = "\""+field+"\"";
                         Object valueObject = method.invoke(note);
                         String value;
                         if (valueObject==null){
-                            value = "";
+                            value = "\"\"";
                         }
                         else{
                             value = valueObject.toString();
-                            if(!isInteger(value) && !isBoolean(value)){
+                            if((!isInteger(value) && !isBoolean(value)) || value.length()==0){
                                 value = "\""+value+"\"";
                             }
                         }
                         innerContent.add(field+ ":" + value);
-                    }
-                    else if (method.getName().contains("is") && method.getParameterCount()==0){
-                        String field = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE,method.getName());
-                        Object valueObject = method.invoke(note);
-                        field = "\""+field+"\"";
-                        String value;
-                        if (valueObject==null){
-                            value = "";
-                        }
-                        else{
-                            value = valueObject.toString();
-                            if(!isInteger(value) && !isBoolean(value)){
-                                value = "\""+value+"\"";
-                            }
-                        }
-                        innerContent.add(field+ ":" + value);
-                    }
                 }
-                catch(IllegalAccessException | InvocationTargetException ignored){
-
+                else if (method.getName().contains("is") && method.getParameterCount()==0){
+                    String field = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE,method.getName());
+                    Object valueObject = method.invoke(note);
+                    field = "\""+field+"\"";
+                    String value;
+                    if (valueObject==null){
+                        value = "\"\"";
+                    }
+                    else{
+                        value = valueObject.toString();
+                        if((!isInteger(value) && !isBoolean(value)) || value.length()==0 ){
+                            value = "\""+value+"\"";
+                        }
+                    }
+                    innerContent.add(field+ ":" + value);
                 }
             }
+            catch(IllegalAccessException | InvocationTargetException ignored){
+
+            }
+        }
 
         return String.format("{%s}",String.join(",",innerContent));
     }
