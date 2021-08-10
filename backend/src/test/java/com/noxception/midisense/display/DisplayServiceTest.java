@@ -11,6 +11,7 @@ import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.repository.DatabaseManager;
 import com.noxception.midisense.interpreter.repository.ScoreEntity;
+import com.noxception.midisense.interpreter.repository.TrackEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,7 +60,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         testEntity.setTempoIndication(70);
         testEntity.setTimeSignature("4/4");
         databaseManager.save(testEntity);
-
 
         //Make request
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
@@ -122,6 +122,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
     @Test
     @DisplayName("Get Piece Metadata: input [empty] expect [empty request exception]")
     public void test_GetPieceMetadata_IfEmptyRequest_ThenException() {
+
         // Check that the error is thrown
         InvalidDesignatorException thrown = assertThrows(
                 InvalidDesignatorException.class,//for an empty request
@@ -149,6 +150,13 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         UUID fileDesignator = UUID.fromString(configurations.configuration(
                 ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
 
         //Make request
         GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
