@@ -75,7 +75,7 @@ paths:
       description: getTrackInfo
       operationId: getTrackInfo
       requestBody:
-        descripiton: "Request body of getTrackInfo endpoint, request must be sent in
+        description: "Request body of getTrackInfo endpoint, request must be sent in
                       JSON and references displayGetTrackInfoRequest in the schema"
         required: true
         content:
@@ -145,7 +145,7 @@ paths:
       tags:
         - "Intelligence"
       description: analyseGenre
-      operationID: analyseGenre
+      operationId: analyseGenre
       requestBody:
         description: "Request body of analyseGenre endpoint, request must be sent in
                       JSON and references intelligenceAnalyseGenreRequest in the schema"
@@ -163,12 +163,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/intelligenceAnalyseGenreResponse'
 
+
   #=================================================
   # SCHEMAS + OBJECTS
   #=================================================
 
 components:
   schemas:
+
+    basicErrorResponse:
+      description: "Properties shared by all responses"
+      type: object
+      properties:
+        message:
+          type: string
 
     interpreterUploadFileRequest:
       description: "Expects a byte array representation of a midi file"
@@ -257,7 +265,7 @@ components:
       type: object
       properties:
         trackString:
-          type: String
+          type: string
 
     displayGetTrackOverviewRequest:
       description: "Expects UUID file designator and integer track index"
@@ -291,4 +299,4 @@ components:
           Name:
             type: string
           Certainty:
-            type: float
+            type: number
