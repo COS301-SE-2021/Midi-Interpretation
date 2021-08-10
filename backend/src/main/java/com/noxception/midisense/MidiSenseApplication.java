@@ -2,6 +2,7 @@ package com.noxception.midisense;
 
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,6 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableSwagger2
 @SpringBootApplication
+@Slf4j
 public class MidiSenseApplication {
 
     /**
@@ -30,10 +32,11 @@ public class MidiSenseApplication {
             for(ConfigurationName key : ConfigurationName.values()){
                 String property = environment.getProperty("midisense.config."+key.toString());
                 if (property == null) {
-                    System.out.println("Missing MidiSense Program Configuration : "+key+" : Exiting");
+                    log.error(String.format("Missing Program Configuration [%s]. Exiting",key));
                     System.exit(0);
                 }
                 MIDISenseConfig.configurations.put(key, property);
+                log.info(String.format("Configuration loaded [%s=%s]",key,property));
             }
         };
     }
