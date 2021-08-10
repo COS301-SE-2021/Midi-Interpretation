@@ -1,11 +1,7 @@
 package com.noxception.midisense.controller;
 
+import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
-import com.noxception.midisense.dataclass.MIDISenseUnitTest;
-import com.noxception.midisense.dataclass.TestingDictionary;
-import com.noxception.midisense.display.exceptions.InvalidTrackException;
-import com.noxception.midisense.display.rrobjects.*;
-import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.models.DisplayGetPieceMetadataRequest;
 import com.noxception.midisense.models.DisplayGetTrackInfoRequest;
 import com.noxception.midisense.models.DisplayGetTrackMetadataRequest;
@@ -13,7 +9,6 @@ import com.noxception.midisense.models.DisplayGetTrackOverviewRequest;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,21 +17,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.Arrays;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
+public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private MIDISenseConfig configurations;
 
     @Test
     @DisplayName("Tests getting piece metadata with a valid file designator")
@@ -46,8 +38,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //pass into request
@@ -73,8 +65,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //pass into request
@@ -100,13 +92,13 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get a valid track index
-        int validTrackIndex = Integer.parseInt(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
         ));
 
         //pass into request
@@ -132,13 +124,13 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get a valid track index
-        int validTrackIndex = Integer.parseInt(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
         ));
 
         //pass into request
@@ -218,8 +210,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         UUID fileDesignator = UUID.randomUUID();
 
         //Get a valid track index
-        int validTrackIndex = Integer.parseInt(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
         ));
 
         //pass into request
@@ -244,8 +236,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         UUID fileDesignator = UUID.randomUUID();
 
         //Get a valid track index
-        int validTrackIndex = Integer.parseInt(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
         ));
 
         //pass into request
@@ -301,8 +293,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get an invalid track index
@@ -334,8 +326,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
 
         //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //pass into request
@@ -408,8 +400,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
 
         //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //pass into request
@@ -482,8 +474,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
 
         //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get an valid track index
@@ -514,8 +506,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
 
         //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get track index too high
@@ -545,8 +537,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
 
         //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get track index too high
@@ -656,8 +648,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
 
         //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get track index too high
@@ -687,8 +679,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
 
         //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get track index too high
@@ -718,8 +710,8 @@ public class DisplayControllerIntegrationTest extends MidiSenseIntegrationTest{
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
 
         //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get track index too high

@@ -1,30 +1,25 @@
 package com.noxception.midisense.interpreter;
 
-import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.config.ConfigurationName;
+import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
-import com.noxception.midisense.dataclass.TestingDictionary;
-import com.noxception.midisense.interpreter.dataclass.KeySignature;
+import com.noxception.midisense.dataclass.MockConfigurationSettings;
+import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.interpreter.dataclass.TempoIndication;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.parser.Score;
 import com.noxception.midisense.interpreter.parser.Track;
+import com.noxception.midisense.interpreter.repository.DatabaseManager;
+import com.noxception.midisense.interpreter.repository.ScoreEntity;
 import com.noxception.midisense.interpreter.rrobjects.*;
-import jdk.jfr.Label;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.sound.midi.InvalidMidiDataException;
 import javax.transaction.Transactional;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,18 +31,19 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-class InterpreterServiceImplTest extends MIDISenseUnitTest {
+class InterpreterServiceTest extends MIDISenseUnitTest {
 
-    @Autowired
-    private InterpreterServiceImpl interpreterService;
+    private InterpreterService interpreterService;
+    private StandardConfig configurations;
+    private DatabaseManager databaseManager;
 
     @BeforeEach
-    public void setUp() {
-    }
+    public void mountModule() {
+        configurations = new MockConfigurationSettings();
+        databaseManager = new MockRepository();
 
-    /** ************************************************************************************ */
+        interpreterService = new InterpreterServiceImpl(databaseManager,configurations);
+    }
 
     /**UploadFile*/
     /**
@@ -71,10 +67,17 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         //check the designator is not null
         assertNotNull(fileDesignator);
 
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        testEntity.setKeySignature("Cbmaj");
+        testEntity.setTempoIndication(70);
+        testEntity.setTimeSignature("4/4");
+        databaseManager.save(testEntity);
+
         //check that the resultant file can be opened : was saved to the right directory
-        String filename = MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT)
+        String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)
                 + fileDesignator
-                + MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
+                + configurations.configuration(ConfigurationName.FILE_FORMAT);
         File newlyCreated = new File(filename);
 
         //check to see that the file contents are the same
@@ -106,7 +109,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         // Finally, see that the right message was delivered - EMPTY_FILE_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.EMPTY_FILE_EXCEPTION_TEXT)
+                configurations.configuration(ConfigurationName.EMPTY_FILE_EXCEPTION_TEXT)
         ));
     }
 
@@ -122,8 +125,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         //max file size in Kb
         int bigIndex = Integer.parseInt(
-                MIDISenseConfig.configuration(
-                        MIDISenseConfig.ConfigurationName.MAX_FILE_UPLOAD_SIZE
+                configurations.configuration(
+                        ConfigurationName.MAX_FILE_UPLOAD_SIZE
                 )
         );
 
@@ -145,7 +148,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         // Finally, see that the right message was delivered - FILE_TOO_LARGE_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_TOO_LARGE_EXCEPTION_TEXT)
+                configurations.configuration(ConfigurationName.FILE_TOO_LARGE_EXCEPTION_TEXT)
         ));
     }
 
@@ -163,11 +166,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         //Create a temporary file to parse
         UUID fileDesignator = UUID.randomUUID();
-        String testName = fileDesignator + MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
 
         //copy temp file from testing data
-        Path copied = Paths.get(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-        Path originalPath = new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_INVALID_TESTING_FILE)).toPath();
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_INVALID_TESTING_FILE)).toPath();
         Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
 
         ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
@@ -175,10 +178,10 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         //check that the result is not permitted
         assertEquals(res.getSuccess(), false);
-        assertEquals(res.getMessage(), MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
+        assertEquals(res.getMessage(), configurations.configuration(ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
 
         //delete the temporary file
-        assertTrue(new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
+        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
     }
 
     /**
@@ -206,7 +209,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         // Finally, see that the right message was delivered - FILE_TOO_LARGE_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
+                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
         ));
 
 
@@ -225,11 +228,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void test_ProcessFile_IfInStorage_ThenAccurate() throws IOException, InvalidDesignatorException {
         //Create a temporary file to parse
         UUID fileDesignator = UUID.randomUUID();
-        String testName = fileDesignator + MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
 
         //copy temp file from testing data
-        Path copied = Paths.get(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-        Path originalPath = new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
         Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
 
         ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
@@ -237,10 +240,10 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         //Check that the processing is successful
         assertEquals(res.getSuccess(), true);
-        assertEquals(res.getMessage(), MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.SUCCESSFUL_PARSING_TEXT));
+        assertEquals(res.getMessage(), configurations.configuration(ConfigurationName.SUCCESSFUL_PARSING_TEXT));
 
         //delete the temporary file
-        assertTrue(new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
+        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
 
     }
 
@@ -257,12 +260,17 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void test_ProcessFile_IfAlreadyInDatabase_ThenException() {
 
         //Get a designator corresponding to a score in the database - whether or not it actually exists
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //make the request
         ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+
+        //mock the database with the designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        databaseManager.save(testEntity);
 
         // Check that the error is thrown
         InvalidDesignatorException thrown = assertThrows(
@@ -272,7 +280,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         // Finally, see that the right message was delivered - FILE_ALREADY_EXISTS_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT)
+                configurations.configuration(ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT)
         ));
     }
 
@@ -302,7 +310,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
+                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
         ));
     }
 
@@ -317,15 +325,19 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void test_InterpretMetre_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
         //Get a designator corresponding to a score in the database - whether or not it actually exists
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
+
+        //mock the database with that designator and timeSignature
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        testEntity.setTimeSignature("4/4");
+        databaseManager.save(testEntity);
 
         //make a request
         InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
         InterpretMetreResponse res = interpreterService.interpretMetre(req);
-
-        //TODO: ASK ANDREW ABOUT SPECIFIC VALUES VERSUS CONCRETE SATISFACTION CONDITIONS
 
         //check that the beat value is a positive power of two
         int beatValue = res.getMetre().getBeatValue();
@@ -352,8 +364,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed."); //because
 
         // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
         )));
     }
 
@@ -382,7 +394,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
+                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
         ));
 
     }
@@ -397,9 +409,15 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void test_InterpretTempo_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
         //Get a designator corresponding to a score in the database - whether or not it actually exists
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
+
+        //mock the database with the designator and tempoIndication
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        testEntity.setTempoIndication(50);
+        databaseManager.save(testEntity);
 
         //make a request
         InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
@@ -425,8 +443,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed."); //because
 
         // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
         )));
     }
 
@@ -456,7 +474,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
         assertTrue(thrown.getMessage().contains(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
+                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
         ));
     }
 
@@ -470,9 +488,15 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
     public void test_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
         //Get a designator corresponding to a score in the database - whether or not it actually exists
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
+
+        //mock the database with the designator and keySignature
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        testEntity.setKeySignature("Ebmaj");
+        databaseManager.save(testEntity);
 
         //make a request
         InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
@@ -499,8 +523,8 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed."); //because
 
         // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
         )));
     }
 
@@ -530,7 +554,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         // Finally, see that the right message was delivered - File does not exist
         assertTrue(thrown.getMessage().contains(
-                MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
+                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
         ));
 
     }
@@ -548,11 +572,11 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
 
         //Create a temporary file to parse
         UUID fileDesignator = UUID.randomUUID();
-        String testName = fileDesignator + MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_FORMAT);
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
 
         //copy temp file from testing data
-        Path copied = Paths.get(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-        Path originalPath = new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
         Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
 
         //interpret the work and get the score
@@ -561,7 +585,7 @@ class InterpreterServiceImplTest extends MIDISenseUnitTest {
         Score score = res.getParsedScore();
 
         //delete the temporary file
-        assertTrue(new File(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
+        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
 
         //1.1 There are at most 16 tracks
         Map<Integer, Track> trackMap = score.getTrackMap();

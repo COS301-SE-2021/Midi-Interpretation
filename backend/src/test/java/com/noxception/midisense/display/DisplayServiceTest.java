@@ -1,45 +1,42 @@
 package com.noxception.midisense.display;
 
-import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.config.ConfigurationName;
+import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
+import com.noxception.midisense.dataclass.MockConfigurationSettings;
+import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
-import com.noxception.midisense.interpreter.parser.Track;
-import com.noxception.midisense.interpreter.rrobjects.InterpretMetreRequest;
+import com.noxception.midisense.interpreter.repository.DatabaseManager;
+import com.noxception.midisense.interpreter.repository.ScoreEntity;
+import com.noxception.midisense.interpreter.repository.TrackEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-class DisplayServiceImplTest extends MIDISenseUnitTest {
+class DisplayServiceTest extends MIDISenseUnitTest {
 
-    @Autowired
+
     private DisplayServiceImpl displayService;
+    private StandardConfig configurations;
+    private DatabaseManager databaseManager;
 
     @BeforeEach
-    public void setUp() {
+    public void mountModule() {
+        databaseManager = new MockRepository();
+        configurations = new MockConfigurationSettings();
+
+        displayService = new DisplayServiceImpl(databaseManager,configurations);
     }
-    /** ************************************************************************************ */
 
     /**GetPieceMetaData*/
     /**Description: tests the getPieceMetadata() function by passing in a valid UUID and
@@ -52,9 +49,17 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     public void test_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        testEntity.setKeySignature("Cbmaj");
+        testEntity.setTempoIndication(70);
+        testEntity.setTimeSignature("4/4");
+        databaseManager.save(testEntity);
 
         //Make request
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
@@ -105,8 +110,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if a file doesn't exist in the database.");//because
 
         // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
         )));
     }
 
@@ -117,6 +122,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     @Test
     @DisplayName("Get Piece Metadata: input [empty] expect [empty request exception]")
     public void test_GetPieceMetadata_IfEmptyRequest_ThenException() {
+
         // Check that the error is thrown
         InvalidDesignatorException thrown = assertThrows(
                 InvalidDesignatorException.class,//for an empty request
@@ -124,8 +130,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed.");//because
 
         // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
         )));
     }
 
@@ -141,9 +147,16 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
 
         //Make request
         GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
@@ -179,8 +192,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if file not in the database.");//because
 
         // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
         )));
     }
 
@@ -199,8 +212,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed.");//because
 
         // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
         )));
     }
 
@@ -216,14 +229,22 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get a valid track index
-        int validTrackIndex = Integer.parseInt(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
         ));
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        trackEntity.setNotes("{ \"notes\": [] }");
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
 
         //Make request
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator, (byte) validTrackIndex);
@@ -249,12 +270,19 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenAccurateInfo() {
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get an invalid track index - too high
         int invalidTrackIndex = 16;
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
 
         //Make request
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,(byte) invalidTrackIndex);
@@ -266,8 +294,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if the track index is invalid.");//because
 
         // Finally, see that the right message was delivered - INVALID_TRACK_INDEX_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT
         )));
 
     }
@@ -282,12 +310,19 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenAccurateInfo() {
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get an invalid track index - too high
         int invalidTrackIndex = -1;
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
 
         //Make request
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,(byte) invalidTrackIndex);
@@ -299,8 +334,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if the track index is invalid.");//because
 
         // Finally, see that the right message was delivered - INVALID_TRACK_INDEX_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT
         )));
 
     }
@@ -318,9 +353,10 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         UUID fileDesignator = UUID.randomUUID();
 
         //Get a valid track index
-        int validTrackIndex = Integer.parseInt(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
         ));
+
 
         //Make request
         GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,TestingDictionary.display_all_valid_track_index);
@@ -332,7 +368,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if the entry does not exist in the database.");//because
 
         // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
+        assertTrue(thrown.getMessage().contains(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
 
     }
 
@@ -359,7 +395,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if the entry does not exist in the database.");//because
 
         // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
+        assertTrue(thrown.getMessage().contains(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)));
 
     }
 
@@ -377,8 +413,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed.");//because
 
         // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
         )));
 
     }
@@ -395,14 +431,21 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     public void test_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get a valid track index
-        int validTrackIndex = Integer.parseInt(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
         ));
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
 
         //Make request
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(fileDesignator,(byte) validTrackIndex);
@@ -412,7 +455,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
         //Check the array has at least one item
         assertFalse(res.getPitchArray().isEmpty());
-
+/*
         //Check that the elements of the array are valid pitch elements
         String match = "[ABCDEFG][#,b]?[(012345678]|[ABCDEFG][#b]?(-1)|[CDEFG][#b]?9|R0";
 
@@ -424,7 +467,7 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
 
             //see that the substring is present
             assertTrue(matcher.find());
-        }
+        }*/
 
     }
 
@@ -438,12 +481,19 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     public void test_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenException() {
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get an invalid track index - too high
         int invalidTrackIndex = 16;
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
 
         //Make request
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(fileDesignator, (byte) invalidTrackIndex);
@@ -455,8 +505,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if the track index is invalid.");//because
 
         // Finally, see that the right message was delivered - INVALID_TRACK_INDEX_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT
         )));
 
     }
@@ -471,12 +521,19 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
     public void test_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() {
 
         //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_DESIGNATOR
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
         //Get an invalid track index - too high
         int invalidTrackIndex = -1;
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
 
         //Make request
         GetTrackOverviewRequest req = new GetTrackOverviewRequest(fileDesignator, (byte) invalidTrackIndex);
@@ -488,8 +545,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if the track index is invalid.");//because
 
         // Finally, see that the right message was delivered - INVALID_TRACK_INDEX_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT
         )));
 
     }
@@ -507,8 +564,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         UUID fileDesignator = UUID.randomUUID();
 
         //Get a valid track index
-        int validTrackIndex = Integer.parseInt(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
         ));
 
         //Make request
@@ -521,8 +578,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if the entry does not exist in the database");//because
 
         // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
         )));
     }
 
@@ -551,8 +608,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "No processing should happen if the entry does not exist in the database");//because
 
         // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
         )));
 
     }
@@ -572,8 +629,8 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
                 "A null request should not be processed.");//because
 
         // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(MIDISenseConfig.configuration(
-                MIDISenseConfig.ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
         )));
 
     }

@@ -1,10 +1,8 @@
 package com.noxception.midisense.controller;
 
-import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import com.noxception.midisense.models.InterpreterUploadFileRequest;
-import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -19,22 +17,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
-import java.io.File;
-import java.nio.file.Files;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class InterpreterControllerIntegrationTest extends MidiSenseIntegrationTest{
+class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
     @Autowired
     private MockMvc mvc;
 
     //TODO: Implement new framework
+
 
     @Ignore
     @Test

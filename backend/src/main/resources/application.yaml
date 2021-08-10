@@ -75,7 +75,7 @@ paths:
       description: getTrackInfo
       operationId: getTrackInfo
       requestBody:
-        descripiton: "Request body of getTrackInfo endpoint, request must be sent in
+        description: "Request body of getTrackInfo endpoint, request must be sent in
                       JSON and references displayGetTrackInfoRequest in the schema"
         required: true
         content:
@@ -145,7 +145,7 @@ paths:
       tags:
         - "Intelligence"
       description: analyseGenre
-      operationID: analyseGenre
+      operationId: analyseGenre
       requestBody:
         description: "Request body of analyseGenre endpoint, request must be sent in
                       JSON and references intelligenceAnalyseGenreRequest in the schema"
@@ -162,6 +162,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/intelligenceAnalyseGenreResponse'
+
 
   #=================================================
   # SCHEMAS + OBJECTS
@@ -184,6 +185,10 @@ components:
       type: object
       properties:
         fileDesignator:
+          type: string
+        success:
+          type: boolean
+        message:
           type: string
 
     interpreterProcessFileRequest:
@@ -213,6 +218,10 @@ components:
       description: "Returns a TempoIndication, KeySignature and Time Signature in the form of an integer, string and object respectively"
       type: object
       properties:
+        success:
+          type: boolean
+        message:
+          type: string
         tempoIndication:
           type: integer
         keySignature:
@@ -242,6 +251,10 @@ components:
             type: integer
           trackName:
             type: string
+          success:
+            type: boolean
+          message:
+            type: string
 
     displayGetTrackMetadataRequest:
       description: "Expects UUID file designator and integer track index"
@@ -257,7 +270,11 @@ components:
       type: object
       properties:
         trackString:
-          type: String
+          type: string
+        success:
+          type: boolean
+        message:
+          type: string
 
     displayGetTrackOverviewRequest:
       description: "Expects UUID file designator and integer track index"
@@ -270,9 +287,16 @@ components:
 
     displayGetTrackOverviewResponse:
       description: "Returns a string of the pitch arrays"
-      type: array
-      items:
-        type: string
+      type: object
+      properties:
+        trackArray:
+          type: array
+          items:
+            type: string
+        success:
+          type: boolean
+        message:
+          type: string
 
 
     intelligenceAnalyseGenreRequest:
@@ -284,11 +308,18 @@ components:
 
     intelligenceAnalyseGenreResponse:
       description: "Returns an array consisting of the most prevalent genres in the piece"
-      type: array
-      items:
-        type: object
-        properties:
-          Name:
-            type: string
-          Certainty:
-            type: float
+      type: object
+      properties:
+        genreArray:
+          type: array
+          items:
+            type: object
+            properties:
+              Name:
+                type: string
+              Certainty:
+                type: number
+        success:
+          type: boolean
+        message:
+          type: string
