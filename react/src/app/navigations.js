@@ -4,20 +4,20 @@
  */
 
 export const navigations = [
-  {
-    name: "Home",
-    path: "/Home",
-    icon: "home"
-  },
-  {
-    name: "Upload",
-    path: "/Upload",
-    icon: "cloud_upload"
-    // badge: { value: "demo", color: "secondary" },
-  },
-  {
-    name: "Display",
-    path: "/Display",
-    icon: "music_note"
-  }
+    {
+        name: "Home",
+        path: "/Home",
+        icon: "home"
+    },
+    {
+        name: "About Us",
+        path: "/About",
+        icon: "priority_high"
+    },
+    {
+        name: "Upload",
+        path: "/Upload",
+        icon: "cloud_upload"
+        // badge: { value: "demo", color: "secondary" },
+    }
 ];

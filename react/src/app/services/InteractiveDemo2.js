@@ -3,9 +3,8 @@ import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano';
 import MdArrowDownward from '@material-ui/icons/ArrowDownward';
 
 import DimensionsProvider from './DimensionsProvider';
-import InstrumentListProvider from './InstrumentListProvider';
 import SoundfontProvider from './SoundfontProvider';
-import PianoConfig from './PianoConfig';
+import {isMdScreen} from "../../utils";
 
 class InteractiveDemo2 extends React.Component {
     state = {
@@ -18,6 +17,38 @@ class InteractiveDemo2 extends React.Component {
             keyboardShortcutOffset: 0,
         },
     };
+
+    handleResize = () =>{
+        if (isMdScreen()) {
+            this.setState({
+                config: {
+                    noteRange: {
+                        first: MidiNumbers.fromNote('e4'),
+                        last: MidiNumbers.fromNote('f5'),
+                    },
+                },
+            })
+        }
+        else{
+            this.setState({
+                config: {
+                    noteRange: {
+                        first: MidiNumbers.fromNote('c3'),
+                        last: MidiNumbers.fromNote('f5'),
+                    },
+                },
+            })
+        }
+    }
+
+    componentDidMount() {
+        window.addEventListener('resize', this.handleResize)
+        this.handleResize()
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleResize);
+    }
 
     render() {
         const keyboardShortcuts = KeyboardShortcuts.create({
@@ -35,7 +66,7 @@ class InteractiveDemo2 extends React.Component {
                     <div>
                         <div className="text-center">
                             <p className="">Try it by clicking, tapping, or using your keyboard:</p>
-                            <div style={{ color: '#777' }}>
+                            <div style={{ color: '#ffffff' }}>
                                 <MdArrowDownward size={32} />
                             </div>
                         </div>
@@ -52,26 +83,6 @@ class InteractiveDemo2 extends React.Component {
                                     />
                                 )}
                             </DimensionsProvider>
-                        </div>
-                        <div className="row mt-5">
-                            <div className="col-lg-8 offset-lg-2">
-                                <InstrumentListProvider
-                                    hostname={this.props.soundfontHostname}
-                                    render={(instrumentList) => (
-                                        <PianoConfig
-                                            config={this.state.config}
-                                            setConfig={(config) => {
-                                                this.setState({
-                                                    config: Object.assign({}, this.state.config, config),
-                                                });
-                                                stopAllNotes();
-                                            }}
-                                            instrumentList={instrumentList || [this.state.config.instrumentName]}
-                                            keyboardShortcuts={keyboardShortcuts}
-                                        />
-                                    )}
-                                />
-                            </div>
                         </div>
                     </div>
                 )}
