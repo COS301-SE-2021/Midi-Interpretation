@@ -785,25 +785,32 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
     @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a valid key signature string]")
     public void testWhiteBox_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
-        //Get a designator corresponding to a score in the database - whether or not it actually exists
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
+        //Setup for testing 3 different cases
+        ScoreEntity[] testCases = new ScoreEntity[]{new ScoreEntity(),new ScoreEntity(),new ScoreEntity()};
+        String[] keySignatures = new String[]{"Ebmaj", "Cmin", "Amaj"};
+        int iterator = 0;
 
-        //mock the database with the designator and keySignature
-        ScoreEntity testEntity = new ScoreEntity();
-        testEntity.setFileDesignator(fileDesignator.toString());
-        testEntity.setKeySignature("Ebmaj");
-        databaseManager.save(testEntity);
+        for(ScoreEntity score: testCases){
 
-        //make a request
-        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
-        InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
+            //Get a designator corresponding to a score in the database - whether or not it actually exists
+            UUID fileDesignator0 = UUID.fromString(configurations.configuration(
+                    ConfigurationName.MIDI_TESTING_DESIGNATOR
+            ));
 
-        //Check that the key is valid
-        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
-        boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().getSignatureName());
-        assertTrue(b);
+            //mock the database with the designator and keySignature
+            testCases[iterator].setFileDesignator(fileDesignator0.toString());
+            testCases[iterator].setKeySignature(keySignatures[iterator]);
+            databaseManager.save(testCases[iterator]);
+
+            //make a request
+            InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator0);
+            InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
+
+            //check it is correct
+            assertEquals(res.getKeySignature().getSignatureName(), keySignatures[iterator]);
+
+            iterator=iterator+1;
+        }
     }
 
     /**
