@@ -31,7 +31,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
     //TODO: Implement new framework
 
-
+    /**UploadFile*/
     @Ignore
     @Test
     @DisplayName("Tests uploading a valid file")
@@ -81,6 +81,8 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(415, response.getResponse().getStatus());
     }
 
+
+    /**ProcessFile*/
     @Test
     @Transactional
     @Rollback(value = true)
