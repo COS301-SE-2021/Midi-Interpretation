@@ -756,24 +756,38 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
     @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a positive integer]")
     public void testWhiteBox_InterpretTempo_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
-        //Get a designator corresponding to a score in the database - whether or not it actually exists
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
+        //Setup for testing 3 different cases
+        ScoreEntity[] testCases = new ScoreEntity[]{new ScoreEntity(),new ScoreEntity(),new ScoreEntity()};
+        int[] tempoIndications = new int[]{50, 60, 30};
+        int iterator = 0;
 
-        //mock the database with the designator and tempoIndication
-        ScoreEntity testEntity = new ScoreEntity();
-        testEntity.setFileDesignator(fileDesignator.toString());
-        testEntity.setTempoIndication(50);
-        databaseManager.save(testEntity);
+        for(ScoreEntity score: testCases){
 
-        //make a request
-        InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
-        InterpretTempoResponse res = interpreterService.interpretTempo(req);
+            //Get a designator corresponding to a score in the database - whether or not it actually exists
+            UUID fileDesignator0 = UUID.fromString(configurations.configuration(
+                    ConfigurationName.MIDI_TESTING_DESIGNATOR
+            ));
 
-        //see that the tempo is a positive integer
-        TempoIndication t = res.getTempo();
-        assertTrue(t.getTempo() > 0);
+            //mock the database with the designator and keySignature
+            testCases[iterator].setFileDesignator(fileDesignator0.toString());
+            testCases[iterator].setTempoIndication(tempoIndications[iterator]);
+            databaseManager.save(testCases[iterator]);
+
+            //make a request
+            InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator0);
+            InterpretTempoResponse res = interpreterService.interpretTempo(req);
+
+            //check it is correct
+            assertEquals(res.getTempo(), tempoIndications[iterator]);
+
+            //see that the tempo is a positive integer
+            TempoIndication t = res.getTempo();
+            assertTrue(t.getTempo() > 0);
+
+            iterator=iterator+1;
+        }
+
+
     }
 
     /**
