@@ -34,7 +34,8 @@ class InteractiveDemo extends React.Component {
         render={({ isLoading, playNote, stopNote, stopAllNotes }) => (
           <div>
             <div className="text-center">
-              <p className="">Try it by clicking, tapping, or using your keyboard:</p>
+              <h4>We are processing your file.</h4>
+              <p className="text-16">This may take some time. In the meantime, try it by clicking, tapping, or using your keyboard:</p>
               <div style={{ color: '#777' }}>
                 <MdArrowDownward size={32} />
               </div>

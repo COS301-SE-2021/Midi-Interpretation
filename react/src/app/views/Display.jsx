@@ -5,9 +5,9 @@ import MidiSenseService from "../services/MidiSenseService";
 import {withStyles} from "@material-ui/styles";
 import localStorage from "../services/localStorageService";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Container, Grid} from "@material-ui/core";
-import GenrePie from "../../matx/components/GenrePie";
+import {Grid} from "@material-ui/core";
 import Cookies from "universal-cookie";
+import GenreTable from "../../matx/components/GenreTable";
 
 
 //THESE ARE HARD CODED
@@ -71,6 +71,7 @@ class Display extends Component {
         trackListing: [],
         trackData:[{index:0, value:0, tone_string: "", octave:0, on_velocity:0}, {index:1, value:0, tone_string: "", octave:0, on_velocity:0}],
         fileDesignator: this.cookies.get('fileDesignator'),
+        genreData:[],
         midisenseService: new MidiSenseService()
       }
 
@@ -185,9 +186,11 @@ class Display extends Component {
 
       for (let i = 0 ; i < parsed.length ; i++){
           parsed[i].index = i;
+          if(parsed[i]["is_rest"]){
+              if(parsed[i])
+                parsed[i].value = parsed[i-1]
+          }
       }
-
-      console.log(parsed)
 
       this.setState({
           trackData: parsed
@@ -248,6 +251,21 @@ class Display extends Component {
 
         }
      )
+
+      this.state.midisenseService.intelligenceAnalyseGenre(this.state.fileDesignator,
+          (res) => {
+              const genreData = res['genreArray']
+
+              for (let i = 0 ; i < genreData.length ; i++){
+                  genreData[i].Certainty = parseFloat(genreData[i].Certainty).toFixed(3);
+              }
+
+              this.setState({genreData: genreData})
+          },
+          (error) => {
+
+          }
+      )
   }
 
   getTrackMetadata = (n) =>{
@@ -308,17 +326,18 @@ class Display extends Component {
                                   <li>Tempo Indication: {this.state.tempoIndication}</li>
                               </p>
                           </Grid>
-                          <Grid item>
-                              <h4>
-                                  Genre:
-                              </h4>
-                              <div style={{ height: '200px', width: '200px'}}>
-                                <GenrePie/>
-                              </div>
-                          </Grid>
                       </Grid>
                   </SimpleCard>
                   <br/>
+
+                  <SimpleCard>
+                      <h4>Genre</h4>
+                      <div style={{ height: '200px', width: '100%'}}>
+                        <GenreTable genreData={this.state.genreData}/>
+                      </div>
+                  </SimpleCard>
+                  <br/>
+
                   <SimpleCard>
                       <h4>Track</h4>
                       <SelectedMenu setTrack={this.setCurrentTrack} inputOptions={this.state.trackListing}/>

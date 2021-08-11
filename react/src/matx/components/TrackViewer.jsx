@@ -10,28 +10,72 @@ import {
         ResponsiveContainer,
 } from 'recharts';
 import React from "react";
+import {Grid} from "@material-ui/core";
 
-// const CustomTooltip = (data) => {
-//     console.log(data)
-//     if (active && payload && payload.length) {
-//                 const name = data[label]["tone_string"]
-//                 const pitch = data[label].value
-//                 const velocity = data[label]["on_velocity"]
-//                 const octave = data[label].octave
-//                 return (
-//                     <div className="custom-tooltip bg-white text-primary elevation-z3 " >
-//                             <div className="m-3">
-//                                     <p className="label">{`Note ${label}: ${name}`}</p>
-//                                     <p className="desc">{`Pitch : ${pitch}`}</p>
-//                                     <p className="desc">{`Velocity : ${velocity}`}</p>
-//                                     <p className="desc">{`Octave : ${octave}`}</p>
-//                             </div>
-//                     </div>
-//                 );
-//         }
-//
-//         return <div>{JSON.stringify(data)}</div>;
-// };
+const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+        if(!payload[0].payload["is_rest"]) {
+            const name = payload[0].payload["tone_string"]
+            const pitch = payload[0].payload["value"]
+            const on_velocity = payload[0].payload["on_velocity"]
+            const off_velocity = payload[0].payload["off_velocity"]
+            const octave = payload[0].payload["octave"]
+            const duration = parseFloat(payload[0].payload["duration"])
+
+            return (
+                <div className="custom-tooltip bg-white text-primary elevation-z3 ">
+                    <div className="m-3">
+                        <Grid container
+                              justifycontent="center"
+                              alignItems="center"
+                        >
+                            <Grid item xs={12}>
+                                <p className="label">{`Note ${label}: ${name}`}</p>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <p className="desc">{`Pitch : ${pitch}`}</p>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <p className="desc">{`Octave : ${octave}`}</p>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <p className="desc">{`On Velocity : ${on_velocity}`}</p>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <p className="desc">{`Off Velocity : ${off_velocity}`}</p>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <p className="desc">{`Duration : ${duration.toFixed(3)}`}</p>
+                            </Grid>
+                        </Grid>
+                    </div>
+                </div>
+            );
+        }
+        else{
+            const duration = parseFloat(payload[0].payload["duration"])
+            return (
+                <div className="custom-tooltip bg-white text-primary elevation-z3 ">
+                        <div className="m-3">
+                        <Grid container
+                              justifycontent="center"
+                              alignItems="center"
+                        >
+                            <Grid item xs={12}>
+                                <p className="label">{`Note ${label}: Rest`}</p>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <p className="desc">{`Duration : ${duration.toFixed(3)}`}</p>
+                            </Grid>
+                        </Grid>
+                    </div>
+                </div>
+            );
+        }
+    }
+
+    return null
+};
 
 /**
  * Data visualisation for track data
@@ -57,10 +101,10 @@ const TrackViewer = (trackData) => {
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="index" />
                             <YAxis />
-                            {/*<Tooltip content={<CustomTooltip data={trackData.trackData} />} />*/}
+                            <Tooltip content={<CustomTooltip/>} />
                             <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
                             <Brush dataKey="index" height={30} stroke="#7467ef" />
-                            <Line dataKey="value" stroke="#ff9e43" type="monotone" strokeWidth={2} />
+                            <Line dataKey="value" connectNulls stroke="#ff9e43" type="monotone" strokeWidth={2}/>
                     </LineChart>
             </ResponsiveContainer>
         )
