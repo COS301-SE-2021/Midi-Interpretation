@@ -38,6 +38,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         displayService = new DisplayServiceImpl(databaseManager,configurations);
     }
 
+
+    //====================================================================================================================//
+    //                                  BLACK BOX TESTING BELOW                                                           //
+    //====================================================================================================================//
+
+
     /**GetPieceMetaData*/
     /**Description: tests the getPieceMetadata() function by passing in a valid UUID and
      * the entry is in the database
@@ -634,6 +640,8 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         )));
 
     }
+
+
 
 
     //====================================================================================================================//
