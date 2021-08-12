@@ -2,6 +2,7 @@ package com.noxception.midisense.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -19,10 +20,10 @@ public class MidiSenseIntegrationTest {
         return mvc.perform(rq).andDo(MockMvcResultHandlers.print()).andReturn();
     }
 
-    public MvcResult mockUpload(String subsystem, String useCase, Object request, MockMvc mvc) throws Exception {
+    public MvcResult mockUpload(String subsystem, String useCase, MockMultipartFile file, MockMvc mvc) throws Exception {
         RequestBuilder rq = MockMvcRequestBuilders
-                .post("/"+subsystem+"/" + useCase)
-                .content((byte[]) request)
+                .multipart("/"+subsystem+"/" + useCase)
+                .file(file)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.ALL);
         return mvc.perform(rq).andDo(MockMvcResultHandlers.print()).andReturn();
