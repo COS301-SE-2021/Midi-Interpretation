@@ -51,9 +51,6 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
     void testUploadFileValidFile() throws Exception{
 
-        //make a request
-        InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
-
         String fileName = configurations.configuration(
                 ConfigurationName.MIDI_TESTING_FILE
         );
