@@ -1,14 +1,8 @@
 import React, {Component} from "react";
-import {SimpleCard} from "matx";
+import {Breadcrumb, SimpleCard} from "matx";
 import { withStyles } from "@material-ui/styles";
 import 'react-responsive-combo-box/dist/index.css';
 import { Grid, Container } from '@material-ui/core';
-import 'react-piano/dist/styles.css';
-import PlaybackDemo from "../services/PlaybackDemo";
-import { lostWoods } from '../services/songs';
-import InteractiveDemo2 from "../services/InteractiveDemo2";
-
-
 
 /**
  * This class defines the first view that a user will be presented with
@@ -63,11 +57,15 @@ class About extends Component {
      */
 
     render() {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const soundfontHostname = 'https://d1pzp51pvbm36p.cloudfront.net';
-
         return (
             <div className="m-sm-30" >
+                <div className="mb-sm-30">
+                    <Breadcrumb
+                        routeSegments={[
+                            { name: "File Upload" }
+                        ]}
+                    />
+                </div>
                 <SimpleCard>
                     <Grid container justify="space-evenly" spacing={3}>
                         <Grid item >

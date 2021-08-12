@@ -1,4 +1,11 @@
-import {Bar,  CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import {
+    Bar,
+    CartesianGrid,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis
+} from "recharts";
 import {BarChart} from "recharts";
 import React from "react";
 
@@ -27,7 +34,7 @@ const GenreTable = (genreData) => {
             >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="Name" />
-                <YAxis />
+                <YAxis domain={[genreData[9], genreData[0]]}/>
                 <Tooltip />
                 <Bar dataKey="Certainty" fill="#7467ef" />
             </BarChart>
@@ -36,3 +43,4 @@ const GenreTable = (genreData) => {
 }
 
 export default GenreTable;
+//{[genreData[9]-((genreData[0]-genreData[9])/5), ((genreData[0]-genreData[9])/5)+genreData[0]]}

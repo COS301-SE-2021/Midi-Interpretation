@@ -197,7 +197,7 @@ const Background = (genreData) => {
                             }
                         },
                         "color": {
-                            "value": "#fff",
+                            "value": "#34416b",
                             "animation": {
                                 "h": {
                                     "count": 0,
@@ -269,7 +269,7 @@ const Background = (genreData) => {
                         "links": {
                             "blink": false,
                             "color": {
-                                "value": "#fff"
+                                "value": "#34416b"
                             },
                             "consent": false,
                             "distance": 100,

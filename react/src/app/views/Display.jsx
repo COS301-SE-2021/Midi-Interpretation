@@ -3,16 +3,13 @@ import {Breadcrumb, SimpleCard} from "../../matx";
 import SelectedMenu from "../../matx/components/SelectedMenu";
 import MidiSenseService from "../services/MidiSenseService";
 import {withStyles} from "@material-ui/styles";
-import localStorage from "../services/localStorageService";
 import TrackViewer from "../../matx/components/TrackViewer";
 import {Grid} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import GenreTable from "../../matx/components/GenreTable";
+import {PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, ResponsiveContainer} from "recharts";
+import RadarChart from "recharts/lib/chart/RadarChart";
 
-
-//THESE ARE HARD CODED
-localStorage.setItem("songTitle","This is a song")
-localStorage.setItem("fileDesignator", "0bc8dcc5-79a0-4b5a-9be5-b9978b9febe1")
 //==============================================
 
 /**
@@ -73,6 +70,10 @@ class Display extends Component {
         fileDesignator: this.cookies.get('fileDesignator'),
         genreData:[],
         midisenseService: new MidiSenseService()
+      }
+
+      if(this.cookies.get('fileDesignator') === undefined){
+          this.props.history.push("/Upload")
       }
 
       this.getTrackMetadata(this.state.currentTrack)
@@ -333,7 +334,7 @@ class Display extends Component {
                   <SimpleCard>
                       <h4>Genre</h4>
                       <div style={{ height: '200px', width: '100%'}}>
-                        <GenreTable genreData={this.state.genreData}/>
+                          <GenreTable genreData={this.state.genreData}/>
                       </div>
                   </SimpleCard>
                   <br/>
@@ -346,11 +347,9 @@ class Display extends Component {
                   </SimpleCard>
                   <br/>
                   <SimpleCard title="Display">
-
                           <div style={{ height: '400px', width: '100%'}}>
                               <TrackViewer trackData={this.state.trackData} />
                           </div>
-
                   </SimpleCard>
               </div>
           </div>

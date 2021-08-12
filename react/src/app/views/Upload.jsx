@@ -66,11 +66,17 @@ class Upload extends Component {
 
       this.handleChangeStatus = ({ meta, file, xhr }, status) => {
           if (status === 'done' && this.cookies.get('allowCookies') !== undefined){
+              let tomorrow = new Date()
+              tomorrow.setDate(tomorrow.getDate()+1);
+
               let response = JSON.parse(xhr.response);
               let designator = response.fileDesignator
-              this.cookies.set('fileDesignator', designator, { path: '/' });
-              this.cookies.set('title', file.name, { path: '/' });
-              console.log(response)
+              this.cookies.set('fileDesignator', designator, { path: '/',
+                  expires: tomorrow // Will expire after 24hr from setting (value is in Date object)
+              });
+              this.cookies.set('title', file.name, { path: '/' ,
+                  expires: tomorrow // Will expire after 24hr from setting (value is in Date object)
+              });
           }
 
           console.log(status, meta, file)
