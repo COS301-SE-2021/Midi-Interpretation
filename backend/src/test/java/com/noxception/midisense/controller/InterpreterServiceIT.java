@@ -84,23 +84,22 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //create new request, list and byte array
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
 
-        String fileContent = configurations.configuration(
+        String fileName = configurations.configuration(
                 ConfigurationName.MIDI_INVALID_TESTING_FILE
         );
-        List<Integer> newByteArray = new ArrayList<>();
-        byte[] inArray = fileContent.getBytes();
 
-        //add all bytes in inArray to newByteArray
-        for (byte b : inArray) newByteArray.add((int) b);
-
-        //pass into request
-        request.setFileContents(newByteArray);
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                fileName,
+                MediaType.TEXT_PLAIN_VALUE,
+                Files.readAllBytes(new File(fileName).toPath())
+        );
 
         //mock request
-        MvcResult response = mockRequest(
+        MvcResult response = mockUpload(
                 "interpreter",
                 "uploadFile",
-                request,
+                file,
                 mvc);
 
         //check for successful response
