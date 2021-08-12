@@ -51,10 +51,12 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
     void testUploadFileValidFile() throws Exception{
 
+        //Getting the name of the testing file
         String fileName = configurations.configuration(
                 ConfigurationName.MIDI_TESTING_FILE
         );
 
+        //Extracting the file contents of the testing file
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 fileName,
@@ -81,9 +83,12 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //create new request, list and byte array
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
 
+        //Getting the name of the invalid testing file
         String fileContent = configurations.configuration(
                 ConfigurationName.MIDI_INVALID_TESTING_FILE
         );
+
+        //Extracting the file contents of the testing file using a byte array
         List<Integer> newByteArray = new ArrayList<>();
         byte[] inArray = fileContent.getBytes();
 
