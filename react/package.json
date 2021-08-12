@@ -24,6 +24,7 @@
     "globalize": "^0.1.1",
     "history": "^4.10.0",
     "lodash": "^4.17.15",
+    "midi-sounds-react": "^1.2.54",
     "node-sass": "^4.13.1",
     "notistack": "^0.8.8",
     "prop-types": "^15.7.2",

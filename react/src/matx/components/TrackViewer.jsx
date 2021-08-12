@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 import React from "react";
 import {Grid} from "@material-ui/core";
-import SVGMusicNotation from "svg-music-notation";
+import MIDISounds from 'midi-sounds-react';
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -92,10 +92,14 @@ const CustomTooltip = ({ active, payload, label }) => {
  * @constructor
  */
 
-const TrackViewer = (trackData) => {
+const logger = (text) =>{
+    console.log(text)
+}
+
+const TrackViewer = (trackData, {play}) => {
         return (
             <ResponsiveContainer width="100%" height="100%">
-                    <LineChart
+                <LineChart
                         width={500}
                         height={300}
                         data={trackData.trackData}
@@ -109,10 +113,11 @@ const TrackViewer = (trackData) => {
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="index" />
                             <YAxis />
-                            <Tooltip content={<CustomTooltip/>} />
+                            <Tooltip content={<CustomTooltip/>}/>
                             <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
                             <Brush dataKey="index" height={30} stroke="#7467ef" />
-                            <Line dataKey="value" connectNulls stroke="#ff9e43" type="monotone" strokeWidth={2}/>
+                            <Line dataKey="value" connectNulls stroke="#ff9e43" type="monotone" strokeWidth={2}
+                                  activeDot={{ onClick: () => play("TEST") }}/>
                     </LineChart>
             </ResponsiveContainer>
         )
