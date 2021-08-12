@@ -60,7 +60,8 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 "interpreter",
                 "uploadFile",
                 request,
-                mvc);
+                mvc
+        );
 
         //check for successful response
         Assertions.assertEquals(415, response.getResponse().getStatus());
