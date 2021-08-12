@@ -11,14 +11,24 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.internet.MimeMultipart;
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,33 +48,32 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Tests uploading a valid file")
+
     void testUploadFileValidFile() throws Exception{
 
         //make a request
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
 
-        String fileContent = configurations.configuration(
+        String fileName = configurations.configuration(
                 ConfigurationName.MIDI_TESTING_FILE
         );
 
-        List<Integer> newByteArray = new ArrayList<>();
-        byte[] inArray = fileContent.getBytes();
-
-        for (byte b : inArray) newByteArray.add((int) b);
-
-        //pass into request
-        request.setFileContents(newByteArray);
-
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                fileName,
+                MediaType.TEXT_PLAIN_VALUE,
+                Files.readAllBytes(new File(fileName).toPath())
+        );
         //mock request
-        MvcResult response = mockRequest(
+        MvcResult response = mockUpload(
                 "interpreter",
                 "uploadFile",
-                request,
+                file,
                 mvc
         );
 
         //check for successful response
-        Assertions.assertEquals(415, response.getResponse().getStatus());
+        Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
     @Ignore
