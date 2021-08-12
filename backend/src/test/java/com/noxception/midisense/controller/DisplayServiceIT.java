@@ -30,6 +30,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     @Autowired
     private MIDISenseConfig configurations;
 
+
+    /**GetPieceMetaData*/
     @Test
     @DisplayName("Tests getting piece metadata with a valid file designator")
     public void testGetPieceMetadataValidDesignator() throws Exception {
@@ -58,6 +60,33 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
+    @DisplayName("Tests getting piece metadata with an invalid file designator")
+    public void testGetPieceMetadataInvalidDesignator() throws Exception {
+
+        //make a request
+        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
+
+        //generate an invalid designator
+        UUID fileDesignator = UUID.randomUUID();
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make request
+        MvcResult response = mockRequest(
+                "display",
+                "getPieceMetadata",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+
+    /**GetTrackInfo*/
+    @Test
     @DisplayName("Tests getting track info with a valid file designator")
     public void testGetTrackInfoValidDesignator() throws Exception {
 
@@ -84,6 +113,33 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
+    @Test
+    @DisplayName("Tests getting track info with an invalid file designator")
+    public void testGetTrackInfoInvalidDesignator() throws Exception {
+
+        //make a request
+        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
+
+        //generate an invalid designator
+        UUID fileDesignator = UUID.randomUUID();
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackInfo",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+
+    /**GetTrackMetadata*/
     @Test
     @DisplayName("Tests getting track metadata with a valid file designator")
     public void testGetTrackMetadataValidDesignator() throws Exception {
@@ -116,6 +172,63 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
+    @Test
+    @DisplayName("Tests getting track metadata with an invalid file designator")
+    public void testGetTrackMetadataInvalidDesignator() throws Exception {
+
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //generate an invalid designator
+        UUID fileDesignator = UUID.randomUUID();
+
+        //Get a valid track index
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        ));
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(validTrackIndex);
+
+        //make request
+        MvcResult response = mockRequest("display","getTrackMetadata",request, mvc);
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Tests getting track metadata with an invalid track index and valid file")
+    public void testGetTrackMetadataInvalidTrackIndex() throws Exception {
+
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //generate an invalid designator
+        UUID fileDesignator = UUID.randomUUID();
+
+        //Get an invalid track index
+        int trackIndex = 16;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+        //make request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+
+    /**GetTrackOverview*/
     @Test
     @DisplayName("Tests getting track overview with a valid file designator")
     public void testGetTrackOverviewValidDesignator() throws Exception {
@@ -150,82 +263,6 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Tests getting piece metadata with an invalid file designator")
-    public void testGetPieceMetadataInvalidDesignator() throws Exception {
-
-        //make a request
-        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
-
-        //generate an invalid designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getPieceMetadata",
-                request,
-                mvc
-        );
-
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
-
-    @Test
-    @DisplayName("Tests getting track info with an invalid file designator")
-    public void testGetTrackInfoInvalidDesignator() throws Exception {
-
-        //make a request
-        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
-
-        //generate an invalid designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackInfo",
-                request,
-                mvc
-        );
-
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
-
-    @Test
-    @DisplayName("Tests getting track metadata with an invalid file designator")
-    public void testGetTrackMetadataInvalidDesignator() throws Exception {
-
-        //make a request
-        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
-
-        //generate an invalid designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //Get a valid track index
-        int validTrackIndex = Integer.parseInt(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_TRACK_INDEX
-        ));
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-        request.setTrackIndex(validTrackIndex);
-
-        //make request
-        MvcResult response = mockRequest("display","getTrackMetadata",request, mvc);
-
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
-
-    @Test
     @DisplayName("Tests getting track overview with an invalid file designator")
     public void testGetTrackOverviewInvalidDesignator() throws Exception {
 
@@ -248,35 +285,6 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         MvcResult response = mockRequest(
                 "display",
                 "getTrackOverview",
-                request,
-                mvc
-        );
-
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
-
-    @Test
-    @DisplayName("Tests getting track metadata with an invalid track index and valid file")
-    public void testGetTrackMetadataInvalidTrackIndex() throws Exception {
-
-        //make a request
-        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
-
-        //generate an invalid designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //Get an invalid track index
-        int trackIndex = 16;
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-        request.setTrackIndex(trackIndex);
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackMetadata",
                 request,
                 mvc
         );
@@ -316,7 +324,15 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
-    //TODO: ============ NEW FRAMEWORK TO IMPLEMENT ======================
+
+
+
+
+
+
+
+
+    //TODO: ============ NEW FRAMEWORK TO IMPLEMENT, AND PUT IN CORRECT ORDER/PLACE ======================
 
     @Test
     @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
