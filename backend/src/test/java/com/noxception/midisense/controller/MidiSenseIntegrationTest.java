@@ -19,6 +19,15 @@ public class MidiSenseIntegrationTest {
         return mvc.perform(rq).andDo(MockMvcResultHandlers.print()).andReturn();
     }
 
+    public MvcResult mockUpload(String subsystem, String useCase, Object request, MockMvc mvc) throws Exception {
+        RequestBuilder rq = MockMvcRequestBuilders
+                .post("/"+subsystem+"/" + useCase)
+                .content((byte[]) request)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.ALL);
+        return mvc.perform(rq).andDo(MockMvcResultHandlers.print()).andReturn();
+    }
+
     private String convertToJson(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
