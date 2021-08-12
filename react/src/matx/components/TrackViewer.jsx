@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import React from "react";
 import {Grid} from "@material-ui/core";
+import SVGMusicNotation from "svg-music-notation";
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -21,7 +22,7 @@ const CustomTooltip = ({ active, payload, label }) => {
             const off_velocity = payload[0].payload["off_velocity"]
             const octave = payload[0].payload["octave"]
             const duration = parseFloat(payload[0].payload["duration"])
-
+            const notes = ['𝅝','𝅗𝅥','𝅘𝅥','𝅘𝅥𝅮','𝅘𝅥𝅯','𝅘𝅥𝅰']
             return (
                 <div className="custom-tooltip bg-white text-primary elevation-z3 ">
                     <div className="m-3">
@@ -31,6 +32,9 @@ const CustomTooltip = ({ active, payload, label }) => {
                         >
                             <Grid item xs={12}>
                                 <p className="label">{`Note ${label}: ${name}`}</p>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <div className="text-32">{notes[2]}</div>
                             </Grid>
                             <Grid item xs={6}>
                                 <p className="desc">{`Pitch : ${pitch}`}</p>
@@ -54,6 +58,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         }
         else{
             const duration = parseFloat(payload[0].payload["duration"])
+            const rest = ['𝄺','𝄻','𝄼','𝄽','𝄾','𝄿','𝅀','𝅁','𝅂']
             return (
                 <div className="custom-tooltip bg-white text-primary elevation-z3 ">
                         <div className="m-3">
@@ -65,6 +70,9 @@ const CustomTooltip = ({ active, payload, label }) => {
                                 <p className="label">{`Note ${label}: Rest`}</p>
                             </Grid>
                             <Grid item xs={6}>
+                                <Grid item xs={6}>
+                                    <div className="text-32">{rest[3]}</div>
+                                </Grid>
                                 <p className="desc">{`Duration : ${duration.toFixed(3)}`}</p>
                             </Grid>
                         </Grid>

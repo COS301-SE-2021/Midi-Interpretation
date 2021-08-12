@@ -33,7 +33,12 @@ export default function ResponsiveDialog() {
    * User consent is given
    */
   function confirm(){
-    cookies.set('allowCookies', 'true', { path: '/' });
+    let end = new Date()
+    end.setDate(end.getDate()+365);
+
+    cookies.set('allowCookies', 'true', { path: '/',
+      expires:end
+    });
     window.location.reload(false);
     handleClose()
   }
