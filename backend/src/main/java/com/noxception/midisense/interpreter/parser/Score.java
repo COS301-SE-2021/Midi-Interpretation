@@ -36,14 +36,14 @@ public class Score {
         trackMap.put(trackNumber,new Track());
     }
 
-    /** Associates a new track with the score, with the given index and corresponding track
+    /** Associates a new track with the score, with the given index
      *
      * @param trackNumber the index of a track in the score
-     * @param track the track corresponding to the given index
      */
-    public void addTrack(int trackNumber, Track track){
-        trackMap.put(trackNumber,track);
+    public void addTrack(int trackNumber, String trackData){
+        trackMap.put(trackNumber,new Track(trackNumber,trackData));
     }
+
 
     /** Associates a key signature to the score
      *

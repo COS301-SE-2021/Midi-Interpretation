@@ -42,6 +42,10 @@ logging.level.root=WARN
 
 midisense.config.CROSS_ORIGIN=*
 
+# SCRIPTING
+
+midisense.config.MIDI_INTERPRETATION_SCRIPT_PATH=$base_directory/backend/src/main/java/com/noxception/midisense/interpreter/parser/interpreter.py
+
 # FILE STORAGE
 
 midisense.config.MIDI_STORAGE_ROOT=$MIDI_STORAGE_ROOT/

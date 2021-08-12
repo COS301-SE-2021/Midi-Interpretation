@@ -123,8 +123,17 @@ public class DisplayServiceImpl implements DisplayService{
         GetTrackInfoResponse getTrackInfoResponse = new GetTrackInfoResponse();
         for(TrackEntity track: tracks){
             byte index = (byte) tracks.indexOf(track);
-            String trackName = track.getInstrumentName();
-            getTrackInfoResponse.addTrack(index,trackName);
+
+            //look for the instrument in the response
+            String searchTerm = "\"instrument\":\"";
+            String endTerm = "\",";
+            String context = track.getRichTextNotes();
+
+            int beginIndex = context.indexOf(searchTerm)+searchTerm.length();
+            int endIndex = context.indexOf(endTerm,beginIndex);
+
+            String instrumentName = (beginIndex==-1 || endIndex==-1)?"Undefined":context.substring(beginIndex,endIndex);
+            getTrackInfoResponse.addTrack(index,instrumentName);
         }
 
         return getTrackInfoResponse;

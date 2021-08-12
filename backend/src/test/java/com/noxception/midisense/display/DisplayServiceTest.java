@@ -161,6 +161,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         ScoreEntity testEntity = new ScoreEntity();
         testEntity.setFileDesignator(fileDesignator.toString());
         TrackEntity trackEntity =  new TrackEntity();
+        trackEntity.setNotes("THIS IS SAMPLE");
         testEntity.addTrack(trackEntity);
         databaseManager.save(testEntity);
 
@@ -248,7 +249,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         ScoreEntity testEntity = new ScoreEntity();
         testEntity.setFileDesignator(fileDesignator.toString());
         TrackEntity trackEntity =  new TrackEntity();
-        trackEntity.setNotes("{ \"notes\": [] }");
+        trackEntity.setNotes("{\"notes\": []}");
         testEntity.addTrack(trackEntity);
         databaseManager.save(testEntity);
 

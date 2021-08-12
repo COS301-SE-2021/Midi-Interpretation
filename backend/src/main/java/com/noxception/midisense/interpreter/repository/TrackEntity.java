@@ -29,21 +29,12 @@ public class TrackEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private final List<byte[]> notes = new ArrayList<>();
 
-    private String instrumentName;
-
     private int maxLength;
     private int compressedLength;
 
     public TrackEntity() {
         maxLength = 0;
         compressedLength = 0;
-    }
-
-    /**
-     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
-     */
-    public String getInstrumentName() {
-        return instrumentName;
     }
 
     /** A method that allocates a string of interpreted notes to a lookup table of note BLOB objects
@@ -58,15 +49,15 @@ public class TrackEntity {
 
         //compress
         maxLength = input.length;
-        byte[] output = new byte[maxLength];
+        byte[] output = new byte[Short.MAX_VALUE];
         Deflater deflater = new Deflater();
         deflater.setInput(input);
         deflater.finish();
         compressedLength = deflater.deflate(output);
         deflater.end();
 
-
         int len = compressedLength;
+
         int segmentSize = 255;
         int i = 0;
         int window = len/segmentSize;
@@ -135,13 +126,6 @@ public class TrackEntity {
             lastIndex = richString.indexOf(stepSensitive,lastIndex+1);
         }
         return newList;
-    }
-
-    /**
-     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
-     */
-    public void setInstrumentName(String instrumentName) {
-        this.instrumentName = instrumentName;
     }
 
 
