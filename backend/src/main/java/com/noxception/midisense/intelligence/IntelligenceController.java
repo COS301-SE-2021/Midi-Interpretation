@@ -85,11 +85,15 @@ public class IntelligenceController implements IntelligenceApi {
             }
             responseObject.setGenreArray(list);
 
+            responseObject.setSuccess(true);
+            responseObject.setMessage("Successfully analysed file");
+
         }
         catch(InvalidDesignatorException | IllegalArgumentException | MissingStrategyException e){
 
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(false);
+            responseObject.setMessage(e.getMessage());
 
         }
 

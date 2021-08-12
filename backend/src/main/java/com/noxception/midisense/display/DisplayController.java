@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -78,12 +77,15 @@ public class DisplayController implements DisplayApi {
             timeSignature.setNumBeats(res.getTimeSignature().getNumBeats());
 
             responseObject.setTimeSignature(timeSignature);
+            responseObject.setSuccess(true);
+            responseObject.setMessage("Successfully retrieved metadata for "+fileDesignator);
 
         }
         catch(InvalidDesignatorException | IllegalArgumentException e){
 
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(true);
+            responseObject.setMessage(e.getMessage());
 
         }
 
@@ -120,12 +122,15 @@ public class DisplayController implements DisplayApi {
                 inner.setTrackName(trackName);
 
                 responseObject.add(inner);
+                inner.setSuccess(true);
+                inner.setMessage("Successfully retrieved track");
             }
+
+
         }
         catch(InvalidDesignatorException | IllegalArgumentException e){
 
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
 
         }
         return new ResponseEntity<>(responseObject,returnStatus);
@@ -154,12 +159,15 @@ public class DisplayController implements DisplayApi {
             GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
 
             responseObject.setTrackString(res.getTrackString());
+            responseObject.setSuccess(true);
+            responseObject.setMessage(String.format("Successfully retrieved track [%s:%s]",trackIndex,fileDesignator));
 
         }
         catch(InvalidDesignatorException | IllegalArgumentException | InvalidTrackException e){
 
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(false);
+            responseObject.setMessage(e.getMessage());
 
         }
         return new ResponseEntity<>(responseObject,returnStatus);
@@ -188,12 +196,15 @@ public class DisplayController implements DisplayApi {
             GetTrackOverviewResponse res = displayService.getTrackOverview(req);
 
             responseObject.setTrackArray(res.getPitchArray());
+            responseObject.setSuccess(true);
+            responseObject.setMessage(String.format("Successfully retrieved track [%s:%s]",trackIndex,fileDesignator));
 
         }
         catch(InvalidDesignatorException | IllegalArgumentException | InvalidTrackException e){
 
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(false);
+            responseObject.setMessage(e.getMessage());
 
         }
         return new ResponseEntity<>(responseObject,returnStatus);

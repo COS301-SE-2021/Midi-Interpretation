@@ -87,7 +87,8 @@ public class InterpreterController implements InterpreterApi {
         catch (InvalidDesignatorException | IllegalArgumentException e) {
 
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(false);
+            responseObject.setMessage(e.getMessage());
 
         }
 
@@ -120,12 +121,15 @@ public class InterpreterController implements InterpreterApi {
             UploadFileResponse res = interpreterService.uploadFile(req);
 
             responseObject.setFileDesignator(res.getFileDesignator().toString());
+            responseObject.setSuccess(true);
+            responseObject.setMessage("Successfully uploaded file");
 
         }
         catch (IllegalArgumentException | InvalidUploadException | IOException e) {
 
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(false);
+            responseObject.setMessage(e.getMessage());
 
         }
 
