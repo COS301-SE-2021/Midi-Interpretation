@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 
 /** Class that represents an entity equivalent of the {@link com.noxception.midisense.interpreter.parser.Track} class
@@ -28,21 +31,12 @@ public class TrackEntity {
 
     private String instrumentName;
 
+    private int maxLength;
+    private int compressedLength;
+
     public TrackEntity() {
-    }
-
-    /**
-     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
-     */
-    public Long getTrackID() {
-        return trackID;
-    }
-
-    /**
-     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
-     */
-    public List<byte[]> getNotes() {
-        return notes;
+        maxLength = 0;
+        compressedLength = 0;
     }
 
     /**
@@ -58,18 +52,31 @@ public class TrackEntity {
      * @param notes the interpreted string of note data
      */
     public void setNotes(String notes) {
-        byte[] inArray = notes.getBytes();
-        int len = inArray.length;
+
+        //translate to byte stream
+        byte[] input = notes.getBytes();
+
+        //compress
+        maxLength = input.length;
+        byte[] output = new byte[maxLength];
+        Deflater deflater = new Deflater();
+        deflater.setInput(input);
+        deflater.finish();
+        compressedLength = deflater.deflate(output);
+        deflater.end();
+
+
+        int len = compressedLength;
         int segmentSize = 255;
         int i = 0;
         int window = len/segmentSize;
         while (i<= window){
             if (i != window){
-                byte[] portion = Arrays.copyOfRange(inArray,i*segmentSize,(i+1)*segmentSize);
+                byte[] portion = Arrays.copyOfRange(output,i*segmentSize,(i+1)*segmentSize);
                 this.notes.add(portion);
             }
             else{
-                byte[] portion = Arrays.copyOfRange(inArray,i*segmentSize,len);
+                byte[] portion = Arrays.copyOfRange(output,i*segmentSize,len);
                 this.notes.add(portion);
             }
             i++;
@@ -87,7 +94,21 @@ public class TrackEntity {
         }
         byte[] response = new byte[reconstruct.size()];
         for(int i=0; i<reconstruct.size(); i++) response[i] = reconstruct.get(i);
-        return new String(response);
+
+        byte[] responseArray = new byte[maxLength];
+        try{
+            //reconstruct from reduced
+            Inflater inflater = new Inflater();
+            inflater.setInput(response, 0, compressedLength);
+            int resultLength = inflater.inflate(responseArray);
+            inflater.end();
+        }
+        catch (DataFormatException e) {
+            responseArray = new byte[]{};
+        }
+
+
+        return new String(responseArray);
 
     }
 
@@ -122,5 +143,6 @@ public class TrackEntity {
     public void setInstrumentName(String instrumentName) {
         this.instrumentName = instrumentName;
     }
+
 
 }
