@@ -43,8 +43,17 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //make a request
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
 
+        String fileContent = configurations.configuration(
+                ConfigurationName.MIDI_TESTING_FILE
+        );
+
+        List<Integer> newByteArray = new ArrayList<>();
+        byte[] inArray = fileContent.getBytes();
+
+        for (byte b : inArray) newByteArray.add((int) b);
+
         //pass into request
-        request.setFileContents(Arrays.asList(1, 2, 3));
+        request.setFileContents(newByteArray);
 
         //mock request
         MvcResult response = mockRequest(
@@ -84,8 +93,9 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(415, response.getResponse().getStatus());
     }
 
-    @Ignore
     @Test
+    @Transactional
+    @Rollback(value = true)
     @DisplayName("Tests processing a valid file")
     void testProcessFileValidFileDesignator() throws Exception{
 
@@ -132,7 +142,8 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 "interpreter",
                 "processFile",
                 request,
-                mvc);
+                mvc
+        );
 
         //check for failed response
         Assertions.assertEquals(400, response.getResponse().getStatus());
