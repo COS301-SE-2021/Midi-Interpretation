@@ -1,5 +1,7 @@
 package com.noxception.midisense.controller;
 
+import com.noxception.midisense.config.ConfigurationName;
+import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import com.noxception.midisense.models.InterpreterUploadFileRequest;
@@ -20,6 +22,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -29,10 +32,10 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @Autowired
     private MockMvc mvc;
 
-    //TODO: Implement new framework
+    @Autowired
+    private MIDISenseConfig configurations;
 
-    /**UploadFile*/
-    @Ignore
+
     @Test
     @DisplayName("Tests uploading a valid file")
     void testUploadFileValidFile() throws Exception{
@@ -40,15 +43,25 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //make a request
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
 
+        String fileContent = configurations.configuration(
+                ConfigurationName.MIDI_TESTING_FILE
+        );
+
+        List<Integer> newByteArray = new ArrayList<>();
+        byte[] inArray = fileContent.getBytes();
+
+        for (byte b : inArray) newByteArray.add((int) b);
+
         //pass into request
-        request.setFileContents(Arrays.asList(1, 2, 3));
+        request.setFileContents(newByteArray);
 
         //mock request
         MvcResult response = mockRequest(
                 "interpreter",
                 "uploadFile",
                 request,
-                mvc);
+                mvc
+        );
 
         //check for successful response
         Assertions.assertEquals(415, response.getResponse().getStatus());
@@ -61,11 +74,15 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
         //create new request, list and byte array
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
+
+        String fileContent = configurations.configuration(
+                ConfigurationName.MIDI_INVALID_TESTING_FILE
+        );
         List<Integer> newByteArray = new ArrayList<>();
-        byte[] inArray = new byte[]{};
+        byte[] inArray = fileContent.getBytes();
 
         //add all bytes in inArray to newByteArray
-        if(inArray != null) for (byte b : inArray) newByteArray.add((int) b);
+        for (byte b : inArray) newByteArray.add((int) b);
 
         //pass into request
         request.setFileContents(newByteArray);
@@ -81,8 +98,6 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(415, response.getResponse().getStatus());
     }
 
-
-    /**ProcessFile*/
     @Test
     @Transactional
     @Rollback(value = true)
@@ -92,15 +107,21 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //create request object
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
 
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
         //pass valid file designator into request
-        request.setFileDesignator(TestingDictionary.interpreter_all_validFileDesignator);
+        request.setFileDesignator(fileDesignator.toString());
 
         //make a request
         MvcResult response = mockRequest(
                 "interpreter",
                 "processFile",
                 request,
-                mvc);
+                mvc
+        );
 
         //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
@@ -115,18 +136,22 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //create request object
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
 
-        //pass invalid file designator into request
-        request.setFileDesignator(TestingDictionary.interpreter_all_invalidFileDesignator);
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.randomUUID();
+
+        //pass valid file designator into request
+        request.setFileDesignator(fileDesignator.toString());
 
         //make a request
         MvcResult response = mockRequest(
                 "interpreter",
                 "processFile",
                 request,
-                mvc);
+                mvc
+        );
 
         //check for failed response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
 
