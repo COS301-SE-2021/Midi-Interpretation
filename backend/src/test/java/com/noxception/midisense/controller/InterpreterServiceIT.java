@@ -50,10 +50,10 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     //                                  WHITE BOX TESTING BELOW                                                           //
     //====================================================================================================================//
 
-
+    /**UploadFile*/
     @Test
     @DisplayName("Tests uploading a valid file")
-    void testUploadFileValidFile() throws Exception{
+    void test_WhiteBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
 
         //Getting the name of the testing file
         String fileName = configurations.configuration(
@@ -82,7 +82,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @Ignore
     @Test
     @DisplayName("Tests uploading an invalid file")
-    void testUploadFileInvalidFile() throws Exception{
+    void test_WhiteBox_UploadFile_IfInvalidFile_ThenAccurateResponse() throws Exception{
 
         //create new request, list and byte array
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
@@ -113,11 +113,13 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(415, response.getResponse().getStatus());
     }
 
+
+    /**ProcessFile*/
     @Test
     @Transactional
     @Rollback(value = true)
     @DisplayName("Tests processing a valid file")
-    void testProcessFileValidFileDesignator() throws Exception{
+    void test_WhiteBox_ProcessFile_IfValidFileDesignator_ThenAccurateResponse() throws Exception{
 
         //create request object
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
@@ -146,7 +148,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @Transactional
     @Rollback(value = true)
     @DisplayName("Tests processing an invalid file")
-    void testProcessFileInvalidFileDesignator() throws Exception{
+    void test_WhiteBox_ProcessFile_IfInvalidFileDesignator_ThenAccurateResponse() throws Exception{
 
         //create request object
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
@@ -176,9 +178,10 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     //                                  BLACK BOX TESTING BELOW                                                           //
     //====================================================================================================================//
 
+    /**UploadFile*/
     @Test
     @DisplayName("Tests uploading a valid file")
-    void test_BlackBox_UploadFileValidFile() throws Exception{
+    void test_BlackBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
 
         //Getting the name of the testing file
         String fileName = configurations.configuration(
@@ -207,7 +210,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @Ignore
     @Test
     @DisplayName("Tests uploading an invalid file")
-    void test_BlackBox_UploadFileInvalidFile() throws Exception{
+    void test_BlackBox_UploadFile_IfInvalidFile_ThenAccurateResponse() throws Exception{
 
         //create new request, list and byte array
         InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
@@ -238,11 +241,13 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(415, response.getResponse().getStatus());
     }
 
+
+    /*ProcessFile*/
     @Test
     @Transactional
     @Rollback(value = true)
     @DisplayName("Tests processing a valid file")
-    void test_BlackBox_ProcessFileValidFileDesignator() throws Exception{
+    void test_BlackBox_ProcessFile_IfValidFileDesignator_ThenAccurateResponse() throws Exception{
 
         //create request object
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
@@ -271,7 +276,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @Transactional
     @Rollback(value = true)
     @DisplayName("Tests processing an invalid file")
-    void test_BlackBox_ProcessFileInvalidFileDesignator() throws Exception{
+    void test_BlackBox_ProcessFile_IfInvalidFileDesignator_ThenAccurateResponse() throws Exception{
 
         //create request object
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
@@ -293,9 +298,6 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //check for failed response
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
-
-
-
 
 
 }
