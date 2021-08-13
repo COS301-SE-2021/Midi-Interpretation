@@ -2,8 +2,6 @@ package com.noxception.midisense.controller;
 
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
-import com.noxception.midisense.dataclass.TestingDictionary;
-import com.noxception.midisense.interpreter.dataclass.TempoIndication;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import com.noxception.midisense.models.InterpreterUploadFileRequest;
 import org.junit.Ignore;
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -22,16 +19,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.internet.MimeMultipart;
 import javax.transaction.Transactional;
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,10 +52,17 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @DisplayName("Upload File: input [valid file] expect [correct response code]")
     void test_WhiteBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
 
-        //Getting the name of the testing file
-        String fileName = configurations.configuration(
-                ConfigurationName.MIDI_TESTING_FILE
-        );
+
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+
+        String fileName = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+testName;
 
         //Extracting the file contents of the testing file
         MockMultipartFile file = new MockMultipartFile(
@@ -80,6 +81,8 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
         //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
+
+        Assertions.assertTrue(new File(fileName).delete());
     }
 
     @Ignore
@@ -114,6 +117,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
         //check for successful response
         Assertions.assertEquals(415, response.getResponse().getStatus());
+
     }
 
 
@@ -127,10 +131,14 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //create request object
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
 
-        //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
 
         //pass valid file designator into request
         request.setFileDesignator(fileDesignator.toString());
@@ -145,6 +153,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
         //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
+
     }
 
     @Test
@@ -186,10 +195,16 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @DisplayName("Upload File: input [valid file] expect [positive integer]")
     void test_BlackBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
 
-        //Getting the name of the testing file
-        String fileName = configurations.configuration(
-                ConfigurationName.MIDI_TESTING_FILE
-        );
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+
+        String fileName = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName;
 
         //Extracting the file contents of the testing file
         MockMultipartFile file = new MockMultipartFile(
@@ -209,6 +224,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //check for response is a positive integer
         int res = response.getResponse().getStatus();
         assertTrue(res > 0);
+        Assertions.assertTrue(new File(fileName).delete());
     }
 
     @Ignore
@@ -257,10 +273,14 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //create request object
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
 
-        //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
 
         //pass valid file designator into request
         request.setFileDesignator(fileDesignator.toString());
@@ -276,6 +296,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //check for response is a positive integer
         int res = response.getResponse().getStatus();
         assertTrue(res > 0);
+        Assertions.assertTrue(new File(testName).delete());
     }
 
     @Test
