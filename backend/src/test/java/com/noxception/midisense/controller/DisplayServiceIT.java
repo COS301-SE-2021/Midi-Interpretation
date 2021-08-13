@@ -35,7 +35,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     //                                         WHITE BOX TESTING BELOW                                                    //
     //====================================================================================================================//
 
-
+    /**GetPieceMetadata*/
     @Test
     @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
     public void test_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
@@ -109,6 +109,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+
+    /**GetTrackInfo*/
     @Test
     @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
     public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
@@ -183,6 +185,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+
+    /**GetTrackMetadata*/
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
     public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception{
@@ -358,6 +362,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+
+    /**GetTrackOverview*/
     @Test
     @DisplayName("Get Track Overview: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
     public void test_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception {
