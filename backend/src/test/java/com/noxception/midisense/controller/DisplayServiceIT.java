@@ -549,7 +549,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     /**GetPieceMetadata*/
     @Test
-    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
+    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [positive integer]")
     public void test_BlackBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
 
         //make a request
@@ -577,7 +577,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Piece Metadata: input [designator for a file not in DB] expect [file does not exist exception]")
+    @DisplayName("Get Piece Metadata: input [designator for a file not in DB] expect [positive integer]")
     public void test_BlackBox_GetPieceMetadata_IfNotInDatabase_ThenException() throws Exception{
         //make a request
         DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
@@ -602,7 +602,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Piece Metadata: input [empty] expect [empty request exception]")
+    @DisplayName("Get Piece Metadata: input [empty] expect [positive integer]")
     public void test_BlackBox_GetPieceMetadata_IfEmptyRequest_ThenException() throws Exception {
 
         //make an empty request
@@ -627,7 +627,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     /**GetTrackInfo*/
     @Test
-    @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
+    @DisplayName("Get Track Info: input [Designator for file in DB] expect [positive integer]")
     public void test_BlackBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
 
         //make a request
@@ -655,7 +655,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Info: input [Designator for file not in DB] expect [file does not exist exception]")
+    @DisplayName("Get Track Info: input [Designator for file not in DB] expect [positive integer]")
     public void test_BlackBox_GetTrackInfo_IfNotInDatabase_ThenException() throws Exception{
 
         //make a request
@@ -681,7 +681,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Info: input [empty] expect [empty request exception]")
+    @DisplayName("Get Track Info: input [empty] expect [positive integer]")
     public void test_BlackBox_GetTrackInfo_IfEmptyRequest_ThenException() throws Exception{
 
         //make a request
@@ -706,7 +706,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     /**GetTrackMetadata*/
     @Test
-    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception{
 
         //make a request
@@ -739,7 +739,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [invalid track index exception]")
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenAccurateInfo() throws Exception {
 
         //make a request
@@ -772,7 +772,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too low)] expect [invalid track index exception]")
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too low)] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenAccurateInfo() throws Exception{
         //make a request
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
@@ -804,7 +804,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Metadata: input [Designator for file not in DB and valid track index] expect [invalid designator exception]")
+    @DisplayName("Get Track Metadata: input [Designator for file not in DB and valid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfNotInDatabaseAndValidTrack_ThenException() throws Exception{
         //make a request
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
@@ -834,7 +834,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Metadata: input [Designator for file not in DB and invalid track index] expect [invalid designator and invalid track index exceptions]")
+    @DisplayName("Get Track Metadata: input [Designator for file not in DB and invalid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfNotInDatabaseAndInvalidTrack_ThenException() throws Exception{
         //make a request
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
@@ -864,7 +864,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Metadata: input [empty] expect [empty request exception]")
+    @DisplayName("Get Track Metadata: input [empty] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfEmptyRequest_ThenException() throws Exception{
         //make a request
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
@@ -889,7 +889,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     /**GetTrackOverview*/
     @Test
-    @DisplayName("Get Track Overview: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
+    @DisplayName("Get Track Overview: input [Designator for file in DB and valid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception {
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
@@ -921,7 +921,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
+    @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenException() throws Exception{
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
@@ -953,7 +953,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
+    @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() throws Exception{
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
@@ -985,7 +985,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Overview: input [Designator for file not in DB and valid track index] expect [invalid designator exception]")
+    @DisplayName("Get Track Overview: input [Designator for file not in DB and valid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() throws Exception{
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
@@ -1015,7 +1015,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Overview: input [Designator for file not in DB and invalid track index] expect [invalid designator and invalid track index exceptions]")
+    @DisplayName("Get Track Overview: input [Designator for file not in DB and invalid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() throws Exception{
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
@@ -1045,7 +1045,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     @Test
-    @DisplayName("Get Track Overview: input [empty] expect [empty request exception]")
+    @DisplayName("Get Track Overview: input [empty] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfEmptyRequest_ThenException() throws Exception{
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();

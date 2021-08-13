@@ -55,7 +55,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
     /**UploadFile*/
     @Test
-    @DisplayName("Tests uploading a valid file")
+    @DisplayName("Upload File: input [valid file] expect [correct response code]")
     void test_WhiteBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
 
         //Getting the name of the testing file
@@ -84,7 +84,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
     @Ignore
     @Test
-    @DisplayName("Tests uploading an invalid file")
+    @DisplayName("Upload File: input [invalid file] expect [correct response code]")
     void test_WhiteBox_UploadFile_IfInvalidFile_ThenAccurateResponse() throws Exception{
 
         //create new request, list and byte array
@@ -121,7 +121,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @Test
     @Transactional
     @Rollback(value = true)
-    @DisplayName("Tests processing a valid file")
+    @DisplayName("Process File: input [valid file] expect [correct response code]")
     void test_WhiteBox_ProcessFile_IfValidFileDesignator_ThenAccurateResponse() throws Exception{
 
         //create request object
@@ -150,7 +150,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @Test
     @Transactional
     @Rollback(value = true)
-    @DisplayName("Tests processing an invalid file")
+    @DisplayName("Process File: input [valid file] expect [correct response code]")
     void test_WhiteBox_ProcessFile_IfInvalidFileDesignator_ThenAccurateResponse() throws Exception{
 
         //create request object
@@ -183,7 +183,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
     /**UploadFile*/
     @Test
-    @DisplayName("Tests uploading a valid file")
+    @DisplayName("Upload File: input [valid file] expect [positive integer]")
     void test_BlackBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
 
         //Getting the name of the testing file
@@ -213,7 +213,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
     @Ignore
     @Test
-    @DisplayName("Tests uploading an invalid file")
+    @DisplayName("Upload File: input [invalid file] expect [positive integer]")
     void test_BlackBox_UploadFile_IfInvalidFile_ThenAccurateResponse() throws Exception{
 
         //create new request, list and byte array
@@ -251,7 +251,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @Test
     @Transactional
     @Rollback(value = true)
-    @DisplayName("Tests processing a valid file")
+    @DisplayName("Process File: input [valid file] expect [positive integer]")
     void test_BlackBox_ProcessFile_IfValidFileDesignator_ThenAccurateResponse() throws Exception{
 
         //create request object
@@ -281,7 +281,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @Test
     @Transactional
     @Rollback(value = true)
-    @DisplayName("Tests processing an invalid file")
+    @DisplayName("Process File: input [valid file] expect [positive integer]")
     void test_BlackBox_ProcessFile_IfInvalidFileDesignator_ThenAccurateResponse() throws Exception{
 
         //create request object
