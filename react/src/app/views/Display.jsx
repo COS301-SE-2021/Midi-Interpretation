@@ -9,6 +9,8 @@ import Cookies from "universal-cookie";
 import GenreTable from "../../matx/components/GenreTable";
 import {PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, ResponsiveContainer} from "recharts";
 import RadarChart from "recharts/lib/chart/RadarChart";
+import MIDISounds from "midi-sounds-react";
+import {Button} from "react-bootstrap";
 
 //==============================================
 
@@ -77,6 +79,11 @@ class Display extends Component {
       }
 
       this.getTrackMetadata(this.state.currentTrack)
+
+      this.play = () => {
+          console.log("play")
+          this.midiSounds.playChordNow(1, [60], 0.1);
+      }
   }
 
   componentDidMount() {
@@ -91,6 +98,10 @@ class Display extends Component {
      * setRowsPerPage
      * @param rpp - new rows per page
      */
+
+    tester(text){
+        console.log(text)
+    }
 
   setRowsPerPage = (rpp) => {
       this.setState({
@@ -294,6 +305,7 @@ class Display extends Component {
       }
   }
 
+
   /**
    * This method returns the elements that we want displayed
    *
@@ -343,14 +355,16 @@ class Display extends Component {
                       <h4>Track</h4>
                       <SelectedMenu setTrack={this.setCurrentTrack} inputOptions={this.state.trackListing}/>
 
-
                   </SimpleCard>
                   <br/>
                   <SimpleCard title="Display">
                           <div style={{ height: '400px', width: '100%'}}>
-                              <TrackViewer trackData={this.state.trackData} />
+                              <TrackViewer trackData={this.state.trackData} play={this.tester}/>
                           </div>
                   </SimpleCard>
+              </div>
+              <div style={{visibility: "hidden"}}>
+                  <MIDISounds ref={(ref) => (this.midiSounds = ref)} appElementName="root" instruments={[1]} />
               </div>
           </div>
       );
