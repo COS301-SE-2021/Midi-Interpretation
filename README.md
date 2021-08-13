@@ -20,6 +20,7 @@ For a detailed description of the system, its requirement satisfactions and arch
 
 * :open_book: [SRS Overleaf Document](https://www.overleaf.com/read/vcghdpcsjqnj )
 * :open_book: [Architectural Requirements Overleaf Document](https://www.overleaf.com/read/wtvwkjzrvvrm )
+* :open_book: [Architectural Requirements Demo 3 Revised](https://github.com/COS301-SE-2021/Midi-Interpretation/blob/master/documentation/images/NoXception_ArchitecturalSpecification_Demo3.pdf )
 
 For a high-level overview of how to use the system and the development process, consider the following resources.
 
