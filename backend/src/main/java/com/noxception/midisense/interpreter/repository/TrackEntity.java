@@ -49,7 +49,9 @@ public class TrackEntity {
 
         //compress
         maxLength = input.length;
-        byte[] output = new byte[Short.MAX_VALUE];
+
+        int compressedMax = Math.max(Short.MAX_VALUE,maxLength);
+        byte[] output = new byte[compressedMax];
         Deflater deflater = new Deflater();
         deflater.setInput(input);
         deflater.finish();
