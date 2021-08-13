@@ -99,7 +99,7 @@ public class MIDISenseParserListener implements ParserListener{
 
                 StringWriter writer = new StringWriter();
                 IOUtils.copy(stream, writer, StandardCharsets.UTF_8);
-                trackData = writer.toString();
+                trackData = writer.toString().replace("\r\n","");
             }
             catch (IOException e) {
                 log.error(e.getMessage());

@@ -13,6 +13,10 @@ echo "3. Please enter the repository password: "
 read -s MIDI_PASS
 echo
 
+echo "Installing python modules"
+python -m pip install --upgrade pip
+pip install mido
+echo "Successfully installed python modules"
 
 file_name="application.properties"
 install_location="backend/src/main/resources"

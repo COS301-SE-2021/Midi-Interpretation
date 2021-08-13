@@ -125,12 +125,12 @@ public class DisplayServiceImpl implements DisplayService{
             byte index = (byte) tracks.indexOf(track);
 
             //look for the instrument in the response
-            String searchTerm = "\"instrument\":\"";
+            String searchTerm = "\"instrument\": \"";
             String endTerm = "\",";
             String context = track.getRichTextNotes();
 
             int beginIndex = context.indexOf(searchTerm)+searchTerm.length();
-            int endIndex = context.indexOf(endTerm,beginIndex);
+            int endIndex = context.indexOf(endTerm,beginIndex+1);
 
             String instrumentName = (beginIndex==-1 || endIndex==-1)?"Undefined":context.substring(beginIndex,endIndex);
             getTrackInfoResponse.addTrack(index,instrumentName);

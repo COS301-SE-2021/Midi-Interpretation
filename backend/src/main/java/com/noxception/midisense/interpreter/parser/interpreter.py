@@ -75,4 +75,4 @@ for i, track in enumerate(mid.tracks, start=0):
 
 instrument = "Drumset" if channel == 9 else instruments[program]
 result = {"channel": channel, "instrument": instrument, 'ticks_per_beat': tpb, "track": final_sequence}
-print(result.__str__().replace('\'', '\\\"'))
+print(result.__str__().replace('\'', '\"'))
