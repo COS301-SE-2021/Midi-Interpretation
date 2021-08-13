@@ -119,23 +119,30 @@ public class TrackEntity {
      * Is a condensed version of the corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
      */
     public List<String> getNoteSummary(){
-        String stepSensitive = "\"step\": \"";
-        String octaveSensitive = "\"octave\": ";
-        String sepSensitive = "\", ";
-        String sep2Sensitive = ", ";
+        String start = "\"value\": ";
+        String end = ", ";
+        String altEnd = "}";
 
         List<String> newList = new ArrayList<>();
-
         String richString = getRichTextNotes();
-        int lastIndex = richString.indexOf(stepSensitive);
-        while(lastIndex != -1){
-            int sepPos = richString.indexOf(sepSensitive,lastIndex);
-            String step = richString.substring(lastIndex+stepSensitive.length(),sepPos);
-            sepPos = richString.indexOf(sep2Sensitive,sepPos+2);
-            int octavePos = richString.indexOf(octaveSensitive,lastIndex);
-            String octave = richString.substring(octavePos+octaveSensitive.length(),sepPos);
-            newList.add(step+octave);
-            lastIndex = richString.indexOf(stepSensitive,lastIndex+1);
+
+        int lastIndex = 0;
+        while(true){
+            int startIndex = richString.indexOf(start,lastIndex);
+            int endIndex = richString.indexOf(end,startIndex+1);
+            int altEndIndex = richString.indexOf(altEnd,startIndex+1);
+
+            if(endIndex==-1 && altEndIndex!=-1) endIndex = altEndIndex;
+
+            if(startIndex==-1 || endIndex==-1){
+                break;
+            }
+            else{
+                String caseString = richString.substring(startIndex+start.length(),endIndex);
+                newList.add(caseString);
+                lastIndex = endIndex;
+            }
+
         }
         return newList;
     }
