@@ -46,9 +46,13 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     private MIDISenseConfig configurations;
 
 
+    //====================================================================================================================//
+    //                                  WHITE BOX TESTING BELOW                                                           //
+    //====================================================================================================================//
+
+
     @Test
     @DisplayName("Tests uploading a valid file")
-
     void testUploadFileValidFile() throws Exception{
 
         //Getting the name of the testing file
@@ -143,6 +147,131 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @Rollback(value = true)
     @DisplayName("Tests processing an invalid file")
     void testProcessFileInvalidFileDesignator() throws Exception{
+
+        //create request object
+        InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.randomUUID();
+
+        //pass valid file designator into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "interpreter",
+                "processFile",
+                request,
+                mvc
+        );
+
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+
+
+
+    //====================================================================================================================//
+    //                                  BLACK BOX TESTING BELOW                                                           //
+    //====================================================================================================================//
+
+    @Test
+    @DisplayName("Tests uploading a valid file")
+    void test_BlackBox_UploadFileValidFile() throws Exception{
+
+        //Getting the name of the testing file
+        String fileName = configurations.configuration(
+                ConfigurationName.MIDI_TESTING_FILE
+        );
+
+        //Extracting the file contents of the testing file
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                fileName,
+                MediaType.TEXT_PLAIN_VALUE,
+                Files.readAllBytes(new File(fileName).toPath())
+        );
+        //mock request
+        MvcResult response = mockUpload(
+                "interpreter",
+                "uploadFile",
+                file,
+                mvc
+        );
+
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+    }
+
+    @Ignore
+    @Test
+    @DisplayName("Tests uploading an invalid file")
+    void test_BlackBox_UploadFileInvalidFile() throws Exception{
+
+        //create new request, list and byte array
+        InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
+
+        //Getting the name of the invalid testing file
+        String fileContent = configurations.configuration(
+                ConfigurationName.MIDI_INVALID_TESTING_FILE
+        );
+
+        //Extracting the file contents of the testing file using a byte array
+        List<Integer> newByteArray = new ArrayList<>();
+        byte[] inArray = fileContent.getBytes();
+
+        //add all bytes in inArray to newByteArray
+        for (byte b : inArray) newByteArray.add((int) b);
+
+        //pass into request
+        request.setFileContents(newByteArray);
+
+        //mock request
+        MvcResult response = mockRequest(
+                "interpreter",
+                "uploadFile",
+                request,
+                mvc);
+
+        //check for successful response
+        Assertions.assertEquals(415, response.getResponse().getStatus());
+    }
+
+    @Test
+    @Transactional
+    @Rollback(value = true)
+    @DisplayName("Tests processing a valid file")
+    void test_BlackBox_ProcessFileValidFileDesignator() throws Exception{
+
+        //create request object
+        InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //pass valid file designator into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "interpreter",
+                "processFile",
+                request,
+                mvc
+        );
+
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+    }
+
+    @Test
+    @Transactional
+    @Rollback(value = true)
+    @DisplayName("Tests processing an invalid file")
+    void test_BlackBox_ProcessFileInvalidFileDesignator() throws Exception{
 
         //create request object
         InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
