@@ -96,6 +96,9 @@ public class MIDISenseParserListener implements ParserListener{
                 StringWriter errorWriter = new StringWriter();
                 IOUtils.copy(errorStream, errorWriter, StandardCharsets.UTF_8);
                 String errorData = errorWriter.toString();
+                if(!errorData.equals("")){
+                    log.error(errorData);
+                }
 
                 StringWriter writer = new StringWriter();
                 IOUtils.copy(stream, writer, StandardCharsets.UTF_8);
