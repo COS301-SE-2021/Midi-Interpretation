@@ -7,10 +7,6 @@ import TrackViewer from "../../matx/components/TrackViewer";
 import {Grid} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import GenreTable from "../../matx/components/GenreTable";
-import {PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, ResponsiveContainer} from "recharts";
-import RadarChart from "recharts/lib/chart/RadarChart";
-import MIDISounds from "midi-sounds-react";
-import {Button} from "react-bootstrap";
 
 //==============================================
 
@@ -352,9 +348,6 @@ class Display extends Component {
                               <TrackViewer trackData={this.state.trackData}/>
                           </div>
                   </SimpleCard>
-              </div>
-              <div style={{visibility: "hidden"}}>
-                  <MIDISounds ref={(ref) => (this.midiSounds = ref)} appElementName="root" instruments={[1]} />
               </div>
           </div>
       );
