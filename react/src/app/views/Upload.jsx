@@ -6,7 +6,6 @@ import {makeStyles} from "@material-ui/core/styles";
 import 'react-responsive-combo-box/dist/index.css'
 import MidiSenseService from "../services/MidiSenseService";
 import Cookies from 'universal-cookie';
-import {Redirect} from "react-router-dom";
 import ResponsiveDialog from "./ResponsiveDialog";
 
 import 'react-dropzone-uploader/dist/styles.css'

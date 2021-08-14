@@ -13,8 +13,9 @@ import React from "react";
 import {Grid} from "@material-ui/core";
 import SimpleCard from "./cards/SimpleCard";
 
-const CustomTooltip = ({ active, payload, label }) => {
-    if(payload[0] !== undefined){
+function CustomTooltip (props) {
+    if(props.payload.length !== 0){
+        props.callSelectChild(props.payload[0].payload.n)
         return (
             <div className="custom-tooltip bg-white text-primary elevation-z3 ">
                 <div className="m-3">
@@ -25,9 +26,9 @@ const CustomTooltip = ({ active, payload, label }) => {
                           spacing={1}
                     >
                         <Grid item>
-                            <p className="label">{`Note: ${payload[0].payload.n}`}</p>
+                            <p className="label">{`Note: ${props.payload[0].payload.n}`}</p>
                         </Grid>
-                        {payload.map((value)=>{
+                        {props.payload.map((value)=>{
                             return (
                                 <Grid item>
                                     <aside style = {{ color: `${value.stroke}`}}>{`${value.name}: ${value.value}`}</aside>
@@ -50,8 +51,8 @@ const CustomTooltip = ({ active, payload, label }) => {
  * @constructor
  */
 
-const TrackViewer = (trackData) => {
-    if(trackData["trackData"].length === 0)
+function TrackViewer (props) {
+    if(props.trackData.length === 0)
         return(<div/>);
     else{
         const color = [
@@ -70,14 +71,14 @@ const TrackViewer = (trackData) => {
             "#96BFFF"
         ]
         let maxVoices = 0
-        for(let tick of trackData.trackData){
+        for(let tick of props.trackData){
             if(tick.notes.length>maxVoices){
                 maxVoices = tick.notes.length
             }
         }
         let lineData = []
         let counter = 0
-        for(let tick of trackData.trackData){
+        for(let tick of props.trackData){
             let trackDataStore = {}
             trackDataStore['tick'] = tick.tick
             trackDataStore['n'] = counter
@@ -113,7 +114,7 @@ const TrackViewer = (trackData) => {
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="tick" />
                             <YAxis />
-                            <Tooltip content={<CustomTooltip/>}/>
+                            <Tooltip content={ <CustomTooltip active payload label callSelectChild={props.callSelect}/> }/>
                             <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
                             <Brush dataKey="tick" height={30} stroke="#7467ef"/>
 

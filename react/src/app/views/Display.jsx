@@ -9,7 +9,6 @@ import Cookies from "universal-cookie";
 import GenreTable from "../../matx/components/GenreTable";
 
 //==============================================
-
 /**
  * This class defines the interpretation of a midi file that has been supplied by the server
  * It displays:
@@ -67,7 +66,25 @@ class Display extends Component {
         trackData:[],
         fileDesignator: this.cookies.get('fileDesignator'),
         genreData:[],
-        midisenseService: new MidiSenseService()
+        midisenseService: new MidiSenseService(),
+          selectedIndex:0,
+          lineData:[],
+          items:[],
+          color : [
+              "#37A2DA",
+              "#32C5E9",
+              "#67E0E3",
+              "#9FE6B8",
+              "#FFDB5C",
+              "#ff9f7f",
+              "#fb7293",
+              "#E062AE",
+              "#E690D1",
+              "#e7bcf3",
+              "#9d96f5",
+              "#8378EA",
+              "#96BFFF"
+          ],
       }
 
       if(this.cookies.get('fileDesignator') === undefined){
@@ -75,6 +92,7 @@ class Display extends Component {
       }
 
       this.getTrackMetadata(this.state.currentTrack)
+
   }
 
   componentDidMount() {
@@ -186,6 +204,12 @@ class Display extends Component {
       })
   }
 
+  setSelected = (s) => {
+      this.setState({
+          selectedIndex:s
+      })
+  }
+
   //====================================
   // DISPLAY METHODS
   //====================================
@@ -284,6 +308,7 @@ class Display extends Component {
   }
 
 
+
   /**
    * This method returns the elements that we want displayed
    *
@@ -293,6 +318,7 @@ class Display extends Component {
    */
 
   render() {
+      this.setSelected = this.setSelected.bind(this)
       return (
           <div className="w-full overflow-auto">
               <div className="m-sm-30">
@@ -335,7 +361,31 @@ class Display extends Component {
 
                   </SimpleCard>
                   <br/>
-                  <TrackViewer trackData={this.state.trackData}/>
+                    <TrackViewer trackData={this.state.trackData} callSelect={this.setSelected}/>
+                  <br/>
+                      {
+                          this.state.trackData[this.state.selectedIndex] !== undefined ?
+                              <SimpleCard title={"Tick: " + this.state.trackData[this.state.selectedIndex].tick}>
+                                  <Grid container
+                                        direction="row"
+                                        justifyContent="flex-start"
+                                        alignItems="flex-start"
+                                        spacing={3}>
+                                      {this.state.trackData[this.state.selectedIndex].notes.map((value, index) => {
+                                          return (
+                                              <Grid key={index} item>
+                                                  <div key={index} className="text-16" style={{color:this.state.color[index%13]}}><b>{"Voice "+index}</b></div>
+                                                  <div key={index+"1"} className="text-14"> {"Value: " + value.value}</div>
+                                                  <div key={index+"2"} className="text-14"> {"On Velocity: " + value.on_velocity}</div>
+                                                  <div key={index+"3"} className="text-14"> {"Off Velocity: " + value.off_velocity}</div>
+                                                  <div key={index+"4"} className="text-14"> {"Duration: " + value.duration}</div>
+                                              </Grid>
+                                          )
+                                      })}
+                                  </Grid>
+                              </SimpleCard>
+                              : <div/>
+                      }
               </div>
           </div>
       );
