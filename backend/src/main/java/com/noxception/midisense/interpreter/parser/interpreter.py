@@ -34,45 +34,50 @@ final_sequence = {}
 channel = None
 program = None
 found = False
-
 for i, track in enumerate(mid.tracks, start=0):
     clock = 0
     sequence = {}
     for msg in track:
         clock += msg.time
+
         if msg.type == 'program_change' and (program is None and channel is None):
             if msg.channel == target_channel:
                 found = True
                 program = msg.program
                 channel = msg.channel
-            else:
-                break
+
 
         elif msg.type == "note_on":
-            note = {"value": msg.note, "on_velocity": msg.velocity, "off_velocity": -1, "duration": -1}
-            if sequence.get(clock) is None:
-                sequence[clock] = [note]
-            else:
-                if msg.note not in [k['value'] for k in sequence.get(clock)]:
-                    sequence[clock].append(note)
+            if msg.channel == target_channel:
+                note = {"value": msg.note, "on_velocity": msg.velocity, "off_velocity": -1, "duration": -1}
+                if sequence.get(clock) is None:
+                    sequence[clock] = [note]
+                else:
+                    if msg.note not in [k['value'] for k in sequence.get(clock)]:
+                        sequence[clock].append(note)
 
         elif msg.type == "note_off":
-            # go back to the same valued note and adjust duration
-            timing_index = [s for s in sequence.keys()]
-            timing_index.sort(reverse=True)
-            for t in timing_index:
-                note = msg.note
-                pitches = [k['value'] for k in sequence.get(t)]
-                if note in pitches:
-                    pos = pitches.index(note)
-                    sequence[t][pos]['off_velocity'] = msg.velocity
-                    sequence[t][pos]['duration'] = (clock - t)
-                    break
+            if msg.channel == target_channel:
+                # go back to the same valued note and adjust duration
+                timing_index = [s for s in sequence.keys()]
+                timing_index.sort(reverse=True)
+                for t in timing_index:
+                    note = msg.note
+                    pitches = [k['value'] for k in sequence.get(t)]
+                    if note in pitches:
+                        pos = pitches.index(note)
+                        sequence[t][pos]['off_velocity'] = msg.velocity
+                        sequence[t][pos]['duration'] = (clock - t)
+                        break
 
     if found:
         final_sequence = [{"tick": s, "notes": sequence.get(s)} for s in sequence.keys()]
         break
 
-instrument = "Drumset" if channel == 9 else instruments[program]
-result = {"channel": channel, "instrument": instrument, 'ticks_per_beat': tpb, "track": final_sequence}
+if program is not None and channel is not None:
+    instrument = "Drumset" if channel == 9 else instruments[program]
+else:
+    instrument = "unknown"
+
+result = "" if channel is None else {"channel": channel, "instrument": instrument, 'ticks_per_beat': tpb, "track": final_sequence}
 print(result.__str__().replace('\'', '\"'))

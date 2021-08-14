@@ -78,7 +78,7 @@ public class MIDISenseParserListener implements ParserListener{
         if (parsedScore.getTrack(channel)==null){
             //if the parsed score doesn't have the track, add it
 
-            String trackData = "{}";
+            String trackData = null;
             //gather data by calling python script
             try{
                 ProcessBuilder processBuilder = new ProcessBuilder(
@@ -102,12 +102,15 @@ public class MIDISenseParserListener implements ParserListener{
 
                 StringWriter writer = new StringWriter();
                 IOUtils.copy(stream, writer, StandardCharsets.UTF_8);
-                trackData = writer.toString().replace("\r\n","");
+
+                String result = writer.toString().replace("\r\n","");
+                trackData = (result.equals("")) ? null : result;
             }
             catch (IOException e) {
                 log.error(e.getMessage());
             }
-            parsedScore.addTrack(channel,trackData);
+
+            if(trackData != null) parsedScore.addTrack(channel,trackData);
         }
 
     }
