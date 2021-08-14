@@ -571,9 +571,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
     @Test
@@ -596,9 +595,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
     @Test
@@ -619,9 +617,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
 
@@ -649,9 +646,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
     @Test
@@ -675,9 +671,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
     @Test
@@ -698,9 +693,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
 
@@ -733,9 +727,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
     @Test
@@ -766,9 +759,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
     @Test
@@ -798,9 +790,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
     @Test
@@ -828,9 +819,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
     @Test
@@ -858,9 +848,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
     @Test
@@ -881,9 +870,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
 
@@ -915,9 +903,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
     @Test
@@ -947,9 +934,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
     @Test
@@ -979,9 +965,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
     @Test
@@ -1039,9 +1024,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
     @Test
@@ -1062,9 +1046,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
 
