@@ -11,55 +11,36 @@ import {
 } from 'recharts';
 import React from "react";
 import {Grid} from "@material-ui/core";
+import SimpleCard from "./cards/SimpleCard";
 
 const CustomTooltip = ({ active, payload, label }) => {
-
-    return(<div>{JSON.stringify(payload)}</div>)
-    //if (active && payload && payload.length) {
-        //if(!payload[0].payload["is_rest"]) {
-            // const name = payload[0].payload["tone_string"]
-            // const pitch = payload[0].payload["value"]
-            // const on_velocity = payload[0].payload["on_velocity"]
-            // const off_velocity = payload[0].payload["off_velocity"]
-            // const octave = payload[0].payload["octave"]
-            // const duration = parseFloat(payload[0].payload["duration"])
-            // return (
-            //     <div className="custom-tooltip bg-white text-primary elevation-z3 ">
-            //         <div className="m-3">
-            //             <Grid container
-            //                   justifycontent="center"
-            //                   alignItems="center"
-            //             >
-            //                 <Grid item xs={12}>
-            //                     <p className="label">{`Note ${label}: ${name}`}</p>
-            //                 </Grid>
-            //                 <Grid item xs={6}>
-            //                     <div className="text-32">{notes[2]}</div>
-            //                 </Grid>
-            //                 <Grid item xs={6}>
-            //                     <p className="desc">{`Pitch : ${pitch}`}</p>
-            //                 </Grid>
-            //                 <Grid item xs={6}>
-            //                     <p className="desc">{`Octave : ${octave}`}</p>
-            //                 </Grid>
-            //                 <Grid item xs={6}>
-            //                     <p className="desc">{`On Velocity : ${on_velocity}`}</p>
-            //                 </Grid>
-            //                 <Grid item xs={6}>
-            //                     <p className="desc">{`Off Velocity : ${off_velocity}`}</p>
-            //                 </Grid>
-            //                 <Grid item xs={6}>
-            //                     <p className="desc">{`Duration : ${duration.toFixed(3)}`}</p>
-            //                 </Grid>
-            //             </Grid>
-            //         </div>
-            //     </div>
-            // );
-
-
-    //}
-
-    //return null
+    if(payload[0] !== undefined){
+        return (
+            <div className="custom-tooltip bg-white text-primary elevation-z3 ">
+                <div className="m-3">
+                    <Grid container
+                          direction="column"
+                          justifyContent="space-between"
+                          alignItems="baseline"
+                          spacing={1}
+                    >
+                        <Grid item>
+                            <p className="label">{`Note: ${payload[0].payload.n}`}</p>
+                        </Grid>
+                        {payload.map((value)=>{
+                            return (
+                                <Grid item>
+                                    <aside style = {{ color: `${value.stroke}`}}>{`${value.name}: ${value.value}`}</aside>
+                                </Grid>
+                            )
+                        })}
+                    </Grid>
+                </div>
+            </div>
+        );
+    }
+    else
+        return null
 };
 
 /**
@@ -69,30 +50,82 @@ const CustomTooltip = ({ active, payload, label }) => {
  * @constructor
  */
 
-const TrackViewer = (trackData, {play}) => {
+const TrackViewer = (trackData) => {
+    if(trackData["trackData"].length === 0)
+        return(<div/>);
+    else{
+        const color = [
+            "#37A2DA",
+            "#32C5E9",
+            "#67E0E3",
+            "#9FE6B8",
+            "#FFDB5C",
+            "#ff9f7f",
+            "#fb7293",
+            "#E062AE",
+            "#E690D1",
+            "#e7bcf3",
+            "#9d96f5",
+            "#8378EA",
+            "#96BFFF"
+        ]
+        let maxVoices = 0
+        for(let tick of trackData.trackData){
+            if(tick.notes.length>maxVoices){
+                maxVoices = tick.notes.length
+            }
+        }
+        let lineData = []
+        let counter = 0
+        for(let tick of trackData.trackData){
+            let trackDataStore = {}
+            trackDataStore['tick'] = tick.tick
+            trackDataStore['n'] = counter
+            let current_voices = tick.notes.length
+            let notes = tick.notes
+            notes.sort((a,b)=>{return b.value-a.value})
+            for(let voice=0; voice<maxVoices; voice++){
+                trackDataStore['voice_'+voice] = (voice < current_voices) ? notes[voice].value:null
+            }
+            lineData.push(trackDataStore)
+            counter++
+        }
+
+        const items = []
+        for(let x = 0; x < maxVoices; x++){
+            items.push(x)
+        }
         return (
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                        width={500}
-                        height={300}
-                        data={trackData.trackData}
-                        margin={{
-                                top: 5,
-                                right: 30,
-                                left: 20,
-                                bottom: 5,
-                        }}
-                    >
+            <SimpleCard title="Display">
+                <div style={{ height: '400px', width: '100%'}}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                                width={500}
+                                height={300}
+                                data={lineData}
+                                margin={{
+                                        top: 5,
+                                        right: 30,
+                                        left: 20,
+                                        bottom: 5,
+                                }}
+                            >
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="index" />
+                            <XAxis dataKey="tick" />
                             <YAxis />
                             <Tooltip content={<CustomTooltip/>}/>
                             <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
-                            <Brush dataKey="index" height={30} stroke="#7467ef" />
-                            <Line dataKey="value" connectNulls stroke="#ff9e43" type="monotone" strokeWidth={2}/>
-                    </LineChart>
-            </ResponsiveContainer>
+                            <Brush dataKey="tick" height={30} stroke="#7467ef"/>
+
+                            {items.map((value,index)=>{
+                                return <Line key={"voice_"+value} dataKey={"voice_"+value} stroke={color[index%13]} type="monotone" strokeWidth={2}/>
+                            })}
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+            </SimpleCard>
         )
+    }
 }
 
 export default TrackViewer;

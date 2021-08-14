@@ -64,7 +64,7 @@ class Display extends Component {
         timeSignature: {},
         currentTrack: 0,
         trackListing: [],
-        trackData:[{index:0, value:0, tone_string: "", octave:0, on_velocity:0}, {index:1, value:0, tone_string: "", octave:0, on_velocity:0}],
+        trackData:[],
         fileDesignator: this.cookies.get('fileDesignator'),
         genreData:[],
         midisenseService: new MidiSenseService()
@@ -180,18 +180,9 @@ class Display extends Component {
      */
 
   setTrackData = (td) => {
-      const parsed = JSON.parse(td).notes
-
-      for (let i = 0 ; i < parsed.length ; i++){
-          parsed[i].index = i;
-          if(parsed[i]["is_rest"]){
-              if(parsed[i])
-                parsed[i].value = parsed[i-1]
-          }
-      }
 
       this.setState({
-          trackData: parsed
+          trackData: td
       })
   }
 
@@ -270,8 +261,9 @@ class Display extends Component {
 
       this.state.midisenseService.displayGetTrackMetadata(this.state.fileDesignator, n,
           (res) => {
-              const trackString = res['trackString']
-              this.setTrackData(trackString)
+              let trackString = res['trackString']
+              trackString = JSON.parse(trackString)
+              this.setTrackData(trackString['track'])
           },
           (error) => {
 
@@ -343,11 +335,7 @@ class Display extends Component {
 
                   </SimpleCard>
                   <br/>
-                  <SimpleCard title="Display">
-                          <div style={{ height: '400px', width: '100%'}}>
-                              <TrackViewer trackData={this.state.trackData}/>
-                          </div>
-                  </SimpleCard>
+                  <TrackViewer trackData={this.state.trackData}/>
               </div>
           </div>
       );
