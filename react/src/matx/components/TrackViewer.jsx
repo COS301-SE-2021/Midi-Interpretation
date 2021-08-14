@@ -14,7 +14,7 @@ import {Grid} from "@material-ui/core";
 import SimpleCard from "./cards/SimpleCard";
 
 function CustomTooltip (props) {
-    if(props.payload.length !== 0){
+    if(props.payload.length !== 0) {
         props.callSelectChild(props.payload[0].payload.n)
         return (
             <div className="custom-tooltip bg-white text-primary elevation-z3 ">
@@ -28,10 +28,10 @@ function CustomTooltip (props) {
                         <Grid item>
                             <p className="label">{`Note: ${props.payload[0].payload.n}`}</p>
                         </Grid>
-                        {props.payload.map((value)=>{
+                        {props.payload.map((value) => {
                             return (
                                 <Grid item>
-                                    <aside style = {{ color: `${value.stroke}`}}>{`${value.name}: ${value.value}`}</aside>
+                                    <aside style={{color: `${value.stroke}`}}>{`${value.name}: ${value.value}`}</aside>
                                 </Grid>
                             )
                         })}
@@ -42,7 +42,7 @@ function CustomTooltip (props) {
     }
     else
         return null
-};
+}
 
 /**
  * Data visualisation for track data
@@ -114,7 +114,7 @@ function TrackViewer (props) {
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="tick" />
                             <YAxis />
-                            <Tooltip content={ <CustomTooltip active payload label callSelectChild={props.callSelect}/> }/>
+                            <Tooltip content={ <CustomTooltip payload callSelectChild={props.callSelect}/> }/>
                             <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
                             <Brush dataKey="tick" height={30} stroke="#7467ef"/>
 
