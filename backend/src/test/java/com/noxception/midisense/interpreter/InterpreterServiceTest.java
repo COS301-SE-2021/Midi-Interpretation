@@ -768,9 +768,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         for(ScoreEntity score: testCases){
 
             //Get a designator corresponding to a score in the database - whether or not it actually exists
-            UUID fileDesignator0 = UUID.fromString(configurations.configuration(
-                    ConfigurationName.MIDI_TESTING_DESIGNATOR
-            ));
+            UUID fileDesignator0 = UUID.randomUUID();
 
             //mock the database with the designator and keySignature
             testCases[iterator].setFileDesignator(fileDesignator0.toString());
@@ -782,7 +780,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
             InterpretTempoResponse res = interpreterService.interpretTempo(req);
 
             //check it is correct
-            assertEquals(res.getTempo(), tempoIndications[iterator]);
+            assertEquals(res.getTempo().getTempo(), tempoIndications[iterator]);
 
             //see that the tempo is a positive integer
             TempoIndication t = res.getTempo();
@@ -811,9 +809,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         for(ScoreEntity score: testCases){
 
             //Get a designator corresponding to a score in the database - whether or not it actually exists
-            UUID fileDesignator0 = UUID.fromString(configurations.configuration(
-                    ConfigurationName.MIDI_TESTING_DESIGNATOR
-            ));
+            UUID fileDesignator0 = UUID.randomUUID();
 
             //mock the database with the designator and keySignature
             testCases[iterator].setFileDesignator(fileDesignator0.toString());

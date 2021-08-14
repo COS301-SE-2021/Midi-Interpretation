@@ -11,7 +11,6 @@ import {
 } from 'recharts';
 import React from "react";
 import {Grid} from "@material-ui/core";
-import MIDISounds from 'midi-sounds-react';
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -92,10 +91,6 @@ const CustomTooltip = ({ active, payload, label }) => {
  * @constructor
  */
 
-const logger = (text) =>{
-    console.log(text)
-}
-
 const TrackViewer = (trackData, {play}) => {
         return (
             <ResponsiveContainer width="100%" height="100%">
@@ -116,8 +111,7 @@ const TrackViewer = (trackData, {play}) => {
                             <Tooltip content={<CustomTooltip/>}/>
                             <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
                             <Brush dataKey="index" height={30} stroke="#7467ef" />
-                            <Line dataKey="value" connectNulls stroke="#ff9e43" type="monotone" strokeWidth={2}
-                                  activeDot={{ onClick: () => play("TEST") }}/>
+                            <Line dataKey="value" connectNulls stroke="#ff9e43" type="monotone" strokeWidth={2}/>
                     </LineChart>
             </ResponsiveContainer>
         )

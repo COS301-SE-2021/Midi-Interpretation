@@ -79,11 +79,6 @@ class Display extends Component {
       }
 
       this.getTrackMetadata(this.state.currentTrack)
-
-      this.play = () => {
-          console.log("play")
-          this.midiSounds.playChordNow(1, [60], 0.1);
-      }
   }
 
   componentDidMount() {
@@ -98,11 +93,6 @@ class Display extends Component {
      * setRowsPerPage
      * @param rpp - new rows per page
      */
-
-    tester(text){
-        console.log(text)
-    }
-
   setRowsPerPage = (rpp) => {
       this.setState({
         rowsPerPage: rpp
@@ -359,7 +349,7 @@ class Display extends Component {
                   <br/>
                   <SimpleCard title="Display">
                           <div style={{ height: '400px', width: '100%'}}>
-                              <TrackViewer trackData={this.state.trackData} play={this.tester}/>
+                              <TrackViewer trackData={this.state.trackData}/>
                           </div>
                   </SimpleCard>
               </div>

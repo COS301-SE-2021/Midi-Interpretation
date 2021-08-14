@@ -19,6 +19,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -31,312 +33,14 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     private MIDISenseConfig configurations;
 
 
-    /**GetPieceMetaData*/
-    @Test
-    @DisplayName("Tests getting piece metadata with a valid file designator")
-    public void testGetPieceMetadataValidDesignator() throws Exception {
-
-        //make a request
-        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
-
-        //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getPieceMetadata",
-                request,
-                mvc
-        );
-
-        //check for successful response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-    }
-
-    @Test
-    @DisplayName("Tests getting piece metadata with an invalid file designator")
-    public void testGetPieceMetadataInvalidDesignator() throws Exception {
-
-        //make a request
-        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
-
-        //generate an invalid designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getPieceMetadata",
-                request,
-                mvc
-        );
-
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
-
-
-    /**GetTrackInfo*/
-    @Test
-    @DisplayName("Tests getting track info with a valid file designator")
-    public void testGetTrackInfoValidDesignator() throws Exception {
-
-        //make a request
-        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
-
-        //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackInfo",
-                request,
-                mvc
-        );
-
-        //check for successful response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-    }
-
-    @Test
-    @DisplayName("Tests getting track info with an invalid file designator")
-    public void testGetTrackInfoInvalidDesignator() throws Exception {
-
-        //make a request
-        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
-
-        //generate an invalid designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackInfo",
-                request,
-                mvc
-        );
-
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
-
-
-    /**GetTrackMetadata*/
-    @Test
-    @DisplayName("Tests getting track metadata with a valid file designator")
-    public void testGetTrackMetadataValidDesignator() throws Exception {
-
-        //make a request
-        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
-
-        //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //Get a valid track index
-        int validTrackIndex = Integer.parseInt(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_TRACK_INDEX
-        ));
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-        request.setTrackIndex(validTrackIndex);
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackMetadata",
-                request,
-                mvc);
-
-        //check for successful response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-    }
-
-    @Test
-    @DisplayName("Tests getting track metadata with an invalid file designator")
-    public void testGetTrackMetadataInvalidDesignator() throws Exception {
-
-        //make a request
-        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
-
-        //generate an invalid designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //Get a valid track index
-        int validTrackIndex = Integer.parseInt(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_TRACK_INDEX
-        ));
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-        request.setTrackIndex(validTrackIndex);
-
-        //make request
-        MvcResult response = mockRequest("display","getTrackMetadata",request, mvc);
-
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
-
-    @Test
-    @DisplayName("Tests getting track metadata with an invalid track index and valid file")
-    public void testGetTrackMetadataInvalidTrackIndex() throws Exception {
-
-        //make a request
-        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
-
-        //generate an invalid designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //Get an invalid track index
-        int trackIndex = 16;
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-        request.setTrackIndex(trackIndex);
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackMetadata",
-                request,
-                mvc
-        );
-
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
-
-
-    /**GetTrackOverview*/
-    @Test
-    @DisplayName("Tests getting track overview with a valid file designator")
-    public void testGetTrackOverviewValidDesignator() throws Exception {
-
-        //make a request
-        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
-
-        //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //Get a valid track index
-        int validTrackIndex = Integer.parseInt(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_TRACK_INDEX
-        ));
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-        request.setTrackIndex(validTrackIndex);
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackOverview",
-                request,
-                mvc
-        );
-
-        //check for successful response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-    }
-
-    @Test
-    @DisplayName("Tests getting track overview with an invalid file designator")
-    public void testGetTrackOverviewInvalidDesignator() throws Exception {
-
-        //make a request
-        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
-
-        //generate an invalid designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //Get a valid track index
-        int validTrackIndex = Integer.parseInt(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_TRACK_INDEX
-        ));
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-        request.setTrackIndex(validTrackIndex);
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackOverview",
-                request,
-                mvc
-        );
-
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
-
-    @Test
-    @DisplayName("Tests getting track overview with an invalid track index and valid file")
-    public void testGetTrackOverviewInvalidTrackIndex() throws Exception {
-
-        //make a request
-        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
-
-        //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //Get an invalid track index
-        int trackIndex = 16;
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-        request.setTrackIndex(trackIndex);
-
-        //make request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackOverview",
-                request,
-                mvc
-        );
-
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
-
-
-
-
-
-
-
-
-
-    //TODO: ============ NEW FRAMEWORK TO IMPLEMENT, AND PUT IN CORRECT ORDER/PLACE ======================
-
+    //====================================================================================================================//
+    //                                         WHITE BOX TESTING BELOW                                                    //
+    //====================================================================================================================//
+
+    /**GetPieceMetadata*/
     @Test
     @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
-    public void test_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+    public void test_WhiteBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
 
         //make a request
         DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
@@ -363,7 +67,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Piece Metadata: input [designator for a file not in DB] expect [file does not exist exception]")
-    public void test_GetPieceMetadata_IfNotInDatabase_ThenException() throws Exception{
+    public void test_WhiteBox_GetPieceMetadata_IfNotInDatabase_ThenException() throws Exception{
         //make a request
         DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
 
@@ -387,7 +91,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Piece Metadata: input [empty] expect [empty request exception]")
-    public void test_GetPieceMetadata_IfEmptyRequest_ThenException() throws Exception {
+    public void test_WhiteBox_GetPieceMetadata_IfEmptyRequest_ThenException() throws Exception {
 
         //make an empty request
         DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
@@ -408,9 +112,10 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
 
+    /**GetTrackInfo*/
     @Test
     @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
-    public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+    public void test_WhiteBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
 
         //make a request
         DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
@@ -437,7 +142,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Info: input [Designator for file not in DB] expect [file does not exist exception]")
-    public void test_GetTrackInfo_IfNotInDatabase_ThenException() throws Exception{
+    public void test_WhiteBox_GetTrackInfo_IfNotInDatabase_ThenException() throws Exception{
 
         //make a request
         DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
@@ -462,7 +167,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Info: input [empty] expect [empty request exception]")
-    public void test_GetTrackInfo_IfEmptyRequest_ThenException() throws Exception{
+    public void test_WhiteBox_GetTrackInfo_IfEmptyRequest_ThenException() throws Exception{
 
         //make a request
         DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
@@ -482,9 +187,11 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+
+    /**GetTrackMetadata*/
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
-    public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception{
+    public void test_WhiteBox_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception{
 
         //make a request
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
@@ -516,7 +223,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [invalid track index exception]")
-    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenAccurateInfo() throws Exception {
+    public void test_WhiteBox_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenAccurateInfo() throws Exception {
 
         //make a request
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
@@ -548,7 +255,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too low)] expect [invalid track index exception]")
-    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenAccurateInfo() throws Exception{
+    public void test_WhiteBox_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenAccurateInfo() throws Exception{
         //make a request
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
 
@@ -579,7 +286,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file not in DB and valid track index] expect [invalid designator exception]")
-    public void test_GetTrackMetadata_IfNotInDatabaseAndValidTrack_ThenException() throws Exception{
+    public void test_WhiteBox_GetTrackMetadata_IfNotInDatabaseAndValidTrack_ThenException() throws Exception{
         //make a request
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
 
@@ -608,7 +315,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file not in DB and invalid track index] expect [invalid designator and invalid track index exceptions]")
-    public void test_GetTrackMetadata_IfNotInDatabaseAndInvalidTrack_ThenException() throws Exception{
+    public void test_WhiteBox_GetTrackMetadata_IfNotInDatabaseAndInvalidTrack_ThenException() throws Exception{
         //make a request
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
 
@@ -637,7 +344,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Metadata: input [empty] expect [empty request exception]")
-    public void test_GetTrackMetadata_IfEmptyRequest_ThenException() throws Exception{
+    public void test_WhiteBox_GetTrackMetadata_IfEmptyRequest_ThenException() throws Exception{
         //make a request
         DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
 
@@ -657,9 +364,11 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+
+    /**GetTrackOverview*/
     @Test
     @DisplayName("Get Track Overview: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
-    public void test_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception {
+    public void test_WhiteBox_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception {
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
 
@@ -690,7 +399,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
-    public void test_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenException() throws Exception{
+    public void test_WhiteBox_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenException() throws Exception{
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
 
@@ -721,7 +430,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
-    public void test_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() throws Exception{
+    public void test_WhiteBox_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() throws Exception{
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
 
@@ -752,7 +461,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Overview: input [Designator for file not in DB and valid track index] expect [invalid designator exception]")
-    public void test_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() throws Exception{
+    public void test_WhiteBox_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() throws Exception{
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
 
@@ -781,7 +490,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Overview: input [Designator for file not in DB and invalid track index] expect [invalid designator and invalid track index exceptions]")
-    public void test_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() throws Exception{
+    public void test_WhiteBox_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() throws Exception{
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
 
@@ -810,7 +519,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Get Track Overview: input [empty] expect [empty request exception]")
-    public void test_GetTrackOverview_IfEmptyRequest_ThenException() throws Exception{
+    public void test_WhiteBox_GetTrackOverview_IfEmptyRequest_ThenException() throws Exception{
         //make a request
         DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
 
@@ -831,6 +540,532 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
 
-    //=================================================
-    
+
+
+    //====================================================================================================================//
+    //                                           BLACK BOX TESTING BELOW                                                  //
+    //====================================================================================================================//
+
+
+    /**GetPieceMetadata*/
+    @Test
+    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [positive integer]")
+    public void test_BlackBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+
+        //make a request
+        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getPieceMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Piece Metadata: input [designator for a file not in DB] expect [positive integer]")
+    public void test_BlackBox_GetPieceMetadata_IfNotInDatabase_ThenException() throws Exception{
+        //make a request
+        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
+
+        //Get the designator of a file not in the DB
+        UUID fileDesignator = UUID.randomUUID();
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make request
+        MvcResult response = mockRequest(
+                "display",
+                "getPieceMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Piece Metadata: input [empty] expect [positive integer]")
+    public void test_BlackBox_GetPieceMetadata_IfEmptyRequest_ThenException() throws Exception {
+
+        //make an empty request
+        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
+
+        //pass into request
+        request.setFileDesignator("");
+
+        //make request
+        MvcResult response = mockRequest(
+                "display",
+                "getPieceMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+
+    /**GetTrackInfo*/
+    @Test
+    @DisplayName("Get Track Info: input [Designator for file in DB] expect [positive integer]")
+    public void test_BlackBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+
+        //make a request
+        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackInfo",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Info: input [Designator for file not in DB] expect [positive integer]")
+    public void test_BlackBox_GetTrackInfo_IfNotInDatabase_ThenException() throws Exception{
+
+        //make a request
+        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
+
+        //Get the designator of a file not in the DB
+        UUID fileDesignator = UUID.randomUUID();
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackInfo",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Info: input [empty] expect [positive integer]")
+    public void test_BlackBox_GetTrackInfo_IfEmptyRequest_ThenException() throws Exception{
+
+        //make a request
+        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
+
+        //pass into request
+        request.setFileDesignator("");
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackInfo",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+
+    /**GetTrackMetadata*/
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [positive integer]")
+    public void test_BlackBox_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception{
+
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get an valid track index
+        int trackIndex = 0;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [positive integer]")
+    public void test_BlackBox_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenAccurateInfo() throws Exception {
+
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get track index too high
+        int trackIndex = 16;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too low)] expect [positive integer]")
+    public void test_BlackBox_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenAccurateInfo() throws Exception{
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get track index too high
+        int trackIndex = -1;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file not in DB and valid track index] expect [positive integer]")
+    public void test_BlackBox_GetTrackMetadata_IfNotInDatabaseAndValidTrack_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //Getting the designator of an invalid file
+        UUID fileDesignator = UUID.randomUUID();
+
+        //Get first track index
+        int trackIndex = 0;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file not in DB and invalid track index] expect [positive integer]")
+    public void test_BlackBox_GetTrackMetadata_IfNotInDatabaseAndInvalidTrack_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //Getting the designator of a file not in the DB
+        UUID fileDesignator = UUID.randomUUID();
+
+        //Get invalid track index
+        int trackIndex = 16;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Metadata: input [empty] expect [positive integer]")
+    public void test_BlackBox_GetTrackMetadata_IfEmptyRequest_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //pass into request
+        request.setFileDesignator("");
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+
+    /**GetTrackOverview*/
+    @Test
+    @DisplayName("Get Track Overview: input [Designator for file in DB and valid track index] expect [positive integer]")
+    public void test_BlackBox_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception {
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get track index too high
+        int trackIndex = 0;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackOverview",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [positive integer]")
+    public void test_BlackBox_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get track index too high
+        int trackIndex = 99999;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [positive integer]")
+    public void test_BlackBox_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get track index too high
+        int trackIndex = -1;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Overview: input [Designator for file not in DB and valid track index] expect [positive integer]")
+    public void test_BlackBox_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.randomUUID();
+
+        //Get track index too high
+        int trackIndex = 0;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Overview: input [Designator for file not in DB and invalid track index] expect [positive integer]")
+    public void test_BlackBox_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.randomUUID();
+
+        //Get track index too high
+        int trackIndex = 99999;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+    @Test
+    @DisplayName("Get Track Overview: input [empty] expect [positive integer]")
+    public void test_BlackBox_GetTrackOverview_IfEmptyRequest_ThenException() throws Exception{
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //pass into request
+        request.setFileDesignator("");
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //check for response is a positive integer
+        int res = response.getResponse().getStatus();
+        assertTrue(res > 0);
+    }
+
+
 }
