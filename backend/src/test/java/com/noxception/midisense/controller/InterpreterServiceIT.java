@@ -88,7 +88,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
         Assertions.assertTrue(new File(fileName).delete());
     }
-
+/*
     @Ignore
     @Test
     @DisplayName("Upload File: input [invalid file] expect [correct response code]")
@@ -126,7 +126,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //Assertions.assertEquals(request.getFileContents().toString(),fileContent);
 
     }
-
+*/
 
     /**ProcessFile*/
     @Test
@@ -166,7 +166,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //Assertions.assertEquals(request.getFileDesignator(),fileDesignator.toString());
 
     }
-
+/*
     @Test
     @Transactional
     @Rollback(value = true)
@@ -196,7 +196,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //still need to confirm this is valid
         //Assertions.assertEquals(request.getFileDesignator(),fileDesignator.toString());
     }
-
+*/
 
 
 
