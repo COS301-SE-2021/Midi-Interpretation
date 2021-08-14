@@ -22,20 +22,24 @@ class InteractiveDemo2 extends React.Component {
         if (isMdScreen()) {
             this.setState({
                 config: {
+                    instrumentName: 'acoustic_grand_piano',
                     noteRange: {
                         first: MidiNumbers.fromNote('e4'),
                         last: MidiNumbers.fromNote('f5'),
                     },
+                    keyboardShortcutOffset: 0,
                 },
             })
         }
         else{
             this.setState({
                 config: {
+                    instrumentName: 'acoustic_grand_piano',
                     noteRange: {
                         first: MidiNumbers.fromNote('c3'),
                         last: MidiNumbers.fromNote('f5'),
                     },
+                    keyboardShortcutOffset: 0,
                 },
             })
         }
