@@ -25,4 +25,12 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
     @Autowired
     private MIDISenseConfig configurations;
 
+    /**analyseGenre*/
+    @Test
+    @DisplayName("Analyse Genre: input [designator for a file in DB] expect [genre array]")
+    public void test_BlackBox_AnalyseGenre_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+
+
+    }
+
 }
