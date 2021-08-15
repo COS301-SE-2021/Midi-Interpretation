@@ -19,6 +19,12 @@ import React from "react";
 
 const GenreTable = (genreData) => {
 
+    let decimalCertainty = 3
+
+    genreData.genreData.forEach((item)=>{
+        item['PercentCertainty'] = Math.round(Math.pow(10,decimalCertainty+2) * item['Certainty']) / Math.pow(10,decimalCertainty)
+    })
+
     return (
         <ResponsiveContainer width="100%" height="100%">
             <BarChart
@@ -33,10 +39,10 @@ const GenreTable = (genreData) => {
                 }}
             >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="Name" />
-                <YAxis domain={[genreData[9], genreData[0]]}/>
+                <XAxis dataKey="Name" label={{ value: 'Genre', position: 'bottom' }}/>
+                <YAxis unit="%" label={{ value: 'Likelihood', angle: -90, position: 'left' }} domain={[genreData[9], genreData[0]]}/>
                 <Tooltip />
-                <Bar dataKey="Certainty" fill="#7467ef" />
+                <Bar dataKey="PercentCertainty" fill="#7467ef"/>
             </BarChart>
         </ResponsiveContainer>
     )

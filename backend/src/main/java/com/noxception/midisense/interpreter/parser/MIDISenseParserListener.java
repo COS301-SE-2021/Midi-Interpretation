@@ -40,8 +40,8 @@ import java.nio.charset.StandardCharsets;
 public class MIDISenseParserListener implements ParserListener{
 
     private Score parsedScore;
-    private String filename;
-    private StandardConfig configurations;
+    private final String filename;
+    private final StandardConfig configurations;
 
     public MIDISenseParserListener(String filename, StandardConfig config) {
         super();

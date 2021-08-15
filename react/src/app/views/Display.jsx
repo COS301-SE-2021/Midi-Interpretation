@@ -4,9 +4,10 @@ import SelectedMenu from "../../matx/components/SelectedMenu";
 import MidiSenseService from "../services/MidiSenseService";
 import {withStyles} from "@material-ui/styles";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Grid} from "@material-ui/core";
+import {Grid, Paper} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import GenreTable from "../../matx/components/GenreTable";
+import {TableHeader} from "semantic-ui-react";
 
 //==============================================
 /**
@@ -64,6 +65,8 @@ class Display extends Component {
         currentTrack: 0,
         trackListing: [],
         trackData:[],
+        ticksPerBeat:1,
+        instrument: "Unknown",
         fileDesignator: this.cookies.get('fileDesignator'),
         genreData:[],
         midisenseService: new MidiSenseService(),
@@ -204,6 +207,18 @@ class Display extends Component {
       })
   }
 
+    setTicksPerBeat = (t) => {
+        this.setState({
+            ticksPerBeat: t
+        })
+    }
+
+    setInstrument = (i) => {
+        this.setState({
+            instrument: i
+        })
+    }
+
   setSelected = (s) => {
       this.setState({
           selectedIndex:s
@@ -288,6 +303,9 @@ class Display extends Component {
               let trackString = res['trackString']
               trackString = JSON.parse(trackString)
               this.setTrackData(trackString['track'])
+              this.setTicksPerBeat(trackString['ticks_per_beat'])
+              this.setInstrument(trackString['instrument'])
+
           },
           (error) => {
 
@@ -337,6 +355,7 @@ class Display extends Component {
                               <h4>
                                   Piece Meta Data:
                               </h4>
+
                               <p>
                                   <li>Key: {this.state.keySignature} </li>
                                   <li>Time Signature: {this.state.timeSignature['numBeats'] + "/" + this.state.timeSignature['beatValue']}</li>
@@ -361,31 +380,15 @@ class Display extends Component {
 
                   </SimpleCard>
                   <br/>
-                    <TrackViewer trackData={this.state.trackData} callSelect={this.setSelected}/>
+                    <TrackViewer trackData={{"trackData":this.state.trackData, "ticksPerBeat":this.state.ticksPerBeat, "instrument": this.state.instrument}} callSelect={this.setSelected}/>
                   <br/>
-                      {
-                          this.state.trackData[this.state.selectedIndex] !== undefined ?
-                              <SimpleCard title={"Tick: " + this.state.trackData[this.state.selectedIndex].tick}>
-                                  <Grid container
-                                        direction="row"
-                                        justifyContent="flex-start"
-                                        alignItems="flex-start"
-                                        spacing={3}>
-                                      {this.state.trackData[this.state.selectedIndex].notes.map((value, index) => {
-                                          return (
-                                              <Grid key={index} item>
-                                                  <div key={index} className="text-16" style={{color:this.state.color[index%13]}}><b>{"Voice "+index}</b></div>
-                                                  <div key={index+"1"} className="text-14"> {"Value: " + value.value}</div>
-                                                  <div key={index+"2"} className="text-14"> {"On Velocity: " + value.on_velocity}</div>
-                                                  <div key={index+"3"} className="text-14"> {"Off Velocity: " + value.off_velocity}</div>
-                                                  <div key={index+"4"} className="text-14"> {"Duration: " + value.duration}</div>
-                                              </Grid>
-                                          )
-                                      })}
-                                  </Grid>
-                              </SimpleCard>
-                              : <div/>
-                      }
+
+
+
+                  <SimpleCard title="Note inspector" >
+                      <div id="dataDisplay"></div>
+                  </SimpleCard>
+
               </div>
           </div>
       );

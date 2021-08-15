@@ -21,6 +21,9 @@ public class Score {
     private KeySignature keySignature;
     private TimeSignature timeSignature;
     private TempoIndication tempoIndication;
+    private boolean keySet = false;
+    private boolean timeSet = false;
+    private boolean tempoSet = false;
 
     public Score() {
         this.keySignature = new KeySignature();
@@ -51,7 +54,9 @@ public class Score {
      * @param y the key signature relative to number of accidentals
      */
     public void setKeySignature(byte x, byte y){
-        this.keySignature = new KeySignature((int) x, ((int) y == 1));
+        if(!keySet)
+            this.keySignature = new KeySignature((int) x, ((int) y == 1));
+            keySet = true;
     }
 
     /** Associates a key signature to the score
@@ -60,7 +65,9 @@ public class Score {
      * @param y the beat duration of the signature
      */
     public void setTimeSignature(byte x, byte y){
-        this.timeSignature = new TimeSignature((int) x, (int) Math.pow(2,(int) y));
+        if(!timeSet)
+            this.timeSignature = new TimeSignature((int) x, (int) Math.pow(2,(int) y));
+            timeSet = true;
     }
 
     /** Associates a tempo indication to the score
@@ -68,7 +75,9 @@ public class Score {
      * @param tempoIndication the tempo
      */
     public void setTempoIndication(int tempoIndication){
-        this.tempoIndication = new TempoIndication(tempoIndication);
+        if(!tempoSet)
+            this.tempoIndication = new TempoIndication(tempoIndication);
+            tempoSet = true;
     }
 
 
