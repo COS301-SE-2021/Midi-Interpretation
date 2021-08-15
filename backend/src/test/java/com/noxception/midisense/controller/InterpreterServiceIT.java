@@ -151,8 +151,8 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(200, response.getResponse().getStatus());
 
 
-        //still need to confirm this is valid
-        //Assertions.assertEquals(request.getFileDesignator(),fileDesignator.toString());
+        File fileToDelete = new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Assertions.assertTrue(fileToDelete.delete());
 
     }
 /*
