@@ -51,18 +51,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @DisplayName("Upload File: input [valid file] expect [correct response code]")
     void test_WhiteBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
 
-
-        //Create a temporary file to parse
-        UUID fileDesignator = UUID.randomUUID();
-        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
-
-        //copy temp file from testing data
-        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
-        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-
-        String fileName = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+testName;
-
+        String fileName = configurations.configuration(ConfigurationName.MIDI_TESTING_FILE);
         File testfile = new File(fileName);
 
         //Extracting the file contents of the testing file
