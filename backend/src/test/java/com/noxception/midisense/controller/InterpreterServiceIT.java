@@ -41,7 +41,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     //====================================================================================================================//
     //                                  WHITE BOX TESTING BELOW                                                           //
     //====================================================================================================================//
-    //checking code and designator is correct
+    //checking returned code and designator is correct
 
     /**UploadFile*/
     @Test
@@ -74,45 +74,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         File fileToDelete = new File(fileName);
         Assertions.assertTrue(fileToDelete.delete());
     }
-/*
-    @Ignore
-    @Test
-    @DisplayName("Upload File: input [invalid file] expect [correct response code]")
-    void test_WhiteBox_UploadFile_IfInvalidFile_ThenAccurateResponse() throws Exception{
 
-        //create new request, list and byte array
-        InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
-
-        //Getting the name of the invalid testing file
-        String fileContent = configurations.configuration(
-                ConfigurationName.MIDI_INVALID_TESTING_FILE
-        );
-
-        //Extracting the file contents of the testing file using a byte array
-        List<Integer> newByteArray = new ArrayList<>();
-        byte[] inArray = fileContent.getBytes();
-
-        //add all bytes in inArray to newByteArray
-        for (byte b : inArray) newByteArray.add((int) b);
-
-        //pass into request
-        request.setFileContents(newByteArray);
-
-        //mock request
-        MvcResult response = mockRequest(
-                "interpreter",
-                "uploadFile",
-                request,
-                mvc);
-
-        //check for successful response
-        Assertions.assertEquals(415, response.getResponse().getStatus());
-
-        //still need to confirm this is valid
-        //Assertions.assertEquals(request.getFileContents().toString(),fileContent);
-
-    }
-*/
 
     /**ProcessFile*/
     @Test
@@ -152,44 +114,13 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertTrue(fileToDelete.delete());
 
     }
-/*
-    @Test
-    @Transactional
-    @Rollback(value = true)
-    @DisplayName("Process File: input [valid file] expect [correct response code]")
-    void test_WhiteBox_ProcessFile_IfInvalidFileDesignator_ThenAccurateResponse() throws Exception{
-
-        //create request object
-        InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
-
-        //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.randomUUID();
-
-        //pass valid file designator into request
-        request.setFileDesignator(fileDesignator.toString());
-
-        //make a request
-        MvcResult response = mockRequest(
-                "interpreter",
-                "processFile",
-                request,
-                mvc
-        );
-
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
-
-        //still need to confirm this is valid
-        //Assertions.assertEquals(request.getFileDesignator(),fileDesignator.toString());
-    }
-*/
 
 
 
     //====================================================================================================================//
     //                                  BLACK BOX TESTING BELOW                                                           //
     //====================================================================================================================//
-    //Just checking code returned is correct
+    //checking returned code returned is correct
 
     /**UploadFile*/
     @Test
