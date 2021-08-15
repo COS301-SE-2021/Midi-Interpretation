@@ -101,7 +101,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
         //TODO: Confirm the attribute "track_map" is the correct attribute name to get and test
         //Check we receive an array back with at least one entry in it
-        String trackMap = extractJSONAttribute("track_map", response.getResponse().getContentAsString());
+        String trackMap = extractJSONAttribute("trackName", response.getResponse().getContentAsString());
         assertFalse(trackMap.isEmpty());
 
         //check for successful response
