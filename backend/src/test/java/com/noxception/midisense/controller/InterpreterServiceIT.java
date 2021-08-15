@@ -3,7 +3,6 @@ package com.noxception.midisense.controller;
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
-import com.noxception.midisense.models.InterpreterUploadFileRequest;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @RunWith(SpringRunner.class)
@@ -199,23 +196,15 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @DisplayName("Upload File: input [valid file] expect [positive integer]")
     void test_BlackBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
 
-        //Create a temporary file to parse
-        UUID fileDesignator = UUID.randomUUID();
-        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
-
-        //copy temp file from testing data
-        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
-        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-
-        String fileName = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName;
+        String fileName = configurations.configuration(ConfigurationName.MIDI_TESTING_FILE);
+        File testfile = new File(fileName);
 
         //Extracting the file contents of the testing file
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 fileName,
                 MediaType.TEXT_PLAIN_VALUE,
-                Files.readAllBytes(new File(fileName).toPath())
+                Files.readAllBytes(testfile.toPath())
         );
         //mock request
         MvcResult response = mockUpload(
@@ -228,40 +217,38 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
 
-        Assertions.assertTrue(new File(fileName).delete());    }
+        String fileDesignatorToDelete = extractJSONAttribute("fileDesignator",response.getResponse().getContentAsString());
+        fileName = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignatorToDelete+configurations.configuration(ConfigurationName.FILE_FORMAT);
+        File fileToDelete = new File(fileName);
+        Assertions.assertTrue(fileToDelete.delete());
+    }
 
     @Ignore
     @Test
     @DisplayName("Upload File: input [invalid file] expect [positive integer]")
     void test_BlackBox_UploadFile_IfInvalidFile_ThenAccurateResponse() throws Exception{
+        String fileName = configurations.configuration(ConfigurationName.MIDI_INVALID_TESTING_FILE);
+        File testfile = new File(fileName);
 
-        //create new request, list and byte array
-        InterpreterUploadFileRequest request = new InterpreterUploadFileRequest();
-
-        //Getting the name of the invalid testing file
-        String fileContent = configurations.configuration(
-                ConfigurationName.MIDI_INVALID_TESTING_FILE
+        //Extracting the file contents of the testing file
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                fileName,
+                MediaType.TEXT_PLAIN_VALUE,
+                Files.readAllBytes(testfile.toPath())
         );
-
-        //Extracting the file contents of the testing file using a byte array
-        List<Integer> newByteArray = new ArrayList<>();
-        byte[] inArray = fileContent.getBytes();
-
-        //add all bytes in inArray to newByteArray
-        for (byte b : inArray) newByteArray.add((int) b);
-
-        //pass into request
-        request.setFileContents(newByteArray);
-
         //mock request
-        MvcResult response = mockRequest(
+        MvcResult response = mockUpload(
                 "interpreter",
                 "uploadFile",
-                request,
-                mvc);
+                file,
+                mvc
+        );
 
         //check for successful response
-        Assertions.assertEquals(415, response.getResponse().getStatus());
+        Assertions.assertEquals(400, response.getResponse().getStatus());
+
+
     }
 
 
@@ -297,6 +284,10 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
         //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
+
+        String fileName = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+testName;
+        File fileToDelete = new File(fileName);
+        Assertions.assertTrue(fileToDelete.delete());
     }
 
     @Test
