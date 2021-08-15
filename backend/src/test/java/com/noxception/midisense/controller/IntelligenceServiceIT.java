@@ -15,13 +15,14 @@ import com.noxception.midisense.models.IntelligenceAnalyseGenreRequest;
 import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
+    @Autowired
+    private MockMvc mvc;
 
-    /**analyseGenre*/
-    @Test
-    @DisplayName("Analyse Genre: input [designator for a file in DB] expect [genre array]")
-    public void test_BlackBox_AnalyseGenre_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+    @Autowired
+    private MIDISenseConfig configurations;
 
-
-    }
 }
