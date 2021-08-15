@@ -33,4 +33,10 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
 
     }
 
+    @Test
+    @DisplayName("Analyse Genre: input [designator for a file not in DB] expect [genre array]")
+    public void test_BlackBox_AnalyseGenre_IfPresentNotInDatabase_ThenAccurateInfo() throws Exception {
+
+
+    }
 }
