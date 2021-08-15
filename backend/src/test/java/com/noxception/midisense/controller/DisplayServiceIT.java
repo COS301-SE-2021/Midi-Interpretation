@@ -138,7 +138,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         );
 
         //TODO: Confirm the attribute "track_string" is the correct attribute name to get and test
-        String trackString = extractJSONAttribute("track_String", response.getResponse().getContentAsString());
+        String trackString = extractJSONAttribute("trackString", response.getResponse().getContentAsString());
         //Check that there is a substring for an inner array with countably many items
         Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
         Matcher matcher = validResponse.matcher(trackString);
