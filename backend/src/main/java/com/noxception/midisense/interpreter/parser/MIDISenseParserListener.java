@@ -145,7 +145,6 @@ public class MIDISenseParserListener implements ParserListener{
         byte numAccidentals = degreeArray[posInKey];
         byte tonalCentre = (byte) ((b1==1)?0:1);
         parsedScore.setKeySignature(numAccidentals,tonalCentre);
-        log.error("Key signature is "+parsedScore.getKeySignature().toString());
     }
 
     /**
