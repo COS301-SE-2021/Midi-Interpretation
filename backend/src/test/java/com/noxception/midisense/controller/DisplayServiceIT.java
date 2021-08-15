@@ -66,7 +66,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
 
         //Check that the key signature is valid
-        String keySignature = extractJSONAttribute("key_signature", response.getResponse().getContentAsString());
+        String keySignature = extractJSONAttribute("keySignature", response.getResponse().getContentAsString());
         String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
         boolean b = Arrays.asList(keyArray).contains(keySignature);
         assertTrue(b);
