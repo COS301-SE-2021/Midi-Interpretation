@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -65,12 +63,14 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
         String fileName = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+testName;
 
+        File testfile = new File(fileName);
+
         //Extracting the file contents of the testing file
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 fileName,
                 MediaType.TEXT_PLAIN_VALUE,
-                Files.readAllBytes(new File(fileName).toPath())
+                Files.readAllBytes(testfile.toPath())
         );
         //mock request
         MvcResult response = mockUpload(
@@ -83,10 +83,10 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
 
-        //still need to confirm this is valid
-        //Assertions.assertEquals(file.getOriginalFilename(),fileName);
-
-        Assertions.assertTrue(new File(fileName).delete());
+        String fileDesignatorToDelete = extractJSONAttribute("fileDesignator",response.getResponse().getContentAsString());
+        fileName = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignatorToDelete+configurations.configuration(ConfigurationName.FILE_FORMAT);
+        File fileToDelete = new File(fileName);
+        Assertions.assertTrue(fileToDelete.delete());
     }
 /*
     @Ignore

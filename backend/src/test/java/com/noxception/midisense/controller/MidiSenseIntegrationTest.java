@@ -37,4 +37,24 @@ public class MidiSenseIntegrationTest {
         }
     }
 
+    public String extractJSONAttribute(String attribute, String jsonString){
+        String startAttribute = "\""+attribute+"\":";
+        String closeAttribute = ",";
+        String altCloseAttribute = "}";
+
+        int startIndex = jsonString.indexOf(startAttribute)+startAttribute.length();
+        int endIndex = jsonString.indexOf(closeAttribute);
+        int altEndIndex = jsonString.indexOf(closeAttribute);
+
+        if(startIndex==-1)
+            return null;
+        else if((startIndex!=-1 && endIndex==-1) && altEndIndex!= -1){
+            return jsonString.substring(startIndex,altEndIndex).replace("\"","");
+        }
+        else{
+            return jsonString.substring(startIndex,endIndex).replace("\"","");
+        }
+
+    }
+
 }

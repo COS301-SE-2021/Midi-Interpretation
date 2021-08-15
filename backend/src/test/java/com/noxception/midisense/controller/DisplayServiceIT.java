@@ -19,8 +19,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -995,8 +993,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         );
 
         //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        Assertions.assertEquals(400,response.getResponse().getStatus());
+
     }
 
     @Test
