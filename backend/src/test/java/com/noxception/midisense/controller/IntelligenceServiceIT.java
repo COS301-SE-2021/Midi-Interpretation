@@ -15,5 +15,14 @@ import com.noxception.midisense.models.IntelligenceAnalyseGenreRequest;
 import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
+    @Autowired
+    private MockMvc mvc;
+
+    @Autowired
+    private MIDISenseConfig configurations;
+
 }
