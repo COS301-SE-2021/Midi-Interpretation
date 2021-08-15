@@ -17,7 +17,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Arrays;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -59,6 +64,13 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
+
+        //Check that the key signature is valid
+        String keySignature = extractJSONAttribute("key_signature", response.getResponse().getContentAsString());
+        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
+        boolean b = Arrays.asList(keyArray).contains(keySignature);
+        assertTrue(b);
+
         //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
@@ -86,6 +98,11 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 request,
                 mvc
         );
+
+        //TODO: Confirm the attribute "track_map" is the correct attribute name to get and test
+        //Check we receive an array back with at least one entry in it
+        String trackMap = extractJSONAttribute("track_map", response.getResponse().getContentAsString());
+        assertFalse(trackMap.isEmpty());
 
         //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
@@ -120,6 +137,16 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
+        //TODO: Confirm the attribute "track_string" is the correct attribute name to get and test
+        String trackString = extractJSONAttribute("track_String", response.getResponse().getContentAsString());
+        //Check that there is a substring for an inner array with countably many items
+        Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
+        Matcher matcher = validResponse.matcher(trackString);
+
+        //see that the substring is present
+        assertTrue(matcher.find());
+
+
         //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
@@ -151,6 +178,13 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 request,
                 mvc
         );
+
+        //TODO: Confirm the attribute "pitch_Array" is the correct attribute name to get and test
+        //Check we receive an array back with at least one entry in it
+        String s = "";
+        String pitchArray = extractJSONAttribute("pitch_Array", response.getResponse().getContentAsString());
+        //Check the array has at least one item
+        assertNotEquals(s, pitchArray);
 
         //check for failed response
         Assertions.assertEquals(200, response.getResponse().getStatus());
