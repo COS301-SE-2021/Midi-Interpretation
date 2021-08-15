@@ -182,7 +182,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         //TODO: Confirm the attribute "pitch_Array" is the correct attribute name to get and test
         //Check we receive an array back with at least one entry in it
         String s = "";
-        String pitchArray = extractJSONAttribute("pitch_Array", response.getResponse().getContentAsString());
+        String pitchArray = extractJSONAttribute("trackArray", response.getResponse().getContentAsString());
         //Check the array has at least one item
         assertNotEquals(s, pitchArray);
 
