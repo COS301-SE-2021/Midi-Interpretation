@@ -3,6 +3,7 @@ package com.noxception.midisense.interpreter.parser;
 import com.noxception.midisense.interpreter.dataclass.KeySignature;
 import com.noxception.midisense.interpreter.dataclass.TempoIndication;
 import com.noxception.midisense.interpreter.dataclass.TimeSignature;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.List;
  * @author Adrian Rae
  * @since 1.0.0
  */
+@Slf4j
 public class Score {
 
     private final HashMap<Integer,Track> trackMap = new HashMap<>();
@@ -55,7 +57,7 @@ public class Score {
      */
     public void setKeySignature(byte x, byte y){
         if(!keySet)
-            this.keySignature = new KeySignature((int) x, ((int) y == 1));
+            this.keySignature = new KeySignature(x, ((int) y == 1));
             keySet = true;
     }
 

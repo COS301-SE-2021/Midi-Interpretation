@@ -131,12 +131,21 @@ public class MIDISenseParserListener implements ParserListener{
      * The content invoked when a key Signature control sequence is parsed.
      * Assigns the current key signature to the score
      *
-     * @param b the tonal centre of the signature
-     * @param b1 the key of the signature
+     * @param b the position of C in the octave relative to the key
+     * @param b1 the indicator of major/minor
      */
     @Override
     public void onKeySignatureParsed(byte b, byte b1) {
-        parsedScore.setKeySignature(b,b1);
+        //b is the index of C in the key, which is major or minor based on b1
+
+        //get index of key root in C maj / A min
+        int posInKey = (12-b) % 12;
+        byte[] degreeArray = new byte[]{0, -5, 2, -3, 4, -1, 6, 1, -4, 3, -2, 5};
+
+        byte numAccidentals = degreeArray[posInKey];
+        byte tonalCentre = (byte) ((b1==1)?0:1);
+        parsedScore.setKeySignature(numAccidentals,tonalCentre);
+        log.error("Key signature is "+parsedScore.getKeySignature().toString());
     }
 
     /**
