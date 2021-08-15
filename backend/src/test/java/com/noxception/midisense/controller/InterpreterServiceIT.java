@@ -46,6 +46,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     //====================================================================================================================//
     //                                  WHITE BOX TESTING BELOW                                                           //
     //====================================================================================================================//
+    //checking code and designator is correct
 
     /**UploadFile*/
     @Test
@@ -82,9 +83,12 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
 
+        //still need to confirm this is valid
+        //Assertions.assertEquals(file.getOriginalFilename(),fileName);
+
         Assertions.assertTrue(new File(fileName).delete());
     }
-
+/*
     @Ignore
     @Test
     @DisplayName("Upload File: input [invalid file] expect [correct response code]")
@@ -118,8 +122,11 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //check for successful response
         Assertions.assertEquals(415, response.getResponse().getStatus());
 
-    }
+        //still need to confirm this is valid
+        //Assertions.assertEquals(request.getFileContents().toString(),fileContent);
 
+    }
+*/
 
     /**ProcessFile*/
     @Test
@@ -154,8 +161,12 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
 
-    }
 
+        //still need to confirm this is valid
+        //Assertions.assertEquals(request.getFileDesignator(),fileDesignator.toString());
+
+    }
+/*
     @Test
     @Transactional
     @Rollback(value = true)
@@ -181,14 +192,18 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
         //check for failed response
         Assertions.assertEquals(400, response.getResponse().getStatus());
-    }
 
+        //still need to confirm this is valid
+        //Assertions.assertEquals(request.getFileDesignator(),fileDesignator.toString());
+    }
+*/
 
 
 
     //====================================================================================================================//
     //                                  BLACK BOX TESTING BELOW                                                           //
     //====================================================================================================================//
+    //Just checking code returned is correct
 
     /**UploadFile*/
     @Test
@@ -221,11 +236,10 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
-        Assertions.assertTrue(new File(fileName).delete());
-    }
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+
+        Assertions.assertTrue(new File(fileName).delete());    }
 
     @Ignore
     @Test
@@ -257,9 +271,8 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 request,
                 mvc);
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for successful response
+        Assertions.assertEquals(415, response.getResponse().getStatus());
     }
 
 
@@ -293,10 +306,8 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
-        Assertions.assertTrue(new File(testName).delete());
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
     @Test
@@ -322,9 +333,8 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //check for response is a positive integer
-        int res = response.getResponse().getStatus();
-        assertTrue(res > 0);
+        //check for failed response
+        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
 
