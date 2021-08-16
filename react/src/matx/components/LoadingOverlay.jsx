@@ -1,10 +1,10 @@
 import React from "react";
 import "../../app/services/styles.css"
-import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import InteractiveDemo from "../../app/services/InteractiveDemo";
 import {Button, Grid} from "@material-ui/core";
+import MdArrowDownward from "@material-ui/icons/ArrowDownward";
 
 
 const styles = {
@@ -79,6 +79,13 @@ function Load (props) {
                             </Grid>
                             <Grid item>
                             <div className="w-full-screen ">
+                                <div className="text-center">
+                                    <h4>We are processing your file.</h4>
+                                    <p className="text-16">This may take some time. In the meantime, try it by clicking, tapping, or using your keyboard:</p>
+                                    <div style={{ color: '#777' }}>
+                                        <MdArrowDownward size={32} />
+                                    </div>
+                                </div>
                                 <InteractiveDemo audioContext={audioContext} soundfontHostname={soundfontHostname} />
                             </div>
                             </Grid>

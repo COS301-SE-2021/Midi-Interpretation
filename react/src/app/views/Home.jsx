@@ -2,10 +2,10 @@ import React, {Component} from "react";
 import { withStyles } from "@material-ui/styles";
 import 'react-responsive-combo-box/dist/index.css';
 import {Grid, Button} from '@material-ui/core';
-import 'react-piano/dist/styles.css';
 import InteractiveDemo from "../services/InteractiveDemo";
 import Background from "./Background";
-
+import MdArrowDownward from "@material-ui/icons/ArrowDownward";
+import "../services/styles.css"
 
 
 
@@ -75,6 +75,14 @@ class Home extends Component {
                         </Grid>
                         <Grid item>
                             <div className="w-full-screen ">
+                                <div className="text-center">
+                                    <h4 className="text-white">Welcome To MIDISense</h4>
+                                    <p className="text-16">Upload and process midi files to learn more about them,
+                                        learn more about our project or just enjoy the piano bellow</p>
+                                    <div style={{ color: '#777' }}>
+                                        <MdArrowDownward size={32} />
+                                    </div>
+                                </div>
                                 <InteractiveDemo audioContext={audioContext} soundfontHostname={soundfontHostname} />
                             </div>
                         </Grid>
