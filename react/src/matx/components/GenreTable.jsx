@@ -29,7 +29,6 @@ const GenreTable = (genreData) => {
     let data = genreData.genreData
 
     return (
-
         // <BarChart
         //     width={500}
         //     height={300}
@@ -58,6 +57,7 @@ const GenreTable = (genreData) => {
                 <Legend />
             </RadarChart>
         </ResponsiveContainer>
+
     )
 }
 

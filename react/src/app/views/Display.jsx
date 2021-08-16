@@ -3,13 +3,12 @@ import {Breadcrumb, SimpleCard} from "../../matx";
 import SelectedMenu from "../../matx/components/SelectedMenu";
 import MidiSenseService from "../services/MidiSenseService";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Grid, Paper} from "@material-ui/core";
+import {Grid} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import GenreTable from "../../matx/components/GenreTable";
 import {withStyles} from "@material-ui/core/styles";
 import KeySignature from "../../styles/images/keyMap"
 import TimeSignature from "../../styles/images/timeMap"
-
 
 //==============================================
 /**
@@ -364,7 +363,7 @@ class Display extends Component {
                             spacing={1}
                             direction="row"
                             justifyContent="space-evenly"
-                            alignItems="center"
+                            alignItems="stretch"
                       >
                           <Grid item xs={12} sm={12} m={12} lg={6} >
                               <SimpleCard title="Metadata" subtitle="Technical and performance-related information.">
@@ -379,9 +378,7 @@ class Display extends Component {
                                           <br/>
                                           <Grid container item lg={12} style={{textAlign:'center'}}>
                                               <Grid item lg={12}>
-                                                  <Paper>
-                                                      <h1>{this.state.songTitle}</h1>
-                                                  </Paper>
+                                                  <h1>{this.state.songTitle}</h1>
                                               </Grid>
                                           </Grid>
 
@@ -419,7 +416,7 @@ class Display extends Component {
                               </SimpleCard>
                           </Grid>
                           <Grid item xs={12} sm={12} m={12} lg={6}>
-                              <SimpleCard title="Genre Analysis" subtitle="Here's what we reckon your file sounds like.">
+                              <SimpleCard title="Genre Analysis" subtitle="Here's what we think your file sounds like.">
                                   <div style={{ height: '300px', width: '100%'}}>
                                       <GenreTable genreData={this.state.genreData}/>
                                   </div>

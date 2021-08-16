@@ -194,7 +194,7 @@ function TrackViewer (props) {
                             }}
                         >
                         <CartesianGrid strokeDasharray="1 1" />
-                        <XAxis scale="linear" interval="preserveStart" dataKey="beat" label={{ value: 'Beat number', position: 'bottom' }}/>
+                        <XAxis domain={`[0,${lineData.length}]`} scale="linear" interval="preserveStart" type="number" dataKey="beat" label={{ value: 'Beat number', position: 'bottom' }}/>
                         <YAxis label={{ value: 'Pitch (~log Hz)', angle: -90, position: 'left' }}/>
                         <Tooltip content={ <CustomTooltip payload props/> }/>
                         <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
