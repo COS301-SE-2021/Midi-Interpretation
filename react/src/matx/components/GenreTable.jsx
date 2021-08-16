@@ -1,6 +1,6 @@
 import {
     Bar,
-    CartesianGrid,
+    CartesianGrid, Legend, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar,
     ResponsiveContainer,
     Tooltip,
     XAxis,
@@ -8,6 +8,7 @@ import {
 } from "recharts";
 import {BarChart} from "recharts";
 import React from "react";
+import RadarChart from "recharts/lib/chart/RadarChart";
 
 
 /**
@@ -25,25 +26,36 @@ const GenreTable = (genreData) => {
         item['PercentCertainty'] = Math.round(Math.pow(10,decimalCertainty+2) * item['Certainty']) / Math.pow(10,decimalCertainty)
     })
 
+    let data = genreData.genreData
+
     return (
+
+        // <BarChart
+        //     width={500}
+        //     height={300}
+        //     data={genreData.genreData}
+        //     margin={{
+        //         top: 5,
+        //         right: 30,
+        //         left: 20,
+        //         bottom: 5,
+        //     }}
+        // >
+        //     <CartesianGrid strokeDasharray="3 3" />
+        //     <XAxis dataKey="Name" label={{ value: 'Genre', position: 'bottom' }}/>
+        //     <YAxis unit="%" label={{ value: 'Likelihood', angle: -90, position: 'left' }} domain={[genreData[9], genreData[0]]}/>
+        //     <Tooltip />
+        //     <Bar dataKey="PercentCertainty" fill="#7467ef"/>
+        // </BarChart>
+
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-                width={500}
-                height={300}
-                data={genreData.genreData}
-                margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="Name" label={{ value: 'Genre', position: 'bottom' }}/>
-                <YAxis unit="%" label={{ value: 'Likelihood', angle: -90, position: 'left' }} domain={[genreData[9], genreData[0]]}/>
-                <Tooltip />
-                <Bar dataKey="PercentCertainty" fill="#7467ef"/>
-            </BarChart>
+            <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="Name" />
+                <PolarRadiusAxis angle={0} domain={['dataMin - 10','dataMax']}/>
+                <Radar name="% Certainty" dataKey="PercentCertainty" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                <Legend />
+            </RadarChart>
         </ResponsiveContainer>
     )
 }

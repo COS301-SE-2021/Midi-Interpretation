@@ -2,12 +2,14 @@ import React, {Component} from "react";
 import {Breadcrumb, SimpleCard} from "../../matx";
 import SelectedMenu from "../../matx/components/SelectedMenu";
 import MidiSenseService from "../services/MidiSenseService";
-import {withStyles} from "@material-ui/styles";
 import TrackViewer from "../../matx/components/TrackViewer";
 import {Grid, Paper} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import GenreTable from "../../matx/components/GenreTable";
-import {TableHeader} from "semantic-ui-react";
+import {withStyles} from "@material-ui/core/styles";
+import KeySignature from "../../styles/images/keyMap"
+import TimeSignature from "../../styles/images/timeMap"
+
 
 //==============================================
 /**
@@ -70,24 +72,26 @@ class Display extends Component {
         fileDesignator: this.cookies.get('fileDesignator'),
         genreData:[],
         midisenseService: new MidiSenseService(),
-          selectedIndex:0,
-          lineData:[],
-          items:[],
-          color : [
-              "#37A2DA",
-              "#32C5E9",
-              "#67E0E3",
-              "#9FE6B8",
-              "#FFDB5C",
-              "#ff9f7f",
-              "#fb7293",
-              "#E062AE",
-              "#E690D1",
-              "#e7bcf3",
-              "#9d96f5",
-              "#8378EA",
-              "#96BFFF"
-          ],
+        selectedIndex:0,
+        lineData:[],
+        items:[],
+        color : [
+          "#37A2DA",
+          "#32C5E9",
+          "#67E0E3",
+          "#9FE6B8",
+          "#FFDB5C",
+          "#ff9f7f",
+          "#fb7293",
+          "#E062AE",
+          "#E690D1",
+          "#e7bcf3",
+          "#9d96f5",
+          "#8378EA",
+          "#96BFFF"
+        ],
+          keyMap: new KeySignature(),
+          timeMap: new TimeSignature(),
       }
 
       if(this.cookies.get('fileDesignator') === undefined){
@@ -102,7 +106,7 @@ class Display extends Component {
       this.refreshScoreDetails()
   }
 
-    //====================================
+  //====================================
   // DISPLAY STATE VALUE SETTERS
   //====================================
 
@@ -225,6 +229,8 @@ class Display extends Component {
       })
   }
 
+
+
   //====================================
   // DISPLAY METHODS
   //====================================
@@ -327,6 +333,9 @@ class Display extends Component {
 
 
 
+
+
+
   /**
    * This method returns the elements that we want displayed
    *
@@ -337,6 +346,7 @@ class Display extends Component {
 
   render() {
       this.setSelected = this.setSelected.bind(this)
+
       return (
           <div className="w-full overflow-auto">
               <div className="m-sm-30">
@@ -347,47 +357,96 @@ class Display extends Component {
                           ]}
                       />
                   </div>
-                  <SimpleCard title="Analysis">
-                      <Grid container justify="space-evenly">
-                          <Grid item>
-                              <h1>{this.state.songTitle}</h1>
-                              <br/>
-                              <h4>
-                                  Piece Meta Data:
-                              </h4>
 
-                              <p>
-                                  <li>Key: {this.state.keySignature} </li>
-                                  <li>Time Signature: {this.state.timeSignature['numBeats'] + "/" + this.state.timeSignature['beatValue']}</li>
-                                  <li>Tempo Indication: {this.state.tempoIndication}</li>
-                              </p>
+                  <div>
+                      <Grid container
+                            justify="space-evenly"
+                            spacing={1}
+                            direction="row"
+                            justifyContent="space-evenly"
+                            alignItems="center"
+                      >
+                          <Grid item xs={12} sm={12} m={12} lg={6}>
+                              <SimpleCard title="Metadata" subtitle="Technical and performance-related information.">
+                                  <div>
+                                      <Grid container
+                                            justify="space-evenly"
+                                            spacing={3}
+                                            direction="row"
+                                            justifyContent="space-evenly"
+                                            alignItems="center"
+                                      >
+                                          <br/>
+                                          <Grid container item lg={12} style={{textAlign:'center'}}>
+                                              <Grid item lg={12}>
+                                                  <Paper>
+                                                      <h1>{this.state.songTitle}</h1>
+                                                  </Paper>
+                                              </Grid>
+                                          </Grid>
+
+                                          <Grid container item lg={12} style={{textAlign:'center'}}>
+
+                                              <Grid item m={4} lg={4}>
+                                                  <h5>Key Signature</h5>
+                                                  <h6>{this.state.keySignature}</h6>
+                                                  <br/>
+                                                  <div>
+                                                      <img src={this.state.keyMap.getLinkForKey(this.state.keySignature)} style={{ height: '100px'}}/>
+                                                  </div>
+
+                                              </Grid>
+                                              <Grid item m={4} lg={4}>
+
+                                                  <h5>Time Signature</h5>
+                                                  <h6>{this.state.timeSignature['numBeats'] + "/" + this.state.timeSignature['beatValue']}</h6>
+                                                  <br/>
+                                                  <div>
+                                                      <img src={this.state.timeMap.getLinkForTime(this.state.timeSignature['numBeats'])} style={{ height: '40px'}}/>
+                                                      <br/>
+                                                      <img src={this.state.timeMap.getLinkForTime(this.state.timeSignature['beatValue'])} style={{ height: '40px'}}/>
+                                                  </div>
+
+                                              </Grid>
+                                              <Grid item m={4} lg={4}>
+                                                  <h5>Tempo Indication</h5>
+                                                  <h6>{this.state.tempoIndication}</h6>
+                                              </Grid>
+                                          </Grid>
+
+                                      </Grid>
+                                  </div>
+                              </SimpleCard>
+                          </Grid>
+                          <Grid item xs={12} sm={12} m={12} lg={6}>
+                              <SimpleCard title="Genre Analysis" subtitle="Here's what we reckon your file sounds like.">
+                                  <div style={{ height: '300px', width: '100%'}}>
+                                      <GenreTable genreData={this.state.genreData}/>
+                                  </div>
+                              </SimpleCard>
                           </Grid>
                       </Grid>
-                  </SimpleCard>
+
+                  </div>
+
                   <br/>
 
-                  <SimpleCard>
-                      <h4>Genre</h4>
-                      <div style={{ height: '200px', width: '100%'}}>
-                          <GenreTable genreData={this.state.genreData}/>
-                      </div>
-                  </SimpleCard>
-                  <br/>
-
-                  <SimpleCard>
-                      <h4>Track</h4>
+                  <SimpleCard title="Timeline" subtitle="Here you'll find the sequence of events for a chosen channel.">
                       <SelectedMenu setTrack={this.setCurrentTrack} inputOptions={this.state.trackListing}/>
+                      <TrackViewer trackData={{"trackData":this.state.trackData, "ticksPerBeat":this.state.ticksPerBeat, "instrument": this.state.instrument}} callSelect={this.setSelected}/>
+                      <br/>
+                      <Grid container
+                            justify="space-evenly"
+                            spacing={1}
+                            direction="row"
+                            justifyContent="space-evenly"
+                            alignItems="center"
+                      >
+                          <div id="dataDisplay"></div>
+                      </Grid>
 
                   </SimpleCard>
-                  <br/>
-                    <TrackViewer trackData={{"trackData":this.state.trackData, "ticksPerBeat":this.state.ticksPerBeat, "instrument": this.state.instrument}} callSelect={this.setSelected}/>
-                  <br/>
 
-
-
-                  <SimpleCard title="Note inspector" >
-                      <div id="dataDisplay"></div>
-                  </SimpleCard>
 
               </div>
           </div>

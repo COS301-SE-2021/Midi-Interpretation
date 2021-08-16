@@ -1,18 +1,6 @@
-import {
-        LineChart,
-        Line,
-        Brush,
-        XAxis,
-        YAxis,
-        CartesianGrid,
-        Tooltip,
-        Legend,
-        ResponsiveContainer,
-} from 'recharts';
+import {Brush, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis,} from 'recharts';
 import React from "react";
 import {Grid} from "@material-ui/core";
-import SimpleCard from "./cards/SimpleCard";
-import {Label} from "@material-ui/icons";
 import * as ReactDOMServer from "react-dom/server";
 
 function voiceName (index){
@@ -57,24 +45,29 @@ function CustomTooltip (props) {
                 {props.payload.map((item,index)=>{
                     const comp = item.payload['composite'][index]
                     let isPercussive = comp['isPercussive']
+                    let onVelocity = (comp['on_velocity']===-1)?"Unknown":comp['on_velocity']
+                    let offVelocity = (comp['off_velocity']===-1)?"Unknown":comp['off_velocity']
+                    let onDynamic = (comp['on_velocity']===-1)?"No Dynamic Info":velocityToDynamic(comp['on_velocity'])
+                    let offDynamic = (comp['off_velocity']===-1)?"No Dynamic Info":velocityToDynamic(comp['off_velocity'])
+                    let duration = (comp['duration_beats']<0)?"No Duration Info":(comp['duration_beats']+" beats")
                     if(isPercussive){
-                        return(<div key={index}>
+                        return(<div key={index} style={{padding:"10px"}}>
                             <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
                             <div className="text-14">Instrument: {getPercussiveInstrument(item.value)} </div>
-                            <div className="text-14">On Velocity: {comp['on_velocity']} ({velocityToDynamic(comp['on_velocity'])})</div>
-                            <div className="text-14">Off Velocity: {comp['off_velocity']} ({velocityToDynamic(comp['off_velocity'])})</div>
-                            <div className="text-14">Duration: {comp['duration_beats']} beats</div>
+                            <div className="text-14">On Velocity: {onVelocity} ({onDynamic})</div>
+                            <div className="text-14">Off Velocity: {offVelocity} ({offDynamic})</div>
+                            <div className="text-14">Duration: {duration}</div>
                         </div>)
                     }
                     else return(
-                        <div key={index}>
+                        <div key={index} style={{padding:"10px"}}>
                             <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
                             <div className="text-14">Frequency: {frequency(item.value)} Hz</div>
                             <div className="text-14">Pitch: {valueToNote(item.value)['pitch']}</div>
                             <div className="text-14">Octave: {valueToNote(item.value)['octave']}</div>
-                            <div className="text-14">On Velocity: {comp['on_velocity']} ({velocityToDynamic(comp['on_velocity'])})</div>
-                            <div className="text-14">Off Velocity: {comp['off_velocity']} ({velocityToDynamic(comp['off_velocity'])})</div>
-                            <div className="text-14">Duration: {comp['duration_beats']} beats</div>
+                            <div className="text-14">On Velocity: {onVelocity} ({onDynamic})</div>
+                            <div className="text-14">Off Velocity: {offVelocity} ({offDynamic})</div>
+                            <div className="text-14">Duration: {duration}</div>
                         </div>
                     )
                 })}
@@ -176,7 +169,7 @@ function TrackViewer (props) {
             trackDataStore['composite'] = notes
             notes.sort((a,b)=>{return b.value-a.value})
             for(let voice=0; voice<maxVoices; voice++){
-                trackDataStore[voiceName(voice)] = (voice < current_voices) ? notes[voice].value:null
+                trackDataStore[voiceName(voice)] = (voice < current_voices) ? notes[voice].value : null
             }
             lineData.push(trackDataStore)
             counter++
@@ -187,34 +180,32 @@ function TrackViewer (props) {
             items.push(x)
         }
         return (
-            <SimpleCard title="Display">
-                <div style={{ height: '400px', width: '100%'}}>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <LineChart
-                                width={500}
-                                height={300}
-                                data={lineData}
-                                margin={{
-                                        top: 5,
-                                        right: 30,
-                                        left: 20,
-                                        bottom: 5,
-                                }}
-                            >
-                            <CartesianGrid strokeDasharray="1 1" />
-                            <XAxis scale="linear" interval="preserveStart" dataKey="beat" label={{ value: 'Beat number', position: 'bottom' }}/>
-                            <YAxis label={{ value: 'Value', angle: -90, position: 'left' }}/>
-                            <Tooltip content={ <CustomTooltip payload props/> }/>
-                            <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
-                            <Brush dataKey="beat" height={30} stroke="#7467ef"/>
+            <div style={{ height: '400px', width: '100%'}}>
+                <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                            width={500}
+                            height={300}
+                            data={lineData}
+                            margin={{
+                                    top: 5,
+                                    right: 30,
+                                    left: 20,
+                                    bottom: 5,
+                            }}
+                        >
+                        <CartesianGrid strokeDasharray="1 1" />
+                        <XAxis scale="linear" interval="preserveStart" dataKey="beat" label={{ value: 'Beat number', position: 'bottom' }}/>
+                        <YAxis label={{ value: 'Pitch (~log Hz)', angle: -90, position: 'left' }}/>
+                        <Tooltip content={ <CustomTooltip payload props/> }/>
+                        <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
+                        <Brush dataKey="beat" height={30} stroke="#7467ef"/>
 
-                            {items.map((value,index)=>{
-                                return <Line key={voiceName(value)} dataKey={voiceName(value)} stroke={color[index%13]} type="monotone" strokeWidth={2}/>
-                            })}
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
-            </SimpleCard>
+                        {items.map((value,index)=>{
+                            return <Line key={voiceName(value)} dataKey={voiceName(value)} stroke={color[index%13]} type="monotone" strokeWidth={2}/>
+                        })}
+                    </LineChart>
+                </ResponsiveContainer>
+            </div>
         )
     }
 }
