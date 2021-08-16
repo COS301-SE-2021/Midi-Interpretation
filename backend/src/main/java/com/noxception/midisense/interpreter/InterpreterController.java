@@ -92,6 +92,9 @@ public class InterpreterController implements InterpreterApi {
         }
         catch (InvalidDesignatorException | IllegalArgumentException e) {
 
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","processFile",e.getMessage()));
+
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(false);
             responseObject.setMessage(e.getMessage());
@@ -136,6 +139,9 @@ public class InterpreterController implements InterpreterApi {
 
         }
         catch (IllegalArgumentException | InvalidUploadException | IOException e) {
+
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","uploadFile",e.getMessage()));
 
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(false);

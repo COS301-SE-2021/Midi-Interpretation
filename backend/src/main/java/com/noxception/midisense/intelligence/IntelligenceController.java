@@ -96,6 +96,9 @@ public class IntelligenceController implements IntelligenceApi {
         }
         catch(InvalidDesignatorException | IllegalArgumentException | MissingStrategyException e){
 
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","analyseGenre",e.getMessage()));
+
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(false);
             responseObject.setMessage(e.getMessage());

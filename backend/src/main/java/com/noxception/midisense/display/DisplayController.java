@@ -87,6 +87,9 @@ public class DisplayController implements DisplayApi {
         }
         catch(InvalidDesignatorException | IllegalArgumentException e){
 
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","getPieceMetadata",e.getMessage()));
+
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(true);
             responseObject.setMessage(e.getMessage());
@@ -138,6 +141,9 @@ public class DisplayController implements DisplayApi {
         }
         catch(InvalidDesignatorException | IllegalArgumentException e){
 
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","getTrackInfo",e.getMessage()));
+
             returnStatus = HttpStatus.BAD_REQUEST;
 
         }
@@ -176,6 +182,9 @@ public class DisplayController implements DisplayApi {
 
         }
         catch(InvalidDesignatorException | IllegalArgumentException | InvalidTrackException e){
+
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","getTrackMetadata",e.getMessage()));
 
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(false);
@@ -217,6 +226,9 @@ public class DisplayController implements DisplayApi {
 
         }
         catch(InvalidDesignatorException | IllegalArgumentException | InvalidTrackException e){
+
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","getTrackOverview",e.getMessage()));
 
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(false);
