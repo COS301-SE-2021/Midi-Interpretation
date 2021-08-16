@@ -1,4 +1,4 @@
-import React, {Component, useRef} from "react";
+import React, {Component, useState} from "react";
 import {Grid, Button, Icon} from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "matx";
 import { withStyles } from "@material-ui/styles";
@@ -7,9 +7,9 @@ import 'react-responsive-combo-box/dist/index.css'
 import MidiSenseService from "../services/MidiSenseService";
 import Cookies from 'universal-cookie';
 import ResponsiveDialog from "./ResponsiveDialog";
-
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
+import Load from "../../matx/components/LoadingOverlay";
 
 
 
@@ -51,11 +51,11 @@ class Upload extends Component {
           trackMetadata: null,
           trackOverview: null,
           trackIndex: 0,
+          modalVisible: false,
           cookies: this.cookies.get('allowCookies'),
           path: ""
       }
       this.backendService = new MidiSenseService()
-
 
         /**
          * onDrop handles files being added to the dropzone
@@ -121,12 +121,19 @@ class Upload extends Component {
       this.ProcessFile = () => {
           if(this.cookies.get('allowCookies') !== undefined) {
               if (this.state.isFileSet) {
-                  this.props.history.push("/Loading");
+                  this.setModalVisible(true)
                   this.beginInterpretation()
                   this.render()
               }
           }
       }
+
+        this.setModalVisible = (v) => {
+            this.setState({
+                modalVisible:v
+            })
+            console.log(this.state.modalVisible)
+        }
   }
 
     /**
@@ -160,9 +167,31 @@ class Upload extends Component {
      */
 
   render() {
+        const styles = {
+            modal: {
+                backgroundColor: "transparent",
+                boxShadow: "none",
+                display: "flex",
+                overflow: "none",
+                width: "100%",
+                padding: "0",
+                margin: "0",
+                height: "100%",
+                minWidth: "100%",
+                justifyContent: "center"
+            },
+            overlay: {
+                backgroundColor: "#1cccc",
+                padding: 0
+            },
+            closeIcon: {
+                fill: "#fff"
+            }
+        };
       const classes = makeStyles;
       return (
           <div className="m-sm-30" >
+              <Load  modalVisible={this.state.modalVisible} setModalVisible={this.setModalVisible}/>
               <div className="mb-sm-30">
                   <Breadcrumb
                       routeSegments={[

@@ -4,7 +4,6 @@ import homeRoutes from "./views/HomeRoutes";
 import uploadRoutes from "./views/UploadRoutes";
 import displayRoutes from "./views/DisplayRoutes";
 import notFoundRoutes from "./views/NotFoundRoutes";
-import loadingRoutes from "./views/LoadingRoutes";
 import aboutRoutes from "./views/AboutRoutes";
 
 /**
@@ -40,7 +39,6 @@ const errorRoute = [
  */
 
 const routes = [
-    ...loadingRoutes,
     ...homeRoutes,
     ...uploadRoutes,
     ...displayRoutes,
