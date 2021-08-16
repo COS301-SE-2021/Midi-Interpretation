@@ -35,8 +35,8 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
 
     /**analyseGenre*/
     @Test
-    @DisplayName("Analyse Genre: input [designator for a file in DB] expect [genre array]")
-    public void test_BlackBox_AnalyseGenre_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+    @DisplayName("Analyse Genre: input [designator for a file in storage] expect [genre array]")
+    public void test_BlackBox_AnalyseGenre_IfValidFileDesignator_ThenAccurateInfo() throws Exception {
 
         //make a request
         IntelligenceAnalyseGenreRequest request = new IntelligenceAnalyseGenreRequest();
