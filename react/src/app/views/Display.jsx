@@ -366,7 +366,7 @@ class Display extends Component {
                             justifyContent="space-evenly"
                             alignItems="center"
                       >
-                          <Grid item xs={12} sm={12} m={12} lg={6}>
+                          <Grid item xs={12} sm={12} m={12} lg={6} >
                               <SimpleCard title="Metadata" subtitle="Technical and performance-related information.">
                                   <div>
                                       <Grid container
