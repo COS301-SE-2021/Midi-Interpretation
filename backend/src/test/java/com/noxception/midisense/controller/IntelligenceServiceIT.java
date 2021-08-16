@@ -74,15 +74,25 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
     @Test
     @DisplayName("Analyse Genre: input [designator for a file not in DB] expect [genre array]")
     public void test_BlackBox_AnalyseGenre_IfPresentNotInDatabase_ThenAccurateInfo() throws Exception {
+
+        //make request
         IntelligenceAnalyseGenreRequest request = new IntelligenceAnalyseGenreRequest();
+
+        //assign fileDesignator to random UUID
         UUID fileDesignator = UUID.randomUUID();
+
+        //pass fileDesignator to request
         request.setFileDesignator(fileDesignator.toString());
+
+        //mock request
         MvcResult response = mockRequest(
                 "intelligence",
                 "analyseGenre",
                 request,
                 mvc
         );
+
+        //check for failed response
         Assertions.assertEquals(400, response.getResponse().getStatus());
 
     }
