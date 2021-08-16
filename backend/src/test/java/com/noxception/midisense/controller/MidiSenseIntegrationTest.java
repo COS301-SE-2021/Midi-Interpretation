@@ -43,8 +43,8 @@ public class MidiSenseIntegrationTest {
         String altCloseAttribute = "}";
 
         int startIndex = jsonString.indexOf(startAttribute)+startAttribute.length();
-        int endIndex = jsonString.indexOf(closeAttribute);
-        int altEndIndex = jsonString.indexOf(closeAttribute);
+        int endIndex = jsonString.indexOf(closeAttribute,startIndex+1);
+        int altEndIndex = jsonString.indexOf(closeAttribute,startIndex+1);
 
         if(startIndex==-1)
             return null;

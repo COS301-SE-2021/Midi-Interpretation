@@ -138,9 +138,10 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         );
 
         //TODO: Confirm the attribute "track_string" is the correct attribute name to get and test
-        String trackString = extractJSONAttribute("trackString", response.getResponse().getContentAsString());
+        String trackString = response.getResponse().getContentAsString();
         //Check that there is a substring for an inner array with countably many items
-        Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
+        String regex = "\\{\\\"trackString\\\":\\\"\\{\\\\\\\"channel\\\\\\\": ([0-9]|(1[0-5])), \\\\\\\"instrument\\\\\\\": \\\\\\\".+\\\\\\\", \\\\\\\"ticks_per_beat\\\\\\\": ([1-9]([0-9])*), \\\\\\\"track\\\\\\\": \\[(\\{.+\\})*\\]\\}\\\"(,.+)*\\}";
+        Pattern validResponse = Pattern.compile(regex,Pattern.MULTILINE);
         Matcher matcher = validResponse.matcher(trackString);
 
         //see that the substring is present
