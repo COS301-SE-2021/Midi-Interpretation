@@ -1,10 +1,9 @@
 import React, {Component} from "react";
 import { withStyles } from "@material-ui/styles";
 import 'react-responsive-combo-box/dist/index.css';
-import {Grid, Container, Button} from '@material-ui/core';
+import {Grid, Button} from '@material-ui/core';
 import 'react-piano/dist/styles.css';
-
-import InteractiveDemo2 from "../services/InteractiveDemo2";
+import InteractiveDemo from "../services/InteractiveDemo";
 import Background from "./Background";
 
 
@@ -76,7 +75,7 @@ class Home extends Component {
                         </Grid>
                         <Grid item>
                             <div className="w-full-screen ">
-                                <InteractiveDemo2 audioContext={audioContext} soundfontHostname={soundfontHostname} />
+                                <InteractiveDemo audioContext={audioContext} soundfontHostname={soundfontHostname} />
                             </div>
                         </Grid>
                     </Grid>
