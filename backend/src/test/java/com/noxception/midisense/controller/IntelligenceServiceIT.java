@@ -99,7 +99,7 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
 
     @Test
     @DisplayName("Analyse Genre: input [designator for a file in storage] expect [genre array]")
-    public void test_WhiteBox_AnalyseDate_IfInValidFileDB_ThenInAccurateInfo() throws Exception {
+    public void test_WhiteBox_AnalyseGenre_IfValidFileDesignator_ThenAccurateInfo() throws Exception {
 
         //make a request
         IntelligenceAnalyseGenreRequest request = new IntelligenceAnalyseGenreRequest();
