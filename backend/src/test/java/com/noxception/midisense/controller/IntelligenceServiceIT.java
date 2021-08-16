@@ -37,20 +37,23 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
     @Test
     @DisplayName("Analyse Genre: input [designator for a file in DB] expect [genre array]")
     public void test_BlackBox_AnalyseGenre_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+
+        //make a request
         IntelligenceAnalyseGenreRequest request = new IntelligenceAnalyseGenreRequest();
 
+        //Create a temporary file to parse
         UUID fileDesignator = UUID.randomUUID();
         String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
 
-
+        //copy temp file from testing data
         Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
         Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
         Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
 
-
+        //pass valid file designator into request
         request.setFileDesignator(fileDesignator.toString());
 
-
+        //make a request
         MvcResult response = mockRequest(
                 "intelligence",
                 "analyseGenre",
@@ -59,10 +62,10 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
         );
 
 
-
+        //check for successful response
         Assertions.assertEquals(200, response.getResponse().getStatus());
 
-
+        //Delete file from local storage
         File fileToDelete = new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
         Assertions.assertTrue(fileToDelete.delete());
 
