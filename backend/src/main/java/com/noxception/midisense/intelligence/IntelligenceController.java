@@ -11,6 +11,7 @@ import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorExceptio
 import com.noxception.midisense.models.IntelligenceAnalyseGenreRequest;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreResponse;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreResponseGenreArray;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,7 @@ import java.util.UUID;
  *  * @since 1.0.0
  */
 
+@Slf4j
 @CrossOrigin("*")
 @RestController
 @DependsOn({"configurationLoader"})
@@ -69,6 +71,9 @@ public class IntelligenceController implements IntelligenceApi {
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             AnalyseGenreRequest req = new AnalyseGenreRequest(fileDesignator);
+
+            //Log the call for request
+            log.info(String.format("Request | To: %s | For: %s | Assigned: %s","analyseGenre",fileDesignator,req.getDesignator()));
 
             if(!intelligenceService.hasGenreStrategy())
                 intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy(new MIDISenseConfig()));

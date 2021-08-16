@@ -10,6 +10,7 @@ import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import com.noxception.midisense.models.InterpreterProcessFileResponse;
 import com.noxception.midisense.models.InterpreterUploadFileResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,7 @@ import java.util.UUID;
  *  * @since 1.0.0
  */
 
+@Slf4j
 @CrossOrigin("*")
 @RestController
 @DependsOn({"configurationLoader"})
@@ -78,6 +80,10 @@ public class InterpreterController implements InterpreterApi {
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+
+            //Log the call for request
+            log.info(String.format("Request | To: %s | For: %s | Assigned: %s","processFile",fileDesignator,req.getDesignator()));
+
             ProcessFileResponse res = interpreterService.processFile(req);
 
             responseObject.setMessage(res.getMessage());
@@ -118,6 +124,10 @@ public class InterpreterController implements InterpreterApi {
             byte[] fileContents = file.getBytes();
 
             UploadFileRequest req = new UploadFileRequest(fileContents);
+
+            //Log the call for request
+            log.info(String.format("Request | To: %s | For: %s | Assigned: %s","uploadFile",file.getName(),req.getDesignator()));
+
             UploadFileResponse res = interpreterService.uploadFile(req);
 
             responseObject.setFileDesignator(res.getFileDesignator().toString());
