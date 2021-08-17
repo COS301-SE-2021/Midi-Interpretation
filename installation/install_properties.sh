@@ -6,13 +6,17 @@ read MIDI_STORAGE_ROOT
 echo "2. Please enter the repository url: "
 read MIDI_URL
 
-echo "2. Please enter the repository username: "
+echo "3. Please enter the repository username: "
 read MIDI_USER
 
-echo "3. Please enter the repository password: "
+echo "4. Please enter the repository password: "
 read -s MIDI_PASS
 echo
 
+echo "Installing python modules"
+python -m pip install --upgrade pip
+pip install mido
+echo "Successfully installed python modules"
 
 file_name="application.properties"
 install_location="backend/src/main/resources"
@@ -41,6 +45,10 @@ logging.level.root=WARN
 # REQUESTS
 
 midisense.config.CROSS_ORIGIN=*
+
+# SCRIPTING
+
+midisense.config.MIDI_INTERPRETATION_SCRIPT_PATH=$base_directory/backend/src/main/java/com/noxception/midisense/interpreter/parser/interpreter.py
 
 # FILE STORAGE
 

@@ -14,6 +14,9 @@ public enum ConfigurationName {
     MAX_FILE_UPLOAD_SIZE,
     DELETE_UPON_INTERPRET,
 
+    //handles interpretation
+    MIDI_INTERPRETATION_SCRIPT_PATH,
+
     //handles testing
     MIDI_TESTING_ROOT,
     MIDI_TESTING_FILE,

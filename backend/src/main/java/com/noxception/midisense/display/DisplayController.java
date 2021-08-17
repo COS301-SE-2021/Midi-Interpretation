@@ -5,6 +5,7 @@ import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.models.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,7 @@ import java.util.UUID;
  *  * @author Rearabetswe Maeko
  *  * @since 1.0.0
  */
+@Slf4j
 @CrossOrigin("*")
 @RestController
 @DependsOn({"configurationLoader"})
@@ -64,10 +66,12 @@ public class DisplayController implements DisplayApi {
 
         try{
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
-
             GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
-            GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
 
+            //Log the call for request
+            log.info(String.format("Request | To: %s | For: %s | Assigned: %s","getPieceMetadata",fileDesignator,req.getDesignator()));
+
+            GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
             responseObject.setKeySignature(res.getKeySignature().toString());
 
             responseObject.setTempoIndication(res.getTempoIndication().getTempo());
@@ -77,12 +81,18 @@ public class DisplayController implements DisplayApi {
             timeSignature.setNumBeats(res.getTimeSignature().getNumBeats());
 
             responseObject.setTimeSignature(timeSignature);
+            responseObject.setSuccess(true);
+            responseObject.setMessage("Successfully retrieved metadata for "+fileDesignator);
 
         }
         catch(InvalidDesignatorException | IllegalArgumentException e){
 
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","getPieceMetadata",e.getMessage()));
+
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(true);
+            responseObject.setMessage(e.getMessage());
 
         }
 
@@ -108,6 +118,10 @@ public class DisplayController implements DisplayApi {
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
+
+            //Log the call for request
+            log.info(String.format("Request | To: %s | For: %s | Assigned: %s","getTrackInfo",fileDesignator,req.getDesignator()));
+
             GetTrackInfoResponse res = displayService.getTrackInfo(req);
 
             for(byte index: res.getTrackIndices()){
@@ -119,12 +133,18 @@ public class DisplayController implements DisplayApi {
                 inner.setTrackName(trackName);
 
                 responseObject.add(inner);
+                inner.setSuccess(true);
+                inner.setMessage("Successfully retrieved track");
             }
+
+
         }
         catch(InvalidDesignatorException | IllegalArgumentException e){
 
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","getTrackInfo",e.getMessage()));
+
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
 
         }
         return new ResponseEntity<>(responseObject,returnStatus);
@@ -150,15 +170,25 @@ public class DisplayController implements DisplayApi {
             int trackIndex = body.getTrackIndex();
 
             GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,(byte) trackIndex);
+
+            //Log the call for request
+            log.info(String.format("Request | To: %s in channel %s| For: %s | Assigned: %s","getTrackMetadata",trackIndex,fileDesignator,req.getDesignator()));
+
             GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
 
             responseObject.setTrackString(res.getTrackString());
+            responseObject.setSuccess(true);
+            responseObject.setMessage(String.format("Successfully retrieved track [%s:%s]",trackIndex,fileDesignator));
 
         }
         catch(InvalidDesignatorException | IllegalArgumentException | InvalidTrackException e){
 
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","getTrackMetadata",e.getMessage()));
+
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(false);
+            responseObject.setMessage(e.getMessage());
 
         }
         return new ResponseEntity<>(responseObject,returnStatus);
@@ -184,15 +214,25 @@ public class DisplayController implements DisplayApi {
             int trackIndex = body.getTrackIndex();
 
             GetTrackOverviewRequest req = new GetTrackOverviewRequest(fileDesignator,(byte) trackIndex);
+
+            //Log the call for request
+            log.info(String.format("Request | To: %s in channel %s| For: %s | Assigned: %s","getTrackOverview",trackIndex,fileDesignator,req.getDesignator()));
+
             GetTrackOverviewResponse res = displayService.getTrackOverview(req);
 
-            responseObject.addAll(res.getPitchArray());
+            responseObject.setTrackArray(res.getPitchArray());
+            responseObject.setSuccess(true);
+            responseObject.setMessage(String.format("Successfully retrieved track [%s:%s]",trackIndex,fileDesignator));
 
         }
         catch(InvalidDesignatorException | IllegalArgumentException | InvalidTrackException e){
 
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","getTrackOverview",e.getMessage()));
+
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(false);
+            responseObject.setMessage(e.getMessage());
 
         }
         return new ResponseEntity<>(responseObject,returnStatus);

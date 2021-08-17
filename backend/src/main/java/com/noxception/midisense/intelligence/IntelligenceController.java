@@ -10,7 +10,8 @@ import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalys
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreRequest;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreResponse;
-import com.noxception.midisense.models.IntelligenceAnalyseGenreResponseInner;
+import com.noxception.midisense.models.IntelligenceAnalyseGenreResponseGenreArray;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -43,6 +46,7 @@ import java.util.UUID;
  *  * @since 1.0.0
  */
 
+@Slf4j
 @CrossOrigin("*")
 @RestController
 @DependsOn({"configurationLoader"})
@@ -68,22 +72,36 @@ public class IntelligenceController implements IntelligenceApi {
 
             AnalyseGenreRequest req = new AnalyseGenreRequest(fileDesignator);
 
+            //Log the call for request
+            log.info(String.format("Request | To: %s | For: %s | Assigned: %s","analyseGenre",fileDesignator,req.getDesignator()));
+
             if(!intelligenceService.hasGenreStrategy())
                 intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy(new MIDISenseConfig()));
             AnalyseGenreResponse res = intelligenceService.analyseGenre(req);
 
+
+            List<IntelligenceAnalyseGenreResponseGenreArray> list = new ArrayList<>();
             for(GenrePredication genre: res.getGenreArray()){
-                IntelligenceAnalyseGenreResponseInner inner = new IntelligenceAnalyseGenreResponseInner();
+                IntelligenceAnalyseGenreResponseGenreArray inner = new IntelligenceAnalyseGenreResponseGenreArray();
                 inner.setName(genre.getGenreName());
                 inner.setCertainty(BigDecimal.valueOf(genre.getCertainty()));
-                responseObject.add(inner);
+                list.add(inner);
+
             }
+            responseObject.setGenreArray(list);
+
+            responseObject.setSuccess(true);
+            responseObject.setMessage("Successfully analysed file");
 
         }
         catch(InvalidDesignatorException | IllegalArgumentException | MissingStrategyException e){
 
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","analyseGenre",e.getMessage()));
+
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(false);
+            responseObject.setMessage(e.getMessage());
 
         }
 

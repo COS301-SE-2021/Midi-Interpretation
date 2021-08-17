@@ -38,6 +38,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         displayService = new DisplayServiceImpl(databaseManager,configurations);
     }
 
+
+    //====================================================================================================================//
+    //                                  BLACK BOX TESTING BELOW                                                           //
+    //====================================================================================================================//
+
+
     /**GetPieceMetaData*/
     /**Description: tests the getPieceMetadata() function by passing in a valid UUID and
      * the entry is in the database
@@ -155,6 +161,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         ScoreEntity testEntity = new ScoreEntity();
         testEntity.setFileDesignator(fileDesignator.toString());
         TrackEntity trackEntity =  new TrackEntity();
+        trackEntity.setNotes("THIS IS SAMPLE");
         testEntity.addTrack(trackEntity);
         databaseManager.save(testEntity);
 
@@ -242,7 +249,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         ScoreEntity testEntity = new ScoreEntity();
         testEntity.setFileDesignator(fileDesignator.toString());
         TrackEntity trackEntity =  new TrackEntity();
-        trackEntity.setNotes("{ \"notes\": [] }");
+        trackEntity.setNotes("{\"notes\": []}");
         testEntity.addTrack(trackEntity);
         databaseManager.save(testEntity);
 
@@ -267,7 +274,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
      */
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [invalid track index exception]")
-    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenAccurateInfo() {
+    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenException() {
 
         //Get the designator of a file in the DB
         UUID fileDesignator = UUID.fromString(configurations.configuration(
@@ -307,7 +314,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
      */
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [invalid track index exception]")
-    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenAccurateInfo() {
+    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() {
 
         //Get the designator of a file in the DB
         UUID fileDesignator = UUID.fromString(configurations.configuration(
@@ -444,6 +451,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         ScoreEntity testEntity = new ScoreEntity();
         testEntity.setFileDesignator(fileDesignator.toString());
         TrackEntity trackEntity =  new TrackEntity();
+        trackEntity.setNotes("{\"value\": 5}");
         testEntity.addTrack(trackEntity);
         databaseManager.save(testEntity);
 
@@ -635,5 +643,182 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-        
+
+
+
+    //====================================================================================================================//
+    //                                  WHITE BOX TESTING BELOW                                                                //
+    //====================================================================================================================//
+
+    @Test
+    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
+    public void testWhiteBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        testEntity.setKeySignature("Cbmaj");
+        testEntity.setTempoIndication(70);
+        testEntity.setTimeSignature("4/4");
+        databaseManager.save(testEntity);
+
+        //Make request
+        GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
+
+        //Get response
+        GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
+
+        //Check that the key signature is valid
+        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
+        boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().getSignatureName());
+        assertTrue(b);
+
+        //Check the tempo is an integer greater than 0
+        assertTrue(res.getTempoIndication().getTempo()>0);
+
+
+        // Check the beat value for time signature is a power of two (Greater than one)
+        int beatValue = res.getTimeSignature().getBeatValue();
+        double c = Math.log(beatValue)/Math.log(2);
+        assertEquals(c,Math.floor(c));
+
+
+        //Check the beat number for time signature is a positive integer
+        int numBeats = res.getTimeSignature().getNumBeats();
+        assertTrue(numBeats>0);
+
+    }
+
+    /**GetTrackInfo*/
+    /**Description: tests the getTrackInfo() function by passing in a valid UUID and
+     * the entry is in the database
+     * precondition - valid UUID in database passed in
+     * post condition - returned data is accurate
+     */
+    @Test
+    @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
+    public void testWhiteBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
+
+        //Make request
+        GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
+
+        //Get response
+        GetTrackInfoResponse res = displayService.getTrackInfo(req);
+
+        //Check we receive an array back with at least one entry in it
+        assertFalse(res.getTrackMap().isEmpty());
+
+
+    }
+
+    /**GetTrackMetadata*/
+    /**Description: tests the getTrackMetadata() function by passing in a valid UUID and valid Track
+     * and the entry is in the database
+     * precondition - valid UUID, valid Track passed in
+     * post condition - returned data is accurate
+     */
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
+    public void testWhiteBox_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get a valid track index
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        ));
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        trackEntity.setNotes("{ \"notes\": [] }");
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
+
+        //Make request
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator, (byte) validTrackIndex);
+
+        //Get response
+        GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
+
+        //Check that there is a substring for an inner array with countably many items
+        Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
+        Matcher matcher = validResponse.matcher(res.getTrackString());
+
+        //see that the substring is present
+        assertTrue(matcher.find());
+    }
+
+    /**GetTrackOverview*/
+    /**Description: tests the getTrackOverview() function by passing in a valid UUID and valid Track
+     * and the entry is in the database
+     * precondition - valid UUID, valid Track passed in
+     * post condition - returned data is accurate
+     */
+    @Test
+    @DisplayName("Get Track Overview: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
+    public void testWhiteBox_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get a valid track index
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        ));
+
+        //mock the database with that designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        TrackEntity trackEntity =  new TrackEntity();
+        trackEntity.setNotes("{\"value\": 5}");
+        testEntity.addTrack(trackEntity);
+        databaseManager.save(testEntity);
+
+        //Make request
+        GetTrackOverviewRequest req = new GetTrackOverviewRequest(fileDesignator,(byte) validTrackIndex);
+
+        //Get a response
+        GetTrackOverviewResponse res = displayService.getTrackOverview(req);
+
+        //Check the array has at least one item
+        assertFalse(res.getPitchArray().isEmpty());
+/*
+        //Check that the elements of the array are valid pitch elements
+        String match = "[ABCDEFG][#,b]?[(012345678]|[ABCDEFG][#b]?(-1)|[CDEFG][#b]?9|R0";
+
+        for(String s: res.getPitchArray()){
+
+            //Check that there is a substring for an inner array with countably many items
+            Pattern validResponse = Pattern.compile(match,Pattern.MULTILINE);
+            Matcher matcher = validResponse.matcher(s);
+
+            //see that the substring is present
+            assertTrue(matcher.find());
+        }*/
+
+    }
 }

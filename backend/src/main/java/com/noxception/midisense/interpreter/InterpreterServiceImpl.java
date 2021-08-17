@@ -277,11 +277,12 @@ public class InterpreterServiceImpl implements InterpreterService{
 
             //get the designator for the file being stored temporarily
             UUID fileDesignator = request.getFileDesignator();
-            File sourceFile = new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignator+configurations.configuration(ConfigurationName.FILE_FORMAT));
+            String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignator+configurations.configuration(ConfigurationName.FILE_FORMAT);
+            File sourceFile = new File(filename);
 
             //create a parser and corresponding listener
             MidiParser parser = new MidiParser();
-            MIDISenseParserListener listener = new MIDISenseParserListener();
+            MIDISenseParserListener listener = new MIDISenseParserListener(filename, configurations);
             parser.addParserListener(listener);
 
             //start parsing
@@ -369,8 +370,7 @@ public class InterpreterServiceImpl implements InterpreterService{
         //map the tracks
         for(Track track : score.getTrackMap().values()){
             TrackEntity newTrack = new TrackEntity();
-            newTrack.setInstrumentName(track.getInstrumentString());
-            newTrack.setNotes(track.notesToString());
+            newTrack.setNotes(track.getTrackData());
             scoreEntity.addTrack(newTrack);
         }
 

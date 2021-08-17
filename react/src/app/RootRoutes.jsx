@@ -4,6 +4,7 @@ import homeRoutes from "./views/HomeRoutes";
 import uploadRoutes from "./views/UploadRoutes";
 import displayRoutes from "./views/DisplayRoutes";
 import notFoundRoutes from "./views/NotFoundRoutes";
+import aboutRoutes from "./views/AboutRoutes";
 
 /**
  * The routing information of the system
@@ -38,12 +39,13 @@ const errorRoute = [
  */
 
 const routes = [
-  ...homeRoutes,
-  ...uploadRoutes,
-  ...displayRoutes,
-  ...notFoundRoutes,
-  ...redirectRoute,
-  ...errorRoute
+    ...homeRoutes,
+    ...uploadRoutes,
+    ...displayRoutes,
+    ...aboutRoutes,
+    ...notFoundRoutes,
+    ...redirectRoute,
+    ...errorRoute
 ];
 
 export default routes;
