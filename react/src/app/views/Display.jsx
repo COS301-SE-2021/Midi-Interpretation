@@ -67,6 +67,7 @@ class Display extends Component {
         trackListing: [],
         trackData:[],
         ticksPerBeat:1,
+        numberOfGenres: 5,
         instrument: "Unknown",
         fileDesignator: this.cookies.get('fileDesignator'),
         genreData:[],
@@ -418,7 +419,7 @@ class Display extends Component {
                           <Grid item xs={12} sm={12} m={12} lg={6}>
                               <SimpleCard title="Genre Analysis" subtitle="Here's what we think your file sounds like.">
                                   <div style={{ height: '300px', width: '100%'}}>
-                                      <GenreTable genreData={this.state.genreData}/>
+                                      <GenreTable genreData={this.state.genreData.slice(0,this.state.numberOfGenres)}/>
                                   </div>
                               </SimpleCard>
                           </Grid>
