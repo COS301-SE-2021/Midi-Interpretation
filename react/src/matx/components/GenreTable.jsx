@@ -51,7 +51,6 @@ const GenreTable = (genreData) => {
             <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
                 <PolarGrid />
                 <PolarAngleAxis dataKey="Name" />
-                <PolarRadiusAxis angle={0} domain={['dataMin - 10','dataMax']}/>
                 <Radar name="% Certainty" dataKey="PercentCertainty" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
                 <Tooltip/>
                 <Legend />

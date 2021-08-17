@@ -229,6 +229,18 @@ class Display extends Component {
       })
   }
 
+  getDigitsFromNumber = (t) => {
+      if (typeof t !== 'number')
+          return [0]
+
+      t = ""+t
+      let arrayDigits = []
+      for(let char of t){
+          arrayDigits.push(char)
+      }
+      return arrayDigits
+  }
+
 
 
   //====================================
@@ -380,6 +392,7 @@ class Display extends Component {
                                           <Grid container item lg={12} style={{textAlign:'center'}}>
                                               <Grid item lg={12}>
                                                   <h1>{this.state.songTitle}</h1>
+                                                  <aside>Data found at the start of the piece</aside>
                                               </Grid>
                                           </Grid>
 
@@ -409,6 +422,12 @@ class Display extends Component {
                                               <Grid item m={4} lg={4}>
                                                   <h5>Tempo Indication</h5>
                                                   <h6>{this.state.tempoIndication}</h6>
+                                                  <br/>
+                                                  {
+                                                      this.getDigitsFromNumber(this.state.tempoIndication).map((item)=>{
+                                                          return <span><img src={this.state.timeMap.getLinkForTime(item)}/></span>
+                                                      })
+                                                  }
                                               </Grid>
                                           </Grid>
 
