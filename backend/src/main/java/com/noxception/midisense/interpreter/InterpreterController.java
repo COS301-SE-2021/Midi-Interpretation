@@ -1,8 +1,6 @@
 package com.noxception.midisense.interpreter;
 
-import com.noxception.midisense.api.DisplayApi;
 import com.noxception.midisense.api.InterpreterApi;
-import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.rrobjects.ProcessFileRequest;
@@ -12,7 +10,9 @@ import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import com.noxception.midisense.models.InterpreterProcessFileResponse;
 import com.noxception.midisense.models.InterpreterUploadFileResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,12 +47,18 @@ import java.util.UUID;
  *  * @since 1.0.0
  */
 
+@Slf4j
 @CrossOrigin("*")
 @RestController
+@DependsOn({"configurationLoader"})
 public class InterpreterController implements InterpreterApi {
 
+    private final InterpreterServiceImpl interpreterService;
+
     @Autowired
-    InterpreterServiceImpl interpreterService;
+    public InterpreterController(InterpreterServiceImpl interpreterService) {
+        this.interpreterService = interpreterService;
+    }
 
     /** Method that invokes the process method of the Interpreter service and presents the resultant metadata of
      * the work with a specific designator.
@@ -74,6 +80,10 @@ public class InterpreterController implements InterpreterApi {
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+
+            //Log the call for request
+            log.info(String.format("Request | To: %s | For: %s | Assigned: %s","processFile",fileDesignator,req.getDesignator()));
+
             ProcessFileResponse res = interpreterService.processFile(req);
 
             responseObject.setMessage(res.getMessage());
@@ -82,8 +92,12 @@ public class InterpreterController implements InterpreterApi {
         }
         catch (InvalidDesignatorException | IllegalArgumentException e) {
 
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","processFile",e.getMessage()));
+
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(false);
+            responseObject.setMessage(e.getMessage());
 
         }
 
@@ -113,15 +127,25 @@ public class InterpreterController implements InterpreterApi {
             byte[] fileContents = file.getBytes();
 
             UploadFileRequest req = new UploadFileRequest(fileContents);
+
+            //Log the call for request
+            log.info(String.format("Request | To: %s | For: %s | Assigned: %s","uploadFile",file.getName(),req.getDesignator()));
+
             UploadFileResponse res = interpreterService.uploadFile(req);
 
             responseObject.setFileDesignator(res.getFileDesignator().toString());
+            responseObject.setSuccess(true);
+            responseObject.setMessage("Successfully uploaded file");
 
         }
         catch (IllegalArgumentException | InvalidUploadException | IOException e) {
 
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","uploadFile",e.getMessage()));
+
             returnStatus = HttpStatus.BAD_REQUEST;
-            responseObject = null;
+            responseObject.setSuccess(false);
+            responseObject.setMessage(e.getMessage());
 
         }
 

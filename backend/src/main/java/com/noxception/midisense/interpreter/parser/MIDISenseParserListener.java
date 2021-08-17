@@ -1,8 +1,17 @@
 package com.noxception.midisense.interpreter.parser;
 
+import com.noxception.midisense.config.ConfigurationName;
+import com.noxception.midisense.config.StandardConfig;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.jfugue.parser.ParserListener;
 import org.jfugue.theory.Chord;
 import org.jfugue.theory.Note;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Class used for the implementation of responses to invocations made by the jFugue 5.0.9 Midi Parser.
@@ -27,16 +36,19 @@ import org.jfugue.theory.Note;
  * @author Adrian Rae
  * @since 1.0.0
  */
+@Slf4j
 public class MIDISenseParserListener implements ParserListener{
 
-
-    private int trackIndex = -1;
-
     private Score parsedScore;
+    private final String filename;
+    private final StandardConfig configurations;
 
-    public MIDISenseParserListener() {
+    public MIDISenseParserListener(String filename, StandardConfig config) {
         super();
+        this.filename = filename;
+        this.configurations = config;
     }
+
 
     /** Method to access the score once parsing has occured
      *
@@ -58,27 +70,51 @@ public class MIDISenseParserListener implements ParserListener{
      * The content invoked when the parser switches from one track to another.
      * Switches tracks on the parsed score and creates new tracks if they don't already exist
      *
-     * @param track the track index switched to during parsing
+     * @param channel the track index switched to during parsing
      */
     @Override
-    public void onTrackChanged(byte track) {
+    public void onTrackChanged(byte channel) {
         //switch tracks
-        this.trackIndex = track;
-        if (parsedScore.getTrack(track)==null)
+        if (parsedScore.getTrack(channel)==null){
             //if the parsed score doesn't have the track, add it
-            parsedScore.addTrack(track);
+
+            String trackData = null;
+            //gather data by calling python script
+            try{
+                ProcessBuilder processBuilder = new ProcessBuilder(
+                        "python",
+                        "\""+configurations.configuration(ConfigurationName.MIDI_INTERPRETATION_SCRIPT_PATH)+"\"",
+                        String.format("\"%s\"",filename),
+                        String.valueOf(channel));
+
+                processBuilder.redirectErrorStream(true);
+
+                Process process = processBuilder.start();
+                InputStream stream = process.getInputStream();
+                InputStream errorStream = process.getErrorStream();
+
+                StringWriter errorWriter = new StringWriter();
+                IOUtils.copy(errorStream, errorWriter, StandardCharsets.UTF_8);
+                String errorData = errorWriter.toString();
+                if(!errorData.equals("")){
+                    log.error(errorData);
+                }
+
+                StringWriter writer = new StringWriter();
+                IOUtils.copy(stream, writer, StandardCharsets.UTF_8);
+
+                String result = writer.toString().replace("\r\n","");
+                trackData = (result.equals("")) ? null : result;
+            }
+            catch (IOException e) {
+                log.error(e.getMessage());
+            }
+
+            if(trackData != null) parsedScore.addTrack(channel,trackData);
+        }
+
     }
 
-    /**
-     * The content invoked when a new instrument control sequence is parsed.
-     * Assigns the current instrument to the current track
-     *
-     * @param b the index of the instrument
-     */
-    @Override
-    public void onInstrumentParsed(byte b) {
-        parsedScore.getTrack(trackIndex).setInstrument(b);
-    }
 
     /**
      * The content invoked when a new tempo control sequence is parsed.
@@ -91,26 +127,24 @@ public class MIDISenseParserListener implements ParserListener{
         parsedScore.setTempoIndication(i);
     }
 
-    /** The content invoked when a new note is parsed.
-     *  Adds the note to the parsed score
-     *
-     * @param note the note encountered while parsing
-     */
-    @Override
-    public void onNoteParsed(Note note){
-        parsedScore.getTrack(trackIndex).addNote(note);
-    }
-
     /**
      * The content invoked when a key Signature control sequence is parsed.
      * Assigns the current key signature to the score
      *
-     * @param b the tonal centre of the signature
-     * @param b1 the key of the signature
+     * @param b the position of C in the octave relative to the key
+     * @param b1 the indicator of major/minor
      */
     @Override
     public void onKeySignatureParsed(byte b, byte b1) {
-        parsedScore.setKeySignature(b,b1);
+        //b is the index of C in the key, which is major or minor based on b1
+
+        //get index of key root in C maj / A min
+        int posInKey = (12-b) % 12;
+        byte[] degreeArray = new byte[]{0, -5, 2, -3, 4, -1, 6, 1, -4, 3, -2, 5};
+
+        byte numAccidentals = degreeArray[posInKey];
+        byte tonalCentre = (byte) ((b1==1)?0:1);
+        parsedScore.setKeySignature(numAccidentals,tonalCentre);
     }
 
     /**
@@ -130,6 +164,11 @@ public class MIDISenseParserListener implements ParserListener{
     //=================================
 
     @Override
+    public void onNoteParsed(Note note){
+
+    }
+
+    @Override
     public void onChordParsed(Chord chord) {
     }
 
@@ -141,6 +180,11 @@ public class MIDISenseParserListener implements ParserListener{
 
     @Override
     public void onLayerChanged(byte b) {
+    }
+
+    @Override
+    public void onInstrumentParsed(byte b) {
+
     }
 
     @Override

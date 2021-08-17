@@ -27,11 +27,11 @@ const useStyles = makeStyles(theme => ({
  * @constructor
  */
 
-export default function SelectedMenu({inputOptions}) {
+export default function SelectedMenu(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
-  const options = inputOptions
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const options = props.inputOptions
 
   /**
    * Handle the list being clicked
@@ -50,6 +50,7 @@ export default function SelectedMenu({inputOptions}) {
 
   function handleMenuItemClick(event, index) {
     setSelectedIndex(index);
+    props.setTrack(index)
     setAnchorEl(null);
   }
 
@@ -91,7 +92,6 @@ export default function SelectedMenu({inputOptions}) {
         {options.map((option, index) => (
           <MenuItem
             key={option}
-            //disabled={index === 0}
             selected={index === selectedIndex}
             onClick={event => handleMenuItemClick(event, index)}
           >

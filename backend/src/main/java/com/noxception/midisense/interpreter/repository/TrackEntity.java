@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 
 /** Class that represents an entity equivalent of the {@link com.noxception.midisense.interpreter.parser.Track} class
@@ -26,30 +29,12 @@ public class TrackEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private final List<byte[]> notes = new ArrayList<>();
 
-    private String instrumentName;
+    private int maxLength;
+    private int compressedLength;
 
     public TrackEntity() {
-    }
-
-    /**
-     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
-     */
-    public Long getTrackID() {
-        return trackID;
-    }
-
-    /**
-     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
-     */
-    public List<byte[]> getNotes() {
-        return notes;
-    }
-
-    /**
-     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
-     */
-    public String getInstrumentName() {
-        return instrumentName;
+        maxLength = 0;
+        compressedLength = 0;
     }
 
     /** A method that allocates a string of interpreted notes to a lookup table of note BLOB objects
@@ -58,18 +43,34 @@ public class TrackEntity {
      * @param notes the interpreted string of note data
      */
     public void setNotes(String notes) {
-        byte[] inArray = notes.getBytes();
-        int len = inArray.length;
+
+        //translate to byte stream
+        byte[] input = notes.getBytes();
+
+
+
+        //compress
+        maxLength = input.length;
+        int compressedMax = Math.max(Short.MAX_VALUE,maxLength);
+        byte[] output = new byte[compressedMax];
+        Deflater deflater = new Deflater();
+        deflater.setInput(input);
+        deflater.finish();
+        compressedLength = deflater.deflate(output);
+        deflater.end();
+
+        int len = compressedLength;
+
         int segmentSize = 255;
         int i = 0;
         int window = len/segmentSize;
         while (i<= window){
             if (i != window){
-                byte[] portion = Arrays.copyOfRange(inArray,i*segmentSize,(i+1)*segmentSize);
+                byte[] portion = Arrays.copyOfRange(output,i*segmentSize,(i+1)*segmentSize);
                 this.notes.add(portion);
             }
             else{
-                byte[] portion = Arrays.copyOfRange(inArray,i*segmentSize,len-1);
+                byte[] portion = Arrays.copyOfRange(output,i*segmentSize,len);
                 this.notes.add(portion);
             }
             i++;
@@ -87,7 +88,21 @@ public class TrackEntity {
         }
         byte[] response = new byte[reconstruct.size()];
         for(int i=0; i<reconstruct.size(); i++) response[i] = reconstruct.get(i);
-        return new String(response);
+
+        byte[] responseArray = new byte[maxLength];
+        try{
+            //reconstruct from reduced
+            Inflater inflater = new Inflater();
+            inflater.setInput(response, 0, compressedLength);
+            int resultLength = inflater.inflate(responseArray);
+            inflater.end();
+        }
+        catch (DataFormatException e) {
+            responseArray = new byte[]{};
+        }
+
+
+        return new String(responseArray);
 
     }
 
@@ -95,32 +110,33 @@ public class TrackEntity {
      * Is a condensed version of the corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
      */
     public List<String> getNoteSummary(){
-        String stepSensitive = "\"step\": \"";
-        String octaveSensitive = "\"octave\": ";
-        String sepSensitive = "\", ";
-        String sep2Sensitive = ", ";
+        String start = "\"value\": ";
+        String end = ", ";
+        String altEnd = "}";
 
         List<String> newList = new ArrayList<>();
-
         String richString = getRichTextNotes();
-        int lastIndex = richString.indexOf(stepSensitive);
-        while(lastIndex != -1){
-            int sepPos = richString.indexOf(sepSensitive,lastIndex);
-            String step = richString.substring(lastIndex+stepSensitive.length(),sepPos);
-            sepPos = richString.indexOf(sep2Sensitive,sepPos+2);
-            int octavePos = richString.indexOf(octaveSensitive,lastIndex);
-            String octave = richString.substring(octavePos+octaveSensitive.length(),sepPos);
-            newList.add(step+octave);
-            lastIndex = richString.indexOf(stepSensitive,lastIndex+1);
+
+        int lastIndex = 0;
+        while(true){
+            int startIndex = richString.indexOf(start,lastIndex);
+            int endIndex = richString.indexOf(end,startIndex+1);
+            int altEndIndex = richString.indexOf(altEnd,startIndex+1);
+
+            if(endIndex==-1 && altEndIndex!=-1) endIndex = altEndIndex;
+
+            if(startIndex==-1 || endIndex==-1){
+                break;
+            }
+            else{
+                String caseString = richString.substring(startIndex+start.length(),endIndex);
+                newList.add(caseString);
+                lastIndex = endIndex;
+            }
+
         }
         return newList;
     }
 
-    /**
-     * See corresponding method of {@link com.noxception.midisense.interpreter.parser.Track}
-     */
-    public void setInstrumentName(String instrumentName) {
-        this.instrumentName = instrumentName;
-    }
 
 }

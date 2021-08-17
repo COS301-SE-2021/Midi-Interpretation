@@ -9,18 +9,8 @@ const useStyles = makeStyles(theme => ({
     right: 0,
     top: "calc(50% - 20px)",
     margin: "auto",
-    height: "40px",
-    width: "40px",
-    "& img": {
-      position: "absolute",
-      height: "25px",
-      width: "auto",
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      margin: "auto"
-    }
+    height: "10%",
+    width: "10%",
   }
 }));
 
@@ -29,8 +19,7 @@ const Loading = props => {
 
   return (
     <div className={classes.loading}>
-      <img src="/assets/images/logo-circle.svg" alt="" />
-      <CircularProgress />
+      <CircularProgress color={"primary"} />
     </div>
   );
 };

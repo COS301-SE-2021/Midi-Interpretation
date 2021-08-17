@@ -38,16 +38,17 @@ class NotFound extends Component {
                 <div className={`${classes.flexCenter} ${classes.inner}`}>
                     <img
                         className="mb-8"
-                        src={process.env.PUBLIC_URL + "/assets/images/illustrations/404.svg"}
-                        alt=""
+                        src={process.env.PUBLIC_URL + "/assets/images/illustrations/Guitar_character.svg"}
+                        alt="File not Found"
                     />
+                    <h1>404 File Not Found</h1>
                     <Button
                         className="capitalize"
                         variant="contained"
                         color="primary"
                         onClick={() => this.props.history.push("/")}
                     >
-                        Back to Upload
+                        Back to Home
                     </Button>
               </div>
           </div>

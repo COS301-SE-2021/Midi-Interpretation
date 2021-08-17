@@ -20,26 +20,6 @@ import { merge } from "lodash";
 
 const styles = theme => ({});
 
-/**
- *  Icon button white styling
- */
-
-const IconButtonWhite = withStyles(theme => ({
-  root: {
-    backgroundColor: "transparent",
-    padding: "5px"
-  }
-}))(IconButton);
-
-/**
- * Small icon styling
- */
-
-const IconSmall = withStyles(() => ({
-  root: {
-    fontSize: "1rem"
-  }
-}))(Icon);
 
 /**
  * Layout 1 sidebar
@@ -58,7 +38,7 @@ class Layout1Sidenav extends Component {
     // CLOSE SIDENAV ON ROUTE CHANGE ON MOBILE
     this.unlistenRouteChange = this.props.history.listen((location, action) => {
       if (isMdScreen()) {
-        this.updateSidebarMode({ mode: "close" });
+        this.updateSidebarMode({ mode: "compact" });
       }
     });
 

@@ -1592,5 +1592,9 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/linux,windows,macos,android,eclipse,intellij,intellij+all,emacs,vim,vscode,visualstudio,netbeans,java,node,angular,ionic3,maven,git,tortoisegit,webstorm,webstorm+all,webstorm+iml,intellij+iml,adobe,latex
 
 ### Database ####
-application.properties
 backend/src/main/resources/application.properties
+
+### AI TRAINING AND MAPPING ####
+*.npy
+*.csv
+backend/src/main/resources/testing.properties
