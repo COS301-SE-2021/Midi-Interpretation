@@ -33,7 +33,12 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
     @Autowired
     private MIDISenseConfig configurations;
 
-    /**analyseGenre*/
+
+    //====================================================================================================================//
+    //                                           BLACK BOX TESTING BELOW                                                  //
+    //====================================================================================================================//
+
+    /**AnalyseGenre*/
     @Test
     @DisplayName("Analyse Genre: input [designator for a file in storage] expect [genre array]")
     public void test_BlackBox_AnalyseGenre_IfValidFileDesignator_ThenAccurateInfo() throws Exception {
