@@ -36,163 +36,6 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     private MIDISenseConfig configurations;
 
 
-    //====================================================================================================================//
-    //                                         WHITE BOX TESTING BELOW                                                    //
-    //====================================================================================================================//
-
-    /**GetPieceMetadata*/
-    @Test
-    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
-    public void test_WhiteBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
-
-        //make a request
-        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
-
-        //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-
-        //make a request
-        MvcResult response = mockRequest(
-                "display",
-                "getPieceMetadata",
-                request,
-                mvc
-        );
-
-
-        //Check that the key signature is valid
-        String keySignature = extractJSONAttribute("keySignature", response.getResponse().getContentAsString());
-        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
-        boolean b = Arrays.asList(keyArray).contains(keySignature);
-        assertTrue(b);
-
-        //check for successful response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-    }
-
-    /**GetTrackInfo*/
-    @Test
-    @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
-    public void test_WhiteBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
-
-        //make a request
-        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
-
-        //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-
-        //make a request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackInfo",
-                request,
-                mvc
-        );
-
-        //TODO: Confirm the attribute "track_map" is the correct attribute name to get and test
-        //Check we receive an array back with at least one entry in it
-        String trackMap = extractJSONAttribute("trackName", response.getResponse().getContentAsString());
-        assertFalse(trackMap.isEmpty());
-
-        //check for successful response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-    }
-
-    /**GetTrackMetadata*/
-    @Test
-    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
-    public void test_WhiteBox_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception{
-
-        //make a request
-        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
-
-        //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //Get an valid track index
-        int trackIndex = 0;
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-        request.setTrackIndex(trackIndex);
-
-
-        //make a request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackMetadata",
-                request,
-                mvc
-        );
-
-        //TODO: Confirm the attribute "track_string" is the correct attribute name to get and test
-        String trackString = response.getResponse().getContentAsString();
-        //Check that there is a substring for an inner array with countably many items
-        String regex = "\\{\\\"trackString\\\":\\\"\\{\\\\\\\"channel\\\\\\\": ([0-9]|(1[0-5])), \\\\\\\"instrument\\\\\\\": \\\\\\\".+\\\\\\\", \\\\\\\"ticks_per_beat\\\\\\\": ([1-9]([0-9])*), \\\\\\\"track\\\\\\\": \\[(\\{.+\\})*\\]\\}\\\"(,.+)*\\}";
-        Pattern validResponse = Pattern.compile(regex,Pattern.MULTILINE);
-        Matcher matcher = validResponse.matcher(trackString);
-
-        //see that the substring is present
-        assertTrue(matcher.find());
-
-
-        //check for successful response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-    }
-
-    /**GetTrackOverview*/
-    @Test
-    @DisplayName("Get Track Overview: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
-    public void test_WhiteBox_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception {
-        //make a request
-        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
-
-        //Getting the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //Get track index too high
-        int trackIndex = 0;
-
-        //pass into request
-        request.setFileDesignator(fileDesignator.toString());
-        request.setTrackIndex(trackIndex);
-
-
-        //make a request
-        MvcResult response = mockRequest(
-                "display",
-                "getTrackOverview",
-                request,
-                mvc
-        );
-
-        //TODO: Confirm the attribute "pitch_Array" is the correct attribute name to get and test
-        //Check we receive an array back with at least one entry in it
-        String s = "";
-        String pitchArray = extractJSONAttribute("trackArray", response.getResponse().getContentAsString());
-        //Check the array has at least one item
-        assertNotEquals(s, pitchArray);
-
-        //check for failed response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-    }
-
-
-
 
     //====================================================================================================================//
     //                                           BLACK BOX TESTING BELOW                                                  //
@@ -700,6 +543,165 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
         //check for failed response
         Assertions.assertEquals(400, response.getResponse().getStatus());
+    }
+
+
+
+
+
+    //====================================================================================================================//
+    //                                         WHITE BOX TESTING BELOW                                                    //
+    //====================================================================================================================//
+
+    /**GetPieceMetadata*/
+    @Test
+    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
+    public void test_WhiteBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+
+        //make a request
+        DisplayGetPieceMetadataRequest request = new DisplayGetPieceMetadataRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getPieceMetadata",
+                request,
+                mvc
+        );
+
+
+        //Check that the key signature is valid
+        String keySignature = extractJSONAttribute("keySignature", response.getResponse().getContentAsString());
+        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
+        boolean b = Arrays.asList(keyArray).contains(keySignature);
+        assertTrue(b);
+
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+    }
+
+    /**GetTrackInfo*/
+    @Test
+    @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
+    public void test_WhiteBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
+
+        //make a request
+        DisplayGetTrackInfoRequest request = new DisplayGetTrackInfoRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackInfo",
+                request,
+                mvc
+        );
+
+        //TODO: Confirm the attribute "track_map" is the correct attribute name to get and test
+        //Check we receive an array back with at least one entry in it
+        String trackMap = extractJSONAttribute("trackName", response.getResponse().getContentAsString());
+        assertFalse(trackMap.isEmpty());
+
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+    }
+
+    /**GetTrackMetadata*/
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
+    public void test_WhiteBox_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception{
+
+        //make a request
+        DisplayGetTrackMetadataRequest request = new DisplayGetTrackMetadataRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get an valid track index
+        int trackIndex = 0;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackMetadata",
+                request,
+                mvc
+        );
+
+        //TODO: Confirm the attribute "track_string" is the correct attribute name to get and test
+        String trackString = response.getResponse().getContentAsString();
+        //Check that there is a substring for an inner array with countably many items
+        String regex = "\\{\\\"trackString\\\":\\\"\\{\\\\\\\"channel\\\\\\\": ([0-9]|(1[0-5])), \\\\\\\"instrument\\\\\\\": \\\\\\\".+\\\\\\\", \\\\\\\"ticks_per_beat\\\\\\\": ([1-9]([0-9])*), \\\\\\\"track\\\\\\\": \\[(\\{.+\\})*\\]\\}\\\"(,.+)*\\}";
+        Pattern validResponse = Pattern.compile(regex,Pattern.MULTILINE);
+        Matcher matcher = validResponse.matcher(trackString);
+
+        //see that the substring is present
+        assertTrue(matcher.find());
+
+
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+    }
+
+    /**GetTrackOverview*/
+    @Test
+    @DisplayName("Get Track Overview: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
+    public void test_WhiteBox_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception {
+        //make a request
+        DisplayGetTrackOverviewRequest request = new DisplayGetTrackOverviewRequest();
+
+        //Getting the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get track index too high
+        int trackIndex = 0;
+
+        //pass into request
+        request.setFileDesignator(fileDesignator.toString());
+        request.setTrackIndex(trackIndex);
+
+
+        //make a request
+        MvcResult response = mockRequest(
+                "display",
+                "getTrackOverview",
+                request,
+                mvc
+        );
+
+        //TODO: Confirm the attribute "pitch_Array" is the correct attribute name to get and test
+        //Check we receive an array back with at least one entry in it
+        String s = "";
+        String pitchArray = extractJSONAttribute("trackArray", response.getResponse().getContentAsString());
+        //Check the array has at least one item
+        assertNotEquals(s, pitchArray);
+
+        //check for failed response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
 
