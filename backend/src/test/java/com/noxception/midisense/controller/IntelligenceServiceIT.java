@@ -35,6 +35,53 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
 
 
     //====================================================================================================================//
+    //                                           WHITE BOX TESTING BELOW                                                  //
+    //====================================================================================================================//
+
+    @Test
+    @DisplayName("Analyse Genre: input [designator for a file in storage] expect [genre array]")
+    public void test_WhiteBox_AnalyseGenre_IfValidFileDesignator_ThenAccurateInfo() throws Exception {
+
+        //make a request
+        IntelligenceAnalyseGenreRequest request = new IntelligenceAnalyseGenreRequest();
+
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+
+        //pass valid file designator into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "intelligence",
+                "analyseGenre",
+                request,
+                mvc
+        );
+
+
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+
+        //Check we receive an array back with at least one entry in it
+        String genreArray = extractJSONAttribute("genreArray", response.getResponse().getContentAsString());
+        assertFalse(genreArray.isEmpty());
+
+        //Delete file from local storage
+        File fileToDelete = new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Assertions.assertTrue(fileToDelete.delete());
+
+    }
+
+
+
+    //====================================================================================================================//
     //                                           BLACK BOX TESTING BELOW                                                  //
     //====================================================================================================================//
 
@@ -102,48 +149,4 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
 
     }
 
-    //====================================================================================================================//
-    //                                           WHITE BOX TESTING BELOW                                                  //
-    //====================================================================================================================//
-
-    @Test
-    @DisplayName("Analyse Genre: input [designator for a file in storage] expect [genre array]")
-    public void test_WhiteBox_AnalyseGenre_IfValidFileDesignator_ThenAccurateInfo() throws Exception {
-
-        //make a request
-        IntelligenceAnalyseGenreRequest request = new IntelligenceAnalyseGenreRequest();
-
-        //Create a temporary file to parse
-        UUID fileDesignator = UUID.randomUUID();
-        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
-
-        //copy temp file from testing data
-        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
-        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-
-        //pass valid file designator into request
-        request.setFileDesignator(fileDesignator.toString());
-
-        //make a request
-        MvcResult response = mockRequest(
-                "intelligence",
-                "analyseGenre",
-                request,
-                mvc
-        );
-
-
-        //check for successful response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-
-        //Check we receive an array back with at least one entry in it
-        String genreArray = extractJSONAttribute("genreArray", response.getResponse().getContentAsString());
-        assertFalse(genreArray.isEmpty());
-
-        //Delete file from local storage
-        File fileToDelete = new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-        Assertions.assertTrue(fileToDelete.delete());
-
-    }
 }
