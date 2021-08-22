@@ -42,7 +42,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     /**GetPieceMetadata*/
     @Test
-    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
+    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [valid response code with correct key signature]")
     public void test_WhiteBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
 
         //make a request
@@ -77,7 +77,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     /**GetTrackInfo*/
     @Test
-    @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
+    @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 entry]")
     public void test_WhiteBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
 
         //make a request
@@ -99,7 +99,6 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //TODO: Confirm the attribute "track_map" is the correct attribute name to get and test
         //Check we receive an array back with at least one entry in it
         String trackMap = extractJSONAttribute("trackName", response.getResponse().getContentAsString());
         assertFalse(trackMap.isEmpty());
@@ -137,7 +136,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //TODO: Confirm the attribute "track_string" is the correct attribute name to get and test
+
+
         String trackString = response.getResponse().getContentAsString();
         //Check that there is a substring for an inner array with countably many items
         String regex = "\\{\\\"trackString\\\":\\\"\\{\\\\\\\"channel\\\\\\\": ([0-9]|(1[0-5])), \\\\\\\"instrument\\\\\\\": \\\\\\\".+\\\\\\\", \\\\\\\"ticks_per_beat\\\\\\\": ([1-9]([0-9])*), \\\\\\\"track\\\\\\\": \\[(\\{.+\\})*\\]\\}\\\"(,.+)*\\}";
@@ -180,7 +180,8 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
                 mvc
         );
 
-        //TODO: Confirm the attribute "pitch_Array" is the correct attribute name to get and test
+
+
         //Check we receive an array back with at least one entry in it
         String s = "";
         String pitchArray = extractJSONAttribute("trackArray", response.getResponse().getContentAsString());
