@@ -37,6 +37,85 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     @Autowired
     private MIDISenseConfig configurations;
 
+    //====================================================================================================================//
+    //                                  WHITE BOX TESTING BELOW                                                           //
+    //====================================================================================================================//
+    //checking returned code and designator is correct
+
+    /**UploadFile*/
+    @Test
+    @DisplayName("Upload File: input [valid file] expect [correct response code]")
+    void test_WhiteBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
+
+        String fileName = configurations.configuration(ConfigurationName.MIDI_TESTING_FILE);
+        File testfile = new File(fileName);
+
+        //Extracting the file contents of the testing file
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                fileName,
+                MediaType.TEXT_PLAIN_VALUE,
+                Files.readAllBytes(testfile.toPath())
+        );
+        //mock request
+        MvcResult response = mockUpload(
+                "interpreter",
+                "uploadFile",
+                file,
+                mvc
+        );
+
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+
+        String fileDesignatorToDelete = extractJSONAttribute("fileDesignator",response.getResponse().getContentAsString());
+        fileName = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignatorToDelete+configurations.configuration(ConfigurationName.FILE_FORMAT);
+        File fileToDelete = new File(fileName);
+        Assertions.assertTrue(fileToDelete.delete());
+    }
+
+
+    /**ProcessFile*/
+    @Test
+    @Transactional
+    @Rollback(value = true)
+    @DisplayName("Process File: input [valid file] expect [correct response code]")
+    void test_WhiteBox_ProcessFile_IfValidFileDesignator_ThenAccurateResponse() throws Exception{
+
+        //create request object
+        InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
+
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+
+        //pass valid file designator into request
+        request.setFileDesignator(fileDesignator.toString());
+
+        //make a request
+        MvcResult response = mockRequest(
+                "interpreter",
+                "processFile",
+                request,
+                mvc
+        );
+
+        //check for successful response
+        Assertions.assertEquals(200, response.getResponse().getStatus());
+
+
+        File fileToDelete = new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Assertions.assertTrue(fileToDelete.delete());
+
+    }
+
+
+
 
     //====================================================================================================================//
     //                                  BLACK BOX TESTING BELOW                                                           //
@@ -170,87 +249,6 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
         //check for failed response
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
-
-
-
-
-    //====================================================================================================================//
-    //                                  WHITE BOX TESTING BELOW                                                           //
-    //====================================================================================================================//
-    //checking returned code and designator is correct
-
-    /**UploadFile*/
-    @Test
-    @DisplayName("Upload File: input [valid file] expect [correct response code]")
-    void test_WhiteBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
-
-        String fileName = configurations.configuration(ConfigurationName.MIDI_TESTING_FILE);
-        File testfile = new File(fileName);
-
-        //Extracting the file contents of the testing file
-        MockMultipartFile file = new MockMultipartFile(
-                "file",
-                fileName,
-                MediaType.TEXT_PLAIN_VALUE,
-                Files.readAllBytes(testfile.toPath())
-        );
-        //mock request
-        MvcResult response = mockUpload(
-                "interpreter",
-                "uploadFile",
-                file,
-                mvc
-        );
-
-        //check for successful response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-
-        String fileDesignatorToDelete = extractJSONAttribute("fileDesignator",response.getResponse().getContentAsString());
-        fileName = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignatorToDelete+configurations.configuration(ConfigurationName.FILE_FORMAT);
-        File fileToDelete = new File(fileName);
-        Assertions.assertTrue(fileToDelete.delete());
-    }
-
-
-    /**ProcessFile*/
-    @Test
-    @Transactional
-    @Rollback(value = true)
-    @DisplayName("Process File: input [valid file] expect [correct response code]")
-    void test_WhiteBox_ProcessFile_IfValidFileDesignator_ThenAccurateResponse() throws Exception{
-
-        //create request object
-        InterpreterProcessFileRequest request = new InterpreterProcessFileRequest();
-
-        //Create a temporary file to parse
-        UUID fileDesignator = UUID.randomUUID();
-        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
-
-        //copy temp file from testing data
-        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
-        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-
-        //pass valid file designator into request
-        request.setFileDesignator(fileDesignator.toString());
-
-        //make a request
-        MvcResult response = mockRequest(
-                "interpreter",
-                "processFile",
-                request,
-                mvc
-        );
-
-        //check for successful response
-        Assertions.assertEquals(200, response.getResponse().getStatus());
-
-
-        File fileToDelete = new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-        Assertions.assertTrue(fileToDelete.delete());
-
-    }
-
 
 
 }
