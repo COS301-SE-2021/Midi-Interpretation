@@ -102,6 +102,10 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
 
     }
 
+    //====================================================================================================================//
+    //                                           WHITE BOX TESTING BELOW                                                  //
+    //====================================================================================================================//
+
     @Test
     @DisplayName("Analyse Genre: input [designator for a file in storage] expect [genre array]")
     public void test_WhiteBox_AnalyseGenre_IfValidFileDesignator_ThenAccurateInfo() throws Exception {
