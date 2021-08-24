@@ -41,8 +41,9 @@ public class ChordPrediction {
     }
 
     public String getCommonName(){
-        String root = toneMap[rootNote % 12];
-        String inversion = toneMap[bassNote % 12];
+        String root = toneMap[Math.floorMod(rootNote,12)];
+
+        String inversion = toneMap[Math.floorMod(bassNote,12)];
         String type = this.chordType.getShortName();
 
         String inversionString = (root.equals(inversion))?"":String.format(" / %s",inversion);
