@@ -9,9 +9,5 @@ import com.noxception.midisense.intelligence.dataclass.ChordPrediction;
  */
 public interface ChordAnalysisStrategy {
 
-    int totalSuggestions = 10;
-    int classificationClasses = 100;
-    String[] classes = {"to fill in"};
-
-    ChordPrediction[] classify(byte[] features);
+    ChordPrediction classify(byte[] features);
 }

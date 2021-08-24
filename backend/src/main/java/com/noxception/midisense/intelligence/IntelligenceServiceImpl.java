@@ -2,9 +2,11 @@ package com.noxception.midisense.intelligence;
 
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.StandardConfig;
+import com.noxception.midisense.intelligence.dataclass.ChordPrediction;
 import com.noxception.midisense.intelligence.dataclass.GenrePredication;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.*;
+import com.noxception.midisense.intelligence.strategies.ChordAnalysisStrategy;
 import com.noxception.midisense.intelligence.strategies.GenreAnalysisStrategy;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class IntelligenceServiceImpl implements IntelligenceService{
 
     private final StandardConfig configurations;
     private GenreAnalysisStrategy genreAnalysisStrategy;
+    private ChordAnalysisStrategy chordAnalysisStrategy;
 
     public IntelligenceServiceImpl(StandardConfig configurations) {
         this.configurations = configurations;
@@ -87,7 +90,8 @@ public class IntelligenceServiceImpl implements IntelligenceService{
      */
     @Override
     public AnalyseChordResponse analyseChord(AnalyseChordRequest req) throws MissingStrategyException{
-        return null;
+        ChordPrediction prediction = chordAnalysisStrategy.classify(req.getCompound());
+        return new AnalyseChordResponse(prediction.getCommonName());
     }
 
     /**Method that creates a list of tonal (key) classifications based on a byte stream of file features, according to a predefined
@@ -114,5 +118,18 @@ public class IntelligenceServiceImpl implements IntelligenceService{
 
     public boolean hasGenreStrategy(){
         return this.genreAnalysisStrategy != null;
+    }
+
+
+    /**Method to attach a chord analysis strategy to the service
+     *
+     * @param cs a valid chord analysis strategy
+     */
+    public void attachChordStrategy(ChordAnalysisStrategy cs){
+        this.chordAnalysisStrategy = cs;
+    }
+
+    public boolean hasChordStrategy(){
+        return this.chordAnalysisStrategy != null;
     }
 }
