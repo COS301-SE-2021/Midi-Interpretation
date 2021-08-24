@@ -44,13 +44,10 @@ public class DecisionTreeChordAnalysisStrategy implements ChordAnalysisStrategy{
                     temporaryShape.add((byte) ((tone + offset) % 12));
                 }
 
-                //see if the mask with the offset is the same as the chord:
-                //IE, see if the both are subsets of one another
-                boolean tempSubsetOfChord = chordRegression.containsAll(temporaryShape);
-                boolean chordSubsetOfTemp = temporaryShape.containsAll(chordRegression);
+                boolean shellContained = temporaryShape.containsAll(chordRegression);
 
-                if(tempSubsetOfChord && chordSubsetOfTemp){
-                    byte bassNote = (byte) (lowestPitch % 12);
+                if(shellContained){
+                    byte bassNote = (byte) Math.floorMod(lowestPitch,12);
                     return new ChordPrediction(offset,bassNote,chord);
                 }
 
@@ -61,7 +58,7 @@ public class DecisionTreeChordAnalysisStrategy implements ChordAnalysisStrategy{
         }
 
         //if no other chord matches, assume altered on the lowest pitch
-        return new ChordPrediction((byte) (lowestPitch % 12),ChordType.ALTERED);
+        return new ChordPrediction((byte) Math.floorMod(lowestPitch,12),ChordType.ALTERED);
     }
 
 

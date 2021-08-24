@@ -61,7 +61,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     //TODO: WHITE AND BLACKBOX TESTING FOR CLASSIFICATIONS
     @Test
     public void basicClassificationTest() throws MissingStrategyException {
-        AnalyseChordRequest request = new AnalyseChordRequest(new byte[]{53, 59, 62, 65, 68});
+        AnalyseChordRequest request = new AnalyseChordRequest(new byte[]{10,12,16,24});
         intelligenceService.attachChordStrategy(new DecisionTreeChordAnalysisStrategy());
         AnalyseChordResponse response = intelligenceService.analyseChord(request);
         System.out.println(response.getChord());
