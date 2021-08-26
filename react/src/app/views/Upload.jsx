@@ -1,4 +1,4 @@
-import React, {Component, useState} from "react";
+import React, {Component} from "react";
 import {Grid, Button, Icon} from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "matx";
 import { withStyles } from "@material-ui/styles";
@@ -6,11 +6,10 @@ import {makeStyles} from "@material-ui/core/styles";
 import 'react-responsive-combo-box/dist/index.css'
 import MidiSenseService from "../services/MidiSenseService";
 import Cookies from 'universal-cookie';
-import ResponsiveDialog from "./ResponsiveDialog";
+import ResponsiveDialog from "../../matx/components/ResponsiveDialog";
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import Load from "../../matx/components/LoadingOverlay";
-
 
 
 /**
@@ -22,11 +21,6 @@ import Load from "../../matx/components/LoadingOverlay";
  * Navigation:
  *      -> Display
  *
- * Components:
- *      -> MidiSenseService
- *      -> LocalStorageService
- *      -> Breadcrumb
- *      -> SimpleCard
  */
 
 class Upload extends Component {
@@ -40,7 +34,10 @@ class Upload extends Component {
 
   constructor(props){
       super(props);
+
+      // Initialize the cookie system
       this.cookies = new Cookies();
+
       this.state = {
           files: [],
           isFileSet: false,
@@ -77,13 +74,16 @@ class Upload extends Component {
                   expires: tomorrow // Will expire after 24hr from setting (value is in Date object)
               });
           }
-
-          console.log(status, meta, file)
-
       }
-      this.getUploadParams = ({ meta }) => { return { url: 'http://localhost:8080/interpreter/uploadFile' } }
 
-      this.onSubmit = () => {
+      // TODO: url must be defined dynamically and not hard coded
+      this.getUploadParams = () => { return { url: 'http://localhost:8080/interpreter/uploadFile' } }
+
+        /**
+         * Handle the form submission
+         */
+
+        this.onSubmit = () => {
           this.setState({
               isFileSet: this.cookies.get('allowCookies') !== undefined,
               uploadButtonText: "UploadFile",
@@ -104,12 +104,24 @@ class Upload extends Component {
           this.backendService.interpreterProcessFile(
               designator,
 
+              /**
+               * onSuccess
+               * handles navigation to Display
+               * @param res
+               */
+
               (res)=>{
                   const success = res['success']
                   const message = res['message']
                   console.log("Interpretation request "+(success===true?"accepted":"declined")+": "+message)
                   this.props.history.push("/Display");
               },
+
+              /**
+               * onFailure
+               * reloads page on failure (room for extended error handling)
+               * @param error
+               */
 
               (error)=>{
                   console.error("Interpretation request failed : "+JSON.stringify(error))
@@ -118,8 +130,15 @@ class Upload extends Component {
           )
       }
 
+        /**
+         * ProcessFile
+         * Calls sub-methods to begin processing
+         * @constructor
+         */
       this.ProcessFile = () => {
+          //ensure cookies are allowed
           if(this.cookies.get('allowCookies') !== undefined) {
+              //ensure there were no errors in processing the file
               if (this.state.isFileSet) {
                   this.setModalVisible(true)
                   this.beginInterpretation()
@@ -128,34 +147,16 @@ class Upload extends Component {
           }
       }
 
-        this.setModalVisible = (v) => {
-            this.setState({
-                modalVisible:v
-            })
-            console.log(this.state.modalVisible)
+        /**
+         * setModalVisible
+         * Popup to indicate the use of cookies and ask for permission of use
+         * @param v
+         */
+      this.setModalVisible = (v) => {
+          this.setState({
+              modalVisible:v
+          })
         }
-  }
-
-    /**
-     * componentDidMount is invoked immediately after a component is mounted (inserted into the tree)
-     */
-
-  componentDidMount() {
-
-  }
-
-    /**
-     * shouldComponentUpdate lets React know if a component’s output is not affected by the current change in state
-     * or props. In our case, true.
-     *
-     * @param nextProps
-     * @param nextState
-     * @param nextBool
-     * @returns {boolean}
-     */
-
-  shouldComponentUpdate(nextProps, nextState, nextBool) {
-    return true;
   }
 
     /**
@@ -167,27 +168,6 @@ class Upload extends Component {
      */
 
   render() {
-        const styles = {
-            modal: {
-                backgroundColor: "transparent",
-                boxShadow: "none",
-                display: "flex",
-                overflow: "none",
-                width: "100%",
-                padding: "0",
-                margin: "0",
-                height: "100%",
-                minWidth: "100%",
-                justifyContent: "center"
-            },
-            overlay: {
-                backgroundColor: "#1cccc",
-                padding: 0
-            },
-            closeIcon: {
-                fill: "#fff"
-            }
-        };
       const classes = makeStyles;
       return (
           <div className="m-sm-30" >
