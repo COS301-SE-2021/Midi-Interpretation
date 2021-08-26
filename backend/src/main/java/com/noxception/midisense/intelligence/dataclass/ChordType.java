@@ -10,7 +10,6 @@ public enum ChordType {
     DIMINISHED (new byte[]{0,3,6}, "Dim"),
     AUGMENTED (new byte[]{0,4,8}, "Aug"),
     SUSPENDED_FOURTH (new byte[]{0,5,7}, "Sus4"),
-    SUSPENDED_SECOND (new byte[]{0,2,7}, "Sus2"),
     DOMINANT_SEVENTH (new byte[]{0,4,7,10}, "7"),
     MAJOR_SEVENTH (new byte[]{0,4,7,11}, "Maj7"),
     MINOR_SEVENTH (new byte[]{0,3,7,10}, "Min7"),
