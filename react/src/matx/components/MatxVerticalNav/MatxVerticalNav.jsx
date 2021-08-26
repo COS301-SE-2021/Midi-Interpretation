@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Icon } from "@material-ui/core";
