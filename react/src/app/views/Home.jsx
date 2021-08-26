@@ -54,7 +54,7 @@ class Home extends Component {
                                         color="secondary"
                                         onClick={() => this.props.history.push("/About")}
                                     >
-                                        <div className="text-16 font-bold">
+                                        <div className="text-16 font-medium">
                                             About us
                                         </div>
                                     </Button>
@@ -66,7 +66,7 @@ class Home extends Component {
                                         color="secondary"
                                         onClick={() => this.props.history.push("/Upload")}
                                     >
-                                        <div className="text-16 font-bold">
+                                        <div className="text-16 font-medium">
                                             Use MIDISense
                                         </div>
                                     </Button>
@@ -78,7 +78,7 @@ class Home extends Component {
                                         color="secondary"
                                         onClick={() => this.props.history.push("/Help")}
                                     >
-                                        <div className="text-16 font-bold">
+                                        <div className="text-16 font-medium">
                                             Help
                                         </div>
                                     </Button>
