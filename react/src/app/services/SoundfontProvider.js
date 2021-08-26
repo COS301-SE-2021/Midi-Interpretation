@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 // See https://github.com/danigb/soundfont-player
 // for more documentation on prop options.
 import React from 'react';

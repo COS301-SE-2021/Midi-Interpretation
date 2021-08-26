@@ -1,6 +1,5 @@
 import React from 'react';
 import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano';
-import MdArrowDownward from '@material-ui/icons/ArrowDownward';
 import DimensionsProvider from './DimensionsProvider';
 import SoundfontProvider from './SoundfontProvider';
 import {isMdScreen} from "../../utils";
@@ -62,7 +61,7 @@ render() {
           audioContext={this.props.audioContext}
           instrumentName={this.state.config.instrumentName}
           hostname={this.props.soundfontHostname}
-          render={({ isLoading, playNote, stopNote, stopAllNotes }) => (
+          render={({ isLoading, playNote, stopNote}) => (
               <div>
                 <div className="mt-2">
                   <DimensionsProvider>

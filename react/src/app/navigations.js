@@ -30,13 +30,13 @@ export const navigations = [
         icon: "cloud_Upload",
         enabled: true
     },
+    // disable the Display view if no file has been processed
     (cookies.get('fileDesignator') !== undefined)?
         {
             name: "Display",
             path: "/Display",
             icon: "equalizer",
             enabled: true
-            //badge: { value: "demo", color: "secondary" },
         }
     :
         {

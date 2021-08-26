@@ -149,7 +149,7 @@ class Upload extends Component {
 
         /**
          * setModalVisible
-         * Popup to indicate the use of cookies and ask for permission of use
+         * Popup to indicate that the system is processing the file
          * @param v
          */
       this.setModalVisible = (v) => {
