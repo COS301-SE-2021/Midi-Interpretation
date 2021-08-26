@@ -12,8 +12,7 @@ import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 
 /**
- * This class defines the first view that a user will be presented with
- * The view will explain how to use our service and act as an about page for MIDISense
+ * The view will explain how to use MIDISense
  *
  * Navigation:
  *      -> Upload
@@ -22,7 +21,7 @@ import AppBar from '@material-ui/core/AppBar';
 class Help extends Component {
 
     /**
-     * The main constructor for the Welcome view
+     * The main constructor for the Help view
      *
      * @constructor
      * @param props
@@ -31,28 +30,6 @@ class Help extends Component {
     constructor(props){
         super(props);
         this.state = {}
-    }
-
-    /**
-     * componentDidMount is invoked immediately after a component is mounted (inserted into the tree)
-     */
-
-    componentDidMount() {
-
-    }
-
-    /**
-     * shouldComponentUpdate lets React know if a component’s output is not affected by the current change in state
-     * or props. In our case, true.
-     *
-     * @param nextProps
-     * @param nextState
-     * @param nextBool
-     * @returns {boolean}
-     */
-
-    shouldComponentUpdate(nextProps, nextState, nextBool) {
-        return true;
     }
 
     /**
