@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 .fade-in {
   @include keyframeMaker(fade-in) {
     from {

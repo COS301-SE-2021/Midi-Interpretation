@@ -21,8 +21,7 @@ const useStyles = makeStyles(theme => ({
 /**
  * Menu for selecting an item from a dropdown menu.
  * Adds styling and functionality to @material-ui Menu
- *
- * @param inputOptions - An array of strings that makes up the options that are selectable by the menu
+ * @param props
  * @returns {JSX.Element}
  * @constructor
  */

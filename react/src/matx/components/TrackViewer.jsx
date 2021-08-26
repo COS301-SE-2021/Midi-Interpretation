@@ -3,21 +3,41 @@ import React from "react";
 import {Grid} from "@material-ui/core";
 import * as ReactDOMServer from "react-dom/server";
 
+/**
+ * voiceName
+ * @param index
+ * @returns {string}
+ */
 function voiceName (index){
     return "Line "+(index+1)
 }
 
+/**
+ * velocityToDynamic
+ * @param vel
+ * @returns {string}
+ */
 function velocityToDynamic(vel){
     vel = vel % 128
     let dynamics = ['pppp','ppp','pp','p','mp','mf','f','ff','fff','ffff']
     return dynamics[Math.ceil((vel-10)/13)]
 }
 
+/**
+ * getPercussiveInstrument
+ * @param value
+ * @returns {string}
+ */
 function getPercussiveInstrument(value){
     let instruments = ["Acoustic Bass Drum","Bass Drum 1","Side Stick","Acoustic Snare","Hand Clap","Electric Snare","Low Floor Tom","Closed Hi Hat","High Floor Tom","Pedal Hi-Hat","Low Tom","Open Hi-Hat","Low-Mid Tom","Hi Mid Tom","Crash Cymbal 1","High Tom","Ride Cymbal 1","Chinese Cymbal","Ride Bell","Tambourine","Splash Cymbal","Cowbell","Crash Cymbal 2","Vibraslap","Ride Cymbal 2","Hi Bongo","Low Bongo","Mute Hi Conga","Open Hi Conga","Low Conga","High Timbale","Low Timbale","High Agogo","Low Agogo","Cabasa","Maracas","Short Whistle","Long Whistle","Short Guiro","Long Guiro","Claves","Hi Wood Block","Low Wood Block","Mute Cuica","Open Cuica","Mute Triangle","Open Triangle"]
     return instruments[(value-35) % instruments.length]
 }
 
+/**
+ * valueToNote
+ * @param k
+ * @returns {{octave: number, pitch: string}}
+ */
 function valueToNote(k){
     let noteArray = ["C","C#/Db","D","D#/Eb","E","F","F#/Gb","G","G#/Ab","A","A#/Bb","B"]
     let offset = k % 12
@@ -26,16 +46,24 @@ function valueToNote(k){
     return {"pitch": note, "octave":octave}
 }
 
+/**
+ * frequency
+ * @param value
+ * @returns {number}
+ */
 function frequency(value){
     return Math.floor(100*440*Math.pow(2,(value-57)/12))/100
 }
 
-
+/**
+ * CustomToolTip
+ * @param props
+ * @returns {JSX.Element|null}
+ * @constructor
+ */
 function CustomTooltip (props) {
+    // is not empty
     if(props.payload.length !== 0) {
-        //props.callSelectChild(props.payload[0].payload.n)
-
-        //Alter the
         document.getElementById("dataDisplay").innerHTML = ReactDOMServer.renderToString(
             <Grid container
                   direction="row"
@@ -50,6 +78,8 @@ function CustomTooltip (props) {
                     let onDynamic = (comp['on_velocity']===-1)?"No Dynamic Info":velocityToDynamic(comp['on_velocity'])
                     let offDynamic = (comp['off_velocity']===-1)?"No Dynamic Info":velocityToDynamic(comp['off_velocity'])
                     let duration = (comp['duration_beats']<0)?"No Duration Info":(comp['duration_beats']+" beats")
+
+                    //handle differently when drum set is detected
                     if(isPercussive){
                         return(<div key={index} style={{padding:"10px"}}>
                             <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
@@ -124,6 +154,7 @@ function CustomTooltip (props) {
 
 function TrackViewer (props) {
     props = props.trackData
+    // check if track data is appropriate
     if(props.trackData.length === 0)
         return(<div/>);
     else{
@@ -131,6 +162,7 @@ function TrackViewer (props) {
         let ticksPerBeat = props.ticksPerBeat
         let isPercussive = (props.instrument.toUpperCase() === "DRUMSET")
 
+        // preset colour palette
         const color = [
             "#37A2DA",
             "#32C5E9",
