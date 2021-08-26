@@ -28,8 +28,7 @@ const MatxLayoutSFC = props => {
   const {
     settings,
     defaultSettings,
-    setLayoutSettings,
-    setDefaultSettings
+    setLayoutSettings
   } = props;
 
   tempSettings = settings;

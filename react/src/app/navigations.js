@@ -12,12 +12,17 @@ export const navigations = [
     {
         name: "About Us",
         path: "/About",
-        icon: "priority_high"
+        icon: "personOutlined"
     },
     {
         name: "Upload",
         path: "/Upload",
-        icon: "cloud_upload"
+        icon: "cloud_Upload"
         // badge: { value: "demo", color: "secondary" },
+    },
+    {
+        name: "Help",
+        path: "/Help",
+        icon: "book"
     }
 ];

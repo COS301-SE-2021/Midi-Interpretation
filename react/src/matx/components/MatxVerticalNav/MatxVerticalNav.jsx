@@ -50,7 +50,7 @@ const MatxVerticalNav = props => {
                 }
               })()}
               <span className="align-middle item-text">{item.name}</span>
-              <div className="mx-auto"></div>
+              <div className="mx-auto"/>
               {item.badge && (
                 <div className={`badge bg-${item.badge.color}`}>
                   {item.badge.value}
@@ -75,7 +75,7 @@ const MatxVerticalNav = props => {
                 }
               })()}
               <span className="align-middle item-text">{item.name}</span>
-              <div className="mx-auto"></div>
+              <div className="mx-auto"/>
               {item.badge && (
                 <div className={`badge bg-${item.badge.color}`}>
                   {item.badge.value}
