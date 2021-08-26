@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Breadcrumb, SimpleCard} from "matx";
 import { withStyles } from "@material-ui/styles";
 import 'react-responsive-combo-box/dist/index.css';
-import { Grid, Container } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
@@ -12,12 +12,22 @@ import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 
 /**
- * This class defines the first view that a user will be presented with
- * The view will explain how to use our service and act as an about page for MIDISense
+ * The view will act as an about page for MIDISense and give information on
  *
- * Navigation:
- *      -> Upload
+ * - Our development team
+ * - How we gathered the data for your AI
+ * - Credits for the external elements of our system
+ *
  */
+
+/**
+ * The tab navigation panel
+ *
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -38,11 +48,22 @@ function TabPanel(props) {
     );
 }
 
+/**
+ * TabPanel Prop type definition
+ */
+
 TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired,
 };
+
+/**
+ * a11yProps
+ *
+ * @param index
+ * @returns {{"aria-controls": string, id: string}}
+ */
 
 function a11yProps(index) {
     return {
@@ -50,6 +71,10 @@ function a11yProps(index) {
         'aria-controls': `scrollable-auto-tabpanel-${index}`,
     };
 }
+
+/**
+ * Styling information for the view
+ */
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -59,10 +84,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+/**
+ * AboutTabs adds the content to the tabs presented to the user by TabPanel
+ *
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 function AboutTabs() {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
+    // Change view to the new panel contents
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -201,10 +234,14 @@ function AboutTabs() {
     );
 }
 
+/**
+ * The core About component
+ */
+
 class About extends Component {
 
     /**
-     * The main constructor for the Welcome view
+     * The main constructor for the About view
      *
      * @constructor
      * @param props
@@ -213,28 +250,6 @@ class About extends Component {
     constructor(props){
         super(props);
         this.state = {}
-    }
-
-    /**
-     * componentDidMount is invoked immediately after a component is mounted (inserted into the tree)
-     */
-
-    componentDidMount() {
-
-    }
-
-    /**
-     * shouldComponentUpdate lets React know if a component’s output is not affected by the current change in state
-     * or props. In our case, true.
-     *
-     * @param nextProps
-     * @param nextState
-     * @param nextBool
-     * @returns {boolean}
-     */
-
-    shouldComponentUpdate(nextProps, nextState, nextBool) {
-        return true;
     }
 
     /**
