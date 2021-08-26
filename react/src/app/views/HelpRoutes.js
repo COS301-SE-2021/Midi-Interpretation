@@ -7,7 +7,7 @@ import React from "react";
 
 const helpRoutes = [
     {
-        path: "/About",
+        path: "/Help",
         component: React.lazy(() => import("./Help")),
     }
 ];
