@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class IntelligenceServiceTest extends MIDISenseUnitTest {
@@ -36,6 +36,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         configurations = new MockConfigurationSettings();
         intelligenceService = new IntelligenceServiceImpl(configurations);
         intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy(configurations));
+        intelligenceService.attachChordStrategy(new DecisionTreeChordAnalysisStrategy());
     }
 
     @Test
@@ -58,14 +59,21 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
     }
 
-    //TODO: WHITE AND BLACKBOX TESTING FOR CLASSIFICATIONS
     @Test
-    public void basicClassificationTest() throws MissingStrategyException {
-        AnalyseChordRequest request = new AnalyseChordRequest(new byte[]{10,12,16,24});
-        intelligenceService.attachChordStrategy(new DecisionTreeChordAnalysisStrategy());
-        AnalyseChordResponse response = intelligenceService.analyseChord(request);
-        System.out.println(response.getChord());
+    public void testWhiteBox_AnalyseChord_IfOpenFifth_ThenAdheresToIntervals() throws MissingStrategyException {
+        for(int k=0; k<12; k++){
+            byte[][] testingCases = new byte[][]{
+                    new byte[]{0,7}//....TODO: fill in the rest
+            };
+            //TODO: add offset k to each value
+            AnalyseChordRequest request = new AnalyseChordRequest(new byte[]{10,12,16,24});
+            AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+            //TODO: Add assertions to match test cases
+
+        }
     }
+
 
 
 }
