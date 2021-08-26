@@ -4,6 +4,8 @@ import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
+import com.noxception.midisense.intelligence.dataclass.ChordPrediction;
+import com.noxception.midisense.intelligence.dataclass.ChordType;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseChordRequest;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseChordResponse;
@@ -23,6 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -62,14 +65,37 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     @Test
     public void testWhiteBox_AnalyseChord_IfOpenFifth_ThenAdheresToIntervals() throws MissingStrategyException {
         for(int k=0; k<12; k++){
-            byte[][] testingCases = new byte[][]{
-                    new byte[]{0,7}//....TODO: fill in the rest
-            };
-            //TODO: add offset k to each value
-            AnalyseChordRequest request = new AnalyseChordRequest(new byte[]{10,12,16,24});
-            AnalyseChordResponse response = intelligenceService.analyseChord(request);
 
-            //TODO: Add assertions to match test cases
+            byte[][] testingCases = new byte[][]{
+                    new byte[]{(byte) (0+k), (byte) (7+k)},
+                    new byte[]{(byte) (60+k), (byte) (67+k)},
+                    new byte[]{(byte) (0+k),(byte) (7+k),(byte) (12+k),(byte) (19+k)},
+                    new byte[]{(byte) (7+k), (byte) (12+k)},
+                    new byte[]{(byte) (7+k),(byte) (12+k),(byte) (19+k)},
+            };
+
+            ChordPrediction[] testingResponses = new ChordPrediction[]{
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.OPEN_FIFTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.OPEN_FIFTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.OPEN_FIFTH),
+                    new ChordPrediction((byte) (0+k),(byte) (7+k), ChordType.OPEN_FIFTH),
+                    new ChordPrediction((byte) (0+k),(byte) (7+k), ChordType.OPEN_FIFTH),
+            };
+
+            for(int j=0; j<testingCases.length; j++){
+
+                AnalyseChordRequest request = new AnalyseChordRequest(testingCases[j]);
+                AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+                String responseChord = response.getChord();
+                String expectedChord = testingResponses[j].getCommonName();
+
+                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+
+                assertEquals(responseChord,expectedChord);
+            }
+
+
 
         }
     }

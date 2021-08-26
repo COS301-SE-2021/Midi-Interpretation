@@ -1,16 +1,10 @@
 package com.noxception.midisense.intelligence.dataclass;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 public class ChordPrediction {
     private byte rootNote;
     private byte bassNote;
     private ChordType chordType;
-    private final byte numAccidentals = 0;
     private static final String[] toneMap = new String[]{"C","C#(Db)","D","D#(Eb)","E","F","F#(Gb)","G","G#(Ab)","A","A#(Bb)","B"};
-    private static final Map<Integer, Set<String>> accidentalLookup= new HashMap<>();
 
     public ChordPrediction(byte rootNote, ChordType chordType) {
         this.rootNote = rootNote;
