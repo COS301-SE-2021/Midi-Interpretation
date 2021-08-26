@@ -52,10 +52,10 @@ class Home extends Component {
                                         className="capitalize"
                                         variant="contained"
                                         color="secondary"
-                                        onClick={() => this.props.history.push("/Upload")}
+                                        onClick={() => this.props.history.push("/About")}
                                     >
-                                        <div className="text-16">
-                                            Upload your own file
+                                        <div className="text-16 font-bold">
+                                            About us
                                         </div>
                                     </Button>
                                 </Grid>
@@ -64,10 +64,22 @@ class Home extends Component {
                                         className="capitalize"
                                         variant="contained"
                                         color="secondary"
-                                        onClick={() => this.props.history.push("/About")}
+                                        onClick={() => this.props.history.push("/Upload")}
                                     >
-                                        <div className="text-16">
-                                            About us
+                                        <div className="text-16 font-bold">
+                                            Use MIDISense
+                                        </div>
+                                    </Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button
+                                        className="capitalize"
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={() => this.props.history.push("/Help")}
+                                    >
+                                        <div className="text-16 font-bold">
+                                            Help
                                         </div>
                                     </Button>
                                 </Grid>

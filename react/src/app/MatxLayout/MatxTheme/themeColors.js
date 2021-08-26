@@ -5,9 +5,9 @@ const textLight = {
   hint: "rgba(52, 49, 76, 0.38)"
 };
 const secondaryColor = {
-  light: "#f9a352",
-  main: "#ff9e43",
-  dark: "#ff932e",
+  light: "#90fad2",
+  main: "#12d4fc",
+  dark: "#0dbff6",
   contrastText: textLight.primary
 };
 
@@ -20,7 +20,7 @@ export const themeColors = {
         contrastText: textLight.primary
       },
       secondary: {
-        main: "#7467ef",
+        main: "#387dd6",
         contrastText: textLight.primary
       },
       text: textLight
@@ -34,7 +34,7 @@ export const themeColors = {
         contrastText: "#ffffff"
       },
       secondary: {
-        main: "#ff9e43",
+        main: "#12d4fc",
         contrastText: textLight.primary
       },
       background: {
@@ -51,7 +51,7 @@ export const themeColors = {
         contrastText: "#ffffff"
       },
       secondary: {
-        main: "#ff9e43",
+        main: "#12d4fc",
         contrastText: textLight.primary
       },
       background: {
@@ -64,7 +64,7 @@ export const themeColors = {
     palette: {
       type: "light",
       primary: {
-        main: "#7467ef",
+        main: "#387dd6",
         contrastText: "#ffffff"
       },
       secondary: secondaryColor,
@@ -75,11 +75,11 @@ export const themeColors = {
     palette: {
       type: "light",
       primary: {
-        main: "#6a75c9",
+        main: "#387dd6",
         contrastText: "#ffffff"
       },
       secondary: {
-        main: "#ff9e43",
+        main: "#12d4fc",
         contrastText: textLight.primary
       },
       text: textLight
@@ -89,11 +89,11 @@ export const themeColors = {
     palette: {
       type: "dark",
       primary: {
-        main: "#7467ef",
+        main: "#387dd6",
         contrastText: "#ffffff"
       },
       secondary: {
-        main: "#ff9e43",
+        main: "#12d4fc",
         contrastText: textLight.primary
       },
       background: {
@@ -106,11 +106,11 @@ export const themeColors = {
     palette: {
       type: "dark",
       primary: {
-        main: "#6a75c9",
+        main: "#387dd6",
         contrastText: "#ffffff"
       },
       secondary: {
-        main: "#ff9e43",
+        main: "#12d4fc",
         contrastText: textLight.primary
       },
       background: {
@@ -123,11 +123,11 @@ export const themeColors = {
     palette: {
       type: "light",
       primary: {
-        main: "#3366FF",
+        main: "#387dd6",
         contrastText: "#ffffff"
       },
       secondary: {
-        main: "#FFAF38",
+        main: "#12d4fc",
         contrastText: textLight.primary
       },
       text: textLight
@@ -137,7 +137,7 @@ export const themeColors = {
     palette: {
       type: "dark",
       primary: {
-        main: "#3366FF",
+        main: "#387dd6",
         contrastText: "#ffffff"
       },
       secondary: {
@@ -158,7 +158,7 @@ export const themeColors = {
         contrastText: "#ffffff"
       },
       secondary: {
-        main: "#FFAF38",
+        main: "#12d4fc",
         contrastText: textLight.primary
       }
     }
