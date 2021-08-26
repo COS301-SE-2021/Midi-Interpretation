@@ -64,7 +64,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
     @Test
     public void testWhiteBox_AnalyseChord_IfOpenFifth_ThenAdheresToIntervals() throws MissingStrategyException {
+
+        //For each pitch offset
         for(int k=0; k<12; k++){
+
 
             byte[][] testingCases = new byte[][]{
                     new byte[]{(byte) (0+k), (byte) (7+k)},
@@ -74,6 +77,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
                     new byte[]{(byte) (7+k),(byte) (12+k),(byte) (19+k)},
             };
 
+
             ChordPrediction[] testingResponses = new ChordPrediction[]{
                     new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.OPEN_FIFTH),
                     new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.OPEN_FIFTH),
@@ -82,6 +86,8 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
                     new ChordPrediction((byte) (0+k),(byte) (7+k), ChordType.OPEN_FIFTH),
             };
 
+
+            //Testing all cases with their expected responses
             for(int j=0; j<testingCases.length; j++){
 
                 AnalyseChordRequest request = new AnalyseChordRequest(testingCases[j]);
@@ -89,13 +95,51 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-
+                //System.out.printf("TESTING PITCH OFFSET: ", k);
                 //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
-
                 assertEquals(responseChord,expectedChord);
             }
 
+        }
+    }
 
+    @Test
+    public void testWhiteBox_AnalyseChord_IfMajor_ThenAdheresToIntervals() throws MissingStrategyException {
+
+        //For each pitch offset
+        for(int k=0; k<12; k++){
+
+
+            byte[][] testingCases = new byte[][]{
+                    new byte[]{(byte) (0+k),(byte) (4+k), (byte) (7+k)},
+                    new byte[]{(byte) (60+k),(byte) (64+k), (byte) (67+k)},
+                    new byte[]{(byte) (0+k),(byte) (4+k),(byte) (7+k),(byte) (12+k),(byte) (16+k),(byte) (19+k)},
+                    new byte[]{(byte) (4+k),(byte) (7+k), (byte) (12+k)},
+                    new byte[]{(byte) (7+k),(byte) (12+k),(byte) (16+k)},
+            };
+
+
+            ChordPrediction[] testingResponses = new ChordPrediction[]{
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.MAJOR),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.MAJOR),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.MAJOR),
+                    new ChordPrediction((byte) (0+k),(byte) (4+k), ChordType.MAJOR),
+                    new ChordPrediction((byte) (0+k),(byte) (7+k), ChordType.MAJOR),
+            };
+
+
+            //Testing all cases with their expected responses
+            for(int j=0; j<testingCases.length; j++){
+
+                AnalyseChordRequest request = new AnalyseChordRequest(testingCases[j]);
+                AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+                String responseChord = response.getChord();
+                String expectedChord = testingResponses[j].getCommonName();
+                //System.out.printf("TESTING PITCH OFFSET: ", k);
+                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+                assertEquals(responseChord,expectedChord);
+            }
 
         }
     }
