@@ -2,19 +2,16 @@ import React from "react";
 import Particles from "react-tsparticles";
 
 /**
- * Data visualisation for track data
+ * Background animation for Home view
  *
  * @returns {JSX.Element}
  * @constructor
  */
 
-const Background = (genreData) => {
-
+const Background = () => {
     return (
         <Particles
             id="tsparticles"
-            // init={this.particlesInit}
-            // loaded={this.particlesLoaded}
             options={
                 {
                     "autoPlay": true,

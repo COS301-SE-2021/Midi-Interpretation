@@ -10,7 +10,6 @@ import {withStyles} from "@material-ui/core/styles";
 import KeySignature from "../../styles/images/keyMap"
 import TimeSignature from "../../styles/images/timeMap"
 
-//==============================================
 /**
  * This class defines the interpretation of a midi file that has been supplied by the server
  * It displays:
@@ -34,13 +33,6 @@ import TimeSignature from "../../styles/images/timeMap"
  * Navigation:
  *      -> Upload
  *
- * Components:
- *      -> MidiSenseService
- *      -> LocalStorageService
- *      -> Breadcrumb
- *      -> SimpleCard
- *      -> DiscreteSlider
- *      -> SelectedMenu
  */
 
 class Display extends Component {
@@ -54,8 +46,11 @@ class Display extends Component {
    */
 
   constructor(props) {
-      super(props);
-      this.cookies = new Cookies();
+      super(props)
+
+      // Initialize the cookie system
+      this.cookies = new Cookies()
+
       this.state = {
         rowsPerPage: 5,
         page: 0,
@@ -94,13 +89,21 @@ class Display extends Component {
           timeMap: new TimeSignature(),
       }
 
+      // Check if a track has been processed previously, otherwise navigate back to upload
+
       if(this.cookies.get('fileDesignator') === undefined){
           this.props.history.push("/Upload")
       }
 
+      // Begin gathering data from the server
+
       this.getTrackMetadata(this.state.currentTrack)
 
   }
+
+    /**
+     * Update the display data when componentDidMount
+     */
 
   componentDidMount() {
       this.refreshScoreDetails()
@@ -199,8 +202,7 @@ class Display extends Component {
   }
 
     /**
-     *
-     * @property JSON
+     * setTrackData
      * @param td
      */
 
@@ -211,23 +213,44 @@ class Display extends Component {
       })
   }
 
-    setTicksPerBeat = (t) => {
-        this.setState({
-            ticksPerBeat: t
-        })
-    }
+    /**
+     * setTicksPerBeat
+     * @param t
+     */
 
-    setInstrument = (i) => {
-        this.setState({
-            instrument: i
-        })
-    }
+  setTicksPerBeat = (t) => {
+      this.setState({
+          ticksPerBeat: t
+      })
+  }
+
+    /**
+     * setInstrument
+     * @param i
+     */
+
+  setInstrument = (i) => {
+      this.setState({
+          instrument: i
+      })
+  }
+
+    /**
+     * setSelected
+     * @param s
+     */
 
   setSelected = (s) => {
       this.setState({
           selectedIndex:s
       })
   }
+
+    /**
+     * getDigitsFromNumber
+     * @param t
+     * @returns {number[]|*[]}
+     */
 
   getDigitsFromNumber = (t) => {
       if (typeof t !== 'number')
@@ -271,7 +294,9 @@ class Display extends Component {
    */
 
   getScoreMetadata = () => {
-
+      /**
+       * displayGetPieceMetadata
+       */
      this.state.midisenseService.displayGetPieceMetadata(this.state.fileDesignator,
         (res) => {
           const keySignature = res['keySignature']
@@ -280,11 +305,11 @@ class Display extends Component {
           this.setKeySignature(keySignature)
           this.setTempoIndication(tempoIndication)
           this.setTimeSignature(timeSignature)
-        },
-        (error) => {
-
         })
 
+      /**
+       * displayGetTrackInfo
+       */
      this.state.midisenseService.displayGetTrackInfo(this.state.fileDesignator,
         (res) => {
             for (const track of res) {
@@ -292,27 +317,30 @@ class Display extends Component {
               currentListing.push((track['index'] + 1) + ". " + track['trackName'])
               this.setTrackListing(currentListing)
             }
-        },
-        (error) => {
+        })
 
-        }
-     )
-
+      /**
+       * intelligenceAnalyseGenre
+       */
       this.state.midisenseService.intelligenceAnalyseGenre(this.state.fileDesignator,
-          (res) => {
-              const genreData = res['genreArray']
+         (res) => {
+         const genreData = res['genreArray']
 
-              for (let i = 0 ; i < genreData.length ; i++){
-                  genreData[i].Certainty = parseFloat(genreData[i].Certainty).toFixed(3);
-              }
+             for (let i = 0 ; i < genreData.length ; i++){
+                 genreData[i].Certainty = parseFloat(genreData[i].Certainty).toFixed(3);
+             }
 
-              this.setState({genreData: genreData})
-          },
-          (error) => {
-
-          }
-      )
+             this.setState({genreData: genreData})
+          })
   }
+
+    /**
+     * getTrackMetadata
+     *
+     * Get the note data associated with track n
+     *
+     * @param n
+     */
 
   getTrackMetadata = (n) =>{
 
@@ -324,9 +352,6 @@ class Display extends Component {
               this.setTicksPerBeat(trackString['ticks_per_beat'])
               this.setInstrument(trackString['instrument'])
 
-          },
-          (error) => {
-
           })
   }
 
@@ -336,6 +361,7 @@ class Display extends Component {
    */
 
   refreshScoreDetails = () => {
+      // Ensures that a file has been processed (this is a secondary level of protection)
       if(this.cookies.get('fileDesignator') !==undefined) {
           this.setSongTitle(this.cookies.get('title'))
           this.getScoreMetadata()
@@ -403,7 +429,7 @@ class Display extends Component {
                                                   <h6>{this.state.keySignature}</h6>
                                                   <br/>
                                                   <div>
-                                                      <img src={this.state.keyMap.getLinkForKey(this.state.keySignature)} style={{ height: '100px'}}/>
+                                                      <img alt={"key signature"} src={this.state.keyMap.getLinkForKey(this.state.keySignature)} style={{ height: '100px'}}/>
                                                   </div>
 
                                               </Grid>
@@ -413,9 +439,9 @@ class Display extends Component {
                                                   <h6>{this.state.timeSignature['numBeats'] + "/" + this.state.timeSignature['beatValue']}</h6>
                                                   <br/>
                                                   <div>
-                                                      <img src={this.state.timeMap.getLinkForTime(this.state.timeSignature['numBeats'])} style={{ height: '40px'}}/>
+                                                      <img alt={"time signature"}  src={this.state.timeMap.getLinkForTime(this.state.timeSignature['numBeats'])} style={{ height: '40px'}}/>
                                                       <br/>
-                                                      <img src={this.state.timeMap.getLinkForTime(this.state.timeSignature['beatValue'])} style={{ height: '40px'}}/>
+                                                      <img alt={"time signature"} src={this.state.timeMap.getLinkForTime(this.state.timeSignature['beatValue'])} style={{ height: '40px'}}/>
                                                   </div>
 
                                               </Grid>
@@ -425,7 +451,7 @@ class Display extends Component {
                                                   <br/>
                                                   {
                                                       this.getDigitsFromNumber(this.state.tempoIndication).map((item)=>{
-                                                          return <span><img src={this.state.timeMap.getLinkForTime(item)}/></span>
+                                                          return <span><img alt={"Tempo"} src={this.state.timeMap.getLinkForTime(item)}/></span>
                                                       })
                                                   }
                                               </Grid>
@@ -459,7 +485,7 @@ class Display extends Component {
                             justifyContent="space-evenly"
                             alignItems="center"
                       >
-                          <div id="dataDisplay"></div>
+                          <div id="dataDisplay"/>
                       </Grid>
 
                   </SimpleCard>
