@@ -2,14 +2,7 @@ import React, {Component} from "react";
 import {Breadcrumb, SimpleCard} from "matx";
 import { withStyles } from "@material-ui/styles";
 import 'react-responsive-combo-box/dist/index.css';
-import { Grid, Container } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
+import { Grid } from '@material-ui/core';
 
 /**
  * The view will explain how to use MIDISense

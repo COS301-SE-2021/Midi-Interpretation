@@ -15,6 +15,8 @@ import "../services/styles.css"
  *
  * Navigation:
  *      -> Upload
+ *      -> Help
+ *      -> About
  */
 
 class Home extends Component {
