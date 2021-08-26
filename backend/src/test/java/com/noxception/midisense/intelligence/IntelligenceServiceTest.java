@@ -185,6 +185,47 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    @Test
+    public void testWhiteBox_AnalyseChord_IfDiminished_ThenAdheresToIntervals() throws MissingStrategyException {
+
+        //For each pitch offset
+        for(int k=0; k<12; k++){
+
+
+            byte[][] testingCases = new byte[][]{
+                    new byte[]{(byte) (0+k),(byte) (3+k), (byte) (6+k)},
+                    new byte[]{(byte) (60+k),(byte) (63+k), (byte) (66+k)},
+                    new byte[]{(byte) (0+k),(byte) (3+k),(byte) (6+k),(byte) (12+k),(byte) (15+k),(byte) (18+k)},
+                    new byte[]{(byte) (3+k),(byte) (6+k), (byte) (12+k)},
+                    new byte[]{(byte) (6+k),(byte) (12+k),(byte) (15+k)},
+            };
+
+
+            ChordPrediction[] testingResponses = new ChordPrediction[]{
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DIMINISHED),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DIMINISHED),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DIMINISHED),
+                    new ChordPrediction((byte) (0+k),(byte) (3+k), ChordType.DIMINISHED),
+                    new ChordPrediction((byte) (0+k),(byte) (6+k), ChordType.DIMINISHED),
+            };
+
+
+            //Testing all cases with their expected responses
+            for(int j=0; j<testingCases.length; j++){
+
+                AnalyseChordRequest request = new AnalyseChordRequest(testingCases[j]);
+                AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+                String responseChord = response.getChord();
+                String expectedChord = testingResponses[j].getCommonName();
+                //System.out.printf("TESTING PITCH OFFSET: ", k);
+                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+                assertEquals(responseChord,expectedChord);
+            }
+
+        }
+    }
+
 
 
 }
