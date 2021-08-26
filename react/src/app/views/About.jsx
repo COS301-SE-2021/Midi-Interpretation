@@ -125,7 +125,7 @@ function AboutTabs() {
                         <Grid  item xs={12} sm={12} m={12} lg={8} >
                             <div className="text-20">
                                 <br/>
-                                <h4>About Us</h4>
+                                <div className="font-bold">About Us</div>
 
                                 <p>
                                     NoXception is a team of five third-year EBIT undergraduates from the University of
@@ -170,8 +170,7 @@ function AboutTabs() {
                       justify="space-between"
                       spacing={5}>
                     <Grid item xs={12} sm={12} m={12} lg={8}>
-                        <h4>How We Gathered Data</h4>
-                        <br/>
+                        <div className="font-bold text-20">How We Gathered Data</div>
                         <div className="text-20">
                             <p>In order to train our system AI we needed to gather a thousands of midi files.</p>
                             <li>First, we went to <a href="https://freemidi.org/">Free Midi</a> and gathered a list of all
@@ -199,7 +198,7 @@ function AboutTabs() {
                       justify="space-between"
                       spacing={5}>
                     <Grid item xs={12} sm={12} m={12} lg={8}>
-                        <h4>Credits</h4>
+                        <div className="font-bold text-20">Credits</div>
                         <br/>
                         <div className="text-20">
                             <li><a href="https://github.com/uilibrary/matx-react">

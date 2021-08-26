@@ -230,7 +230,7 @@ function TrackViewer (props) {
                         <YAxis domain={["dataMin-10","dataMax+10"]}  label={{ value: 'Pitch (~log Hz)', angle: -90, position: 'left' }}/>
                         <Tooltip content={ <CustomTooltip payload props/> }/>
                         <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
-                        <Brush dataKey="beat" height={30} stroke="#7467ef"/>
+                        <Brush dataKey="beat" height={30} stroke="#387dd6"/>
 
                         {items.map((value,index)=>{
                             return <Line key={voiceName(value)} dataKey={voiceName(value)} stroke={color[index%13]} type="monotone" strokeWidth={2}/>
