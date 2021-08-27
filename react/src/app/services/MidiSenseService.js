@@ -9,6 +9,7 @@ class MidiSenseService {
     // private targetMethod: string;
 
     constructor() {
+        // TODO: target URL not set dynamically
         this.targetURL = "http://localhost:8080"
         this.targetHeaders = {
             'accept': 'application/json',
@@ -82,6 +83,18 @@ class MidiSenseService {
         this.genericRequest(
             this.targetURL+endpoint,
             {"fileDesignator": fileDesignator},
+            this.targetHeaders,
+            this.targetMethod,
+            onSuccess,
+            onFailure
+        )
+    }
+
+    intelligenceAnalyseChord(pitchArray, onSuccess = (res)=>{}, onFailure= (res)=>{}){
+        const endpoint = "/intelligence/analyseChord"
+        this.genericRequest(
+            this.targetURL+endpoint,
+            {"pitchArray": pitchArray},
             this.targetHeaders,
             this.targetMethod,
             onSuccess,

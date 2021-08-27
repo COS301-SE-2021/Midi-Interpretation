@@ -2,6 +2,7 @@ import {Brush, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tool
 import React from "react";
 import {Grid} from "@material-ui/core";
 import * as ReactDOMServer from "react-dom/server";
+import MidiSenseService from "../../app/services/MidiSenseService";
 
 /**
  * voiceName
@@ -56,6 +57,83 @@ function frequency(value){
 }
 
 /**
+ * getInterval
+ * @param notes
+ * @param dictionary
+ * @returns {string}
+ */
+function getInterval(notes, dictionary){
+    // const backendService = new MidiSenseService()
+    //
+    // if(dictionary[notes.toString()] !== undefined){
+    //     return dictionary[notes.toString()]
+    // }
+    //
+    // backendService.intelligenceAnalyseInterval(
+    //     notes,
+    //
+    //     /**
+    //      * onSuccess
+    //      * @param res
+    //      */
+    //     (res)=>{
+    //         dictionary[notes.toString()] = res['chord']['simpleName']
+    //         return res['chord']['simpleName']
+    //     },
+    //
+    //     /**
+    //      * onFailure
+    //      * (room for extended error handling)
+    //      * @param error
+    //      */
+    //     (error)=>{
+    //         console.error("Chord request failed : "+JSON.stringify(error))
+    //         return ""
+    //     }
+    // )
+
+    return ""
+}
+
+/**
+ * getChord
+ * @param notes
+ * @param dictionary
+ * @returns {*}
+ */
+function getChord(notes, dictionary){
+
+    if(dictionary[notes.toString()] !== undefined){
+        return dictionary[notes.toString()]
+    }
+
+    const backendService = new MidiSenseService()
+    console.log("Call to server")
+    backendService.intelligenceAnalyseChord(
+        notes,
+
+        /**
+         * onSuccess
+         * @param res
+         */
+        (res)=>{
+            dictionary[notes.toString()] = res['chord']['simpleName']
+            return res['chord']['simpleName']
+        },
+
+        /**
+         * onFailure
+         * (room for extended error handling)
+         * @param error
+         */
+        (error)=>{
+            console.error("Chord request failed : "+JSON.stringify(error))
+            return ""
+        }
+    )
+}
+
+/**
  * CustomToolTip
  * @param props
  * @returns {JSX.Element|null}
@@ -64,12 +142,37 @@ function frequency(value){
 function CustomTooltip (props) {
     // is not empty
     if(props.payload.length !== 0) {
+        let multi_note_type = ""
+
+        if(props.payload[0].payload['composite'] !== undefined && !props.payload[0].payload["composite"][0].isPercussive) {
+            if (props.payload.length === 2) {
+                let interval = []
+
+                interval.push(props.payload[0].value)
+                interval.push(props.payload[1].value)
+
+                multi_note_type = getInterval(interval, props.intervalDictionary)
+            }
+            else if (props.payload.length >= 2) {
+                let chord = []
+
+                for (let p = 0; p < props.payload.length; p++) {
+                    chord.push(props.payload[p].value)
+                }
+                multi_note_type = getChord(chord, props.chordDictionary)
+            }
+        }
+
         document.getElementById("dataDisplay").innerHTML = ReactDOMServer.renderToString(
             <Grid container
                   direction="row"
                   justifyContent="flex-start"
-                  alignItems="flex-start"
+                  alignItems="center"
+                  spacing={2}
                   >
+                <Grid item>
+                    <div className="text-18 text-primary"><b>{multi_note_type}</b></div>
+                </Grid>
                 {props.payload.map((item,index)=>{
                     const comp = item.payload['composite'][index]
                     let isPercussive = comp['isPercussive']
@@ -81,25 +184,33 @@ function CustomTooltip (props) {
 
                     //handle differently when drum set is detected
                     if(isPercussive){
-                        return(<div key={index} style={{padding:"10px"}}>
-                            <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
-                            <div className="text-14">Instrument: {getPercussiveInstrument(item.value)} </div>
-                            <div className="text-14">On Velocity: {onVelocity} ({onDynamic})</div>
-                            <div className="text-14">Off Velocity: {offVelocity} ({offDynamic})</div>
-                            <div className="text-14">Duration: {duration}</div>
-                        </div>)
+                        return(
+                            <Grid item>
+                                <div key={index} style={{padding:"10px"}}>
+                                <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
+                                <div className="text-14">Instrument: {getPercussiveInstrument(item.value)} </div>
+                                <div className="text-14">On Velocity: {onVelocity} ({onDynamic})</div>
+                                <div className="text-14">Off Velocity: {offVelocity} ({offDynamic})</div>
+                                <div className="text-14">Duration: {duration}</div>
+                                </div>
+                            </Grid>
+                        )
                     }
-                    else return(
-                        <div key={index} style={{padding:"10px"}}>
-                            <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
-                            <div className="text-14">Frequency: {frequency(item.value)} Hz</div>
-                            <div className="text-14">Pitch: {valueToNote(item.value)['pitch']}</div>
-                            <div className="text-14">Octave: {valueToNote(item.value)['octave']}</div>
-                            <div className="text-14">On Velocity: {onVelocity} ({onDynamic})</div>
-                            <div className="text-14">Off Velocity: {offVelocity} ({offDynamic})</div>
-                            <div className="text-14">Duration: {duration}</div>
-                        </div>
-                    )
+                    else {
+                        return (
+                            <Grid item>
+                                <div key={index} style={{padding: "10px"}}>
+                                    <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
+                                    <div className="text-14">Frequency: {frequency(item.value)} Hz</div>
+                                    <div className="text-14">Pitch: {valueToNote(item.value)['pitch']}</div>
+                                    <div className="text-14">Octave: {valueToNote(item.value)['octave']}</div>
+                                    <div className="text-14">On Velocity: {onVelocity} ({onDynamic})</div>
+                                    <div className="text-14">Off Velocity: {offVelocity} ({offDynamic})</div>
+                                    <div className="text-14">Duration: {duration}</div>
+                                </div>
+                            </Grid>
+                        )
+                    }
                 })}
 
             </Grid>
@@ -154,11 +265,13 @@ function CustomTooltip (props) {
 
 function TrackViewer (props) {
     props = props.trackData
+
     // check if track data is appropriate
     if(props.trackData.length === 0)
         return(<div/>);
     else{
-
+        let chordDictionary = {}
+        let intervalDictionary = {}
         let ticksPerBeat = props.ticksPerBeat
         let isPercussive = (props.instrument.toUpperCase() === "DRUMSET")
 
@@ -228,7 +341,7 @@ function TrackViewer (props) {
                         <CartesianGrid strokeDasharray="1 1" />
                         <XAxis domain={`[0,${lineData.length}]`} scale="linear" interval="preserveStart" type="number" dataKey="beat" label={{ value: 'Beat number', position: 'bottom' }}/>
                         <YAxis domain={["dataMin-10","dataMax+10"]}  label={{ value: 'Pitch (~log Hz)', angle: -90, position: 'left' }}/>
-                        <Tooltip content={ <CustomTooltip payload props/> }/>
+                        <Tooltip content={ <CustomTooltip payload chordDictionary={chordDictionary} intervalDictionary={intervalDictionary} props/> }/>
                         <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
                         <Brush dataKey="beat" height={30} stroke="#387dd6"/>
 
