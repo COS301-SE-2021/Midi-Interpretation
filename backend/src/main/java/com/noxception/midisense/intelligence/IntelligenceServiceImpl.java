@@ -91,7 +91,12 @@ public class IntelligenceServiceImpl implements IntelligenceService{
     @Override
     public AnalyseChordResponse analyseChord(AnalyseChordRequest req) throws MissingStrategyException{
         ChordPrediction prediction = chordAnalysisStrategy.classify(req.getCompound());
-        return new AnalyseChordResponse(prediction.getCommonName());
+        AnalyseChordResponse response = new AnalyseChordResponse(
+                prediction.getRootNote(),
+                prediction.getChordType().getShortName(),
+                prediction.getBassNote()
+        );
+        return response;
     }
 
     /**Method that creates a list of tonal (key) classifications based on a byte stream of file features, according to a predefined

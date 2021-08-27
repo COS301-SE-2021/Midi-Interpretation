@@ -163,6 +163,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/intelligenceAnalyseGenreResponse'
 
+  /intelligence/analyseChord:
+    post:
+      summary: "Endpoint for analysing the chord of input tone array"
+      tags:
+        - "Intelligence"
+      description: analyseChord
+      operationId: analyseChord
+      requestBody:
+        description: "Request body of analyseChord endpoint, request must be sent in
+                      JSON and references intelligenceAnalyseChordRequest in the schema"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/intelligenceAnalyseChordRequest'
+      responses:
+        '200':
+          description: "Describes response of analyseChord endpoint, will respond if
+                        successful and references intelligenceAnalyseChordResponse"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/intelligenceAnalyseChordResponse'
+
 
   #=================================================
   # SCHEMAS + OBJECTS
@@ -319,6 +343,36 @@ components:
                 type: string
               Certainty:
                 type: number
+        success:
+          type: boolean
+        message:
+          type: string
+
+    intelligenceAnalyseChordRequest:
+      description: "Expects an array of byte values"
+      type: object
+      properties:
+        pitchArray:
+          type: array
+          items:
+            type: integer
+
+    intelligenceAnalyseChordResponse:
+      description: "Returns an array consisting of the most prevalent genres in the piece"
+      type: object
+      properties:
+        chord:
+          type: object
+          properties:
+            rootPitch:
+              type: integer
+            chordType:
+              type: string
+            inversionPitch:
+              type: integer
+            simpleName:
+              type: string
+
         success:
           type: boolean
         message:

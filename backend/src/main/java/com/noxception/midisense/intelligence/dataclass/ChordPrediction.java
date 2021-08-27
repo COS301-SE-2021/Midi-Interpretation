@@ -26,6 +26,14 @@ public class ChordPrediction {
         this.rootNote = rootNote;
     }
 
+    public byte getBassNote() {
+        return bassNote;
+    }
+
+    public void setBassNote(byte bassNote) {
+        this.bassNote = bassNote;
+    }
+
     public ChordType getChordType() {
         return chordType;
     }
