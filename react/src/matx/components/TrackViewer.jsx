@@ -1,6 +1,6 @@
 import {Brush, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis,} from 'recharts';
 import React from "react";
-import {Grid} from "@material-ui/core";
+import {Divider, Grid} from "@material-ui/core";
 import * as ReactDOMServer from "react-dom/server";
 import MidiSenseService from "../../app/services/MidiSenseService";
 
@@ -63,36 +63,16 @@ function frequency(value){
  * @returns {string}
  */
 function getInterval(notes, dictionary){
-    // const backendService = new MidiSenseService()
-    //
-    // if(dictionary[notes.toString()] !== undefined){
-    //     return dictionary[notes.toString()]
-    // }
-    //
-    // backendService.intelligenceAnalyseInterval(
-    //     notes,
-    //
-    //     /**
-    //      * onSuccess
-    //      * @param res
-    //      */
-    //     (res)=>{
-    //         dictionary[notes.toString()] = res['chord']['simpleName']
-    //         return res['chord']['simpleName']
-    //     },
-    //
-    //     /**
-    //      * onFailure
-    //      * (room for extended error handling)
-    //      * @param error
-    //      */
-    //     (error)=>{
-    //         console.error("Chord request failed : "+JSON.stringify(error))
-    //         return ""
-    //     }
-    // )
+    const backendService = new MidiSenseService()
 
-    return ""
+    if(dictionary[notes.toString()] !== undefined){
+        return dictionary[notes.toString()]
+    }
+
+    let res = backendService.intelligenceAnalyseInterval(notes)
+    dictionary[notes.toString()] = res
+    return res
+
 }
 
 /**
@@ -168,11 +148,12 @@ function CustomTooltip (props) {
                   direction="row"
                   justifyContent="flex-start"
                   alignItems="center"
-                  spacing={2}
+                  spacing={3}
                   >
                 <Grid item>
                     <div className="text-18 text-primary"><b>{multi_note_type}</b></div>
                 </Grid>
+                <Divider orientation="vertical" flexItem />
                 {props.payload.map((item,index)=>{
                     const comp = item.payload['composite'][index]
                     let isPercussive = comp['isPercussive']
@@ -212,7 +193,7 @@ function CustomTooltip (props) {
                         )
                     }
                 })}
-
+                <Divider orientation="vertical" flexItem />
             </Grid>
         )
 
