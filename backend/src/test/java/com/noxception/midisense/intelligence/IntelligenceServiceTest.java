@@ -267,6 +267,263 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    @Test
+    public void testWhiteBox_AnalyseChord_IfSus4_ThenAdheresToIntervals() throws MissingStrategyException {
+
+        //For each pitch offset
+        for(int k=0; k<12; k++){
+
+
+            byte[][] testingCases = new byte[][]{
+                    new byte[]{(byte) (0+k),(byte) (5+k), (byte) (7+k)},
+                    new byte[]{(byte) (60+k),(byte) (65+k), (byte) (67+k)},
+                    new byte[]{(byte) (0+k),(byte) (5+k),(byte) (7+k),(byte) (12+k),(byte) (17+k),(byte) (19+k)},
+                    new byte[]{(byte) (5+k),(byte) (7+k), (byte) (12+k)},
+                    new byte[]{(byte) (7+k),(byte) (12+k),(byte) (17+k)},
+            };
+
+
+            ChordPrediction[] testingResponses = new ChordPrediction[]{
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.SUSPENDED_FOURTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.SUSPENDED_FOURTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.SUSPENDED_FOURTH),
+                    new ChordPrediction((byte) (0+k),(byte) (5+k), ChordType.SUSPENDED_FOURTH),
+                    new ChordPrediction((byte) (0+k),(byte) (7+k), ChordType.SUSPENDED_FOURTH),
+            };
+
+
+            //Testing all cases with their expected responses
+            for(int j=0; j<testingCases.length; j++){
+
+                AnalyseChordRequest request = new AnalyseChordRequest(testingCases[j]);
+                AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+                String responseChord = response.getChord();
+                String expectedChord = testingResponses[j].getCommonName();
+                //System.out.printf("TESTING PITCH OFFSET: ", k);
+                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+                assertEquals(responseChord,expectedChord);
+            }
+
+        }
+    }
+
+    @Test
+    public void testWhiteBox_AnalyseChord_IfDominant7th_ThenAdheresToIntervals() throws MissingStrategyException {
+
+        //For each pitch offset
+        for(int k=0; k<12; k++){
+
+
+            byte[][] testingCases = new byte[][]{
+                    new byte[]{(byte) (0+k),(byte) (4+k), (byte) (7+k), (byte) (10+k)},
+                    new byte[]{(byte) (60+k),(byte) (64+k), (byte) (67+k), (byte) (70+k)},
+                    new byte[]{(byte) (0+k),(byte) (4+k),(byte) (7+k),(byte) (10+k),(byte) (12+k), (byte) (16+k),(byte) (19+k), (byte) (22+k)},
+                    new byte[]{(byte) (4+k),(byte) (7+k), (byte) (10+k), (byte) (12+k)},
+                    new byte[]{(byte) (7+k),(byte) (10+k),(byte) (12+k), (byte) (16+k)},
+                    new byte[]{(byte) (10+k),(byte) (12+k),(byte) (16+k), (byte) (19+k)},
+            };
+
+
+            ChordPrediction[] testingResponses = new ChordPrediction[]{
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DOMINANT_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DOMINANT_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DOMINANT_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (4+k), ChordType.DOMINANT_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (7+k), ChordType.DOMINANT_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (10+k), ChordType.DOMINANT_SEVENTH),
+            };
+
+
+            //Testing all cases with their expected responses
+            for(int j=0; j<testingCases.length; j++){
+
+                AnalyseChordRequest request = new AnalyseChordRequest(testingCases[j]);
+                AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+                String responseChord = response.getChord();
+                String expectedChord = testingResponses[j].getCommonName();
+                //System.out.printf("TESTING PITCH OFFSET: ", k);
+                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+                assertEquals(responseChord,expectedChord);
+            }
+
+        }
+    }
+
+    @Test
+    public void testWhiteBox_AnalyseChord_IfMajor7th_ThenAdheresToIntervals() throws MissingStrategyException {
+
+        //For each pitch offset
+        for(int k=0; k<12; k++){
+
+
+            byte[][] testingCases = new byte[][]{
+                    new byte[]{(byte) (0+k),(byte) (4+k), (byte) (7+k), (byte) (11+k)},
+                    new byte[]{(byte) (60+k),(byte) (64+k), (byte) (67+k), (byte) (71+k)},
+                    new byte[]{(byte) (0+k),(byte) (4+k),(byte) (7+k),(byte) (11+k),(byte) (12+k), (byte) (16+k),(byte) (19+k), (byte) (23+k)},
+                    new byte[]{(byte) (4+k),(byte) (7+k), (byte) (11+k), (byte) (12+k)},
+                    new byte[]{(byte) (7+k),(byte) (11+k),(byte) (12+k), (byte) (16+k)},
+                    new byte[]{(byte) (11+k),(byte) (12+k),(byte) (16+k), (byte) (19+k)},
+            };
+
+
+            ChordPrediction[] testingResponses = new ChordPrediction[]{
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.MAJOR_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.MAJOR_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.MAJOR_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (4+k), ChordType.MAJOR_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (7+k), ChordType.MAJOR_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (11+k), ChordType.MAJOR_SEVENTH),
+            };
+
+
+            //Testing all cases with their expected responses
+            for(int j=0; j<testingCases.length; j++){
+
+                AnalyseChordRequest request = new AnalyseChordRequest(testingCases[j]);
+                AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+                String responseChord = response.getChord();
+                String expectedChord = testingResponses[j].getCommonName();
+                //System.out.printf("TESTING PITCH OFFSET: ", k);
+                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+                assertEquals(responseChord,expectedChord);
+            }
+
+        }
+    }
+
+    @Test
+    public void testWhiteBox_AnalyseChord_IfMinor7th_ThenAdheresToIntervals() throws MissingStrategyException {
+
+        //For each pitch offset
+        for(int k=0; k<12; k++){
+
+
+            byte[][] testingCases = new byte[][]{
+                    new byte[]{(byte) (0+k),(byte) (3+k), (byte) (7+k), (byte) (10+k)},
+                    new byte[]{(byte) (60+k),(byte) (63+k), (byte) (67+k), (byte) (70+k)},
+                    new byte[]{(byte) (0+k),(byte) (3+k),(byte) (7+k),(byte) (10+k),(byte) (12+k), (byte) (15+k),(byte) (19+k), (byte) (22+k)},
+                    new byte[]{(byte) (3+k),(byte) (7+k), (byte) (10+k), (byte) (12+k)},
+                    new byte[]{(byte) (7+k),(byte) (10+k),(byte) (12+k), (byte) (15+k)},
+                    new byte[]{(byte) (10+k),(byte) (12+k),(byte) (15+k), (byte) (19+k)},
+            };
+
+
+            ChordPrediction[] testingResponses = new ChordPrediction[]{
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.MINOR_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.MINOR_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.MINOR_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (3+k), ChordType.MINOR_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (7+k), ChordType.MINOR_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (10+k), ChordType.MINOR_SEVENTH),
+            };
+
+
+            //Testing all cases with their expected responses
+            for(int j=0; j<testingCases.length; j++){
+
+                AnalyseChordRequest request = new AnalyseChordRequest(testingCases[j]);
+                AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+                String responseChord = response.getChord();
+                String expectedChord = testingResponses[j].getCommonName();
+                //System.out.printf("TESTING PITCH OFFSET: ", k);
+                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+                assertEquals(responseChord,expectedChord);
+            }
+
+        }
+    }
+
+    @Test
+    public void testWhiteBox_AnalyseChord_IfDiminished7th_ThenAdheresToIntervals() throws MissingStrategyException {
+
+        //For each pitch offset
+        for(int k=0; k<12; k++){
+
+
+            byte[][] testingCases = new byte[][]{
+                    new byte[]{(byte) (0+k),(byte) (3+k), (byte) (6+k), (byte) (9+k)},
+                    new byte[]{(byte) (60+k),(byte) (63+k), (byte) (66+k), (byte) (69+k)},
+                    new byte[]{(byte) (0+k),(byte) (3+k),(byte) (6+k),(byte) (9+k),(byte) (12+k), (byte) (15+k),(byte) (18+k), (byte) (21+k)},
+                    new byte[]{(byte) (3+k),(byte) (6+k), (byte) (9+k), (byte) (12+k)},
+                    new byte[]{(byte) (6+k),(byte) (9+k),(byte) (12+k), (byte) (15+k)},
+                    new byte[]{(byte) (9+k),(byte) (12+k),(byte) (15+k), (byte) (18+k)},
+            };
+
+
+            ChordPrediction[] testingResponses = new ChordPrediction[]{
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DIMINISHED_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DIMINISHED_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DIMINISHED_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (3+k), ChordType.DIMINISHED_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (6+k), ChordType.DIMINISHED_SEVENTH),
+                    new ChordPrediction((byte) (0+k),(byte) (9+k), ChordType.DIMINISHED_SEVENTH),
+            };
+
+
+            //Testing all cases with their expected responses
+            for(int j=0; j<testingCases.length; j++){
+
+                AnalyseChordRequest request = new AnalyseChordRequest(testingCases[j]);
+                AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+                String responseChord = response.getChord();
+                String expectedChord = testingResponses[j].getCommonName();
+                //System.out.printf("TESTING PITCH OFFSET: ", k);
+                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+                assertEquals(responseChord,expectedChord);
+            }
+
+        }
+    }
+
+    @Test
+    public void testWhiteBox_AnalyseChord_IfAltered_ThenAdheresToIntervals() throws MissingStrategyException {
+
+        //For each pitch offset
+        for(int k=0; k<12; k++){
+
+
+            byte[][] testingCases = new byte[][]{
+                    //these need to change a bit
+                    new byte[]{(byte) (0+k),(byte) (6+k), (byte) (6+k), (byte) (9+k)},
+                    new byte[]{(byte) (60+k),(byte) (72+k), (byte) (67+k), (byte) (69+k)},
+                    new byte[]{(byte) (0+k),(byte) (3+k),(byte) (17+k),(byte) (9+k),(byte) (12+k), (byte) (15+k),(byte) (18+k), (byte) (21+k)},
+                    new byte[]{(byte) (3+k),(byte) (6+k), (byte) (17+k), (byte) (12+k)},
+                    new byte[]{(byte) (6+k),(byte) (9+k),(byte) (12+k), (byte) (15+k)},
+                    new byte[]{(byte) (9+k),(byte) (17+k),(byte) (18+k), (byte) (18+k)},
+            };
+
+
+            ChordPrediction[] testingResponses = new ChordPrediction[]{
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.ALTERED),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.ALTERED),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.ALTERED),
+                    new ChordPrediction((byte) (0+k),(byte) (3+k), ChordType.ALTERED),
+                    new ChordPrediction((byte) (0+k),(byte) (6+k), ChordType.ALTERED),
+                    new ChordPrediction((byte) (0+k),(byte) (9+k), ChordType.ALTERED),
+            };
+
+
+            //Testing all cases with their expected responses
+            for(int j=0; j<testingCases.length; j++){
+
+                AnalyseChordRequest request = new AnalyseChordRequest(testingCases[j]);
+                AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+                String responseChord = response.getChord();
+                String expectedChord = testingResponses[j].getCommonName();
+                System.out.printf("TESTING PITCH OFFSET: ", k);
+                System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+                assertEquals(responseChord,expectedChord);
+            }
+
+        }
+    }
+
 
 
 }
