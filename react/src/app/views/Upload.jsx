@@ -184,14 +184,6 @@ class Upload extends Component {
 
               <SimpleCard title="Upload File">
                       <Grid item>
-                          <div
-                              className={`h-200 w-full border-radius-8 elevation-z6 bg-light-gray flex justify-center items-center cursor-pointer`}
-                          >
-                          <div>
-                              <div id="toast">
-
-                              </div>
-
                               <Dropzone
                                   disabled={this.cookies.get('allowCookies') === undefined}
                                   getUploadParams={this.getUploadParams}
@@ -202,20 +194,38 @@ class Upload extends Component {
                                   canCancel={false}
                                   onSubmit={this.onSubmit}
                                   inputContent={
-                                      <div key="key" className={"m-10"}>
-                                          <Icon className={"center"} fontSize="large">backup</Icon>
-                                          <p>Drag your midi file here, or click to browse for a file</p>
-                                          <aside>
-                                              {this.state.path}
-                                          </aside>
-                                      </div>
+                                      <Grid style={{padding:"20px"}} container key="key" className={"m-10 text-primary"}
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            direction="column"
+                                            spacing={2}
+                                      >
+                                          <Grid item>
+                                            <Icon className={"center"} fontSize="large">backup</Icon>
+                                          </Grid>
+                                          <Grid item>
+                                            <p>Drag your midi file here, or click to browse for a file</p>
+                                          </Grid>
+                                      </Grid>
                                   }
-                                  styles={{dropzone: { width: 400, height: 200 },}}
-                              />
-                          </div>
-                      </div>
-                      </Grid>
+                                  styles={{
+                                      dropzone: {
+                                          borderRadius: "",
+                                          overflow: "hidden",
+                                          width: 400,
+                                          height: 200,
+                                          backgroundColor:"#FFF",
+                                          border: "1px dashed #D2D2D2FF"
+                                      },
+                                      submitButton:{
+                                          backgroundColor:"#FFf",
+                                          border:"1px solid #387dd6",
+                                          color:"#387dd6"
+                                      }
 
+                                  }}
+                              />
+                      </Grid>
                   <br/>
                   <Button
                       variant="outlined"

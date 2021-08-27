@@ -269,11 +269,9 @@ class About extends Component {
                         ]}
                     />
                 </div>
-                <SimpleCard>
                     <div>
                         <AboutTabs/>
                     </div>
-                </SimpleCard>
             </div>
         );
     };

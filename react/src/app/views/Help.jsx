@@ -43,11 +43,14 @@ class Help extends Component {
                         ]}
                     />
                 </div>
-                <SimpleCard>
-                    <Grid container
-                          alignContent="space-between"
-                          justify="space-evenly"
-                          spacing={5}>
+                <br/>
+                    <Grid
+                        style={{marginLeft:"0px"}}
+                        container
+                        alignContent="space-between"
+                        justify="space-evenly"
+                        spacing={5}
+                        className="bg-white">
                         <Grid item xs={12} sm={12} m={12} lg={8}>
                             <h4>How To Use MIDISense</h4>
                             <br/>
@@ -68,7 +71,6 @@ class Help extends Component {
                             </div>
                         </Grid>
                     </Grid>
-                </SimpleCard>
             </div>
         );
     };

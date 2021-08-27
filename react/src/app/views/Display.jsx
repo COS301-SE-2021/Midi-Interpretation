@@ -478,14 +478,14 @@ class Display extends Component {
                       <SelectedMenu setTrack={this.setCurrentTrack} inputOptions={this.state.trackListing}/>
                       <TrackViewer trackData={{"trackData":this.state.trackData, "ticksPerBeat":this.state.ticksPerBeat, "instrument": this.state.instrument}} callSelect={this.setSelected}/>
                       <br/>
-                      <Grid container
-                            justify="space-evenly"
-                            spacing={1}
-                            direction="row"
-                            justifyContent="space-evenly"
-                            alignItems="center"
+                      <Grid
+                          container
+                          spacing={1}
+                          direction="row"
+                          justifyContent="flex-start"
+                          alignItems="flex-start"
                       >
-                          <div id="dataDisplay"/>
+                          <div style={{marginLeft:"100px"}} id="dataDisplay"/>
                       </Grid>
 
                   </SimpleCard>

@@ -145,55 +145,57 @@ function CustomTooltip (props) {
 
         document.getElementById("dataDisplay").innerHTML = ReactDOMServer.renderToString(
             <Grid container
-                  direction="row"
+                  direction="column"
                   justifyContent="flex-start"
-                  alignItems="center"
+                  alignItems="flex-start"
                   spacing={3}
                   >
-                <Grid item>
+                <Grid item style={{height:"20px"}}>
                     <div className="text-18 text-primary"><b>{multi_note_type}</b></div>
                 </Grid>
-                <Divider orientation="vertical" flexItem />
-                {props.payload.map((item,index)=>{
-                    const comp = item.payload['composite'][index]
-                    let isPercussive = comp['isPercussive']
-                    let onVelocity = (comp['on_velocity']===-1)?"Unknown":comp['on_velocity']
-                    let offVelocity = (comp['off_velocity']===-1)?"Unknown":comp['off_velocity']
-                    let onDynamic = (comp['on_velocity']===-1)?"No Dynamic Info":velocityToDynamic(comp['on_velocity'])
-                    let offDynamic = (comp['off_velocity']===-1)?"No Dynamic Info":velocityToDynamic(comp['off_velocity'])
-                    let duration = (comp['duration_beats']<0)?"No Duration Info":(comp['duration_beats']+" beats")
+                <Grid item>
+                    <Grid container>
+                    {props.payload.map((item,index)=>{
+                        const comp = item.payload['composite'][index]
+                        let isPercussive = comp['isPercussive']
+                        let onVelocity = (comp['on_velocity']===-1)?"Unknown":comp['on_velocity']
+                        let offVelocity = (comp['off_velocity']===-1)?"Unknown":comp['off_velocity']
+                        let onDynamic = (comp['on_velocity']===-1)?"No Dynamic Info":velocityToDynamic(comp['on_velocity'])
+                        let offDynamic = (comp['off_velocity']===-1)?"No Dynamic Info":velocityToDynamic(comp['off_velocity'])
+                        let duration = (comp['duration_beats']<0)?"No Duration Info":(comp['duration_beats']+" beats")
 
-                    //handle differently when drum set is detected
-                    if(isPercussive){
-                        return(
-                            <Grid item>
-                                <div key={index} style={{padding:"10px"}}>
-                                <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
-                                <div className="text-14">Instrument: {getPercussiveInstrument(item.value)} </div>
-                                <div className="text-14">On Velocity: {onVelocity} ({onDynamic})</div>
-                                <div className="text-14">Off Velocity: {offVelocity} ({offDynamic})</div>
-                                <div className="text-14">Duration: {duration}</div>
-                                </div>
-                            </Grid>
-                        )
-                    }
-                    else {
-                        return (
-                            <Grid item>
-                                <div key={index} style={{padding: "10px"}}>
+                        //handle differently when drum set is detected
+                        if(isPercussive){
+                            return(
+                                <Grid item>
+                                    <div key={index} style={{padding:"10px"}}>
                                     <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
-                                    <div className="text-14">Frequency: {frequency(item.value)} Hz</div>
-                                    <div className="text-14">Pitch: {valueToNote(item.value)['pitch']}</div>
-                                    <div className="text-14">Octave: {valueToNote(item.value)['octave']}</div>
+                                    <div className="text-14">Instrument: {getPercussiveInstrument(item.value)} </div>
                                     <div className="text-14">On Velocity: {onVelocity} ({onDynamic})</div>
                                     <div className="text-14">Off Velocity: {offVelocity} ({offDynamic})</div>
                                     <div className="text-14">Duration: {duration}</div>
-                                </div>
-                            </Grid>
-                        )
-                    }
-                })}
-                <Divider orientation="vertical" flexItem />
+                                    </div>
+                                </Grid>
+                            )
+                        }
+                        else {
+                            return (
+                                <Grid item>
+                                    <div key={index} style={{padding: "10px"}}>
+                                        <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
+                                        <div className="text-14">Frequency: {frequency(item.value)} Hz</div>
+                                        <div className="text-14">Pitch: {valueToNote(item.value)['pitch']}</div>
+                                        <div className="text-14">Octave: {valueToNote(item.value)['octave']}</div>
+                                        <div className="text-14">On Velocity: {onVelocity} ({onDynamic})</div>
+                                        <div className="text-14">Off Velocity: {offVelocity} ({offDynamic})</div>
+                                        <div className="text-14">Duration: {duration}</div>
+                                    </div>
+                                </Grid>
+                            )
+                        }
+                    })}
+                    </Grid>
+                </Grid>
             </Grid>
         )
 
