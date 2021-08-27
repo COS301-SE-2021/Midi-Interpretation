@@ -56,6 +56,6 @@ public class AnalyseChordResponse extends ResponseObject {
         String root = toneMap[Math.floorMod(rootPitch,12)];
         String inversion = toneMap[Math.floorMod(inversionPitch,12)];
         String inversionString = (root.equals(inversion))?"":String.format(" / %s",inversion);
-        return String.format("%s-%s",root,this.chordType)+inversionString;
+        return String.format("%s%s",root,this.chordType)+inversionString;
     }
 }

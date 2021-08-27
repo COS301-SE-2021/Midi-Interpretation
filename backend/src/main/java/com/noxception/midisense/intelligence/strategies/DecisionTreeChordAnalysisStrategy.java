@@ -25,8 +25,12 @@ public class DecisionTreeChordAnalysisStrategy implements ChordAnalysisStrategy{
 
         //reduce the features to a set modulo 12
         Set<Byte> chordRegression = new HashSet<>();
+        List<Byte> unordered = new ArrayList<>();
         for(byte b: features){
-            chordRegression.add((byte) (b % 12));
+            byte val = (byte) (b % 12);
+            chordRegression.add(val);
+            if(!unordered.contains(val))
+                unordered.add(val);
         }
 
         //see if there is a direct overlap of shape
@@ -37,7 +41,7 @@ public class DecisionTreeChordAnalysisStrategy implements ChordAnalysisStrategy{
             Set<Byte> chordMask = chord.getByteMask();
 
             //for each possible rooting of the chord
-            for(byte offset : chordRegression){
+            for(byte offset : unordered){
                 //create a temporary copy of the chordMask offset by the rooting
                 Set<Byte> temporaryShape = new HashSet<>();
                 for(byte tone: chordMask){

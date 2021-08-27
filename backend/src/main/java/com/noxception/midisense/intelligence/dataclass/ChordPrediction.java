@@ -50,6 +50,6 @@ public class ChordPrediction {
 
         String inversionString = (root.equals(inversion))?"":String.format(" / %s",inversion);
 
-        return String.format("%s-%s",root,type)+inversionString;
+        return String.format("%s%s",root,type)+inversionString;
     }
 }

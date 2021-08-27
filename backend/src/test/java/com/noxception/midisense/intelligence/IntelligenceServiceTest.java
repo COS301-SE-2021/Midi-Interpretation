@@ -246,8 +246,8 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
                     new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.AUGMENTED),
                     new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.AUGMENTED),
                     new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.AUGMENTED),
-                    new ChordPrediction((byte) (0+k),(byte) (4+k), ChordType.AUGMENTED),
-                    new ChordPrediction((byte) (0+k),(byte) (8+k), ChordType.AUGMENTED),
+                    new ChordPrediction((byte) (4+k),(byte) (4+k), ChordType.AUGMENTED),
+                    new ChordPrediction((byte) (8+k),(byte) (8+k), ChordType.AUGMENTED),
             };
 
 
@@ -458,9 +458,9 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
                     new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DIMINISHED_SEVENTH),
                     new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DIMINISHED_SEVENTH),
                     new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.DIMINISHED_SEVENTH),
-                    new ChordPrediction((byte) (0+k),(byte) (3+k), ChordType.DIMINISHED_SEVENTH),
-                    new ChordPrediction((byte) (0+k),(byte) (6+k), ChordType.DIMINISHED_SEVENTH),
-                    new ChordPrediction((byte) (0+k),(byte) (9+k), ChordType.DIMINISHED_SEVENTH),
+                    new ChordPrediction((byte) (3+k),(byte) (3+k), ChordType.DIMINISHED_SEVENTH),
+                    new ChordPrediction((byte) (6+k),(byte) (6+k), ChordType.DIMINISHED_SEVENTH),
+                    new ChordPrediction((byte) (9+k),(byte) (9+k), ChordType.DIMINISHED_SEVENTH),
             };
 
 
@@ -489,12 +489,12 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
             byte[][] testingCases = new byte[][]{
                     //these need to change a bit
-                    new byte[]{(byte) (0+k),(byte) (6+k), (byte) (6+k), (byte) (9+k)},
-                    new byte[]{(byte) (60+k),(byte) (72+k), (byte) (67+k), (byte) (69+k)},
-                    new byte[]{(byte) (0+k),(byte) (3+k),(byte) (17+k),(byte) (9+k),(byte) (12+k), (byte) (15+k),(byte) (18+k), (byte) (21+k)},
-                    new byte[]{(byte) (3+k),(byte) (6+k), (byte) (17+k), (byte) (12+k)},
-                    new byte[]{(byte) (6+k),(byte) (9+k),(byte) (12+k), (byte) (15+k)},
-                    new byte[]{(byte) (9+k),(byte) (17+k),(byte) (18+k), (byte) (18+k)},
+                    new byte[]{(byte) (0+k),(byte) (2+k), (byte) (3+k), (byte) (4+k)},
+                    new byte[]{(byte) (60+k),(byte) (85+k), (byte) (61+k), (byte) (62+k)},
+                    new byte[]{(byte) (0+k),(byte) (3+k),(byte) (17+k),(byte) (4+k),(byte) (5+k), (byte) (15+k),(byte) (18+k), (byte) (21+k)},
+                    new byte[]{(byte) (0+k),(byte) (6+k), (byte) (17+k), (byte) (12+k)},
+                    new byte[]{(byte) (0+k),(byte) (1+k),(byte) (12+k), (byte) (16+k)},
+                    new byte[]{(byte) (0+k),(byte) (17+k),(byte) (18+k), (byte) (18+k)},
             };
 
 
@@ -502,9 +502,9 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
                     new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.ALTERED),
                     new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.ALTERED),
                     new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.ALTERED),
-                    new ChordPrediction((byte) (0+k),(byte) (3+k), ChordType.ALTERED),
-                    new ChordPrediction((byte) (0+k),(byte) (6+k), ChordType.ALTERED),
-                    new ChordPrediction((byte) (0+k),(byte) (9+k), ChordType.ALTERED),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.ALTERED),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.ALTERED),
+                    new ChordPrediction((byte) (0+k),(byte) (0+k), ChordType.ALTERED),
             };
 
 
