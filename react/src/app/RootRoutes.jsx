@@ -6,6 +6,7 @@ import displayRoutes from "./views/DisplayRoutes";
 import notFoundRoutes from "./views/NotFoundRoutes";
 import aboutRoutes from "./views/AboutRoutes";
 import helpRoutes from "./views/HelpRoutes";
+import liveRoutes from "./views/LiveRoutes"
 
 /**
  * The routing information of the system
@@ -43,6 +44,7 @@ const routes = [
     ...homeRoutes,
     ...uploadRoutes,
     ...displayRoutes,
+    ...liveRoutes,
     ...aboutRoutes,
     ...helpRoutes,
     ...notFoundRoutes,

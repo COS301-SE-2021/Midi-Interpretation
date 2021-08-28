@@ -52,8 +52,6 @@ class Display extends Component {
       this.cookies = new Cookies()
 
       this.state = {
-        rowsPerPage: 5,
-        page: 0,
         songTitle: "Song Title",
         keySignature: "Unknown",
         tempoIndication: "Unknown",
@@ -113,27 +111,6 @@ class Display extends Component {
   //====================================
   // DISPLAY STATE VALUE SETTERS
   //====================================
-
-    /**
-     * setRowsPerPage
-     * @param rpp - new rows per page
-     */
-  setRowsPerPage = (rpp) => {
-      this.setState({
-        rowsPerPage: rpp
-      })
-  }
-
-    /**
-     * setPage
-     * @param p - new current page
-     */
-
-  setPage = (p) => {
-      this.setState({
-        page: p
-      })
-  }
 
     /**
      * setSongTitle
@@ -270,25 +247,6 @@ class Display extends Component {
   //====================================
   // DISPLAY METHODS
   //====================================
-
-  /**
-   * handleChangePage sends the event and the new page to setPage when the current page is changed
-   * @param event
-   * @param newPage
-   */
-
-  handleChangePage = (event, newPage) => {
-    this.setPage(newPage);
-  };
-
-  /**
-   * handleChangeRowsPerPage sends the event to setRowsPerPage to change how many rows are displayed in the table
-   * @param event
-   */
-
-  handleChangeRowsPerPage = event => {
-    this.setRowsPerPage(+event.target.value);
-  };
 
   /**
    * getScoreMetadata will get and set the key signature, tempt indication, time signature and track listing

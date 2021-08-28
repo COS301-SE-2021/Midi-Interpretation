@@ -30,6 +30,12 @@ export const navigations = [
         icon: "cloud_Upload",
         enabled: true
     },
+    {
+        name: "Live Analysis",
+        path: "/Live",
+        icon: "straighten",
+        enabled: true
+    },
     // disable the Display view if no file has been processed
     (cookies.get('fileDesignator') !== undefined)?
         {
