@@ -93,6 +93,7 @@ class Display extends Component {
 
       if(this.cookies.get('fileDesignator') === undefined){
           this.props.history.push("/Upload")
+          window.location.reload(false)
       }
 
       // Begin gathering data from the server
