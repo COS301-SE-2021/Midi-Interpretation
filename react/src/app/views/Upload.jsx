@@ -50,7 +50,8 @@ class Upload extends Component {
           trackIndex: 0,
           modalVisible: false,
           cookies: this.cookies.get('allowCookies'),
-          path: ""
+          path: "",
+          first: true
       }
       this.backendService = new MidiSenseService()
 
@@ -67,6 +68,10 @@ class Upload extends Component {
 
               let response = JSON.parse(xhr.response);
               let designator = response.fileDesignator
+
+              if(this.state.fileDesignator !== "")
+                  this.setState({first:false})
+
               this.cookies.set('fileDesignator', designator, { path: '/',
                   expires: tomorrow // Will expire after 24hr from setting (value is in Date object)
               });
@@ -114,8 +119,11 @@ class Upload extends Component {
                   const success = res['success']
                   const message = res['message']
                   console.log("Interpretation request "+(success===true?"accepted":"declined")+": "+message)
-                  this.props.history.push("/Display");
-                  window.location.reload(false)
+                  this.props.history.push("/Display")
+
+                  if(this.state.first){
+                      window.location.reload(false)
+                  }
               },
 
               /**

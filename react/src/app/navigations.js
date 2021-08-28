@@ -40,9 +40,9 @@ export const navigations = [
         }
     :
         {
+            enabled: false,
             name: "Display",
             path: "/Display",
-            icon: "equalizer",
-            enabled: false
+            icon: "equalizer"
         }
 ];

@@ -92,7 +92,7 @@ const MatxVerticalNav = props => {
         }
         else {
           return (
-              <NavLink key={index} to={item.path} className="nav-item">
+              <div key={index}  className="nav-item">
                 <TouchRipple key={item.name} name="child" className="w-full" disabled>
                   {(() => {
                     if (item.icon) {
@@ -113,7 +113,7 @@ const MatxVerticalNav = props => {
                       </div>
                   )}
                 </TouchRipple>
-              </NavLink>
+              </div>
           );
         }
       }
