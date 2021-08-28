@@ -115,6 +115,7 @@ class Upload extends Component {
                   const message = res['message']
                   console.log("Interpretation request "+(success===true?"accepted":"declined")+": "+message)
                   this.props.history.push("/Display");
+                  window.location.reload(false)
               },
 
               /**

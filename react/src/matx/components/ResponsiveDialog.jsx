@@ -17,16 +17,16 @@ import Cookies from "universal-cookie";
  */
 
 export default function ResponsiveDialog() {
-  const [open, setOpen] = React.useState(true);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const cookies = new Cookies();
+  const [open, setOpen] = React.useState(true)
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"))
+  const cookies = new Cookies()
 
   /**
    * close the dialog
    */
   function handleClose() {
-    setOpen(false);
+    setOpen(false)
   }
 
   /**
@@ -38,8 +38,8 @@ export default function ResponsiveDialog() {
 
     cookies.set('allowCookies', 'true', { path: '/',
       expires:end
-    });
-    window.location.reload(false);
+    })
+    window.location.reload(false)
     handleClose()
   }
 
