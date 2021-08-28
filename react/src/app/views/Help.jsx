@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Breadcrumb, SimpleCard} from "matx";
+import {Breadcrumb} from "matx";
 import { withStyles } from "@material-ui/styles";
 import 'react-responsive-combo-box/dist/index.css';
 import { Grid } from '@material-ui/core';

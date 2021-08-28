@@ -1,6 +1,6 @@
 import {Brush, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis,} from 'recharts';
 import React from "react";
-import {Divider, Grid} from "@material-ui/core";
+import {Grid} from "@material-ui/core";
 import * as ReactDOMServer from "react-dom/server";
 import MidiSenseService from "../../app/services/MidiSenseService";
 
