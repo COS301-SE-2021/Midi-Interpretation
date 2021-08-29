@@ -2,17 +2,18 @@ import React, {Component} from "react";
 import {Breadcrumb, SimpleCard} from "../../matx";
 import MidiSenseService from "../services/MidiSenseService";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Grid} from "@material-ui/core";
+import {Grid, Icon, IconButton} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import {withStyles} from "@material-ui/core/styles";
 import _ from 'lodash';
 import { KeyboardShortcuts, MidiNumbers } from 'react-piano';
-import 'react-piano/dist/styles.css';
+import '../services/styles.css';
 import SoundfontProvider from '../services/SoundfontProvider';
 import PianoWithRecording from '../services/PianoWithRecording';
 import InstrumentListProvider from "../services/InstrumentListProvider";
 import PianoConfig from "../services/PianoConfig";
 import DimensionsProvider from "../services/DimensionsProvider";
+import InstrumentMenu from "../../matx/components/InstrumentMenu";
 
 /**
  * This class defines the interpretation of a midi file that has been supplied by the server
@@ -59,7 +60,6 @@ class Live extends Component {
         this.state = {
             trackData:[],
             ticksPerBeat:1,
-            instrument: "Unknown",
             midisenseService: new MidiSenseService(),
             color : [
                 "#37A2DA",
@@ -83,7 +83,7 @@ class Live extends Component {
                 currentEvents: [],
             },
             config: {
-                instrumentName: 'acoustic_grand_piano',
+                instrumentName: 'accordion',
                 noteRange: {
                     first: MidiNumbers.fromNote('c3'),
                     last: MidiNumbers.fromNote('f5'),
@@ -129,7 +129,14 @@ class Live extends Component {
 
     setInstrument = (i) => {
         this.setState({
-            instrument: i
+            config: {
+                instrumentName: i,
+                noteRange: {
+                    first: this.state.config.noteRange.first,
+                    last: this.state.config.noteRange.last,
+                },
+                keyboardShortcutOffset: this.state.config.keyboardShortcutOffset,
+            }
         })
     }
 
@@ -275,6 +282,60 @@ class Live extends Component {
                             <div>
                             <h1 className="h3">react-piano recording + playback demo</h1>
                             <div className="mt-5">
+                                <InstrumentListProvider
+                                    hostname={soundfontHostname}
+                                    render={(instrumentList) => (
+                                        <div>
+                                            <Grid container
+                                                  justifyContent="flex-start"
+                                                  direction="row"
+                                                  alignItems="flex-start"
+                                            >
+                                                <div className="m10 justify-end">
+                                                    <Grid item>
+                                                        <InstrumentMenu
+                                                            setTrack={this.setInstrument}
+                                                            inputOptions={instrumentList || [this.state.config.instrumentName]}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item style={{
+                                                        backgroundColor:"#F5F5F5",
+                                                        boxShadow: "1px 2px #EAEAEAFF"
+                                                    }}>
+                                                        <IconButton
+                                                            style={{color:"#c20000"}}
+                                                            aria-label="Record"
+                                                        >
+                                                            <Icon>fiber_manual_record</Icon>
+                                                        </IconButton>
+                                                        <IconButton
+                                                            style={{color:"#38b000"}}
+                                                            aria-label="Play"
+                                                            onClick={this.onClickPlay}
+                                                        >
+                                                            <Icon>play_arrow</Icon>
+                                                        </IconButton>
+                                                        <IconButton
+                                                            style={{color:"#ffba08"}}
+                                                            aria-label="Clear"
+                                                            onClick={this.onClickClear}
+                                                        >
+                                                            <Icon>clear</Icon>
+                                                        </IconButton>
+                                                        <IconButton
+                                                            color="primary"
+                                                            aria-label="Process"
+                                                            onClick={this.onClickStop}
+                                                        >
+                                                            <Icon>get_app</Icon>
+                                                        </IconButton>
+                                                    </Grid>
+                                                    <br/>
+                                                </div>
+                                            </Grid>
+                                        </div>
+                                    )}
+                                />
                                 <DimensionsProvider>
                                     {({ containerWidth }) => (
                                         <SoundfontProvider
@@ -299,24 +360,19 @@ class Live extends Component {
                                 <InstrumentListProvider
                                     hostname={soundfontHostname}
                                     render={(instrumentList) => (
-                                        <PianoConfig
-                                            config={this.state.config}
-                                            setConfig={(config) => {
-                                                this.setState({
-                                                    config: Object.assign({}, this.state.config, config),
-                                                });
-                                                //stopAllNotes();
-                                            }}
-                                            instrumentList={instrumentList || [this.state.config.instrumentName]}
-                                            keyboardShortcuts={keyboardShortcuts}
-                                        />
+                                        <div>
+                                            <PianoConfig
+                                                config={this.state.config}
+                                                setConfig={(config) => {
+                                                    this.setState({
+                                                        config: Object.assign({}, this.state.config, config)
+                                                    })
+                                                }}
+                                                keyboardShortcuts={keyboardShortcuts}
+                                            />
+                                        </div>
                                     )}
                                 />
-                            </div>
-                            <div className="mt-5">
-                                <button onClick={this.onClickPlay}>Play</button>
-                                <button onClick={this.onClickStop}>Stop</button>
-                                <button onClick={this.onClickClear}>Clear</button>
                             </div>
                             <div className="mt-5">
                                 <strong>Recorded notes</strong>

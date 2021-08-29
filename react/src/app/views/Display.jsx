@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Breadcrumb, SimpleCard} from "../../matx";
-import SelectedMenu from "../../matx/components/SelectedMenu";
+import TrackMenu from "../../matx/components/TrackMenu";
 import MidiSenseService from "../services/MidiSenseService";
 import TrackViewer from "../../matx/components/TrackViewer";
 import {Grid} from "@material-ui/core";
@@ -434,7 +434,7 @@ class Display extends Component {
                   <br/>
 
                   <SimpleCard title="Timeline" subtitle="Here you'll find the sequence of events for a chosen channel.">
-                      <SelectedMenu setTrack={this.setCurrentTrack} inputOptions={this.state.trackListing}/>
+                      <TrackMenu setTrack={this.setCurrentTrack} inputOptions={this.state.trackListing}/>
                       <TrackViewer trackData={{"trackData":this.state.trackData, "ticksPerBeat":this.state.ticksPerBeat, "instrument": this.state.instrument}} callSelect={this.setSelected}/>
                       <br/>
                       <Grid

@@ -1,41 +1,102 @@
-/**
- * External from MIDISense
- */
-
 import React from 'react';
 import { MidiNumbers } from 'react-piano';
-
-class AutoblurSelect extends React.Component {
-  constructor(props) {
-    super(props);
-    this.selectRef = React.createRef();
-  }
-
-  onChange = (event) => {
-    this.props.onChange(event);
-    this.selectRef.current.blur();
-  };
-
-  render() {
-    const { children, onChange, ...otherProps } = this.props;
-    return (
-      <select {...otherProps} onChange={this.onChange} ref={this.selectRef}>
-        {children}
-      </select>
-    );
-  }
-}
-
-function Label(props) {
-  return <small className="mb-1 text-muted">{props.children}</small>;
-}
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import {Grid} from "@material-ui/core";
 
 class PianoConfig extends React.Component {
-  componentDidMount() {
+  constructor(props) {
+    super(props)
+
+    this.state ={
+      anchorElFirst: null,
+      anchorElLast: null,
+      selectedFirstIndex: this.props.config.noteRange.first,
+      selectedLastIndex: this.props.config.noteRange.last
+    }
+
+    this.setAnchorElFirst = (af) => {
+      this.setState({anchorElFirst: af})
+    }
+    this.setAnchorElLast = (al) => {
+      this.setState({anchorElLast: al})
+    }
+    this.setSelectedFirstIndex = (f) => {
+      this.setState({selectedFirstIndex: f})
+    }
+    this.setSelectedLastIndex = (l) => {
+      this.setState({selectedLastIndex: l})
+    }
+
+  }
+
+  /**
+   * Handle the list being clicked
+   * @param event - The click event
+   */
+
+  handleClickListItemFirst = (event) => {
+    this.setAnchorElFirst(event.currentTarget);
+  }
+
+  /**
+   * Select an item on the menu, change the index of the current item and change the displayed item
+   * @param event - The click event
+   * @param index - the index of the selected menu item
+   * @param newIndex
+   */
+  handleMenuItemClickFirst = (event, index, newIndex) => {
+    this.setSelectedFirstIndex(newIndex)
+    this.onChangeFirstNote(event, index)
+    this.setAnchorElFirst(null)
+  }
+
+  /**
+   * Close the menu
+   */
+
+  handleCloseFirst = () => {
+    this.setAnchorElFirst(null);
+  }
+
+  /**
+   * Handle the list being clicked
+   * @param event - The click event
+   */
+
+  handleClickListItemLast = (event) => {
+    this.setAnchorElLast(event.currentTarget);
+  }
+
+  /**
+   * Select an item on the menu, change the index of the current item and change the displayed item
+   * @param event - The click event
+   * @param index - the index of the selected menu item
+   * @param newIndex
+   */
+
+  handleMenuItemClickLast = (event, index, newIndex) => {
+    this.setSelectedLastIndex(newIndex);
+    this.onChangeLastNote(event, index)
+    this.setAnchorElLast(null);
+  }
+
+  /**
+   * Close the menu
+   */
+
+  handleCloseLast = () => {
+    this.setAnchorElLast(null);
+  }
+
+  componentDidMount = () => {
     window.addEventListener('keydown', this.handleKeyDown);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     window.removeEventListener('keydown', this.handleKeyDown);
   }
 
@@ -60,89 +121,124 @@ class PianoConfig extends React.Component {
     }
   };
 
-  onChangeFirstNote = (event) => {
+  onChangeFirstNote = (midiNumber, index) => {
     this.props.setConfig({
       noteRange: {
-        first: parseInt(event.target.value, 10),
+        first: parseInt(MidiNumbers.NATURAL_MIDI_NUMBERS[index],10),
         last: this.props.config.noteRange.last,
       },
     });
   };
 
-  onChangeLastNote = (event) => {
+  onChangeLastNote = (midiNumber, index) => {
     this.props.setConfig({
       noteRange: {
         first: this.props.config.noteRange.first,
-        last: parseInt(event.target.value, 10),
+        last: MidiNumbers.NATURAL_MIDI_NUMBERS[index],
       },
-    });
-  };
-
-  onChangeInstrument = (event) => {
-    this.props.setConfig({
-      instrumentName: event.target.value,
     });
   };
 
   render() {
     const midiNumbersToNotes = MidiNumbers.NATURAL_MIDI_NUMBERS.reduce((obj, midiNumber) => {
-      obj[midiNumber] = MidiNumbers.getAttributes(midiNumber).note;
-      return obj;
-    }, {});
-    const { noteRange, instrumentName } = this.props.config;
+      obj[midiNumber] = MidiNumbers.getAttributes(midiNumber).note
+      return obj
+    }, {})
 
+    let counter = 0
+    const midiNumbersToIndex = MidiNumbers.NATURAL_MIDI_NUMBERS.reduce((obj, midiNumber) => {
+      obj[midiNumber] = counter
+      counter++
+      return obj
+    }, {})
+    const { noteRange } = this.props.config;
     return (
-      <div className="form-row">
-        <div className="col-3">
-          <Label>First note</Label>
-          <AutoblurSelect
-            className="form-control"
-            onChange={this.onChangeFirstNote}
-            value={noteRange.first}
-          >
-            {MidiNumbers.NATURAL_MIDI_NUMBERS.map((midiNumber) => (
-              <option value={midiNumber} disabled={midiNumber >= noteRange.last} key={midiNumber}>
-                {midiNumbersToNotes[midiNumber]}
-              </option>
-            ))}
-          </AutoblurSelect>
-        </div>
-        <div className="col-3">
-          <Label>Last note</Label>
-          <AutoblurSelect
-            className="form-control"
-            onChange={this.onChangeLastNote}
-            value={noteRange.last}
-          >
-            {MidiNumbers.NATURAL_MIDI_NUMBERS.map((midiNumber) => (
-              <option value={midiNumber} disabled={midiNumber <= noteRange.first} key={midiNumber}>
-                {midiNumbersToNotes[midiNumber]}
-              </option>
-            ))}
-          </AutoblurSelect>
-        </div>
-        <div className="col-6">
-          <Label>Instrument</Label>
-          <AutoblurSelect
-            className="form-control"
-            value={instrumentName}
-            onChange={this.onChangeInstrument}
-          >
-            {this.props.instrumentList.map((value) => (
-              <option value={value} key={value}>
-                {value}
-              </option>
-            ))}
-          </AutoblurSelect>
-        </div>
-        <div className="col mt-2">
-          <small className="text-muted">
-            Use <strong>left arrow</strong> and <strong>right arrow</strong> to move the keyboard
-            shortcuts around.
-          </small>
+      <div>
+        <div>
+          <div>
+            <small className="text-muted">
+              Use <strong>left arrow</strong> and <strong>right arrow</strong> to move the keyboard
+              shortcuts around.
+            </small>
+          </div>
+          <Grid container direction="row" justifyContent="space-between">
+            <Grid item>
+              <List component="nav" aria-label="Device settings">
+                <ListItem
+                    button
+                    aria-haspopup="true"
+                    aria-controls="first-note-menu"
+                    aria-label="First"
+                    onClick={this.handleClickListItemFirst}
+                >
+                  <ListItemText
+                      primary="First Note"
+                      secondary={midiNumbersToNotes[noteRange.first]}
+                  />
+                </ListItem>
+              </List>
+              <Menu
+                  id="lock-menu"
+                  anchorEl={this.state.anchorElFirst}
+                  keepMounted
+                  open={Boolean(this.state.anchorElFirst)}
+                  onClose={this.handleCloseFirst}
+              >
+                {MidiNumbers.NATURAL_MIDI_NUMBERS.slice(midiNumbersToIndex[0],midiNumbersToIndex[noteRange.last]).map((midiNumber, index) => (
+                    <MenuItem
+                        key={midiNumber}
+                        selected={index === midiNumbersToIndex[this.state.selectedFirstIndex]}
+                        onClick={midiNumber =>this.handleMenuItemClickFirst(midiNumber, index, MidiNumbers.NATURAL_MIDI_NUMBERS[index])}
+                    >
+                      <option value={midiNumber} disabled={midiNumber >= noteRange.last} key={midiNumber}>
+                        {midiNumbersToNotes[midiNumber]}
+                      </option>
+                    </MenuItem>
+                ))}
+              </Menu>
+            </Grid>
+            <Grid item>
+              <List component="nav" aria-label="Device settings">
+                <ListItem
+                    button
+                    aria-haspopup="true"
+                    aria-controls="last-note-menu"
+                    aria-label="Last"
+                    onClick={this.handleClickListItemLast}
+                >
+                  <ListItemText
+                      primary="Last Note"
+                      secondary={midiNumbersToNotes[noteRange.last]}
+                  />
+                </ListItem>
+              </List>
+              <Menu
+                  id="lock-menu"
+                  anchorEl={this.state.anchorElLast}
+                  keepMounted
+                  open={Boolean(this.state.anchorElLast)}
+                  onClose={this.handleCloseLast}
+              >
+                {MidiNumbers.NATURAL_MIDI_NUMBERS.slice(midiNumbersToIndex[noteRange.first]+1, midiNumbersToIndex[127]).map((midiNumber, index) => (
+                    <MenuItem
+                        key={midiNumber}
+                        selected={index+midiNumbersToIndex[noteRange.first]+1 === midiNumbersToIndex[this.state.selectedLastIndex]}
+                        onClick={midiNumber =>this.handleMenuItemClickLast(midiNumber,
+                            index+midiNumbersToIndex[noteRange.first]+1,
+                            MidiNumbers.NATURAL_MIDI_NUMBERS[index+midiNumbersToIndex[noteRange.first]+1])}
+                    >
+
+                          <option value={midiNumber} disabled={midiNumber <= noteRange.first} key={midiNumber}>
+                            {midiNumbersToNotes[midiNumber]}
+                          </option>
+                    </MenuItem>
+                ))}
+              </Menu>
+            </Grid>
+          </Grid>
         </div>
       </div>
-    );
+    )
   }
 }
 

@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
  * @constructor
  */
 
-export default function SelectedMenu(props) {
+export default function TrackMenu(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
