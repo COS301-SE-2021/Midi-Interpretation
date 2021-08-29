@@ -532,7 +532,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         AnalyseChordRequest request = new AnalyseChordRequest(validStream);
         AnalyseChordResponse response = intelligenceService.analyseChord(request);
 
-        Assertions.assertFalse(response.getChord() == "");
+        Assertions.assertNotNull(response.getChord());
 
     }
 
