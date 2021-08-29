@@ -280,7 +280,7 @@ class Live extends Component {
                     <div>
                         <SimpleCard>
                             <div>
-                            <h1 className="h3">react-piano recording + playback demo</h1>
+                            <h1 className="h3">Live Analysis</h1>
                             <div className="mt-5">
                                 <InstrumentListProvider
                                     hostname={soundfontHostname}
