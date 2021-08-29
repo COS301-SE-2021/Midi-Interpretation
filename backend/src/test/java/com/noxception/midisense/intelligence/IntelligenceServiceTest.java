@@ -16,6 +16,7 @@ import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalys
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -526,6 +527,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Analyse Chord: input [Valid Byte Stream] expect [chord analysis]")
     public void testBlackBox_AnalyseChord_IfValidByteStream() throws IllegalArgumentException, MissingStrategyException{
 
         //valid byte stream
