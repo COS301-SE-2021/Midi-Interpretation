@@ -14,6 +14,7 @@ import com.noxception.midisense.intelligence.rrobjects.AnalyseGenreResponse;
 import com.noxception.midisense.intelligence.strategies.DecisionTreeChordAnalysisStrategy;
 import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalysisStrategy;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -524,6 +525,16 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    @Test
+    public void testBlackBox_AnalyseChord_IfValidByteStream() throws IllegalArgumentException{
+        byte[] validStream = new byte[]{3, 6, 9, 12};
+
+        AnalyseChordRequest request = new AnalyseChordRequest(validStream);
+        AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+        Assertions.assertFalse(response.getChord() == "");
+
+    }
 
 
 }
