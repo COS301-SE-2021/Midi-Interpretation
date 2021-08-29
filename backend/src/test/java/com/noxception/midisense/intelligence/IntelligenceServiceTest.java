@@ -526,7 +526,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testBlackBox_AnalyseChord_IfValidByteStream() throws IllegalArgumentException{
+    public void testBlackBox_AnalyseChord_IfValidByteStream() throws IllegalArgumentException, MissingStrategyException{
         byte[] validStream = new byte[]{3, 6, 9, 12};
 
         AnalyseChordRequest request = new AnalyseChordRequest(validStream);
