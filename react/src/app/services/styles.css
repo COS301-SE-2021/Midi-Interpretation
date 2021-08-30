@@ -3,6 +3,8 @@
   position: relative;
   /* Used to lay out .ReactPiano__Key--natural elements */
   display: flex;
+
+  max-height: 200px;
 }
 
 .ReactPiano__Key {

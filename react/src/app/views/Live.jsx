@@ -77,10 +77,14 @@ class Live extends Component {
                 "#96BFFF"
             ],
             recording: {
-                mode: 'RECORDING',
+                mode: 'STOP',
                 events: [],
                 currentTime: 0,
+                lastDownTime: 0,
+                lastUpTime: 0,
                 currentEvents: [],
+                active: "fiber_manual_record",
+                color: "#c20000"
             },
             config: {
                 instrumentName: 'accordion',
@@ -196,6 +200,36 @@ class Live extends Component {
         });
     };
 
+    onClickRecord = () => {
+        const mode = this.state.recording.mode
+        const events = this.state.recording.events
+        const currentTime = this.state.recording.currentTime
+        const currentEvents = this.state.recording.currentEvents
+        if(mode === "STOP"){
+            this.setRecording({
+                mode: "RECORDING",
+                events: events,
+                currentTime: 0,
+                currentEvents: [],
+                active:"stop",
+                color: "#555"
+            })
+            this.onClickClear("RECORDING")
+        }
+        else{
+            this.setState({
+                recording:{
+                    mode: "STOP",
+                    events: events,
+                    currentTime: currentTime,
+                    currentEvents: currentEvents,
+                    active:"fiber_manual_record",
+                    color: "#c20000"
+                }
+            })
+        }
+    }
+
     onClickPlay = () => {
         this.setRecording({
             mode: 'PLAYING',
@@ -220,25 +254,24 @@ class Live extends Component {
         });
         // Stop at the end
         setTimeout(() => {
-            this.onClickStop();
+            this.scheduledEvents.forEach(scheduledEvent => {
+                clearTimeout(scheduledEvent);
+            });
         }, this.getRecordingEndTime() * 1000);
     };
 
-    onClickStop = () => {
+    onClickClear = (input) => {
+        let mode = input
+        if(input === undefined){
+            mode = this.state.recording.mode
+        }
+
         this.scheduledEvents.forEach(scheduledEvent => {
             clearTimeout(scheduledEvent);
-        });
-        this.setRecording({
-            mode: 'RECORDING',
-            currentEvents: [],
-        });
-    };
-
-    onClickClear = () => {
-        this.onClickStop();
+        })
         this.setRecording({
             events: [],
-            mode: 'RECORDING',
+            mode: mode,
             currentEvents: [],
             currentTime: 0,
         });
@@ -303,10 +336,11 @@ class Live extends Component {
                                                         boxShadow: "1px 2px #EAEAEAFF"
                                                     }}>
                                                         <IconButton
-                                                            style={{color:"#c20000"}}
+                                                            style={{color: this.state.recording.color}}
                                                             aria-label="Record"
+                                                            onClick={this.onClickRecord}
                                                         >
-                                                            <Icon>fiber_manual_record</Icon>
+                                                            <Icon>{this.state.recording.active}</Icon>
                                                         </IconButton>
                                                         <IconButton
                                                             style={{color:"#38b000"}}
@@ -325,7 +359,6 @@ class Live extends Component {
                                                         <IconButton
                                                             color="primary"
                                                             aria-label="Process"
-                                                            onClick={this.onClickStop}
                                                         >
                                                             <Icon>get_app</Icon>
                                                         </IconButton>

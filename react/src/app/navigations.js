@@ -45,7 +45,7 @@ export const navigations = [
             // disable the Display view if no file has been processed
             (cookies.get('fileDesignator') !== undefined)?
                 {
-                    name: "Display",
+                    name: "File Analysis",
                     path: "/Display",
                     icon: "equalizer",
                     enabled: true
@@ -53,7 +53,7 @@ export const navigations = [
                 :
                 {
                     enabled: false,
-                    name: "Display",
+                    name: "File Analysis",
                     path: "/Display",
                     icon: "equalizer"
                 }
