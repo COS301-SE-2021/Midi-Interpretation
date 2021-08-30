@@ -546,13 +546,13 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     @Test
     public void testBlackBox_AnalyseChord_IfEmptyByteStream() throws IllegalArgumentException, MissingStrategyException, EmptyChordException{
 
-
+        //invalid byte stream
         byte[] validStream = new byte[]{};
 
-
+        //make a request
         AnalyseChordRequest request = new AnalyseChordRequest(validStream);
 
-
+        //check that exception is thrown
         Assertions.assertThrows(
                 EmptyChordException.class,//for a request
                 ()->intelligenceService.analyseChord(request));//because
