@@ -3,6 +3,7 @@ package com.noxception.midisense.intelligence;
 import com.noxception.midisense.api.IntelligenceApi;
 import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.intelligence.dataclass.GenrePredication;
+import com.noxception.midisense.intelligence.exceptions.EmptyChordException;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseChordRequest;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseChordResponse;
@@ -121,9 +122,6 @@ public class IntelligenceController implements IntelligenceApi {
             List<Integer> inputList = body.getPitchArray();
             int numPitches = inputList.size();
 
-            //if there are no pitches, reject
-            if(numPitches < 1) throw new IllegalArgumentException("No pitches were specified");
-
             byte[] pitchArray = new byte[numPitches];
             for(int i=0; i<numPitches; i++){
                 pitchArray[i] = inputList.get(i).byteValue();
@@ -154,7 +152,7 @@ public class IntelligenceController implements IntelligenceApi {
             responseObject.setMessage("Successfully analysed chord");
 
         }
-        catch(IllegalArgumentException | MissingStrategyException e){
+        catch(IllegalArgumentException | MissingStrategyException |EmptyChordException e){
 
             //Log the error
             log.warn(String.format("FAILURE | To: %s | Because: %s ","analyseChord",e.getMessage()));

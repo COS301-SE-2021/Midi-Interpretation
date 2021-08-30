@@ -4,6 +4,7 @@ import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.intelligence.dataclass.ChordPrediction;
 import com.noxception.midisense.intelligence.dataclass.GenrePredication;
+import com.noxception.midisense.intelligence.exceptions.EmptyChordException;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.*;
 import com.noxception.midisense.intelligence.strategies.ChordAnalysisStrategy;
@@ -89,7 +90,7 @@ public class IntelligenceServiceImpl implements IntelligenceService{
      * @throws MissingStrategyException if there is no predefined analysis strategy
      */
     @Override
-    public AnalyseChordResponse analyseChord(AnalyseChordRequest req) throws MissingStrategyException{
+    public AnalyseChordResponse analyseChord(AnalyseChordRequest req) throws MissingStrategyException, EmptyChordException {
         ChordPrediction prediction = chordAnalysisStrategy.classify(req.getCompound());
         AnalyseChordResponse response = new AnalyseChordResponse(
                 prediction.getRootNote(),

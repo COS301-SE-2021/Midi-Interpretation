@@ -2,6 +2,7 @@ package com.noxception.midisense.intelligence.strategies;
 
 import com.noxception.midisense.intelligence.dataclass.ChordPrediction;
 import com.noxception.midisense.intelligence.dataclass.ChordType;
+import com.noxception.midisense.intelligence.exceptions.EmptyChordException;
 
 import java.util.*;
 
@@ -12,10 +13,11 @@ public class DecisionTreeChordAnalysisStrategy implements ChordAnalysisStrategy{
     }
 
     @Override
-    public ChordPrediction classify(byte[] features) {
+    public ChordPrediction classify(byte[] features) throws EmptyChordException {
 
         //see if there are notes in chord
-        //TODO: Empty Chord Exception
+        if(features.length < 1)
+            throw new EmptyChordException("This chord is empty.");
 
         //pre-sort the pitches in ascending order
         Arrays.sort(features);
