@@ -6,6 +6,7 @@ import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.intelligence.dataclass.ChordPrediction;
 import com.noxception.midisense.intelligence.dataclass.ChordType;
+import com.noxception.midisense.intelligence.exceptions.EmptyChordException;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseChordRequest;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseChordResponse;
@@ -65,7 +66,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfOpenFifth_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfOpenFifth_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -106,7 +107,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfMajor_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfMajor_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -147,7 +148,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfMinor_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfMinor_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -188,7 +189,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfDiminished_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfDiminished_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -229,7 +230,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfAugmented_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfAugmented_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -270,7 +271,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfSus4_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfSus4_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -311,7 +312,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfDominant7th_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfDominant7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -354,7 +355,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfMajor7th_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfMajor7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -397,7 +398,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfMinor7th_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfMinor7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -440,7 +441,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfDiminished7th_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfDiminished7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -483,7 +484,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfAltered_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfAltered_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -528,7 +529,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
     @Test
     @DisplayName("Analyse Chord: input [Valid Byte Stream] expect [chord analysis]")
-    public void testBlackBox_AnalyseChord_IfValidByteStream() throws IllegalArgumentException, MissingStrategyException{
+    public void testBlackBox_AnalyseChord_IfValidByteStream() throws IllegalArgumentException, MissingStrategyException, EmptyChordException {
 
         //valid byte stream
         byte[] validStream = new byte[]{3, 6, 9, 12};
