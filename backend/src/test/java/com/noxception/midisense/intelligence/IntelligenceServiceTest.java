@@ -28,8 +28,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class IntelligenceServiceTest extends MIDISenseUnitTest {
@@ -544,6 +543,21 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
 
+    @Test
+    public void testBlackBox_AnalyseChord_IfEmptyByteStream() throws IllegalArgumentException, MissingStrategyException, EmptyChordException{
+
+
+        byte[] validStream = new byte[]{};
+
+
+        AnalyseChordRequest request = new AnalyseChordRequest(validStream);
+
+
+        Assertions.assertThrows(
+                EmptyChordException.class,//for a request
+                ()->intelligenceService.analyseChord(request));//because
+
+    }
 
 
 }
