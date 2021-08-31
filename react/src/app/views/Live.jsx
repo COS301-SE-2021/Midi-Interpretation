@@ -5,7 +5,6 @@ import TrackViewer from "../../matx/components/TrackViewer";
 import {Grid, Icon, IconButton} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import {withStyles} from "@material-ui/core/styles";
-import _ from 'lodash';
 import { KeyboardShortcuts, MidiNumbers } from 'react-piano';
 import '../services/styles.css';
 import SoundfontProvider from '../services/SoundfontProvider';
@@ -57,7 +56,13 @@ class Live extends Component {
         // Initialize the cookie system
         this.cookies = new Cookies()
 
+        this.timer = 0
+        this.isActive = false
+        this.isPaused = false
+        this.interval = null
+
         this.state = {
+            display: "",
             trackData:[],
             ticksPerBeat:1,
             midisenseService: new MidiSenseService(),
@@ -79,9 +84,6 @@ class Live extends Component {
             recording: {
                 mode: 'STOP',
                 events: [],
-                currentTime: 0,
-                lastDownTime: 0,
-                lastUpTime: 0,
                 currentEvents: [],
                 active: "fiber_manual_record",
                 color: "#c20000"
@@ -95,8 +97,6 @@ class Live extends Component {
                 keyboardShortcutOffset: 0,
             }
         }
-
-        this.scheduledEvents = []
     }
 
     //====================================
@@ -185,15 +185,6 @@ class Live extends Component {
 
     }
 
-    getRecordingEndTime = () => {
-        if (this.state.recording.events.length === 0) {
-            return 0;
-        }
-        return Math.max(
-            ...this.state.recording.events.map(event => event.time + event.duration),
-        );
-    };
-
     setRecording = value => {
         this.setState({
             recording: Object.assign({}, this.state.recording, value),
@@ -201,81 +192,90 @@ class Live extends Component {
     };
 
     onClickRecord = () => {
-        const mode = this.state.recording.mode
         const events = this.state.recording.events
-        const currentTime = this.state.recording.currentTime
-        const currentEvents = this.state.recording.currentEvents
-        if(mode === "STOP"){
+
+        if(this.state.recording.mode === "STOP"){
             this.setRecording({
                 mode: "RECORDING",
-                events: events,
-                currentTime: 0,
-                currentEvents: [],
+                events: [],
                 active:"stop",
                 color: "#555"
             })
-            this.onClickClear("RECORDING")
+            this.handleReset()
+            this.handleStart()
         }
-        else{
+        else if(this.state.recording.mode === "RECORDING"){
             this.setState({
                 recording:{
                     mode: "STOP",
                     events: events,
-                    currentTime: currentTime,
-                    currentEvents: currentEvents,
                     active:"fiber_manual_record",
                     color: "#c20000"
                 }
             })
+            this.handlePause()
         }
     }
 
     onClickPlay = () => {
-        this.setRecording({
-            mode: 'PLAYING',
-        });
-        const startAndEndTimes = _.uniq(
-            _.flatMap(this.state.recording.events, event => [
-                event.time,
-                event.time + event.duration,
-            ]),
-        );
-        startAndEndTimes.forEach(time => {
-            this.scheduledEvents.push(
-                setTimeout(() => {
-                    const currentEvents = this.state.recording.events.filter(event => {
-                        return event.time <= time && event.time + event.duration > time;
-                    });
-                    this.setRecording({
-                        currentEvents,
-                    });
-                }, time * 1000),
-            );
-        });
-        // Stop at the end
-        setTimeout(() => {
-            this.scheduledEvents.forEach(scheduledEvent => {
-                clearTimeout(scheduledEvent);
-            });
-        }, this.getRecordingEndTime() * 1000);
-    };
 
-    onClickClear = (input) => {
-        let mode = input
-        if(input === undefined){
-            mode = this.state.recording.mode
+    }
+
+    incTimer = () => {
+        if(this.isActive && !this.isPaused) {
+            this.timer = this.timer + 1
+            this.setState({display: this.formatTime(this.timer)})
         }
+        else{
+            clearInterval(this.interval)
+        }
+    }
 
-        this.scheduledEvents.forEach(scheduledEvent => {
-            clearTimeout(scheduledEvent);
-        })
-        this.setRecording({
-            events: [],
-            mode: mode,
-            currentEvents: [],
-            currentTime: 0,
-        });
-    };
+    onClickClear = () => {
+        this.handleReset()
+        console.log(this.state.recording.mode)
+
+        if(this.state.recording.mode === "RECORDING"){
+            this.setRecording({
+                mode: "STOP",
+                events: [],
+                active:"fiber_manual_record",
+                color: "#c20000"
+            })
+        }
+        else {
+            this.setRecording({
+                events: []
+            })
+        }
+    }
+
+    formatTime = (timer) => {
+        const getSeconds = `0${(timer % 60)}`.slice(-2)
+        const minutes = `${Math.floor(timer / 60)}`
+        const getMinutes = `0${minutes % 60}`.slice(-2)
+
+        return `${getMinutes} : ${getSeconds}`
+    }
+
+    handleStart = () => {
+        this.isActive = true
+        this.isPaused = false
+
+        this.interval = setInterval(this.incTimer, 1000)
+
+    }
+
+    handlePause = () => {
+        this.isPaused = true
+    }
+
+    handleReset = () => {
+        this.isActive = false
+        this.isPaused = false
+        this.timer = 0
+        this.setState({display: this.formatTime(this.timer)})
+    }
 
     /**
      * This method returns the elements that we want displayed
@@ -286,6 +286,7 @@ class Live extends Component {
      */
 
     render() {
+
         // webkitAudioContext fallback needed to support Safari
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const soundfontHostname = 'https://d1pzp51pvbm36p.cloudfront.net';
@@ -293,12 +294,12 @@ class Live extends Component {
         const noteRange = {
             first: MidiNumbers.fromNote('c3'),
             last: MidiNumbers.fromNote('f4'),
-        };
+        }
         const keyboardShortcuts = KeyboardShortcuts.create({
             firstNote: noteRange.first,
             lastNote: noteRange.last,
             keyboardConfig: KeyboardShortcuts.HOME_ROW,
-        });
+        })
 
         return (
             <div className="w-full overflow-auto">
@@ -342,6 +343,7 @@ class Live extends Component {
                                                         >
                                                             <Icon>{this.state.recording.active}</Icon>
                                                         </IconButton>
+                                                        {this.state.display}
                                                         <IconButton
                                                             style={{color:"#38b000"}}
                                                             aria-label="Play"
