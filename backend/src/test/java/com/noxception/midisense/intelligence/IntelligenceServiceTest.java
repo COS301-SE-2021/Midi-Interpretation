@@ -518,8 +518,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                System.out.printf("TESTING PITCH OFFSET: ", k);
-                System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+
+                //System.out.printf("TESTING PITCH OFFSET: ", k);
+                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+
+                //Compare given response to expected response
                 assertEquals(responseChord,expectedChord);
             }
 
