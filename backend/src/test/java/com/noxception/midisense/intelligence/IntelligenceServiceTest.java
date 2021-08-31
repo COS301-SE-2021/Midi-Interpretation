@@ -45,6 +45,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Analyse Genre: input [A valid fileDesignator not in DB] expect [array of genre predictions]")
     public void test_AnalyseGenre_IfValidByteStream_ThenExpectPredictions() throws InvalidDesignatorException, MissingStrategyException, IOException {
 
         //Create a temporary file to analyse
@@ -65,6 +66,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Analyse Chord: input [valid open fifth chord] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfOpenFifth_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
@@ -97,8 +99,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
+
                 //System.out.printf("TESTING PITCH OFFSET: ", k);
                 //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+
+                //Compare given response to expected response
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -106,6 +111,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Analyse Chord: input [major chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfMajor_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
@@ -138,8 +144,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
+
                 //System.out.printf("TESTING PITCH OFFSET: ", k);
                 //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+
+                //Compare given response to expected response
                 assertEquals(responseChord,expectedChord);
             }
 
