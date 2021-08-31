@@ -233,7 +233,6 @@ class Live extends Component {
 
     onClickClear = () => {
         this.handleReset()
-        console.log(this.state.recording.mode)
 
         if(this.state.recording.mode === "RECORDING"){
             this.setRecording({
