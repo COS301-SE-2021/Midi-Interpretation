@@ -6,12 +6,18 @@ import lombok.SneakyThrows;
 
 import java.util.List;
 
-public class Track {
-    @JsonProperty("tick")
-    public int tick;
+public class Channel {
+    @JsonProperty("channel")
+    public int channelNumber;
 
-    @JsonProperty("notes")
-    public List<Note> notes;
+    @JsonProperty("instrument")
+    public String instrument;
+
+    @JsonProperty("ticks_per_beat")
+    public int ticksPerBeat;
+
+    @JsonProperty("track")
+    public List<Track> trackMap;
 
     @SneakyThrows
     @Override
@@ -19,5 +25,4 @@ public class Track {
         return JSONUtils.ObjectToJSON(this);
 
     }
-
 }

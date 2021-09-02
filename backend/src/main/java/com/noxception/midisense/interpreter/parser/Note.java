@@ -4,14 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.noxception.midisense.interpreter.broker.JSONUtils;
 import lombok.SneakyThrows;
 
-import java.util.List;
+public class Note {
 
-public class Track {
-    @JsonProperty("tick")
-    public int tick;
+    @JsonProperty("value")
+    public int value;
 
-    @JsonProperty("notes")
-    public List<Note> notes;
+    @JsonProperty("on_velocity")
+    public int onVelocity;
+
+    @JsonProperty("off_velocity")
+    public int offVelocity;
+
+    @JsonProperty("duration")
+    public int duration;
 
     @SneakyThrows
     @Override
@@ -19,5 +24,4 @@ public class Track {
         return JSONUtils.ObjectToJSON(this);
 
     }
-
 }

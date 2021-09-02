@@ -36,7 +36,7 @@ public class MidiSenseApplication {
                     System.exit(0);
                 }
                 MIDISenseConfig.configurations.put(key, property);
-                log.info(String.format("Configuration loaded [%s=%s]",key,property));
+                log.debug(String.format("Configuration loaded [%s=%s]",key,property));
             }
         };
     }
