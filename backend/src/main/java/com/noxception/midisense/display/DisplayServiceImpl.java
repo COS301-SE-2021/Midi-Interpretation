@@ -6,8 +6,7 @@ import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.parser.Channel;
-import com.noxception.midisense.interpreter.parser.Score;
+import com.noxception.midisense.interpreter.parser.*;
 import com.noxception.midisense.interpreter.repository.DatabaseManager;
 import com.noxception.midisense.interpreter.repository.ScoreEntity;
 import com.noxception.midisense.interpreter.repository.ScoreRepository;
@@ -78,6 +77,32 @@ public class DisplayServiceImpl implements DisplayService{
         //else refer to score and get the metadata
         ScoreEntity score = searchResults.get();
         Score targetScore = score.decodeScore();
+
+        //default key signature if none present
+        if(targetScore.KeySignatureMap.size()==0){
+            KeySignature defaultSignature = new KeySignature();
+            defaultSignature.tick = 0;
+            defaultSignature.commonName = "C";
+            targetScore.KeySignatureMap.add(defaultSignature);
+        }
+
+        //default time signature if none present
+        if(targetScore.TimeSignatureMap.size()==0){
+            TimeSignature defaultSignature = new TimeSignature();
+            defaultSignature.tick = 0;
+            defaultSignature.time = new TimeSignature.InnerTime();
+            defaultSignature.time.beatValue = 4;
+            defaultSignature.time.numBeats = 4;
+            targetScore.TimeSignatureMap.add(defaultSignature);
+        }
+
+        //default time signature if none present
+        if(targetScore.TempoIndicationMap.size()==0){
+            TempoIndication defaultSignature = new TempoIndication();
+            defaultSignature.tick = 0;
+            defaultSignature.tempoIndication = 120;
+            targetScore.TempoIndicationMap.add(defaultSignature);
+        }
 
         return new GetPieceMetadataResponse(targetScore.KeySignatureMap,targetScore.TimeSignatureMap,targetScore.TempoIndicationMap);
     }
