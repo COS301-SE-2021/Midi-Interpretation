@@ -101,15 +101,17 @@
             <artifactId>mfl-ejml</artifactId>
             <version>0.5.7</version>
         </dependency>
-        <!-- jFugue -->
-        <dependency>
-            <groupId>jfugue</groupId>
-            <artifactId>jfugue</artifactId>
-            <version>5.0.9</version>
-        </dependency>
+        <!-- Lombok logging and suppression-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- Configuration processor -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
 
