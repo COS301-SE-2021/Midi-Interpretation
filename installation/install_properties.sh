@@ -41,7 +41,10 @@ spring.datasource.password=$MIDI_PASS
 
 # LOGGING
 
-logging.level.root=WARN
+logging.level.root=INFO
+debug=false
+spring.jpa.open-in-view=false
+spring.mustache.check-template-location=false
 
 # REQUESTS
 
