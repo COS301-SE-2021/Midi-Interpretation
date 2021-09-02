@@ -184,7 +184,6 @@ public class InterpreterServiceImpl implements InterpreterService{
             }
 
             requestMonitor.monitor();
-
             new InterpreterBroker(this.configurations).makeRequest(
                     brokerData,
                     (res)-> {
@@ -199,7 +198,6 @@ public class InterpreterServiceImpl implements InterpreterService{
                         this.requestMonitor.abort();
                     }
             );
-
             requestMonitor.await();
             Score returnScore = requestMonitor.getResource();
             if(returnScore == null)
@@ -274,10 +272,14 @@ public class InterpreterServiceImpl implements InterpreterService{
      * @param fileDesignator the unique identifier corresponding to the file in temporary storage
      */
     @Transactional
-    public void saveScore(Score score, UUID fileDesignator, byte[] fileContents){
+    public void saveScore(Score score, UUID fileDesignator, byte[] fileContents) throws IOException {
+
         //create a score
         ScoreEntity scoreEntity = new ScoreEntity(score,fileDesignator,fileContents);
         databaseManager.save(scoreEntity);
+
+        //delete from storage
+        deleteFileFromStorage(fileDesignator);
     }
 
     /** Method to see if a designator already corresponds to an interpreted file
