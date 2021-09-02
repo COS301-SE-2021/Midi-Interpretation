@@ -1,4 +1,4 @@
-package com.noxception.midisense.interpreter.repository;
+package com.noxception.midisense.repository;
 
 import java.util.Optional;
 

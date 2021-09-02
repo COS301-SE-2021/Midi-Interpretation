@@ -1,14 +1,13 @@
-package com.noxception.midisense.interpreter.repository;
+package com.noxception.midisense.repository;
 
 import com.noxception.midisense.interpreter.broker.JSONUtils;
 import com.noxception.midisense.interpreter.parser.Score;
 import lombok.SneakyThrows;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -29,14 +28,20 @@ public class ScoreEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     protected Long id;
 
     private String fileDesignator;
 
+
     @ElementCollection()
+    @JoinColumn(name = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private final List<byte[]> scoreEncoding = new ArrayList<>();
 
     @ElementCollection()
+    @JoinColumn(name = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private final List<byte[]> fileContents = new ArrayList<>();
 
     private int maxEncodingLength;
@@ -45,25 +50,35 @@ public class ScoreEntity{
     private int maxContentLength;
     private int compressedContentLength;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModified;
+
     public ScoreEntity() {
         maxEncodingLength = 0;
         compressedEncodingLength = 0;
         maxContentLength = 0;
         compressedContentLength = 0;
+        modify();
     }
 
     public ScoreEntity(Score score, UUID fileDesignator, byte[] contents){
         this.fileDesignator = fileDesignator.toString();
         encodeScore(score);
         encodeContents(contents);
+        modify();
+    }
 
+    public void modify(){
+        lastModified = new Date();
     }
 
     public String getFileDesignator() {
+        modify();
         return fileDesignator;
     }
 
     public void setFileDesignator(String fileDesignator) {
+        modify();
         this.fileDesignator = fileDesignator;
     }
 
@@ -101,6 +116,9 @@ public class ScoreEntity{
             this.scoreEncoding.add(portion);
             i++;
         }
+
+        modify();
+
     }
     
     @SneakyThrows
@@ -125,6 +143,7 @@ public class ScoreEntity{
             responseArray = new byte[]{};
         }
 
+        modify();
         return JSONUtils.JSONToObject(new String(responseArray),Score.class);
     }
 
@@ -156,6 +175,8 @@ public class ScoreEntity{
             this.fileContents.add(portion);
             i++;
         }
+
+        modify();
     }
 
     public byte[] decodeContents(){
@@ -179,22 +200,16 @@ public class ScoreEntity{
             responseArray = new byte[]{};
         }
 
+        modify();
         return responseArray;
     }
-    
 
-    //mocked
-    public String getKeySignature(){
-        return "CMaj";
+
+    public Date getLastModified() {
+        return lastModified;
     }
 
-    public int getTempoIndication(){
-        return 120;
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
-
-    public String getTimeSignature(){
-        return "4/4";
-    }
-
-
 }

@@ -1,14 +1,14 @@
 package com.noxception.midisense.dataclass;
 
-import com.noxception.midisense.interpreter.repository.DatabaseManager;
-import com.noxception.midisense.interpreter.repository.ScoreEntity;
+import com.noxception.midisense.repository.DatabaseManager;
+import com.noxception.midisense.repository.ScoreEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Class that mocks the functionality of {@link com.noxception.midisense.interpreter.repository.ScoreRepository} repository class.
+ * Class that mocks the functionality of {@link com.noxception.midisense.repository.ScoreRepository} repository class.
  * The operations are accessed in the same manner, due to the {@link DatabaseManager} wrapper from which both classes
  * inherit.
  */

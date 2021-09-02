@@ -9,9 +9,9 @@
 //import com.noxception.midisense.display.exceptions.InvalidTrackException;
 //import com.noxception.midisense.display.rrobjects.*;
 //import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-//import com.noxception.midisense.interpreter.repository.DatabaseManager;
-//import com.noxception.midisense.interpreter.repository.ScoreEntity;
-//import com.noxception.midisense.interpreter.repository.TrackEntity;
+//import com.noxception.midisense.repository.DatabaseManager;
+//import com.noxception.midisense.repository.ScoreEntity;
+//import com.noxception.midisense.repository.TrackEntity;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;

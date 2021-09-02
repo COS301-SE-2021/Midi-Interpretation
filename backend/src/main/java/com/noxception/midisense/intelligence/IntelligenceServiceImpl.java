@@ -11,9 +11,9 @@ import com.noxception.midisense.intelligence.rrobjects.*;
 import com.noxception.midisense.intelligence.strategies.ChordAnalysisStrategy;
 import com.noxception.midisense.intelligence.strategies.GenreAnalysisStrategy;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.repository.DatabaseManager;
-import com.noxception.midisense.interpreter.repository.ScoreEntity;
-import com.noxception.midisense.interpreter.repository.ScoreRepository;
+import com.noxception.midisense.repository.DatabaseManager;
+import com.noxception.midisense.repository.ScoreEntity;
+import com.noxception.midisense.repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

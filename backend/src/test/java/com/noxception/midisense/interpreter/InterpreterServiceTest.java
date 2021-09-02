@@ -10,8 +10,8 @@
 //import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 //import com.noxception.midisense.interpreter.parser.Track;
 //import com.noxception.midisense.interpreter.parser.Score;
-//import com.noxception.midisense.interpreter.repository.DatabaseManager;
-//import com.noxception.midisense.interpreter.repository.ScoreEntity;
+//import com.noxception.midisense.repository.DatabaseManager;
+//import com.noxception.midisense.repository.ScoreEntity;
 //import com.noxception.midisense.interpreter.rrobjects.*;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.DisplayName;
