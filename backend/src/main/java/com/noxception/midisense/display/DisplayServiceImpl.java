@@ -5,14 +5,12 @@ import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
-import com.noxception.midisense.interpreter.dataclass.KeySignature;
-import com.noxception.midisense.interpreter.dataclass.TempoIndication;
-import com.noxception.midisense.interpreter.dataclass.TimeSignature;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.parser.Channel;
+import com.noxception.midisense.interpreter.parser.Score;
 import com.noxception.midisense.interpreter.repository.DatabaseManager;
 import com.noxception.midisense.interpreter.repository.ScoreEntity;
 import com.noxception.midisense.interpreter.repository.ScoreRepository;
-import com.noxception.midisense.interpreter.repository.TrackEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,20 +77,9 @@ public class DisplayServiceImpl implements DisplayService{
 
         //else refer to score and get the metadata
         ScoreEntity score = searchResults.get();
+        Score targetScore = score.decodeScore();
 
-        //key signature
-        KeySignature keySignature = new KeySignature(score.getKeySignature());
-
-        //metre
-        String metre = score.getTimeSignature();
-        int numBeats = Integer.parseInt(metre.substring(0, metre.indexOf("/")));
-        int beatValue = Integer.parseInt(metre.substring(metre.indexOf("/")+1));
-        TimeSignature timeSignature = new TimeSignature(numBeats,beatValue);
-
-        //tempo
-        TempoIndication tempoIndication = new TempoIndication(score.getTempoIndication());
-
-        return new GetPieceMetadataResponse(keySignature,timeSignature,tempoIndication);
+        return new GetPieceMetadataResponse(targetScore.KeySignatureMap,targetScore.TimeSignatureMap,targetScore.TempoIndicationMap);
     }
 
     /**Used to retrieve a list of all track sequences of an interpreted work
@@ -117,25 +104,17 @@ public class DisplayServiceImpl implements DisplayService{
 
         //get the score and its associated tracks
         ScoreEntity score = searchResults.get();
-        List<TrackEntity> tracks = score.getTracks();
+        Score targetScore = score.decodeScore();
+
+        List<Channel> channelList = targetScore.channelList;
 
         //create a response and add the appropriate tracks
         GetTrackInfoResponse getTrackInfoResponse = new GetTrackInfoResponse();
-        for(TrackEntity track: tracks){
-            byte index = (byte) tracks.indexOf(track);
-
-            //look for the instrument in the response
-            String searchTerm = "\"instrument\": \"";
-            String endTerm = "\",";
-            String context = track.getRichTextNotes();
-
-            int beginIndex = context.indexOf(searchTerm)+searchTerm.length();
-            int endIndex = context.indexOf(endTerm,beginIndex+1);
-
-            String instrumentName = (beginIndex==-1 || endIndex==-1)?"Undefined":context.substring(beginIndex,endIndex);
+        for(Channel track: channelList){
+            byte index = (byte) channelList.indexOf(track);
+            String instrumentName = track.instrument;
             getTrackInfoResponse.addTrack(index,instrumentName);
         }
-
         return getTrackInfoResponse;
     }
 
@@ -164,16 +143,18 @@ public class DisplayServiceImpl implements DisplayService{
         //get the index of the requested track, the score and the corresponding tracks
         byte trackIndex = request.getTrackIndex();
         ScoreEntity score = searchResults.get();
-        List<TrackEntity> tracks = score.getTracks();
+        Score targetScore = score.decodeScore();
 
-        if(trackIndex >= tracks.size() || trackIndex < 0)
+        List<Channel> trackList = targetScore.channelList;
+
+        if(trackIndex >= trackList.size() || trackIndex < 0)
             //cannot refer to a track that does not exist
             throw new InvalidTrackException(configurations.configuration(ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
 
 
         //get a rich text version of the track
-        TrackEntity track = tracks.get(trackIndex);
-        String richString = track.getRichTextNotes();
+        Channel track = trackList.get(trackIndex);
+        String richString = track.toString();
 
         return new GetTrackMetadataResponse(richString);
     }
@@ -195,23 +176,24 @@ public class DisplayServiceImpl implements DisplayService{
         //search the repository for the piece with that designator
         Optional<ScoreEntity> searchResults = databaseManager.findByFileDesignator(request.getFileDesignator().toString());
 
-        if(searchResults.isEmpty())
-            //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
-
-        //get the track index requested, the score and corresponding track
-        byte trackIndex = request.getTrackIndex();
-        ScoreEntity score = searchResults.get();
-        List<TrackEntity> tracks = score.getTracks();
-
-        if(trackIndex >= tracks.size() || trackIndex < 0)
-            //cannot refer to a track that does not exist
-            throw new InvalidTrackException(configurations.configuration(ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
-
-        //get a text overview of the track
-        TrackEntity track = tracks.get(trackIndex);
-        
-        return new GetTrackOverviewResponse(track.getNoteSummary());
+//        if(searchResults.isEmpty())
+//            //no such file exists - has yet to be interpreted
+//            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
+//
+//        //get the track index requested, the score and corresponding track
+//        byte trackIndex = request.getTrackIndex();
+//        ScoreEntity score = searchResults.get();
+//        List<TrackEntity> tracks = score.getTracks();
+//
+//        if(trackIndex >= tracks.size() || trackIndex < 0)
+//            //cannot refer to a track that does not exist
+//            throw new InvalidTrackException(configurations.configuration(ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT));
+//
+//        //get a text overview of the track
+//        TrackEntity track = tracks.get(trackIndex);
+//
+//        return new GetTrackOverviewResponse(track.getNoteSummary());
+        return null;
     }
 
 }

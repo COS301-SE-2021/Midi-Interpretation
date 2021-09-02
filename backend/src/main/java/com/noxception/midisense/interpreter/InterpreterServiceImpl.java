@@ -4,34 +4,34 @@ import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.exceptions.InvalidInterpretationException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
-import com.noxception.midisense.interpreter.parser.MIDISenseParserListener;
+import com.noxception.midisense.interpreter.broker.InterpreterBroker;
+import com.noxception.midisense.interpreter.broker.JSONUtils;
+import com.noxception.midisense.interpreter.broker.RequestMonitor;
 import com.noxception.midisense.interpreter.parser.Score;
-import com.noxception.midisense.interpreter.parser.Track;
 import com.noxception.midisense.interpreter.repository.DatabaseManager;
 import com.noxception.midisense.interpreter.repository.ScoreEntity;
 import com.noxception.midisense.interpreter.repository.ScoreRepository;
-import com.noxception.midisense.interpreter.repository.TrackEntity;
 import com.noxception.midisense.interpreter.rrobjects.*;
-import org.jfugue.midi.MidiFileManager;
-import org.jfugue.midi.MidiParser;
-import org.jfugue.pattern.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.sound.midi.InvalidMidiDataException;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Class that is used for uploading a midi file to a specified storage location temporarily.
  * In addition it allows the interpretation of works whose corresponding metadata can be persisted to an external CRUD repository by way of a JPA extension
- *
- * More details on parsing can be found at {@link MIDISenseParserListener}
  *
  * @author Adrian Rae
  * @author Claudio Teixeira
@@ -45,17 +45,20 @@ public class InterpreterServiceImpl implements InterpreterService{
 
     private final DatabaseManager databaseManager;
     private final StandardConfig configurations;
+    private final RequestMonitor<Score> requestMonitor;
 
     @Autowired
-    public InterpreterServiceImpl(ScoreRepository scoreRepository, MIDISenseConfig midiSenseConfig){
-        databaseManager = new DatabaseManager();
-        databaseManager.attachRepository(scoreRepository);
-        configurations = midiSenseConfig;
+    public InterpreterServiceImpl(ScoreRepository scoreRepository, MIDISenseConfig midiSenseConfig) {
+        this.databaseManager = new DatabaseManager();
+        this.databaseManager.attachRepository(scoreRepository);
+        this.configurations = midiSenseConfig;
+        this.requestMonitor = new RequestMonitor<>();
     }
 
     public InterpreterServiceImpl(DatabaseManager databaseManager, StandardConfig standardConfig){
         this.configurations = standardConfig;
         this.databaseManager = databaseManager;
+        this.requestMonitor = new RequestMonitor<>();
     }
 
     //=================================
@@ -121,23 +124,32 @@ public class InterpreterServiceImpl implements InterpreterService{
             throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
 
         try {
+
             //parse file to rich format and get the corresponding score
             UUID fileDesignator = request.getFileDesignator();
 
             //if the file already exists, then throw error
-            if(scoreExists(fileDesignator)) throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT));
+            if(scoreExists(fileDesignator))
+                throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT));
 
             ParseJSONResponse parserResponse = this.parseJSON(new ParseJSONRequest(fileDesignator));
             Score parsedScore = parserResponse.getParsedScore();
 
+            //get the designator for the file being stored temporarily
+            String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignator+configurations.configuration(ConfigurationName.FILE_FORMAT);
+            byte[] fileData = Files.readAllBytes(Paths.get(filename));
+
             //persist score details to database
-            saveScore(parsedScore,fileDesignator);
+            saveScore(parsedScore,fileDesignator,fileData);
 
             return new ProcessFileResponse(true,configurations.configuration(ConfigurationName.SUCCESSFUL_PARSING_TEXT));
         }
-        catch(InvalidMidiDataException m){
+        catch(InvalidInterpretationException m){
             //The file is not a valid midi format and interpretation fails
             return new ProcessFileResponse(false, configurations.configuration(ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
+        }
+        catch (IOException e) {
+            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
         }
 
     }
@@ -146,129 +158,14 @@ public class InterpreterServiceImpl implements InterpreterService{
     // AUX SERVICE USE CASES
     //=================================
 
-    /**Handles the retrieval of a midi file's metre (time signature and beat encoding)
-     *
-     * @param request an object encapsulating a reference to the file uploaded in persisted storage
-     * @return an object encapsulating the metre of the interpreted work
-     * @throws InvalidDesignatorException if the designator does not refer to an existing file in persisted storage
-     */
-    @Override
-    public InterpretMetreResponse interpretMetre(InterpretMetreRequest request) throws InvalidDesignatorException {
-
-        if (request==null)
-            //an empty request cannot be processed
-            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
-
-        //search the repository for the piece with that designator
-        //Optional<ScoreEntity> searchResults = scoreRepository.findByFileDesignator(request.getFileDesignator().toString());
-
-        Optional<ScoreEntity> searchResults = databaseManager.findByFileDesignator(request.getFileDesignator().toString());
-
-        if (searchResults.isEmpty())
-            //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
-
-        //get the persisted data
-        String metre = searchResults.get().getTimeSignature();
-        int numBeats = Integer.parseInt(metre.substring(0, metre.indexOf("/")));
-        int beatValue = Integer.parseInt(metre.substring(metre.indexOf("/")+1));
-
-        return new InterpretMetreResponse(numBeats,beatValue);
-    }
-
-    /**Handles the retrieval of a midi file's tempo indication
-     *
-     * @param request an object encapsulating a reference to the file uploaded in persisted storage
-     * @return an object encapsulating the tempo indication of the interpreted work
-     * @throws InvalidDesignatorException if the designator does not refer to an existing file in persisted storage
-     */
-    @Override
-    public InterpretTempoResponse interpretTempo(InterpretTempoRequest request) throws InvalidDesignatorException {
-
-        if (request==null)
-            //an empty request cannot be processed
-            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
-
-        //search the repository for the piece with that designator
-        Optional<ScoreEntity> searchResults = databaseManager.findByFileDesignator(request.getFileDesignator().toString());
-
-        if(searchResults.isEmpty())
-            //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
-
-        //get the persisted data
-        int tempoIndication = searchResults.get().getTempoIndication();
-
-        return new InterpretTempoResponse(tempoIndication);
-    }
-
-    /**Handles the retrieval of a midi file's key signature
-     *
-     * @param request an object encapsulating a reference to the file uploaded in persisted storage
-     * @return an object encapsulating the key signature of the interpreted work
-     * @throws InvalidDesignatorException if the designator does not refer to an existing file in persisted storage
-     */
-    @Override
-    public InterpretKeySignatureResponse interpretKeySignature(InterpretKeySignatureRequest request) throws InvalidDesignatorException {
-
-        if (request==null)
-            //an empty request cannot be processed
-            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
-
-        //search the repository for the piece with that designator
-        Optional<ScoreEntity> searchResults = databaseManager.findByFileDesignator(request.getFileDesignator().toString());
-
-        if(searchResults.isEmpty())
-            //no such file exists - has yet to be interpreted
-            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
-
-        //get the persisted data
-        String sigName = searchResults.get().getKeySignature();
-
-        return new InterpretKeySignatureResponse(sigName);
-    }
-
-    /**Produces a human-readable string representation of a midi file stored in temporary storage
-     *
-     * @param request an object encapsulating a reference to the file uploaded in temporary storage
-     * @return an object encapsulating the string representation of the interpreted work
-     * @throws InvalidDesignatorException if the designator does not refer to an existing file in persisted storage
-     */
-    @Deprecated
-    @Override
-    public ParseStaccatoResponse parseStaccato(ParseStaccatoRequest request) throws InvalidDesignatorException{
-
-        if (request==null)
-            //an empty request cannot be processed
-            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT));
-        try {
-            //get the designator for the file being stored temporarily
-            UUID fileDesignator = request.getFileDesignator();
-            File sourceFile = new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignator+configurations.configuration(ConfigurationName.FILE_FORMAT));
-            Pattern pattern  = MidiFileManager.loadPatternFromMidi(sourceFile);
-            return new ParseStaccatoResponse(pattern.toString());
-        }
-        catch (IOException e) {
-            //If the file doesn't exist or cannot be written to by the file system, then the method should be deemed to have failed
-            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
-        }
-        catch (InvalidMidiDataException e) {
-            //The file is not a valid midi format and interpretation fails
-            throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
-        }
-    }
-
     /**Produces a complete tree-based representation of a midi file and its track sequences stored in temporary storage.
-     * Relies upon the jFugue 5.0.9 Midi Parser, with the NoXception Midi Parser Listener
-     *
-     * For more details on the parsing mechanism, see {@link MIDISenseParserListener}
      *
      * @param request an object encapsulating a reference to the file uploaded in temporary storage
      * @return an object encapsulating the tempo indication of the interpreted work
      * @throws InvalidDesignatorException if the designator does not refer to an existing file in persisted storage
      */
     @Override
-    public ParseJSONResponse parseJSON(ParseJSONRequest request) throws InvalidDesignatorException, InvalidMidiDataException {
+    public ParseJSONResponse parseJSON(ParseJSONRequest request) throws InvalidDesignatorException, InvalidInterpretationException {
 
         if (request==null)
             //an empty request cannot be processed
@@ -278,25 +175,47 @@ public class InterpreterServiceImpl implements InterpreterService{
             //get the designator for the file being stored temporarily
             UUID fileDesignator = request.getFileDesignator();
             String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignator+configurations.configuration(ConfigurationName.FILE_FORMAT);
-            File sourceFile = new File(filename);
+            byte[] fileData = Files.readAllBytes(Paths.get(filename));
 
-            //create a parser and corresponding listener
-            MidiParser parser = new MidiParser();
-            MIDISenseParserListener listener = new MIDISenseParserListener(filename, configurations);
-            parser.addParserListener(listener);
 
-            //start parsing
-            parser.parse(MidiFileManager.load(sourceFile));
+            int[] brokerData = new int[fileData.length];
+            for(int i=0; i<fileData.length; i++){
+                brokerData[i] = Byte.toUnsignedInt(fileData[i]);
+            }
 
-            return new ParseJSONResponse(listener.getParsedScore());
+            requestMonitor.monitor();
+
+            new InterpreterBroker(this.configurations).makeRequest(
+                    brokerData,
+                    (res)-> {
+                        try {
+                            Score score = JSONUtils.JSONToObject(res.body(), Score.class);
+                            this.requestMonitor.acquire(score);
+                        } catch (IOException e) {
+                            this.requestMonitor.abort();
+                        }
+                    },
+                    (res)-> {
+                        this.requestMonitor.abort();
+                    }
+            );
+
+            requestMonitor.await();
+            Score returnScore = requestMonitor.getResource();
+            if(returnScore == null)
+                throw new InvalidInterpretationException(configurations.configuration(ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
+
+            return new ParseJSONResponse(returnScore);
         }
         catch (IOException e) {
             //If the file doesn't exist or cannot be written to by the file system, then the method should be deemed to have failed
             throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
         }
-        catch (InvalidMidiDataException e) {
+        catch (ExecutionException e) {
             //The file is not a valid midi format and interpretation fails
-            throw new InvalidMidiDataException(configurations.configuration(ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
+            throw new InvalidInterpretationException(configurations.configuration(ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
+        } catch (CancellationException | CompletionException | InterruptedException t) {
+            throw new InvalidInterpretationException(configurations.configuration(ConfigurationName.INVALID_MIDI_TIMEOUT_EXCEPTION_TEXT));
         }
     }
 
@@ -353,31 +272,12 @@ public class InterpreterServiceImpl implements InterpreterService{
      *
      * @param score encapsulates the interpreted midi file
      * @param fileDesignator the unique identifier corresponding to the file in temporary storage
-     * @return whether or not the score is successfully persisted
      */
     @Transactional
-    public boolean saveScore(Score score, UUID fileDesignator){
-
+    public void saveScore(Score score, UUID fileDesignator, byte[] fileContents){
         //create a score
-        ScoreEntity scoreEntity = new ScoreEntity();
-
-        //map the piece-wise metadata
-        scoreEntity.setFileDesignator(fileDesignator.toString());
-        scoreEntity.setKeySignature(score.getKeySignature().getSignatureName());
-        scoreEntity.setTimeSignature(score.getTimeSignature().toString());
-        scoreEntity.setTempoIndication(score.getTempoIndication().getTempo());
-
-        //map the tracks
-        for(Track track : score.getTrackMap().values()){
-            TrackEntity newTrack = new TrackEntity();
-            newTrack.setNotes(track.getTrackData());
-            scoreEntity.addTrack(newTrack);
-        }
-
-        //save the score
-        ScoreEntity savedScore = databaseManager.save(scoreEntity);
-
-        return scoreEntity == savedScore;
+        ScoreEntity scoreEntity = new ScoreEntity(score,fileDesignator,fileContents);
+        databaseManager.save(scoreEntity);
     }
 
     /** Method to see if a designator already corresponds to an interpreted file
@@ -389,5 +289,6 @@ public class InterpreterServiceImpl implements InterpreterService{
         Optional<ScoreEntity> searchResults = databaseManager.findByFileDesignator(fileDesignator.toString());
         return searchResults.isPresent();
     }
+
 
 }
