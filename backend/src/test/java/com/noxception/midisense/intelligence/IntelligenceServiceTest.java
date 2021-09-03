@@ -15,6 +15,7 @@ import com.noxception.midisense.intelligence.rrobjects.AnalyseGenreResponse;
 import com.noxception.midisense.intelligence.strategies.DecisionTreeChordAnalysisStrategy;
 import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalysisStrategy;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.sun.xml.bind.v2.TODO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +44,12 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy(configurations));
         intelligenceService.attachChordStrategy(new DecisionTreeChordAnalysisStrategy());
     }
+    //TODO: Fill in description, precondtion and post condition for all tests
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Genre: input [A valid fileDesignator not in DB] expect [array of genre predictions]")
     public void test_AnalyseGenre_IfValidByteStream_ThenExpectPredictions() throws InvalidDesignatorException, MissingStrategyException, IOException {
@@ -65,6 +71,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [valid open fifth chord] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfOpenFifth_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
@@ -110,6 +120,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [major chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfMajor_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
@@ -155,6 +169,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [minor chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfMinor_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
@@ -200,6 +218,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [diminished chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfDiminished_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
@@ -245,6 +267,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [augmented chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfAugmented_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
@@ -290,6 +316,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [suspended fourth chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfSus4_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
@@ -335,6 +365,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [Dominant seventh chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfDominant7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
@@ -382,6 +416,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [major seventh chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfMajor7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
@@ -429,6 +467,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [minor seventh chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfMinor7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
@@ -476,6 +518,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [diminished seventh chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfDiminished7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
@@ -523,6 +569,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [altered chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfAltered_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
@@ -571,6 +621,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [Valid Byte Stream] expect [chord analysis]")
     public void testBlackBox_AnalyseChord_IfValidByteStream() throws IllegalArgumentException, MissingStrategyException, EmptyChordException {
@@ -587,7 +641,10 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
     }
 
-
+    /**Description:
+     * precondition -
+     * post condition -
+     */
     @Test
     @DisplayName("Analyse Chord: input [Invalid Byte Stream] expect [Empty chord Exception]")
     public void testBlackBox_AnalyseChord_IfEmptyByteStream() throws IllegalArgumentException, MissingStrategyException, EmptyChordException{
