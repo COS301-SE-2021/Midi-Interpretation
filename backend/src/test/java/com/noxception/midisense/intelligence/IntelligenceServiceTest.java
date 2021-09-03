@@ -336,6 +336,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Analyse Chord: input [Dominant seventh chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfDominant7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
@@ -370,8 +371,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
+
                 //System.out.printf("TESTING PITCH OFFSET: ", k);
                 //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+
+                //compare given response to expected response
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -379,6 +383,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
+    @DisplayName("Analyse Chord: input [major seventh chord test case] expect [all cases to adhere to intervals]")
     public void testWhiteBox_AnalyseChord_IfMajor7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
@@ -413,8 +418,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
+
                 //System.out.printf("TESTING PITCH OFFSET: ", k);
                 //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
+
+                //compare given chord to expected chord
                 assertEquals(responseChord,expectedChord);
             }
 
