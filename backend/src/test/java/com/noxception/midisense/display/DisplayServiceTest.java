@@ -124,7 +124,8 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-/**Description: tests the getPieceMetadata() function by passing in a valid UUID
+
+    /**Description: tests the getPieceMetadata() function by passing in a valid UUID
      * and the entry is not in the database
      * precondition - valid UUID not in database passed in
      * post condition - correct exception thrown
@@ -152,11 +153,11 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         )));
     }
 
-/**Description: tests the getTPieceMetadata() function by passing in an empty request
+
+    /**Description: tests the getTPieceMetadata() function by passing in an empty request
      * precondition - empty request passed in
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Piece Metadata: input [empty] expect [empty request exception]")
     public void test_GetPieceMetadata_IfEmptyRequest_ThenException() {
@@ -174,16 +175,16 @@ class DisplayServiceTest extends MIDISenseUnitTest {
     }
 
 
-    */
-/**GetTrackInfo*//*
 
-    */
-/**Description: tests the getTrackInfo() function by passing in a valid UUID and
+
+    /**GetTrackInfo*/
+
+
+    /**Description: tests the getTrackInfo() function by passing in a valid UUID and
      * the entry is in the database
      * precondition - valid UUID in database passed in
      * post condition - returned data is accurate
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
     public void test_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
@@ -213,13 +214,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-    */
-/**Description: tests the getTrackInfo() function by passing in a valid UUID
+
+    /**Description: tests the getTrackInfo() function by passing in a valid UUID
      * and the entry is not in the database
      * precondition - valid UUID not in database passed in
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Info: input [Designator for file not in DB] expect [file does not exist exception]")
     public void test_GetTrackInfo_IfNotInDatabase_ThenException() {
@@ -242,12 +242,11 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         )));
     }
 
-    */
-/**Description: tests the getTrackInfo() function by passing in an empty request
+
+    /**Description: tests the getTrackInfo() function by passing in an empty request
      * precondition - empty request passed in
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Info: input [empty] expect [empty request exception]")
     public void test_GetTrackInfo_IfEmptyRequest_ThenException() {
@@ -265,16 +264,16 @@ class DisplayServiceTest extends MIDISenseUnitTest {
     }
 
 
-    */
-/**GetTrackMetadata*//*
 
-    */
-/**Description: tests the getTrackMetadata() function by passing in a valid UUID and valid Track
+
+    /**GetTrackMetadata*/
+
+
+    /**Description: tests the getTrackMetadata() function by passing in a valid UUID and valid Track
      * and the entry is in the database
      * precondition - valid UUID, valid Track passed in
      * post condition - returned data is accurate
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
     public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
@@ -311,13 +310,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         assertTrue(matcher.find());
     }
 
-    */
-/**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track (Too High)
+
+    /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track (Too High)
      * and the entry is in the database
      * precondition - valid UUID, invalid Track (16 - too high for a track index) passed in
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [invalid track index exception]")
     public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenException() {
@@ -353,13 +351,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-    */
-/**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track (Too Low)
+
+    /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track (Too Low)
      * and the entry is in the database
      * precondition - valid UUID, invalid Track (-1 - format error) passed in
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [invalid track index exception]")
     public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() {
@@ -395,13 +392,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-    */
-/**Description: tests the getTrackMetadata() function by passing in a valid UUID and Valid Track
+
+    /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Valid Track
      * but the entry is not in the database
      * precondition - valid UUID, valid Track passed in
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file not in DB and valid track index] expect [invalid designator exception]")
     public void test_GetTrackMetadata_IfNotInDatabaseAndValidTrack_ThenException() {
@@ -429,7 +425,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-    */
+
     /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track
      * but the entry is not in the database
      * precondition - valid UUID, invalid Track passed in
