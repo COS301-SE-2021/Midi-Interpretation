@@ -123,14 +123,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         assertTrue(numBeats>0);
 
     }
-/*
 
-    */
 /**Description: tests the getPieceMetadata() function by passing in a valid UUID
      * and the entry is not in the database
      * precondition - valid UUID not in database passed in
      * post condition - correct exception thrown
-     *//*
+     */
 
     @Test
     @DisplayName("Get Piece Metadata: input [designator for a file not in DB] expect [file does not exist exception]")
@@ -154,7 +152,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         )));
     }
 
-    */
 /**Description: tests the getTPieceMetadata() function by passing in an empty request
      * precondition - empty request passed in
      * post condition - correct exception thrown
@@ -433,12 +430,11 @@ class DisplayServiceTest extends MIDISenseUnitTest {
     }
 
     */
-/**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track
+    /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track
      * but the entry is not in the database
      * precondition - valid UUID, invalid Track passed in
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file not in DB and invalid track index] expect [invalid designator and invalid track index exceptions]")
     public void test_GetTrackMetadata_IfNotInDatabaseAndInvalidTrack_ThenException() {
@@ -461,12 +457,11 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-    */
-/**Description: tests the getTrackMetadata() function by passing in an empty request
+
+    /**Description: tests the getTrackMetadata() function by passing in an empty request
      * precondition - empty request passed in
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Metadata: input [empty] expect [empty request exception]")
     public void test_GetTrackMetadata_IfEmptyRequest_ThenException() {
@@ -484,16 +479,16 @@ class DisplayServiceTest extends MIDISenseUnitTest {
     }
 
 
-    */
-/**GetTrackOverview*//*
 
-    */
-/**Description: tests the getTrackOverview() function by passing in a valid UUID and valid Track
+
+    /**GetTrackOverview*/
+
+
+    /**Description: tests the getTrackOverview() function by passing in a valid UUID and valid Track
      * and the entry is in the database
      * precondition - valid UUID, valid Track passed in
      * post condition - returned data is accurate
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Overview: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
     public void test_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
@@ -524,8 +519,8 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
         //Check the array has at least one item
         assertFalse(res.getPitchArray().isEmpty());
-*/
-/*
+
+        /*
         //Check that the elements of the array are valid pitch elements
         String match = "[ABCDEFG][#,b]?[(012345678]|[ABCDEFG][#b]?(-1)|[CDEFG][#b]?9|R0";
 
@@ -537,18 +532,17 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
             //see that the substring is present
             assertTrue(matcher.find());
-        }*//*
+        }*/
 
 
     }
 
-    */
-/**Description: tests the getTrackOverview() function by passing in a valid UUID and Invalid Track (Too High)
+
+    /**Description: tests the getTrackOverview() function by passing in a valid UUID and Invalid Track (Too High)
      * and the entry is in the database
      * precondition - valid UUID, invalid Track passed in (16 - too high for a track index)
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
     public void test_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenException() {
@@ -584,13 +578,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-    */
-/**Description: tests the getTrackOverview() function by passing in a valid UUID and Invalid Track (Too Low)
+
+    /**Description: tests the getTrackOverview() function by passing in a valid UUID and Invalid Track (Too Low)
      * and the entry is in the database
      * precondition - valid UUID, invalid Track passed in (-1 - Invalid Format)
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [invalid track index exception]")
     public void test_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() {
@@ -626,13 +619,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-    */
-/**Description: tests the getTrackOverview() function by passing in a valid UUID and Valid Track
+
+    /**Description: tests the getTrackOverview() function by passing in a valid UUID and Valid Track
      * but the entry is not in the database
      * precondition - valid UUID, valid Track passed in
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Overview: input [Designator for file not in DB and valid track index] expect [invalid designator exception]")
     public void test_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() {
@@ -660,13 +652,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         )));
     }
 
-    */
-/**Description: tests the getTrackOverview() function by passing in a valid UUID and Invalid Track
+
+    /**Description: tests the getTrackOverview() function by passing in a valid UUID and Invalid Track
      * but the entry is not in the database
      * precondition - valid UUID, invalid Track passed in
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Overview: input [Designator for file not in DB and invalid track index] expect [invalid designator and invalid track index exceptions]")
     public void test_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() {
@@ -693,12 +684,11 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-    */
-/**Description: tests the getTrackOverview() function by passing in an empty request
+
+    /**Description: tests the getTrackOverview() function by passing in an empty request
      * precondition - empty request passed in
      * post condition - correct exception thrown
-     *//*
-
+     */
     @Test
     @DisplayName("Get Track Overview: input [empty] expect [empty request exception]")
     public void test_GetTrackOverview_IfEmptyRequest_ThenException() {
@@ -718,7 +708,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
 
-
+/*
     //====================================================================================================================//
     //                                  WHITE BOX TESTING BELOW                                                                //
     //====================================================================================================================//
