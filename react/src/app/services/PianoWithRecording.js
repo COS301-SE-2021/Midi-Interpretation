@@ -1,14 +1,19 @@
 import React from 'react';
-import { Piano } from 'react-piano';
+import { Piano, MidiNumbers } from 'react-piano';
+import {BuildTwoTone} from "@material-ui/icons";
+import {Button, Grid} from "@material-ui/core";
 
 class PianoWithRecording extends React.Component {
-    static defaultProps = {
-        notesRecorded: false,
-    }
-    keysDown = {}
-    allNotes = []
-    state = {
-        start: 0,
+
+    constructor(props) {
+        super(props);
+
+        this.keysDown = {}
+        this.allNotes = []
+
+        this.state = {
+            start: 0,
+        }
     }
 
     onPlayNoteInput = midiNumber => {
@@ -62,10 +67,6 @@ class PianoWithRecording extends React.Component {
             setRecording,
             ...pianoProps
         } = this.props;
-
-        const { mode, currentEvents } = this.props.recording;
-        const activeNotes =
-            mode === 'PLAYING' ? currentEvents.map(event => event.midiNumber) : null;
         return (
             <div>
                     <Piano
@@ -73,11 +74,10 @@ class PianoWithRecording extends React.Component {
                         stopNote={this.props.stopNote}
                         onPlayNoteInput={this.onPlayNoteInput}
                         onStopNoteInput={this.onStopNoteInput}
-                        activeNotes={activeNotes}
                         {...pianoProps}
                     />
             </div>
-        );
+        )
     }
 }
 
