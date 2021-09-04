@@ -66,7 +66,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //mock the database with that designator
         Score s = new Score();
         ScoreEntity testEntity = new ScoreEntity();
-        testEntity.encodeScore(s);
+
 
         //-----------ADDED 1 TEMPO INDICATION
         TempoIndication tempoIndication = new TempoIndication();
@@ -90,7 +90,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         s.KeySignatureMap.add(keySignature);
 
 
-
+        testEntity.encodeScore(s);
         databaseManager.save(testEntity);
 
         //Make request
