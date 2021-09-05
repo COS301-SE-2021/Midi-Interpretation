@@ -9,10 +9,7 @@ import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.parser.KeySignature;
-import com.noxception.midisense.interpreter.parser.Score;
-import com.noxception.midisense.interpreter.parser.TempoIndication;
-import com.noxception.midisense.interpreter.parser.TimeSignature;
+import com.noxception.midisense.interpreter.parser.*;
 import com.noxception.midisense.repository.DatabaseManager;
 import com.noxception.midisense.repository.ScoreEntity;
 //import com.noxception.midisense.repository.TrackEntity;
@@ -66,7 +63,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //mock the database with that designator
         Score s = new Score();
         ScoreEntity testEntity = new ScoreEntity();
-
+        testEntity.setFileDesignator(fileDesignator.toString());
 
         //-----------ADDED 1 TEMPO INDICATION
         TempoIndication tempoIndication = new TempoIndication();
@@ -194,13 +191,29 @@ class DisplayServiceTest extends MIDISenseUnitTest {
                 ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
-        //mock the database with that designator
-        ScoreEntity testEntity = new ScoreEntity();
-        testEntity.setFileDesignator(fileDesignator.toString());
-        TrackEntity trackEntity =  new TrackEntity();
-        trackEntity.setNotes("THIS IS SAMPLE");
-        testEntity.addTrack(trackEntity);
-        databaseManager.save(testEntity);
+        //old code
+//        //mock the database with that designator
+//        ScoreEntity testEntity = new ScoreEntity();
+//        testEntity.setFileDesignator(fileDesignator.toString());
+//        TrackEntity trackEntity =  new TrackEntity();
+//        trackEntity.setNotes("THIS IS SAMPLE");
+//        testEntity.addTrack(trackEntity);
+//        databaseManager.save(testEntity);
+
+//        //new code
+//        //mock the database with that designator
+//        Score s = new Score();
+//        ScoreEntity testEntity = new ScoreEntity();
+//        testEntity.setFileDesignator(fileDesignator.toString());
+//
+//        Track t = new Track();
+//        Note note = new Note();
+//        t.tick=0;
+//        t.notes.add(note);
+//
+//
+//        testEntity.encodeScore(s);
+//        databaseManager.save(testEntity);
 
         //Make request
         GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
