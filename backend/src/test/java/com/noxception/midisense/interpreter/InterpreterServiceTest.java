@@ -1,100 +1,117 @@
-//package com.noxception.midisense.interpreter;
-//
-//import com.noxception.midisense.config.ConfigurationName;
-//import com.noxception.midisense.config.StandardConfig;
-//import com.noxception.midisense.dataclass.MIDISenseUnitTest;
-//import com.noxception.midisense.dataclass.MockConfigurationSettings;
-//import com.noxception.midisense.dataclass.MockRepository;
-//import com.noxception.midisense.interpreter.dataclass.TempoIndication;
-//import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-//import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
-//import com.noxception.midisense.interpreter.parser.Track;
-//import com.noxception.midisense.interpreter.parser.Score;
-//import com.noxception.midisense.repository.DatabaseManager;
-//import com.noxception.midisense.repository.ScoreEntity;
-//import com.noxception.midisense.interpreter.rrobjects.*;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.test.annotation.Rollback;
-//
-//import javax.transaction.Transactional;
-//import java.io.File;
-//import java.io.IOException;
-//import java.nio.file.Files;
-//import java.nio.file.Path;
-//import java.nio.file.Paths;
-//import java.nio.file.StandardCopyOption;
-//import java.util.Arrays;
-//import java.util.Map;
-//import java.util.UUID;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//class InterpreterServiceTest extends MIDISenseUnitTest {
-//
-//    private InterpreterService interpreterService;
-//    private StandardConfig configurations;
-//    private DatabaseManager databaseManager;
-//
-//    @BeforeEach
-//    public void mountModule() {
-//        configurations = new MockConfigurationSettings();
-//        databaseManager = new MockRepository();
-//
-//        interpreterService = new InterpreterServiceImpl(databaseManager,configurations);
-//    }
-//
-//
+package com.noxception.midisense.interpreter;
+
+import com.noxception.midisense.config.ConfigurationName;
+import com.noxception.midisense.config.StandardConfig;
+import com.noxception.midisense.dataclass.MIDISenseUnitTest;
+import com.noxception.midisense.dataclass.MockConfigurationSettings;
+import com.noxception.midisense.dataclass.MockRepository;
+import com.noxception.midisense.interpreter.dataclass.TempoIndication;
+import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
+import com.noxception.midisense.interpreter.parser.*;
+import com.noxception.midisense.repository.DatabaseManager;
+import com.noxception.midisense.repository.ScoreEntity;
+import com.noxception.midisense.interpreter.rrobjects.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.Rollback;
+
+import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class InterpreterServiceTest extends MIDISenseUnitTest {
+
+    private InterpreterService interpreterService;
+    private StandardConfig configurations;
+    private DatabaseManager databaseManager;
+
+    @BeforeEach
+    public void mountModule() {
+        configurations = new MockConfigurationSettings();
+        databaseManager = new MockRepository();
+
+        interpreterService = new InterpreterServiceImpl(databaseManager,configurations);
+    }
+
+
 //    //====================================================================================================================//
 //    //                                  BLACK BOX TESTING BELOW                                                           //
 //    //====================================================================================================================//
 //
-//
-//    /**UploadFile*/
-//    /**
-//     * Description: tests the uploadFile() function by passing in a valid file and saving
-//     * to the right directory
-//     * precondition - valid byte stream passed in
-//     * post condition - valid UUID from the right directory with the sames contents
-//     */
-//    @Test
-//    @DisplayName("Uploading File: input [valid byte stream] expect [valid UUID corresponding to file with same contents]")
-//    public void test_UploadFile_IfValidFile_ThenAccurateInfo() throws InvalidUploadException, IOException {
-//
-//        // Generate Valid File, put it in request
-//        byte[] validFile = new byte[]{1, 2, 3, 4, 5};
-//        UploadFileRequest req = new UploadFileRequest(validFile);
-//
-//        // Upload the file and get the designator
-//        UploadFileResponse res = interpreterService.uploadFile(req);
-//        UUID fileDesignator = res.getFileDesignator();
-//
-//        //check the designator is not null
-//        assertNotNull(fileDesignator);
-//
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        testEntity.setKeySignature("Cbmaj");
-//        testEntity.setTempoIndication(70);
-//        testEntity.setTimeSignature("4/4");
-//        databaseManager.save(testEntity);
-//
-//        //check that the resultant file can be opened : was saved to the right directory
-//        String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)
-//                + fileDesignator
-//                + configurations.configuration(ConfigurationName.FILE_FORMAT);
-//        File newlyCreated = new File(filename);
-//
-//        //check to see that the file contents are the same
-//        byte[] newContents = Files.readAllBytes(newlyCreated.toPath());
-//        assertArrayEquals(newContents, validFile);
-//
-//        newlyCreated = new File(filename);
-//        //delete the file
-//        assertTrue(newlyCreated.delete());
-//    }
-//
+
+    /**UploadFile*/
+    /**
+     * Description: tests the uploadFile() function by passing in a valid file and saving
+     * to the right directory
+     * precondition - valid byte stream passed in
+     * post condition - valid UUID from the right directory with the sames contents
+     */
+    @Test
+    @DisplayName("Uploading File: input [valid byte stream] expect [valid UUID corresponding to file with same contents]")
+    public void test_UploadFile_IfValidFile_ThenAccurateInfo() throws InvalidUploadException, IOException {
+
+        // Generate Valid File, put it in request
+        byte[] validFile = new byte[]{1, 2, 3, 4, 5};
+        UploadFileRequest req = new UploadFileRequest(validFile);
+
+        // Upload the file and get the designator
+        UploadFileResponse res = interpreterService.uploadFile(req);
+        UUID fileDesignator = res.getFileDesignator();
+
+        //check the designator is not null
+        assertNotNull(fileDesignator);
+
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        Score s = new Score();
+        TempoIndication tempoIndication = new TempoIndication();
+        tempoIndication.tick=0;
+        tempoIndication.tempoIndication = 70;
+        s.TempoIndicationMap.add(tempoIndication);
+
+        TimeSignature timeSignature = new TimeSignature();
+        TimeSignature.InnerTime innerTime = new TimeSignature.InnerTime();
+        innerTime.beatValue =4;
+        innerTime.numBeats=4;
+        timeSignature.tick=0;
+        timeSignature.time= innerTime;
+        s.TimeSignatureMap.add(timeSignature);
+
+        KeySignature keySignature = new KeySignature();
+        keySignature.tick =0;
+        keySignature.commonName = "Cbmaj";
+        s.KeySignatureMap.add(keySignature);
+
+        testEntity.encodeScore(s);
+
+        databaseManager.save(testEntity);
+
+        //check that the resultant file can be opened : was saved to the right directory
+        String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)
+                + fileDesignator
+                + configurations.configuration(ConfigurationName.FILE_FORMAT);
+        File newlyCreated = new File(filename);
+
+        //check to see that the file contents are the same
+        byte[] newContents = Files.readAllBytes(newlyCreated.toPath());
+        assertArrayEquals(newContents, validFile);
+
+        newlyCreated = new File(filename);
+        //delete the file
+        assertTrue(newlyCreated.delete());
+    }
+
 //    /**
 //     * Description: tests the uploadFile() function by passing in an empty file
 //     * precondition - empty byte stream passed in
@@ -882,7 +899,7 @@
 ////            assertTrue(t.getNoteSequence().size() > 0);
 ////        }
 //
-//    }
+   }
 //
 //
 //}
