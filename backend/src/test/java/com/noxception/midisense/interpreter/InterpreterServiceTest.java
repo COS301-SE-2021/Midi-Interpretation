@@ -72,14 +72,18 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //check the designator is not null
         assertNotNull(fileDesignator);
 
+        //define testEntity and Score
         ScoreEntity testEntity = new ScoreEntity();
         testEntity.setFileDesignator(fileDesignator.toString());
         Score s = new Score();
+
+        //set tempoIndication
         TempoIndication tempoIndication = new TempoIndication();
         tempoIndication.tick=0;
         tempoIndication.tempoIndication = 70;
         s.TempoIndicationMap.add(tempoIndication);
 
+        //set time signature
         TimeSignature timeSignature = new TimeSignature();
         TimeSignature.InnerTime innerTime = new TimeSignature.InnerTime();
         innerTime.beatValue =4;
@@ -88,13 +92,14 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         timeSignature.time= innerTime;
         s.TimeSignatureMap.add(timeSignature);
 
+        //set key signature
         KeySignature keySignature = new KeySignature();
         keySignature.tick =0;
         keySignature.commonName = "Cbmaj";
         s.KeySignatureMap.add(keySignature);
 
+        //add score to testEntity and save to mock database
         testEntity.encodeScore(s);
-
         databaseManager.save(testEntity);
 
         //check that the resultant file can be opened : was saved to the right directory
