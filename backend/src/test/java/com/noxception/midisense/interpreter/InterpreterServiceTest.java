@@ -618,9 +618,10 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //delete the temporary file
         assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
 
+        //TODO: get trackmap
         //1.1 There are at most 16 tracks
-        Map<Integer, Track> trackMap = score.getTrackMap();
-        assertTrue(trackMap.keySet().size() <= 16);
+        //Map<Integer, Track> trackMap = score.channelList;
+        //assertTrue(trackMap.keySet().size() <= 16);
 
         //1.2 There is a valid key signature
         String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
@@ -632,13 +633,13 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
 
         //1.4 The beat value is an integer power of two
-        int beatValue = score.getTimeSignature().getBeatValue();
+        int beatValue = score.TimeSignatureMap.get(0).time.beatValue;
         double c = Math.log(beatValue) / Math.log(2);
         assertEquals(c, Math.floor(c));
 
 
         //1.5 The beat number is positive
-        int numBeats = score.getTimeSignature().getNumBeats();
+        int numBeats = score.TimeSignatureMap.get(0).time.numBeats;
         assertTrue(numBeats > 0);
 
 //        //1.6 For all tracks
