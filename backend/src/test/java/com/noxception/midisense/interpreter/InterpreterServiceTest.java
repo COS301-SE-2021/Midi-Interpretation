@@ -117,30 +117,30 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         assertTrue(newlyCreated.delete());
     }
 
-//    /**
-//     * Description: tests the uploadFile() function by passing in an empty file
-//     * precondition - empty byte stream passed in
-//     * post condition - correct exception thrown
-//     */
-//    @Test
-//    @DisplayName("Uploading File: input [empty byte stream] expect [empty file exception]")
-//    public void test_UploadFile_IfEmptyFile_ThenException() {
-//
-//        // Generate Empty File, put it in request
-//        UploadFileRequest req = new UploadFileRequest(new byte[]{});
-//
-//        // Check that the error is thrown
-//        InvalidUploadException thrown = assertThrows(
-//                InvalidUploadException.class, //for an empty file
-//                () -> interpreterService.uploadFile(req), //when uploading
-//                "An empty file should not be processed"); //because
-//
-//        // Finally, see that the right message was delivered - EMPTY_FILE_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.EMPTY_FILE_EXCEPTION_TEXT)
-//        ));
-//    }
-//
+    /**
+     * Description: tests the uploadFile() function by passing in an empty file
+     * precondition - empty byte stream passed in
+     * post condition - correct exception thrown
+     */
+    @Test
+    @DisplayName("Uploading File: input [empty byte stream] expect [empty file exception]")
+    public void test_UploadFile_IfEmptyFile_ThenException() {
+
+        // Generate Empty File, put it in request
+        UploadFileRequest req = new UploadFileRequest(new byte[]{});
+
+        // Check that the error is thrown
+        InvalidUploadException thrown = assertThrows(
+                InvalidUploadException.class, //for an empty file
+                () -> interpreterService.uploadFile(req), //when uploading
+                "An empty file should not be processed"); //because
+
+        // Finally, see that the right message was delivered - EMPTY_FILE_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(
+                configurations.configuration(ConfigurationName.EMPTY_FILE_EXCEPTION_TEXT)
+        ));
+    }
+
 //    /**
 //     * Description: tests the uploadFile() function by passing in a file that's too large
 //     * precondition - byte stream of the max file size passed in
@@ -589,70 +589,70 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 //        ));
 //
 //    }
-//
-//    /**
-//     * Description: tests the parseJSON() function by passing in a midi file designator that is in storage
-//     * precondition - fileDesignator for a midi file that exists in storage passed in
-//     * post condition - appropriate success message received
-//     */
-//    @Transactional
-//    @Rollback(value = true)
-//    @Test
-//    @DisplayName("Parsing JSON: input [designator for a file that exists] expect [a score with several details met]")
-//    public void test_ParseJSON_IfInStorage_ThenAccurate() throws Exception {
-//
-//        //Create a temporary file to parse
-//        UUID fileDesignator = UUID.randomUUID();
-//        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
-//
-//        //copy temp file from testing data
-//        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-//        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
-//        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-//
-//        //interpret the work and get the score
-//        ParseJSONRequest req = new ParseJSONRequest(fileDesignator);
-//        ParseJSONResponse res = interpreterService.parseJSON(req);
-//        Score score = res.getParsedScore();
-//
-//        //delete the temporary file
-//        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
-//
-//        //1.1 There are at most 16 tracks
-//        Map<Integer, Track> trackMap = score.getTrackMap();
-//        assertTrue(trackMap.keySet().size() <= 16);
-//
-//        //1.2 There is a valid key signature
-//        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
-//        boolean b = Arrays.asList(keyArray).contains(score.getKeySignature().getSignatureName());
-//        assertTrue(b);
-//
-//        //1.3 The tempo is a positive integer
-//        assertTrue(score.getTempoIndication().getTempo() > 0);
-//
-//
-//        //1.4 The beat value is an integer power of two
-//        int beatValue = score.getTimeSignature().getBeatValue();
-//        double c = Math.log(beatValue) / Math.log(2);
-//        assertEquals(c, Math.floor(c));
-//
-//
-//        //1.5 The beat number is positive
-//        int numBeats = score.getTimeSignature().getNumBeats();
-//        assertTrue(numBeats > 0);
-//
-////        //1.6 For all tracks
-////        for (Track t : trackMap.values()) {
-////            //There is an instrument line
-////            assertNotEquals(t.getInstrumentString(), "");
-////            //There is a sequence of notes
-////            assertTrue(t.getNoteSequence().size() > 0);
-////        }
-//
-//    }
-//
-//
-//
+
+    /**
+     * Description: tests the parseJSON() function by passing in a midi file designator that is in storage
+     * precondition - fileDesignator for a midi file that exists in storage passed in
+     * post condition - appropriate success message received
+     */
+    @Transactional
+    @Rollback(value = true)
+    @Test
+    @DisplayName("Parsing JSON: input [designator for a file that exists] expect [a score with several details met]")
+    public void test_ParseJSON_IfInStorage_ThenAccurate() throws Exception {
+
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+
+        //interpret the work and get the score
+        ParseJSONRequest req = new ParseJSONRequest(fileDesignator);
+        ParseJSONResponse res = interpreterService.parseJSON(req);
+        Score score = res.getParsedScore();
+
+        //delete the temporary file
+        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
+
+        //1.1 There are at most 16 tracks
+        Map<Integer, Track> trackMap = score.getTrackMap();
+        assertTrue(trackMap.keySet().size() <= 16);
+
+        //1.2 There is a valid key signature
+        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
+        boolean b = Arrays.asList(keyArray).contains(score.KeySignatureMap.get(0).commonName);
+        assertTrue(b);
+
+        //1.3 The tempo is a positive integer
+        assertTrue(score.TempoIndicationMap.get(0).tempoIndication > 0);
+
+
+        //1.4 The beat value is an integer power of two
+        int beatValue = score.getTimeSignature().getBeatValue();
+        double c = Math.log(beatValue) / Math.log(2);
+        assertEquals(c, Math.floor(c));
+
+
+        //1.5 The beat number is positive
+        int numBeats = score.getTimeSignature().getNumBeats();
+        assertTrue(numBeats > 0);
+
+//        //1.6 For all tracks
+//        for (Track t : trackMap.values()) {
+//            //There is an instrument line
+//            assertNotEquals(t.getInstrumentString(), "");
+//            //There is a sequence of notes
+//            assertTrue(t.getNoteSequence().size() > 0);
+//        }
+
+    }
+
+
+
 //
 //    //====================================================================================================================//
 //    //                                  WHITE BOX TESTING BELOW                                                           //
