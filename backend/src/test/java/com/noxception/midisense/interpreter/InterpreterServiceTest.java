@@ -5,13 +5,18 @@ import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.dataclass.MockRepository;
-import com.noxception.midisense.interpreter.dataclass.TempoIndication;
-import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.dataclass.MockRequestBroker;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
-import com.noxception.midisense.interpreter.parser.*;
+import com.noxception.midisense.interpreter.parser.KeySignature;
+import com.noxception.midisense.interpreter.parser.Score;
+import com.noxception.midisense.interpreter.parser.TempoIndication;
+import com.noxception.midisense.interpreter.parser.TimeSignature;
+import com.noxception.midisense.interpreter.rrobjects.ParseJSONRequest;
+import com.noxception.midisense.interpreter.rrobjects.ParseJSONResponse;
+import com.noxception.midisense.interpreter.rrobjects.UploadFileRequest;
+import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
 import com.noxception.midisense.repository.DatabaseManager;
 import com.noxception.midisense.repository.ScoreEntity;
-import com.noxception.midisense.interpreter.rrobjects.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,8 +30,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,8 +45,21 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
     public void mountModule() {
         configurations = new MockConfigurationSettings();
         databaseManager = new MockRepository();
-
         interpreterService = new InterpreterServiceImpl(databaseManager,configurations);
+        ((InterpreterServiceImpl) interpreterService).addDefaultBroker(new MockRequestBroker(configurations));
+    }
+
+    @Test
+    public void TestMockBroker() throws ExecutionException, InterruptedException {
+        String bodyText = "hello, this string shouldn't matter. It is merely a body placeholder";
+        MockRequestBroker requestBroker = new MockRequestBroker(this.configurations);
+        requestBroker.makeRequest(
+                bodyText,
+                //should always return with body text
+                (res)->{ assertTrue(true); },
+                //should never fail
+                (res)->{ fail();}
+        );
     }
 
 
@@ -624,7 +642,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //assertTrue(trackMap.keySet().size() <= 16);
 
         //1.2 There is a valid key signature
-        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
+        String[] keyArray = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"};
         boolean b = Arrays.asList(keyArray).contains(score.KeySignatureMap.get(0).commonName);
         assertTrue(b);
 

@@ -32,11 +32,12 @@ public class RequestMonitor<T> {
 
     public void abort(){
         this.resource = null;
-        this.requestStatus = RequestStatus.EMPTY;
+        this.requestStatus = RequestStatus.FAILED;
     }
 
     enum RequestStatus{
         EMPTY,
         LOADED,
+        FAILED
     }
 }

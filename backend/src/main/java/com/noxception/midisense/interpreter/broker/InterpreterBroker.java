@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 public class InterpreterBroker {
-    private final StandardConfig configurations;
+    protected final StandardConfig configurations;
     private HttpClient client;
     private String serviceURL;
 

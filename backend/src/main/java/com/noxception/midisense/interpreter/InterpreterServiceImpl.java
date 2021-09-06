@@ -46,6 +46,7 @@ public class InterpreterServiceImpl implements InterpreterService{
     private final DatabaseManager databaseManager;
     private final StandardConfig configurations;
     private final RequestMonitor<Score> requestMonitor;
+    private InterpreterBroker defaultBroker;
 
     @Autowired
     public InterpreterServiceImpl(ScoreRepository scoreRepository, MIDISenseConfig midiSenseConfig) {
@@ -53,13 +54,21 @@ public class InterpreterServiceImpl implements InterpreterService{
         this.databaseManager.attachRepository(scoreRepository);
         this.configurations = midiSenseConfig;
         this.requestMonitor = new RequestMonitor<>();
+        this.defaultBroker = null;
     }
 
     public InterpreterServiceImpl(DatabaseManager databaseManager, StandardConfig standardConfig){
         this.configurations = standardConfig;
         this.databaseManager = databaseManager;
         this.requestMonitor = new RequestMonitor<>();
+        this.defaultBroker = null;
     }
+
+    public void addDefaultBroker(InterpreterBroker broker){
+        this.defaultBroker = broker;
+    }
+
+
 
     //=================================
     // MAIN SERVICE USE CASES
@@ -177,15 +186,23 @@ public class InterpreterServiceImpl implements InterpreterService{
             String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)+fileDesignator+configurations.configuration(ConfigurationName.FILE_FORMAT);
             byte[] fileData = Files.readAllBytes(Paths.get(filename));
 
-
+            //take the file data and morph it into an integer array
             int[] brokerData = new int[fileData.length];
             for(int i=0; i<fileData.length; i++){
                 brokerData[i] = Byte.toUnsignedInt(fileData[i]);
             }
 
+            //assign a new broker, or the default specified broker
+            InterpreterBroker currentBroker = (defaultBroker==null)?new InterpreterBroker(this.configurations):defaultBroker;
+
+            //begin monitoring the request
             requestMonitor.monitor();
-            new InterpreterBroker(this.configurations).makeRequest(
+
+            //make a request via the broker
+            currentBroker.makeRequest(
+                    //use the int array as body data
                     brokerData,
+                    //if successful, convert the body data and add the resource
                     (res)-> {
                         try {
                             Score score = JSONUtils.JSONToObject(res.body(), Score.class);
@@ -194,11 +211,15 @@ public class InterpreterServiceImpl implements InterpreterService{
                             this.requestMonitor.abort();
                         }
                     },
+                    //if unsuccessful, abort the monitoring
                     (res)-> {
                         this.requestMonitor.abort();
                     }
             );
+            //await the end of the monitoring
             requestMonitor.await();
+
+            //get the resource if it exists, else throw an error
             Score returnScore = requestMonitor.getResource();
             if(returnScore == null)
                 throw new InvalidInterpretationException(configurations.configuration(ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));

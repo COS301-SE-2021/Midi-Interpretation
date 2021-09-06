@@ -92,6 +92,7 @@ midisense.config.SUCCESSFUL_PARSING_TEXT=Successfully Parsed MIDI File
 
 midisense.config.MIDI_TESTING_ROOT=$testing_root/
 midisense.config.MIDI_TESTING_FILE=$testing_root/testFile.mid
+midisense.config.MIDI_TESTING_SAMPLE_RESPONSE=$testing_root/sampleResponse.json
 midisense.config.MIDI_INVALID_TESTING_FILE=$testing_root/invalidMidi.JPG
 midisense.config.MIDI_TESTING_DESIGNATOR=3169d7ac-216a-4400-a530-36525d005fbe
 midisense.config.MIDI_TESTING_TRACK_INDEX=0
