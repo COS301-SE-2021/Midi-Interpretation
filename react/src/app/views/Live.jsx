@@ -18,6 +18,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
+import { Scrollbar } from "react-scrollbars-custom";
 
 /**
  * This class defines the interpretation of a midi file that has been supplied by the server
@@ -499,50 +500,52 @@ class Live extends Component {
                                 <span>&nbsp;View Piano Roll</span>
                             </Button>
                             <Dialog
+                                fullWidth
+                                maxWidth="xl"
+                                maxHeight="xl"
                                 style={{
-                                    overflow:"auto",
                                     whiteSpace:"nowrap",
                                     position: 'absolute',
-                                    width: "100%",
-                                    height: "100%",
                                 }}
                                 open={this.state.open}
                                 onClose={this.handleClose}
                             >
                                 <DialogTitle>Piano Roll</DialogTitle>
-                                <DialogContent>
-                                    <div>
-                                        {
-                                            this.state.w.map((group, groupIndex) => {
-                                                return(
-                                                    <div>
-                                                        {
-                                                            (groupIndex > 0)?
-                                                                <Button className="text-muted" style={{height:"50px", margin:"2px", width:"80px"}} disabled="true">
-                                                                {this.valueToNote(this.state.config.noteRange.first+groupIndex)}
-                                                                </Button>:<div style={{width:"80px", display:"inline-block"}}/>
-                                                        }
-                                                        {this.state.h.map((pad, i) => {
-                                                            return (
-                                                                <div
-                                                                    style={{
-                                                                        display:"inline"
-                                                                    }}
-                                                                >
-                                                                    {
-                                                                        (groupIndex > 0)?
-                                                                        <Button style={{height:"50px", margin:"2px"}} variant="outlined" key={`button-${i}`}/>
-                                                                            : <Button className="text-muted" style={{height:"50px", margin:"2px"}} disabled="true" key={`button-${i}`}>{i}</Button>
-                                                                    }
-                                                                </div>
-                                                            )
-                                                        })}
-                                                    </div>
-                                                )}
-                                            )
-                                        }
-                                    </div>
-                                </DialogContent>
+                                    <DialogContent style={{height: "800px"}}>
+                                        <Scrollbar>
+                                        <div>
+                                            {
+                                                this.state.w.map((group, groupIndex) => {
+                                                    return(
+                                                        <div>
+                                                            {
+                                                                (groupIndex > 0)?
+                                                                    <Button className="text-muted" style={{height:"30px", margin:"2px", width:"80px"}} disabled="true">
+                                                                    {this.valueToNote(this.state.config.noteRange.first+groupIndex)}
+                                                                    </Button>:<div style={{width:"80px", display:"inline-block"}}/>
+                                                            }
+                                                            {this.state.h.map((pad, i) => {
+                                                                return (
+                                                                    <div
+                                                                        style={{
+                                                                            display:"inline"
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            (groupIndex > 0)?
+                                                                            <Button style={{height:"30px", margin:"2px"}} variant="outlined" key={`button-${i}`}/>
+                                                                                : <Button className="text-muted" style={{height:"30px", margin:"2px"}} disabled="true" key={`button-${i}`}>{i}</Button>
+                                                                        }
+                                                                    </div>
+                                                                )
+                                                            })}
+                                                        </div>
+                                                    )}
+                                                )
+                                            }
+                                        </div>
+                                        </Scrollbar>
+                                    </DialogContent>
                                 <DialogActions>
                                     <Button onClick={this.handleClose} color="primary">
                                         Ok
