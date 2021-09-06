@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Breadcrumb, SimpleCard} from "../../matx";
 import MidiSenseService from "../services/MidiSenseService";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Button, Divider, Grid, Icon, IconButton, Slider} from "@material-ui/core";
+import {Button, Divider, Grid, Icon, IconButton} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import {withStyles} from "@material-ui/core/styles";
 import { KeyboardShortcuts, MidiNumbers } from 'react-piano';
@@ -77,6 +77,7 @@ class Live extends Component {
         this.interval = null
 
         this.state = {
+            map: {},
             open:false,
             display: "",
             trackData:[],
@@ -252,6 +253,12 @@ class Live extends Component {
 
     onClickPlay = () => {
 
+    }
+
+    onButtonClick = (x,y) => {
+        console.log(x+":"+y)
+        console.log(this.state.map)
+        this.state.map[x+":"+y] = true
     }
 
     incTimer = () => {
@@ -533,7 +540,13 @@ class Live extends Component {
                                                                     >
                                                                         {
                                                                             (groupIndex > 0)?
-                                                                            <Button style={{height:"30px", margin:"2px"}} variant="outlined" key={`button-${i}`}/>
+                                                                            <Button
+                                                                                style={{height:"30px", margin:"2px"}}
+                                                                                variant="outlined"
+                                                                                key={`button-${i}`}
+                                                                                onClick={()=>{this.onButtonClick(groupIndex,i)}}
+                                                                                color={(this.state.map[groupIndex+":"+i])?"secondary":"lightGrey"}
+                                                                            />
                                                                                 : <Button className="text-muted" style={{height:"30px", margin:"2px"}} disabled="true" key={`button-${i}`}>{i}</Button>
                                                                         }
                                                                     </div>
