@@ -7,16 +7,12 @@ import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.dataclass.MockRequestBroker;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
-import com.noxception.midisense.interpreter.parser.KeySignature;
-import com.noxception.midisense.interpreter.parser.Score;
-import com.noxception.midisense.interpreter.parser.TempoIndication;
-import com.noxception.midisense.interpreter.parser.TimeSignature;
+import com.noxception.midisense.interpreter.parser.*;
 import com.noxception.midisense.interpreter.rrobjects.ParseJSONRequest;
 import com.noxception.midisense.interpreter.rrobjects.ParseJSONResponse;
 import com.noxception.midisense.interpreter.rrobjects.UploadFileRequest;
 import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
 import com.noxception.midisense.repository.DatabaseManager;
-import com.noxception.midisense.repository.ScoreEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +27,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,19 +42,6 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         databaseManager = new MockRepository();
         interpreterService = new InterpreterServiceImpl(databaseManager,configurations);
         ((InterpreterServiceImpl) interpreterService).addDefaultBroker(new MockRequestBroker(configurations));
-    }
-
-    @Test
-    public void TestMockBroker() throws ExecutionException, InterruptedException {
-        String bodyText = "hello, this string shouldn't matter. It is merely a body placeholder";
-        MockRequestBroker requestBroker = new MockRequestBroker(this.configurations);
-        requestBroker.makeRequest(
-                bodyText,
-                //should always return with body text
-                (res)->{ assertTrue(true); },
-                //should never fail
-                (res)->{ fail();}
-        );
     }
 
 
@@ -89,36 +71,6 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
         //check the designator is not null
         assertNotNull(fileDesignator);
-
-        //define testEntity and Score
-        ScoreEntity testEntity = new ScoreEntity();
-        testEntity.setFileDesignator(fileDesignator.toString());
-        Score s = new Score();
-
-        //set tempoIndication
-        TempoIndication tempoIndication = new TempoIndication();
-        tempoIndication.tick=0;
-        tempoIndication.tempoIndication = 70;
-        s.TempoIndicationMap.add(tempoIndication);
-
-        //set time signature
-        TimeSignature timeSignature = new TimeSignature();
-        TimeSignature.InnerTime innerTime = new TimeSignature.InnerTime();
-        innerTime.beatValue =4;
-        innerTime.numBeats=4;
-        timeSignature.tick=0;
-        timeSignature.time= innerTime;
-        s.TimeSignatureMap.add(timeSignature);
-
-        //set key signature
-        KeySignature keySignature = new KeySignature();
-        keySignature.tick =0;
-        keySignature.commonName = "Cbmaj";
-        s.KeySignatureMap.add(keySignature);
-
-        //add score to testEntity and save to mock database
-        testEntity.encodeScore(s);
-        databaseManager.save(testEntity);
 
         //check that the resultant file can be opened : was saved to the right directory
         String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)
@@ -636,37 +588,58 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //delete the temporary file
         assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
 
-        //TODO: get trackmap
-        //1.1 There are at most 16 tracks
-        //Map<Integer, Track> trackMap = score.channelList;
-        //assertTrue(trackMap.keySet().size() <= 16);
+        //has a track
+        assertTrue(score.channelList.size()>0);
 
-        //1.2 There is a valid key signature
+        //within max amount of tracks
+        assertTrue(score.channelList.size()<=16);
+
+        //1.2 There is a valid key signature for every tick
         String[] keyArray = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"};
-        boolean b = Arrays.asList(keyArray).contains(score.KeySignatureMap.get(0).commonName);
-        assertTrue(b);
+        for(KeySignature k : score.KeySignatureMap){
+            //check the key is a key
+            boolean b = Arrays.asList(keyArray).contains(k.commonName);
+            assertTrue(b);
+            //check the tick is valid
+            assertTrue(k.tick >= 0);
+        }
+
 
         //1.3 The tempo is a positive integer
-        assertTrue(score.TempoIndicationMap.get(0).tempoIndication > 0);
+        for(TempoIndication t : score.TempoIndicationMap){
+            //valid tempo is positive
+            assertTrue(t.tempoIndication > 0);
+            //check the tick is valid
+            assertTrue(t.tick >= 0);
+        }
 
+        for(TimeSignature t : score.TimeSignatureMap){
+            //The beat value is an integer power of two
+            int beatValue = t.time.beatValue;
+            double c = Math.log(beatValue) / Math.log(2);
+            assertEquals(c, Math.floor(c));
 
-        //1.4 The beat value is an integer power of two
-        int beatValue = score.TimeSignatureMap.get(0).time.beatValue;
-        double c = Math.log(beatValue) / Math.log(2);
-        assertEquals(c, Math.floor(c));
+            //The beat number is positive
+            int numBeats = t.time.numBeats;
+            assertTrue(numBeats > 0);
 
+            //check the tick is valid
+            assertTrue(t.tick >= 0);
+        }
 
-        //1.5 The beat number is positive
-        int numBeats = score.TimeSignatureMap.get(0).time.numBeats;
-        assertTrue(numBeats > 0);
+        for(Channel c : score.channelList){
+            int channelNum = c.channelNumber;
+            //check the channel is valid
+            assertTrue(channelNum>=0);
+            assertTrue(channelNum<=15);
 
-//        //1.6 For all tracks
-//        for (Track t : trackMap.values()) {
-//            //There is an instrument line
-//            assertNotEquals(t.getInstrumentString(), "");
-//            //There is a sequence of notes
-//            assertTrue(t.getNoteSequence().size() > 0);
-//        }
+            //check there is an insrument name
+            assertNotEquals(c.instrument,"");
+
+            //check the ticks per beat is valid
+            assertTrue(c.ticksPerBeat > 0);
+        }
+        
 
     }
 
