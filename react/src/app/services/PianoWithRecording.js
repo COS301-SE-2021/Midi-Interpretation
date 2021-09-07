@@ -1,62 +1,33 @@
 import React from 'react';
-import { Piano, MidiNumbers } from 'react-piano';
-import {BuildTwoTone} from "@material-ui/icons";
-import {Button, Grid} from "@material-ui/core";
+import { Piano } from 'react-piano';
 
 class PianoWithRecording extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.keysDown = {}
-        this.allNotes = []
-
-        this.state = {
-            start: 0,
-        }
+        this.playingNote = {}
     }
 
     onPlayNoteInput = midiNumber => {
-        if (this.props.recording.mode !== 'RECORDING') {
-            return
+        if (this.props.recording.mode === 'RECORDING') {
+            this.playingNote[midiNumber] = this.props.recording.quanta
         }
 
-        if(Object.keys(this.keysDown).length === 0 && this.props.recording.events.length === 0){
-            this.setState({start: Date.now()})
-        }
-
-        if(!this.keysDown.hasOwnProperty(midiNumber)) {
-            this.keysDown[midiNumber] = {value: midiNumber, time: Date.now(), duration:0}
-            console.log("playing " + midiNumber)
-        }
     }
 
     onStopNoteInput = (midiNumber) => {
-        if (this.props.recording.mode !== 'RECORDING') {
-            return
-        }
+        if (this.props.recording.mode === 'RECORDING' && Object.keys(this.playingNote).length !== 0) {
+            const start = this.playingNote[midiNumber]
+            const end = this.props.recording.quanta
 
-        if(this.keysDown[midiNumber] !== undefined) {
+            console.log(this.playingNote)
 
-            this.keysDown[midiNumber] = {
-                value: midiNumber,
-                time: this.getTime(this.keysDown[midiNumber].time, this.state.start, 1),
-                duration: this.getTime(Date.now(), this.keysDown[midiNumber].time, 2)
+            for(let n = start; n <= end; n++){
+                this.props.recordedNotes[(midiNumber-this.props.noteRange.first)+":"+n] = true
             }
 
-            this.allNotes.push(this.keysDown[midiNumber])
-            delete this.keysDown[midiNumber]
-
-            this.props.setRecording({
-                events: this.allNotes
-            })
-
-            console.log(this.allNotes)
+            delete this.playingNote[midiNumber]
         }
-    }
-
-    getTime = (start, stop, precision) => {
-        return ((start - stop)/1000).toFixed(precision)
     }
 
     render() {

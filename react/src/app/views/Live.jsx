@@ -62,22 +62,11 @@ class Live extends Component {
         // Initialize the cookie system
         this.cookies = new Cookies()
 
-        // //background thread
-        // this.worker = new Worker('worker.js')
-        // this.worker.addEventListener('startInterval', function(e) {
-        //
-        // })
-        // this.worker.addEventListener('stopInterval', function(e) {
-        //
-        // })
-
-        this.timer = 0
         this.isActive = false
-        this.isPaused = false
         this.interval = null
 
         this.state = {
-            map: {},
+            recordedNotes: {},
             open:false,
             display: "",
             trackData:[],
@@ -103,8 +92,6 @@ class Live extends Component {
                 length:40,
                 quanta:0,
                 mode: 'STOP',
-                events: [],
-                currentEvents: [],
                 active: "fiber_manual_record",
                 color: "#c20000"
             },
@@ -226,28 +213,21 @@ class Live extends Component {
     };
 
     onClickRecord = () => {
-        const events = this.state.recording.events
-
         if(this.state.recording.mode === "STOP"){
+            this.handleStart()
             this.setRecording({
                 mode: "RECORDING",
-                events: [],
                 active:"stop",
                 color: "#555"
             })
-            this.handleReset()
-            this.handleStart()
         }
         else if(this.state.recording.mode === "RECORDING"){
-            this.setState({
-                recording:{
-                    mode: "STOP",
-                    events: events,
-                    active:"fiber_manual_record",
-                    color: "#c20000"
-                }
+            this.isActive = false
+            this.setRecording({
+                mode: "STOP",
+                active:"fiber_manual_record",
+                color: "#c20000"
             })
-            this.handlePause()
         }
     }
 
@@ -257,34 +237,30 @@ class Live extends Component {
 
     onButtonClick = (x,y) => {
         console.log(x+":"+y)
-        console.log(this.state.map)
-        this.state.map[x+":"+y] = true
+        console.log(this.state.recordedNotes)
+        this.state.recordedNotes[x+":"+y] = true
     }
 
     incTimer = () => {
-        if(this.isActive && !this.isPaused) {
-            this.timer = this.timer + 1
-            this.setState({display: this.formatTime(this.timer)})
+        if(this.isActive) {
+            this.setRecording({quanta: this.state.recording.quanta + 1})
         }
         else{
             clearInterval(this.interval)
+            this.setRecording({quanta:0})
         }
     }
 
     onClickClear = () => {
-        this.handleReset()
+        this.setRecording({quanta:0})
+
+        this.setState({recordedNotes: {}})
 
         if(this.state.recording.mode === "RECORDING"){
             this.setRecording({
                 mode: "STOP",
-                events: [],
                 active:"fiber_manual_record",
                 color: "#c20000"
-            })
-        }
-        else {
-            this.setRecording({
-                events: []
             })
         }
     }
@@ -298,22 +274,10 @@ class Live extends Component {
     }
 
     handleStart = () => {
+        this.setState({recordedNotes:{}})
+        this.setState({recording:{quanta:0}})
         this.isActive = true
-        this.isPaused = false
-
-        this.interval = setInterval(this.incTimer, 1000)
-
-    }
-
-    handlePause = () => {
-        this.isPaused = true
-    }
-
-    handleReset = () => {
-        this.isActive = false
-        this.isPaused = false
-        this.timer = 0
-        this.setState({display: this.formatTime(this.timer)})
+        this.interval = setInterval(this.incTimer, (this.state.recording.bpm*1000)/960)
     }
 
     valueToNote = (k) =>{
@@ -405,7 +369,9 @@ class Live extends Component {
                                                                 </IconButton>
                                                             </Grid>
                                                                 <Grid item>
-                                                                    {this.state.display}
+                                                                    {(this.state.recording.mode === "RECORDING")?
+                                                                        <span>Beat: {this.state.recording.quanta/16}</span>
+                                                                        :<span/>}
                                                                 </Grid>
                                                                 <Grid item>
                                                                     <IconButton
@@ -461,6 +427,7 @@ class Live extends Component {
                                             hostname={soundfontHostname}
                                             render={({ isLoading, playNote, stopNote}) => (
                                                 <PianoWithRecording
+                                                    recordedNotes={this.state.recordedNotes}
                                                     recording={this.state.recording}
                                                     setRecording={this.setRecording}
                                                     noteRange={this.state.config.noteRange}
@@ -542,10 +509,10 @@ class Live extends Component {
                                                                             (groupIndex > 0)?
                                                                             <Button
                                                                                 style={{height:"30px", margin:"2px"}}
-                                                                                variant="outlined"
+                                                                                variant={(Boolean(this.state.recordedNotes[groupIndex+":"+i]))?"contained":"outlined"}
                                                                                 key={`button-${i}`}
                                                                                 onClick={()=>{this.onButtonClick(groupIndex,i)}}
-                                                                                color={(this.state.map[groupIndex+":"+i])?"secondary":"lightGrey"}
+                                                                                color={(Boolean(this.state.recordedNotes[groupIndex+":"+i]))?"secondary":"default"}
                                                                             />
                                                                                 : <Button className="text-muted" style={{height:"30px", margin:"2px"}} disabled="true" key={`button-${i}`}>{i}</Button>
                                                                         }
