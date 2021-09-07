@@ -865,14 +865,14 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //delete the temporary file
         assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
 
-
+        //ensure track list has no more than 16 tracks
         //has a track
         assertTrue(score.channelList.size()>0);
 
         //within max amount of tracks
         assertTrue(score.channelList.size()<=16);
 
-
+        //1.2 There is a valid key signature for every tick
         String[] keyArray = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"};
         for(KeySignature k : score.KeySignatureMap){
             //check the key is a key
@@ -882,7 +882,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
             assertTrue(k.tick >= 0);
         }
 
-
+        //1.3 The tempo is a positive integer
         for(TempoIndication t : score.TempoIndicationMap){
             //valid tempo is positive
             assertTrue(t.tempoIndication > 0);
