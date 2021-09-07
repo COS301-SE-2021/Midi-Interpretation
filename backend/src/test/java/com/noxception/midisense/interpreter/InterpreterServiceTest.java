@@ -890,7 +890,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
             assertTrue(t.tick >= 0);
         }
 
-
+        //1.4 The beat value is an integer power of two
         for(TimeSignature t : score.TimeSignatureMap){
             //The beat value is an integer power of two
             int beatValue = t.time.beatValue;
@@ -905,7 +905,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
             assertTrue(t.tick >= 0);
         }
 
-
+        //1.6 for all tracks
         for(Channel c : score.channelList){
             int channelNum = c.channelNumber;
             //check the channel is valid
