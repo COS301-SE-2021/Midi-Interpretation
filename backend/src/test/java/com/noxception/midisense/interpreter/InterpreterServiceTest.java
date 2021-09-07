@@ -837,47 +837,60 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 //        }
 //    }
 //
-//    /**
-//     * Description: tests the parseJSON() function by passing in a midi file designator that is in storage
-//     * precondition - fileDesignator for a midi file that exists in storage passed in
-//     * post condition - appropriate success message received
-//     */
-//    @Transactional
-//    @Rollback(value = true)
-//    @Test
-//    @DisplayName("Parsing JSON: input [designator for a file that exists] expect [a score with several details met]")
-//    public void testWhiteBox_ParseJSON_IfInStorage_ThenAccurate() throws Exception {
-//
-//        //Create a temporary file to parse
-//        UUID fileDesignator = UUID.randomUUID();
-//        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
-//
-//        //copy temp file from testing data
-//        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-//        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
-//        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-//
-//        //interpret the work and get the score
-//        ParseJSONRequest req = new ParseJSONRequest(fileDesignator);
-//        ParseJSONResponse res = interpreterService.parseJSON(req);
-//        Score score = res.getParsedScore();
-//
-//        //delete the temporary file
-//        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
-//
-//        //1.1 There are at most 16 tracks
-//        Map<Integer, Track> trackMap = score.getTrackMap();
-//        assertTrue(trackMap.keySet().size() <= 16);
-//
-//        //1.2 There is a valid key signature
-//        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
-//        boolean b = Arrays.asList(keyArray).contains(score.getKeySignature().getSignatureName());
-//        assertTrue(b);
-//
-//        //1.3 The tempo is a positive integer
-//        assertTrue(score.getTempoIndication().getTempo() > 0);
-//
-//
+    /**
+     * Description: tests the parseJSON() function by passing in a midi file designator that is in storage
+     * precondition - fileDesignator for a midi file that exists in storage passed in
+     * post condition - appropriate success message received
+     */
+    @Transactional
+    @Rollback(value = true)
+    @Test
+    @DisplayName("Parsing JSON: input [designator for a file that exists] expect [a score with several details met]")
+    public void testWhiteBox_ParseJSON_IfInStorage_ThenAccurate() throws Exception {
+
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+
+        //interpret the work and get the score
+        ParseJSONRequest req = new ParseJSONRequest(fileDesignator);
+        ParseJSONResponse res = interpreterService.parseJSON(req);
+        Score score = res.getParsedScore();
+
+        //delete the temporary file
+        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
+
+
+        //has a track
+        assertTrue(score.channelList.size()>0);
+
+        //within max amount of tracks
+        assertTrue(score.channelList.size()<=16);
+
+
+        String[] keyArray = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"};
+        for(KeySignature k : score.KeySignatureMap){
+            //check the key is a key
+            boolean b = Arrays.asList(keyArray).contains(k.commonName);
+            assertTrue(b);
+            //check the tick is valid
+            assertTrue(k.tick >= 0);
+        }
+
+
+        for(TempoIndication t : score.TempoIndicationMap){
+            //valid tempo is positive
+            assertTrue(t.tempoIndication > 0);
+            //check the tick is valid
+            assertTrue(t.tick >= 0);
+        }
+
+
 //        //1.4 The beat value is an integer power of two
 //        int beatValue = score.getTimeSignature().getBeatValue();
 //        double c = Math.log(beatValue) / Math.log(2);
@@ -887,15 +900,15 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 //        //1.5 The beat number is positive
 //        int numBeats = score.getTimeSignature().getNumBeats();
 //        assertTrue(numBeats > 0);
-//
-////        //1.6 For all tracks
-////        for (Track t : trackMap.values()) {
-////            //There is an instrument line
-////            assertNotEquals(t.getInstrumentString(), "");
-////            //There is a sequence of notes
-////            assertTrue(t.getNoteSequence().size() > 0);
-////        }
-//
+
+//        //1.6 For all tracks
+//        for (Track t : trackMap.values()) {
+//            //There is an instrument line
+//            assertNotEquals(t.getInstrumentString(), "");
+//            //There is a sequence of notes
+//            assertTrue(t.getNoteSequence().size() > 0);
+      }
+
    }
 //
 //
