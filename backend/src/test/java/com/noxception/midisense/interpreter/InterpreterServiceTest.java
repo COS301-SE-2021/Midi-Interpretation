@@ -865,7 +865,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //delete the temporary file
         assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
 
-        //ensure track list has no more than 16 tracks
+        //1.1 ensure track list has no more than 16 tracks
         //has a track
         assertTrue(score.channelList.size()>0);
 
@@ -891,22 +891,33 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         }
 
 
-//        //1.4 The beat value is an integer power of two
-//        int beatValue = score.getTimeSignature().getBeatValue();
-//        double c = Math.log(beatValue) / Math.log(2);
-//        assertEquals(c, Math.floor(c));
-//
-//
-//        //1.5 The beat number is positive
-//        int numBeats = score.getTimeSignature().getNumBeats();
-//        assertTrue(numBeats > 0);
+        for(TimeSignature t : score.TimeSignatureMap){
+            //The beat value is an integer power of two
+            int beatValue = t.time.beatValue;
+            double c = Math.log(beatValue) / Math.log(2);
+            assertEquals(c, Math.floor(c));
 
-//        //1.6 For all tracks
-//        for (Track t : trackMap.values()) {
-//            //There is an instrument line
-//            assertNotEquals(t.getInstrumentString(), "");
-//            //There is a sequence of notes
-//            assertTrue(t.getNoteSequence().size() > 0);
+            //The beat number is positive
+            int numBeats = t.time.numBeats;
+            assertTrue(numBeats > 0);
+
+            //check the tick is valid
+            assertTrue(t.tick >= 0);
+        }
+
+
+        for(Channel c : score.channelList){
+            int channelNum = c.channelNumber;
+            //check the channel is valid
+            assertTrue(channelNum>=0);
+            assertTrue(channelNum<=15);
+
+            //check there is an instrument name
+            assertNotEquals(c.instrument,"");
+
+            //check the ticks per beat is valid
+            assertTrue(c.ticksPerBeat > 0);
+        }
       }
 
    }
