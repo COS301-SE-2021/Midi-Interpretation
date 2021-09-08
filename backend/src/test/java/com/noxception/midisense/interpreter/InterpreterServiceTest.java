@@ -802,41 +802,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 //
 //    }
 //
-//    /**
-//     * Description: tests the interpretSignature() function by passing in a fileDesignator that is in the database
-//     * precondition - fileDesignator is in the database
-//     * post condition - Receive key signature and signature name
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a valid key signature string]")
-//    public void testWhiteBox_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-//
-//        //Setup for testing 3 different cases
-//        ScoreEntity[] testCases = new ScoreEntity[]{new ScoreEntity(),new ScoreEntity(),new ScoreEntity()};
-//        String[] keySignatures = new String[]{"Ebmaj", "Cmin", "Amaj"};
-//        int iterator = 0;
-//
-//        for(ScoreEntity score: testCases){
-//
-//            //Get a designator corresponding to a score in the database - whether or not it actually exists
-//            UUID fileDesignator0 = UUID.randomUUID();
-//
-//            //mock the database with the designator and keySignature
-//            testCases[iterator].setFileDesignator(fileDesignator0.toString());
-//            testCases[iterator].setKeySignature(keySignatures[iterator]);
-//            databaseManager.save(testCases[iterator]);
-//
-//            //make a request
-//            InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator0);
-//            InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
-//
-//            //check it is correct
-//            assertEquals(res.getKeySignature().getSignatureName(), keySignatures[iterator]);
-//
-//            iterator=iterator+1;
-//        }
-//    }
-//
+
     /**
      * Description: tests the parseJSON() function by passing in a midi file designator that is in storage
      * precondition - fileDesignator for a midi file that exists in storage passed in
