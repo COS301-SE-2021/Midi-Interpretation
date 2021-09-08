@@ -237,9 +237,17 @@ class Live extends Component {
     }
 
     onButtonClick = (x,y) => {
-        console.log(x+":"+y)
-        console.log(this.state.recordedNotes)
-        this.state.recordedNotes[x+":"+y] = true
+        if(!Boolean(this.state.recordedNotes[x+":"+y])) {
+            this.state.recordedNotes[x + ":" + y] = {
+                enabled: true,
+                variant: "contained",
+                colour: "secondary"
+            }
+        }
+        else{
+            delete this.state.recordedNotes[x+":"+y]
+        }
+        this.forceUpdate()
     }
 
     incTimer = () => {
@@ -523,10 +531,16 @@ class Live extends Component {
                                                                             (groupIndex > 0)?
                                                                             <Button
                                                                                 style={{height:"30px", margin:"2px"}}
-                                                                                variant={(Boolean(this.state.recordedNotes[groupIndex+":"+i]))?"contained":"outlined"}
+                                                                                variant={
+                                                                                    (this.state.recordedNotes[groupIndex+":"+i])?
+                                                                                        this.state.recordedNotes[groupIndex+":"+i].variant
+                                                                                        :"outlined"}
                                                                                 key={`button-${i}`}
                                                                                 onClick={()=>{this.onButtonClick(groupIndex,i)}}
-                                                                                color={(Boolean(this.state.recordedNotes[groupIndex+":"+i]))?"secondary":"default"}
+                                                                                color={
+                                                                                    (this.state.recordedNotes[groupIndex+":"+i])?
+                                                                                        this.state.recordedNotes[groupIndex+":"+i].colour
+                                                                                        :"default"}
                                                                             />
                                                                                 : <Button className="text-muted" style={{height:"30px", margin:"2px"}} disabled="true" key={`button-${i}`}>{i}</Button>
                                                                         }

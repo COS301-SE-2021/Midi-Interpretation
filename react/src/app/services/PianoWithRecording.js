@@ -26,7 +26,11 @@ class PianoWithRecording extends React.Component {
             console.log(this.playingNote)
 
             for(let n = start; n <= end; n++){
-                this.props.recordedNotes[(midiNumber-this.props.noteRange.first)+":"+n] = true
+                this.props.recordedNotes[(midiNumber-this.props.noteRange.first)+":"+n] = {
+                    enabled: true,
+                    variant: "contained",
+                    colour: "secondary"
+                }
             }
 
             delete this.playingNote[midiNumber]
