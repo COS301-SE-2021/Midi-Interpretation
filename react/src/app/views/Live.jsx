@@ -88,6 +88,7 @@ class Live extends Component {
                 "#96BFFF"
             ],
             recording: {
+                wait: true,
                 bpm:120,
                 length:40,
                 quanta:0,
@@ -243,7 +244,14 @@ class Live extends Component {
 
     incTimer = () => {
         if(this.isActive) {
-            this.setRecording({quanta: this.state.recording.quanta + 1})
+            if(this.state.recording.quanta >= this.state.recording.length){
+                clearInterval(this.interval)
+                this.setRecording({quanta:0})
+                this.onClickRecord()
+            }
+
+            if(!this.state.recording.wait)
+                this.setRecording({quanta: this.state.recording.quanta + 1})
         }
         else{
             clearInterval(this.interval)
@@ -275,7 +283,7 @@ class Live extends Component {
 
     handleStart = () => {
         this.setState({recordedNotes:{}})
-        this.setState({recording:{quanta:0}})
+        this.setState({recording:{quanta:0, wait:true}})
         this.isActive = true
         this.interval = setInterval(this.incTimer, (this.state.recording.bpm*1000)/960)
     }

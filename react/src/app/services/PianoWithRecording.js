@@ -10,6 +10,9 @@ class PianoWithRecording extends React.Component {
 
     onPlayNoteInput = midiNumber => {
         if (this.props.recording.mode === 'RECORDING') {
+            if(Object.keys(this.props.recordedNotes).length === 0)
+                this.props.setRecording({wait:false})
+
             this.playingNote[midiNumber] = this.props.recording.quanta
         }
 
