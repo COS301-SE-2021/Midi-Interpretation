@@ -761,47 +761,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 //        assertTrue(numBeats > 0);
 //    }
 //
-//    /**
-//     * Description: tests the interpretTempo() function by passing in a midi fileDesignator that exists in the database
-//     * precondition - fileDesignator for midi-file in Database passed in
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a positive integer]")
-//    public void testWhiteBox_InterpretTempo_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-//
-//        //Setup for testing 3 different cases
-//        ScoreEntity[] testCases = new ScoreEntity[]{new ScoreEntity(),new ScoreEntity(),new ScoreEntity()};
-//        int[] tempoIndications = new int[]{50, 60, 30};
-//        int iterator = 0;
-//
-//        for(ScoreEntity score: testCases){
-//
-//            //Get a designator corresponding to a score in the database - whether or not it actually exists
-//            UUID fileDesignator0 = UUID.randomUUID();
-//
-//            //mock the database with the designator and keySignature
-//            testCases[iterator].setFileDesignator(fileDesignator0.toString());
-//            testCases[iterator].setTempoIndication(tempoIndications[iterator]);
-//            databaseManager.save(testCases[iterator]);
-//
-//            //make a request
-//            InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator0);
-//            InterpretTempoResponse res = interpreterService.interpretTempo(req);
-//
-//            //check it is correct
-//            assertEquals(res.getTempo().getTempo(), tempoIndications[iterator]);
-//
-//            //see that the tempo is a positive integer
-//            TempoIndication t = res.getTempo();
-//            assertTrue(t.getTempo() > 0);
-//
-//            iterator=iterator+1;
-//        }
-//
-//
-//    }
-//
+
 
     /**
      * Description: tests the parseJSON() function by passing in a midi file designator that is in storage
