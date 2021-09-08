@@ -237,16 +237,7 @@ class Live extends Component {
     }
 
     onButtonClick = (x,y) => {
-        if(!Boolean(this.state.recordedNotes[x+":"+y])) {
-            this.state.recordedNotes[x + ":" + y] = {
-                enabled: true,
-                variant: "contained",
-                colour: "secondary"
-            }
-        }
-        else{
-            delete this.state.recordedNotes[x+":"+y]
-        }
+        this.state.recordedNotes[x+":"+y] = !Boolean(this.state.recordedNotes[x+":"+y])
         this.forceUpdate()
     }
 
@@ -533,14 +524,16 @@ class Live extends Component {
                                                                                 style={{height:"30px", margin:"2px"}}
                                                                                 variant={
                                                                                     (this.state.recordedNotes[groupIndex+":"+i])?
-                                                                                        this.state.recordedNotes[groupIndex+":"+i].variant
-                                                                                        :"outlined"}
+                                                                                        "contained"
+                                                                                        :"outlined"
+                                                                                }
                                                                                 key={`button-${i}`}
                                                                                 onClick={()=>{this.onButtonClick(groupIndex,i)}}
                                                                                 color={
                                                                                     (this.state.recordedNotes[groupIndex+":"+i])?
-                                                                                        this.state.recordedNotes[groupIndex+":"+i].colour
-                                                                                        :"default"}
+                                                                                        "secondary"
+                                                                                        :"default"
+                                                                                }
                                                                             />
                                                                                 : <Button className="text-muted" style={{height:"30px", margin:"2px"}} disabled="true" key={`button-${i}`}>{i}</Button>
                                                                         }
