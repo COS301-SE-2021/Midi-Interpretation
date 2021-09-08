@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Breadcrumb, SimpleCard} from "../../matx";
 import MidiSenseService from "../services/MidiSenseService";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Button, Divider, Grid, Icon, IconButton} from "@material-ui/core";
+import {Button, Divider, Grid, Icon, IconButton, LinearProgress} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import {withStyles} from "@material-ui/core/styles";
 import { KeyboardShortcuts, MidiNumbers } from 'react-piano';
@@ -370,7 +370,12 @@ class Live extends Component {
                                                             </Grid>
                                                                 <Grid item>
                                                                     {(this.state.recording.mode === "RECORDING")?
-                                                                        <span>Beat: {this.state.recording.quanta/16}</span>
+                                                                        <span>
+                                                                            <LinearProgress
+                                                                                style={{width:"100px"}}
+                                                                                variant="determinate"
+                                                                                value={this.state.recording.quanta/this.state.recording.length * 100} />
+                                                                        </span>
                                                                         :<span/>}
                                                                 </Grid>
                                                                 <Grid item>
@@ -469,6 +474,7 @@ class Live extends Component {
                                 color="primary"
                                 aria-label="Settings"
                                 variant="outlined"
+                                disabled={(this.state.recording.mode==="RECORDING")}
                             >
                                 <Icon>apps</Icon>
                                 <span>&nbsp;View Piano Roll</span>
