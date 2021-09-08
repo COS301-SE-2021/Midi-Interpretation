@@ -90,7 +90,7 @@ class Live extends Component {
             recording: {
                 wait: true,
                 bpm:120,
-                length:40,
+                length:50,
                 quanta:0,
                 mode: 'STOP',
                 active: "fiber_manual_record",
@@ -108,11 +108,14 @@ class Live extends Component {
             w: [],
         }
 
-        for (let x = 0; x < (this.state.config.noteRange.last - this.state.config.noteRange.first)+2; x++) {
+        console.log(this.state.config.noteRange.first)
+        console.log(this.state.config.noteRange.last)
+
+        for (let x = 0; x < this.state.recording.length; x++) {
             this.state.h.push(x)
         }
 
-        for (let x = 0; x < this.state.recording.length; x++) {
+        for (let x = 0; x <= (this.state.config.noteRange.last - this.state.config.noteRange.first + 1); x++) {
             this.state.w.push(x)
         }
     }
@@ -508,7 +511,7 @@ class Live extends Component {
                                                             {
                                                                 (groupIndex > 0)?
                                                                     <Button className="text-muted" style={{height:"30px", margin:"2px", width:"80px"}} disabled="true">
-                                                                    {this.valueToNote(this.state.config.noteRange.first+groupIndex)}
+                                                                    {this.valueToNote(groupIndex+this.state.config.noteRange.first-13)}
                                                                     </Button>:<div style={{width:"80px", display:"inline-block"}}/>
                                                             }
                                                             {this.state.h.map((pad, i) => {
@@ -521,21 +524,21 @@ class Live extends Component {
                                                                         {
                                                                             (groupIndex > 0)?
                                                                             <Button
-                                                                                style={{height:"30px", margin:"2px"}}
+                                                                                style={{height:"30px", minWidth:"30px", margin:"2px"}}
                                                                                 variant={
-                                                                                    (this.state.recordedNotes[groupIndex+":"+i])?
+                                                                                    (this.state.recordedNotes[i+":"+groupIndex])?
                                                                                         "contained"
                                                                                         :"outlined"
                                                                                 }
                                                                                 key={`button-${i}`}
-                                                                                onClick={()=>{this.onButtonClick(groupIndex,i)}}
+                                                                                onClick={()=>{this.onButtonClick(i,groupIndex)}}
                                                                                 color={
-                                                                                    (this.state.recordedNotes[groupIndex+":"+i])?
+                                                                                    (this.state.recordedNotes[i+":"+groupIndex])?
                                                                                         "secondary"
                                                                                         :"default"
                                                                                 }
                                                                             />
-                                                                                : <Button className="text-muted" style={{height:"30px", margin:"2px"}} disabled="true" key={`button-${i}`}>{i}</Button>
+                                                                                : <Button size={"small"} className="text-muted" style={{height:"30px", minWidth:"32px", margin:"2px"}} disabled="true" key={`button-${i}`}>{i}</Button>
                                                                         }
                                                                     </div>
                                                                 )
