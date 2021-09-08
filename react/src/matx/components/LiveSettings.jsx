@@ -38,7 +38,7 @@ export default function DialogSelect(props) {
     const handleSubmit = () => {
         props.setRecording({bpm:BPM})
         props.setRecording({length:Length})
-
+        props.update()
         setOpen(false)
     }
 
@@ -63,6 +63,7 @@ export default function DialogSelect(props) {
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Analysis Settings</DialogTitle>
                 <DialogContent>
+                    <br/>
                     <form className={classes.container}>
                         <FormControl className={classes.formControl}>
                             <InputLabel htmlFor="demo-dialog-native">BPM</InputLabel>

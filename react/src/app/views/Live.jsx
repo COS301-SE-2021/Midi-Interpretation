@@ -108,16 +108,7 @@ class Live extends Component {
             w: [],
         }
 
-        console.log(this.state.config.noteRange.first)
-        console.log(this.state.config.noteRange.last)
-
-        for (let x = 0; x < this.state.recording.length; x++) {
-            this.state.h.push(x)
-        }
-
-        for (let x = 0; x <= (this.state.config.noteRange.last - this.state.config.noteRange.first + 1); x++) {
-            this.state.w.push(x)
-        }
+        this.updateWH()
     }
 
     //====================================
@@ -126,6 +117,21 @@ class Live extends Component {
 
     setOpen = (o) => {
         this.setState({open:o})
+    }
+
+    updateWH = () => {
+        this.setState({h:[]})
+        this.setState({w:[]})
+
+        for (let x = 0; x < this.state.recording.length; x++) {
+            this.state.h.push(x)
+        }
+
+        for (let x = 0; x <= (this.state.config.noteRange.last - this.state.config.noteRange.first + 1); x++) {
+            this.state.w.push(x)
+        }
+
+        this.forceUpdate()
     }
 
     /**
@@ -300,6 +306,7 @@ class Live extends Component {
 
     handleClickOpen = () => {
         this.setOpen(true)
+        this.forceUpdate()
     }
 
     handleClose = () => {
@@ -421,6 +428,7 @@ class Live extends Component {
                                                                         mode={this.state.recording.mode}
                                                                         BPM={this.state.recording.bpm}
                                                                         Length={this.state.recording.length}
+                                                                        update={this.updateWH}
                                                                     />
                                                                 </Grid>
                                                                 <Grid item>
