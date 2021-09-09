@@ -112,45 +112,45 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         ));
     }
 
-//    /**
-//     * Description: tests the uploadFile() function by passing in a file that's too large
-//     * precondition - byte stream of the max file size passed in
-//     * post condition - correct exception thrown
-//     */
-//    @Test
-//    @DisplayName("Uploading File: input [long byte stream] expect [file too large exception]")
-//    public void test_UploadFile_IfHugeFile_ThenException() {
-//        // Generate Big File, put it in request
-//
-//        //max file size in Kb
-//        int bigIndex = Integer.parseInt(
-//                configurations.configuration(
-//                        ConfigurationName.MAX_FILE_UPLOAD_SIZE
-//                )
-//        );
-//
-//        //max file size in bytes to be bigger than maximum - 1 larger than specified max
-//        bigIndex = 1 + (int) (bigIndex * Math.pow(2, 10));
-//        byte[] bigFile = new byte[bigIndex];
-//
-//        //fill with 0s
-//        for (int i = 0; i < bigIndex; i++)
-//            bigFile[i] = 0;
-//
-//        UploadFileRequest req = new UploadFileRequest(bigFile);
-//
-//        // Check that the error is thrown
-//        InvalidUploadException thrown = assertThrows(
-//                InvalidUploadException.class, //for a huge file
-//                () -> interpreterService.uploadFile(req), //when uploading
-//                "A file exceeding the maximum size should not be processed"); //because
-//
-//        // Finally, see that the right message was delivered - FILE_TOO_LARGE_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.FILE_TOO_LARGE_EXCEPTION_TEXT)
-//        ));
-//    }
-//
+    /**
+     * Description: tests the uploadFile() function by passing in a file that's too large
+     * precondition - byte stream of the max file size passed in
+     * post condition - correct exception thrown
+     */
+    @Test
+    @DisplayName("Uploading File: input [long byte stream] expect [file too large exception]")
+    public void test_UploadFile_IfHugeFile_ThenException() {
+        // Generate Big File, put it in request
+
+        //max file size in Kb
+        int bigIndex = Integer.parseInt(
+                configurations.configuration(
+                        ConfigurationName.MAX_FILE_UPLOAD_SIZE
+                )
+        );
+
+        //max file size in bytes to be bigger than maximum - 1 larger than specified max
+        bigIndex = 1 + (int) (bigIndex * Math.pow(2, 10));
+        byte[] bigFile = new byte[bigIndex];
+
+        //fill with 0s
+        for (int i = 0; i < bigIndex; i++)
+            bigFile[i] = 0;
+
+        UploadFileRequest req = new UploadFileRequest(bigFile);
+
+        // Check that the error is thrown
+        InvalidUploadException thrown = assertThrows(
+                InvalidUploadException.class, //for a huge file
+                () -> interpreterService.uploadFile(req), //when uploading
+                "A file exceeding the maximum size should not be processed"); //because
+
+        // Finally, see that the right message was delivered - FILE_TOO_LARGE_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(
+                configurations.configuration(ConfigurationName.FILE_TOO_LARGE_EXCEPTION_TEXT)
+        ));
+    }
+
 //
 //    /**ProcessFile*/
 //    /**ProcessFile
