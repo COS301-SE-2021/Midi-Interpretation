@@ -6,12 +6,10 @@ import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.dataclass.MockRequestBroker;
+import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
 import com.noxception.midisense.interpreter.parser.*;
-import com.noxception.midisense.interpreter.rrobjects.ParseJSONRequest;
-import com.noxception.midisense.interpreter.rrobjects.ParseJSONResponse;
-import com.noxception.midisense.interpreter.rrobjects.UploadFileRequest;
-import com.noxception.midisense.interpreter.rrobjects.UploadFileResponse;
+import com.noxception.midisense.interpreter.rrobjects.*;
 import com.noxception.midisense.repository.DatabaseManager;
 import com.noxception.midisense.repository.ScoreEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -151,38 +149,38 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         ));
     }
 
-//
-//    /**ProcessFile*/
-//    /**ProcessFile
-//     * Description: tests the processFile() function by passing in a non-midi file
-//     * precondition - fileDesignator for a non-midi file passed in
-//     * post condition - correct exception thrown
-//     */
-//    @Transactional
-//    @Rollback(value = true)
-//    @Test
-//    @DisplayName("Processing File: input [designator for a non-midi file] expect [file mistype exception]")
-//    public void test_ProcessFile_IfNonMidiFile_ThenException() throws IOException, InvalidDesignatorException {
-//
-//        //Create a temporary file to parse
-//        UUID fileDesignator = UUID.randomUUID();
-//        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
-//
-//        //copy temp file from testing data
-//        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-//        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_INVALID_TESTING_FILE)).toPath();
-//        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-//
-//        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
-//        ProcessFileResponse res = interpreterService.processFile(req);
-//
-//        //check that the result is not permitted
-//        assertEquals(res.getSuccess(), false);
-//        assertEquals(res.getMessage(), configurations.configuration(ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
-//
-//        //delete the temporary file
-//        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
-//    }
+
+    /**ProcessFile*/
+    /**ProcessFile
+     * Description: tests the processFile() function by passing in a non-midi file
+     * precondition - fileDesignator for a non-midi file passed in
+     * post condition - correct exception thrown
+     */
+    @Transactional
+    @Rollback(value = true)
+    @Test
+    @DisplayName("Processing File: input [designator for a non-midi file] expect [file mistype exception]")
+    public void test_ProcessFile_IfNonMidiFile_ThenException() throws IOException, InvalidDesignatorException {
+
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_INVALID_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+
+        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+        ProcessFileResponse res = interpreterService.processFile(req);
+
+        //check that the result is not permitted
+        assertEquals(res.getSuccess(), false);
+        assertEquals(res.getMessage(), configurations.configuration(ConfigurationName.INVALID_MIDI_EXCEPTION_TEXT));
+
+        //delete the temporary file
+        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
+    }
 //
 //    /**
 //     * Description: tests the processFile() function by passing in a midi file designator
