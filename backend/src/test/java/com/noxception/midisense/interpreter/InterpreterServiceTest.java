@@ -181,37 +181,37 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //delete the temporary file
         assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
     }
-//
-//    /**
-//     * Description: tests the processFile() function by passing in a midi file designator
-//     * that is not in storage
-//     * precondition - fileDesignator for a midi file that doesn't exist in storage passed in
-//     * post condition - correct exception thrown
-//     */
-//    @Transactional
-//    @Rollback(value = true)
-//    @Test
-//    @DisplayName("Processing File: input [designator for a file that doesnt exist] expect [file does not exist exception]")
-//    public void test_ProcessFile_IfNotInStorage_ThenException() {
-//
-//        //Create a fake designator
-//        UUID fileDesignator = UUID.randomUUID();
-//
-//        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
-//
-//        // Check that the error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a file that does not exist
-//                () -> interpreterService.processFile(req), //when processing
-//                "A file that does not exist cannot be interpreted"); //because
-//
-//        // Finally, see that the right message was delivered - FILE_TOO_LARGE_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
-//        ));
-//
-//
-//    }
+
+    /**
+     * Description: tests the processFile() function by passing in a midi file designator
+     * that is not in storage
+     * precondition - fileDesignator for a midi file that doesn't exist in storage passed in
+     * post condition - correct exception thrown
+     */
+    @Transactional
+    @Rollback(value = true)
+    @Test
+    @DisplayName("Processing File: input [designator for a file that doesnt exist] expect [file does not exist exception]")
+    public void test_ProcessFile_IfNotInStorage_ThenException() {
+
+        //Create a fake designator
+        UUID fileDesignator = UUID.randomUUID();
+
+        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+
+        // Check that the error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for a file that does not exist
+                () -> interpreterService.processFile(req), //when processing
+                "A file that does not exist cannot be interpreted"); //because
+
+        // Finally, see that the right message was delivered - FILE_TOO_LARGE_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(
+                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
+        ));
+
+
+    }
 //
 //    /**
 //     * Description: tests the processFile() function by passing in a midi file designator that
