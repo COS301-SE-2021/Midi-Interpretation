@@ -6,20 +6,21 @@ import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.dataclass.TestingDictionary;
-import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.parser.*;
+import com.noxception.midisense.interpreter.parser.KeySignature;
+import com.noxception.midisense.interpreter.parser.Score;
+import com.noxception.midisense.interpreter.parser.TempoIndication;
+import com.noxception.midisense.interpreter.parser.TimeSignature;
 import com.noxception.midisense.repository.DatabaseManager;
 import com.noxception.midisense.repository.ScoreEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,7 +35,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
     public void mountModule() {
         databaseManager = new MockRepository();
         configurations = new MockConfigurationSettings();
-
         displayService = new DisplayServiceImpl(databaseManager,configurations);
     }
 
@@ -69,12 +69,14 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         KeySignature keySignature = new KeySignature();
         keySignature.tick =0;
         keySignature.commonName = "Cb";
+        s.KeySignatureMap = new ArrayList<>();
         s.KeySignatureMap.add(keySignature);
 
         //Add tempo indication to score
         TempoIndication tempoIndication = new TempoIndication();
         tempoIndication.tick=0;
         tempoIndication.tempoIndication = 70;
+        s.TempoIndicationMap = new ArrayList<>();
         s.TempoIndicationMap.add(tempoIndication);
 
         //Add time signature beat value and number of beats to score
@@ -84,6 +86,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         innerTime.numBeats=4;
         timeSignature.tick=0;
         timeSignature.time= innerTime;
+        s.TimeSignatureMap = new ArrayList<>();
         s.TimeSignatureMap.add(timeSignature);
 
 
@@ -95,8 +98,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
         //Get response
         GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
-
-
 
         //Check that the key signature is valid
         String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
