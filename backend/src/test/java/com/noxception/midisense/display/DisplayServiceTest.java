@@ -9,10 +9,13 @@ import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.parser.KeySignature;
+import com.noxception.midisense.interpreter.parser.TempoIndication;
+import com.noxception.midisense.interpreter.parser.TimeSignature;
 import com.noxception.midisense.repository.DatabaseManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.internal.verification.Times;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -70,20 +73,27 @@ class DisplayServiceTest extends MIDISenseUnitTest {
             assertTrue(Arrays.asList(keyArray).contains(k.commonName));
         }
 
-        //TODO
+
         //Check the tempo is an integer greater than 0
-        assertTrue(res.getTempoIndication().get(0).tempoIndication>0);
+        for(TempoIndication t : res.getTempoIndication()){
+            assertTrue(t.tempoIndication>0);
+        }
 
-        //TODO
-        // Check the beat value for time signature is a power of two (Greater than one)
-        int beatValue = res.getTimeSignature().get(0).time.beatValue;
-        double c = Math.log(beatValue)/Math.log(2);
-        assertEquals(c,Math.floor(c));
 
-        //TODO
+        //Check the beat value for time signature is a power of two (Greater than one)
+        for(TimeSignature ts : res.getTimeSignature()){
+            int beatValue = ts.time.beatValue;
+            double c = Math.log(beatValue)/Math.log(2);
+            assertEquals(c,Math.floor(c));
+        }
+
+
         //Check the beat number for time signature is a positive integer
-        int numBeats = res.getTimeSignature().get(0).time.numBeats;
-        assertTrue(numBeats>0);
+        for(TimeSignature ts : res.getTimeSignature()){
+            int numBeats = ts.time.numBeats;
+            assertTrue(numBeats>0);
+        }
+
 
     }
 
