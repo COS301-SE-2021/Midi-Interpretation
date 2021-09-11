@@ -249,6 +249,8 @@ function CustomTooltip (props) {
 function TrackViewer (props) {
     props = props.trackData
 
+    console.log(props)
+
     // check if track data is appropriate
     if(props.trackData.length === 0)
         return(<div/>);

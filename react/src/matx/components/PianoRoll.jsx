@@ -2,7 +2,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import {Scrollbar} from "react-scrollbars-custom";
-import {Button, Icon} from "@material-ui/core";
+import {Button, Grid, Icon} from "@material-ui/core";
 import DialogActions from "@material-ui/core/DialogActions";
 import React, {useReducer} from "react";
 
@@ -91,9 +91,10 @@ function PianoRoll(props) {
                 onClose={handleClose}
             >
                 <DialogTitle>Piano Roll</DialogTitle>
-                <DialogContent style={{height: "800px"}}>
+                <DialogContent style={{height: "600px"}}>
                     <Scrollbar>
-                        <div>
+                        <Grid container >
+                            <Grid item>
                             {
                                 w.map((group, groupIndex) => {
                                     return(
@@ -144,7 +145,8 @@ function PianoRoll(props) {
                                     )}
                                 )
                             }
-                        </div>
+                            </Grid>
+                        </Grid>
                     </Scrollbar>
                 </DialogContent>
                 <DialogActions>

@@ -65,8 +65,7 @@ class Live extends Component {
             recordedNotes: {},
             open:false,
             display: "",
-            trackData:[],
-            ticksPerBeat:1,
+            ticksPerBeat:16,
             midisenseService: new MidiSenseService(),
             color : [
                 "#37A2DA",
@@ -86,7 +85,7 @@ class Live extends Component {
             recording: {
                 wait: true,
                 bpm:120,
-                length:50,
+                length:32,
                 quanta:0,
                 mode: 'STOP',
                 active: "fiber_manual_record",
@@ -99,6 +98,11 @@ class Live extends Component {
                     last: MidiNumbers.fromNote('f5'),
                 },
                 keyboardShortcutOffset: 0,
+            },
+            data:{
+                trackData:[],
+                ticksPerBeat:0,
+                instrument:""
             },
         }
     }
@@ -260,6 +264,35 @@ class Live extends Component {
         this.setState({recordedNotes:val})
     }
 
+    processData = () =>{
+        const tempData = []
+        let tempNotes = []
+        for (let x = 0; x < this.state.recording.length; x++) {
+            for (let y = 0; y <= (this.state.config.noteRange.last - this.state.config.noteRange.first + 1); y++) {
+                if(this.state.recordedNotes[x+":"+y]) {
+                    tempNotes.push({
+                        value: y + this.state.config.noteRange.first-1,
+                        on_velocity: 0,
+                        off_velocity: 0,
+                        duration: this.state.ticksPerBeat / 16,
+                        duration_beats: 0.0625,
+                        isPercussive: false
+                    })
+                }
+            }
+            if(tempNotes.length !== 0)
+                tempData.push({tick: x * this.state.ticksPerBeat, notes: tempNotes})
+            tempNotes = []
+        }
+        this.setState({
+            data:{
+                trackData:tempData,
+                ticksPerBeat:this.state.ticksPerBeat,
+                instrument:this.state.config.instrumentName
+            }
+        })
+    }
+
     /**
      * This method returns the elements that we want displayed
      *
@@ -365,6 +398,7 @@ class Live extends Component {
                                                                     <IconButton
                                                                         color="primary"
                                                                         aria-label="Process"
+                                                                        onClick={this.processData}
                                                                     >
                                                                         <Icon>get_app</Icon>
                                                                     </IconButton>
@@ -441,7 +475,7 @@ class Live extends Component {
                     <br/>
                     <SimpleCard title="Timeline" subtitle="Here you'll find the sequence of events for a chosen channel.">
                        <div>Title</div>
-                        <TrackViewer trackData={{"trackData":this.state.trackData, "ticksPerBeat":this.state.ticksPerBeat, "instrument": this.state.instrument}} callSelect={this.setSelected}/>
+                        <TrackViewer trackData={this.state.data}/>
                         <br/>
                         <Grid
                             container
