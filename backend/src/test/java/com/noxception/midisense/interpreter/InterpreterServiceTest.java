@@ -283,57 +283,6 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
     }
 
 
-
-//    /**
-//     * Description: tests the interpretMetre() function by passing in a midi fileDesignator that does not exist in the database
-//     * precondition - no fileDesignator was passed into the function
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [empty] expect [empty request exception]")
-//    public void test_InterpretMetre_IfEmptyRequest_ThenException() {
-//        //Check that the right error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a null request
-//                () -> interpreterService.interpretMetre(null), //when interpreting metre
-//                "A null request should not be processed."); //because
-//
-//        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(configurations.configuration(
-//                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
-//        )));
-//    }
-//
-//
-//    /**InterpretTempo*/
-//    /**
-//     * Description: tests the interpretTempo() function by passing in a midi fileDesignator that does not exist in the database
-//     * precondition - fileDesignator given is not in the database
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Tempo: input [designator for a file not in DB] expect [file does not exist exception]")
-//    public void test_InterpretTempo_IfNotInDatabase_ThenException() {
-//
-//        //Create a fake designator
-//        UUID fileDesignator = UUID.randomUUID();
-//
-//        //make the request
-//        InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
-//
-//        // Check that the error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a file that hasn't been interpreted
-//                () -> interpreterService.interpretTempo(req), //when interpreting tempo
-//                "No processing should happen if a file doesn't exist." //because
-//        );
-//
-//        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
-//        ));
-//
-//    }
 //
 //    /**
 //     * Description: tests the interpretTempo() function by passing in a midi fileDesignator that exists in the database
