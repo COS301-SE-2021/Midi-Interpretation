@@ -283,56 +283,8 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
     }
 
 
-//
-//    /**
-//     * Description: tests the interpretTempo() function by passing in a midi fileDesignator that exists in the database
-//     * precondition - fileDesignator for midi-file in Database passed in
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a positive integer]")
-//    public void test_InterpretTempo_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-//
-//        //Get a designator corresponding to a score in the database - whether or not it actually exists
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //mock the database with the designator and tempoIndication
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        testEntity.setTempoIndication(50);
-//        databaseManager.save(testEntity);
-//
-//        //make a request
-//        InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
-//        InterpretTempoResponse res = interpreterService.interpretTempo(req);
-//
-//        //see that the tempo is a positive integer
-//        TempoIndication t = res.getTempo();
-//        assertTrue(t.getTempo() > 0);
-//    }
-//
-//    /**
-//     * Description: tests the interpretTempo() function by passing in no parameters
-//     * precondition - no parameters passed in
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Tempo: input [empty] expect [empty request exception]")
-//    public void test_InterpretTempo_IfEmptyRequest_ThenException() {
-//        //Check that the right error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a null request
-//                () -> interpreterService.interpretTempo(null), //when interpreting Tempo
-//                "A null request should not be processed."); //because
-//
-//        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(configurations.configuration(
-//                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
-//        )));
-//    }
-//
+
+
 //
 //    /**InterpretKeySignature*/
 //    /**
