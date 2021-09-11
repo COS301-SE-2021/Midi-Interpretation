@@ -22,23 +22,44 @@ import java.util.function.Consumer;
 
 public class MockRequestBroker extends InterpreterBroker {
 
+    private boolean isRejecting;
+
     public MockRequestBroker(StandardConfig configurations) {
         super(configurations);
+        isRejecting = false;
+    }
+
+    public void isRejecting(){
+        isRejecting = true;
     }
 
     @Override
     public void makeRequest(Object body, Consumer<? super HttpResponse<String>> onAccept, Consumer<? super HttpResponse<String>> onReject) throws ExecutionException, InterruptedException, CancellationException, CompletionException {
         HttpResponse<String> mockResponse;
-        mockResponse = new MockResponse(this.configurations);
-        onAccept.accept(mockResponse);
+
+        if(isRejecting){
+            mockResponse = new MockResponse(this.configurations);
+            onReject.accept(mockResponse);
+        }
+        else{
+            mockResponse = new MockResponse(this.configurations);
+            onAccept.accept(mockResponse);
+        }
+
 
     }
 
     public static class MockResponse implements HttpResponse<String>{
 
         private String mockBodyText;
+        private final boolean rejected;
 
-        public MockResponse(StandardConfig con) {
+        public MockResponse(StandardConfig con){
+            this(con,false);
+        }
+
+        public MockResponse(StandardConfig con, boolean fail) {
+            rejected = fail;
             try {
                 FileInputStream source = new FileInputStream(con.configuration(ConfigurationName.MIDI_TESTING_SAMPLE_RESPONSE));
                 mockBodyText = IOUtils.toString(source, StandardCharsets.UTF_8);
@@ -50,7 +71,7 @@ public class MockRequestBroker extends InterpreterBroker {
 
         @Override
         public int statusCode() {
-            return 200;
+            return (rejected)?400:200;
         }
 
         @Override

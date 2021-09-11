@@ -171,6 +171,11 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_INVALID_TESTING_FILE)).toPath();
         Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
 
+        //set the message broker to reject the interpretation
+        MockRequestBroker requestBroker = new MockRequestBroker(this.configurations);
+        requestBroker.isRejecting();
+        ((InterpreterServiceImpl) interpreterService).addDefaultBroker(requestBroker);
+
         ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
         ProcessFileResponse res = interpreterService.processFile(req);
 
@@ -239,9 +244,6 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //Check that the processing is successful
         assertEquals(res.getSuccess(), true);
         assertEquals(res.getMessage(), configurations.configuration(ConfigurationName.SUCCESSFUL_PARSING_TEXT));
-
-        //delete the temporary file
-        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
 
     }
 
@@ -427,34 +429,6 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //check the designator is not null
         assertNotNull(fileDesignator);
 
-        //Add key signature to score
-        ScoreEntity testEntity = new ScoreEntity();
-        Score s = new Score();
-        testEntity.setFileDesignator(fileDesignator.toString());
-        KeySignature keySignature = new KeySignature();
-        keySignature.tick =0;
-        keySignature.commonName = "Cb";
-        s.KeySignatureMap.add(keySignature);
-
-        //Add tempo indication to score
-        TempoIndication tempoIndication = new TempoIndication();
-        tempoIndication.tick=0;
-        tempoIndication.tempoIndication = 70;
-        s.TempoIndicationMap.add(tempoIndication);
-
-        //Add time signature beat value and number of beats to score
-        TimeSignature timeSignature = new TimeSignature();
-        TimeSignature.InnerTime innerTime = new TimeSignature.InnerTime();
-        innerTime.beatValue =4;
-        innerTime.numBeats=4;
-        timeSignature.tick=0;
-        timeSignature.time= innerTime;
-        s.TimeSignatureMap.add(timeSignature);
-
-        //Encode score in score entity and save to mock database
-        testEntity.encodeScore(s);
-        databaseManager.save(testEntity);
-
         //check that the resultant file can be opened : was saved to the right directory
         String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)
                 + fileDesignator
@@ -496,9 +470,6 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //Check that the processing is successful
         assertEquals(res.getSuccess(), true);
         assertEquals(res.getMessage(), configurations.configuration(ConfigurationName.SUCCESSFUL_PARSING_TEXT));
-
-        //delete the temporary file
-        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
 
     }
 
