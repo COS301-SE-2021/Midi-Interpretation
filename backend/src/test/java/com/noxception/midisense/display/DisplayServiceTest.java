@@ -99,21 +99,24 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //Get response
         GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
 
-        //Check that the key signature is valid
-        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
-        boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().get(0).commonName);
-        assertTrue(b);
 
+        //Check that the key signature is valid
+        String[] keyArray = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"};
+        for(KeySignature k : res.getKeySignature()){
+            assertTrue(Arrays.asList(keyArray).contains(k.commonName));
+        }
+
+        //TODO
         //Check the tempo is an integer greater than 0
         assertTrue(res.getTempoIndication().get(0).tempoIndication>0);
 
-
+        //TODO
         // Check the beat value for time signature is a power of two (Greater than one)
         int beatValue = res.getTimeSignature().get(0).time.beatValue;
         double c = Math.log(beatValue)/Math.log(2);
         assertEquals(c,Math.floor(c));
 
-
+        //TODO
         //Check the beat number for time signature is a positive integer
         int numBeats = res.getTimeSignature().get(0).time.numBeats;
         assertTrue(numBeats>0);
