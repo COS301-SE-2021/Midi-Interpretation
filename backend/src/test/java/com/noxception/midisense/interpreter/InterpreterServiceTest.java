@@ -245,42 +245,42 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
     }
 
-//    /**
-//     * Description: tests the processFile() function by passing in a midi file designator that
-//     * already exists in the database
-//     * precondition - fileDesignator for file already processed is passed in
-//     * post condition - appropriate exception thrown
-//     */
-//    @Transactional
-//    @Rollback(value = true)
-//    @Test
-//    @DisplayName("Processing File: input [designator for a file that has already been processed] expect [file already processed exception]")
-//    public void test_ProcessFile_IfAlreadyInDatabase_ThenException() {
-//
-//        //Get a designator corresponding to a score in the database - whether or not it actually exists
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //make the request
-//        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
-//
-//        //mock the database with the designator
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        databaseManager.save(testEntity);
-//
-//        // Check that the error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a file that already exists in DB
-//                () -> interpreterService.processFile(req), //when processing
-//                "A file that already exists in the database cannot be interpreted"); //because
-//
-//        // Finally, see that the right message was delivered - FILE_ALREADY_EXISTS_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT)
-//        ));
-//    }
+    /**
+     * Description: tests the processFile() function by passing in a midi file designator that
+     * already exists in the database
+     * precondition - fileDesignator for file already processed is passed in
+     * post condition - appropriate exception thrown
+     */
+    @Transactional
+    @Rollback(value = true)
+    @Test
+    @DisplayName("Processing File: input [designator for a file that has already been processed] expect [file already processed exception]")
+    public void test_ProcessFile_IfAlreadyInDatabase_ThenException() {
+
+        //Get a designator corresponding to a score in the database - whether or not it actually exists
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //make the request
+        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+
+        //mock the database with the designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        databaseManager.save(testEntity);
+
+        // Check that the error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for a file that already exists in DB
+                () -> interpreterService.processFile(req), //when processing
+                "A file that already exists in the database cannot be interpreted"); //because
+
+        // Finally, see that the right message was delivered - FILE_ALREADY_EXISTS_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(
+                configurations.configuration(ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT)
+        ));
+    }
 //
 //
 //    /**InterpretMetre*/
