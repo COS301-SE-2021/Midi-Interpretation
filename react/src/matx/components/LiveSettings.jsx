@@ -38,7 +38,6 @@ export default function DialogSelect(props) {
     const handleSubmit = () => {
         props.setRecording({bpm:BPM})
         props.setRecording({length:Length})
-        props.update()
         setOpen(false)
     }
 

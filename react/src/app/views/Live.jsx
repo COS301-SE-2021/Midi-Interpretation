@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Breadcrumb, SimpleCard} from "../../matx";
 import MidiSenseService from "../services/MidiSenseService";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Button, Divider, Grid, Icon, IconButton, LinearProgress} from "@material-ui/core";
+import {Divider, Grid, Icon, IconButton, LinearProgress} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import {withStyles} from "@material-ui/core/styles";
 import { KeyboardShortcuts, MidiNumbers } from 'react-piano';
@@ -14,11 +14,7 @@ import PianoConfig from "../services/PianoConfig";
 import DimensionsProvider from "../services/DimensionsProvider";
 import InstrumentMenu from "../../matx/components/InstrumentMenu";
 import LiveSettings from "../../matx/components/LiveSettings"
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import { Scrollbar } from "react-scrollbars-custom";
+import PianoRoll from "../../matx/components/PianoRoll";
 
 /**
  * This class defines the interpretation of a midi file that has been supplied by the server
@@ -104,35 +100,12 @@ class Live extends Component {
                 },
                 keyboardShortcutOffset: 0,
             },
-            h: [],
-            w: [],
         }
-
-        this.updateWH()
     }
 
     //====================================
     // DISPLAY STATE VALUE SETTERS
     //====================================
-
-    setOpen = (o) => {
-        this.setState({open:o})
-    }
-
-    updateWH = () => {
-        this.setState({h:[]})
-        this.setState({w:[]})
-
-        for (let x = 0; x < this.state.recording.length; x++) {
-            this.state.h.push(x)
-        }
-
-        for (let x = 0; x <= (this.state.config.noteRange.last - this.state.config.noteRange.first + 1); x++) {
-            this.state.w.push(x)
-        }
-
-        this.forceUpdate()
-    }
 
     /**
      * setTrackData
@@ -245,11 +218,6 @@ class Live extends Component {
 
     }
 
-    onButtonClick = (x,y) => {
-        this.state.recordedNotes[x+":"+y] = !Boolean(this.state.recordedNotes[x+":"+y])
-        this.forceUpdate()
-    }
-
     incTimer = () => {
         if(this.isActive) {
             if(this.state.recording.quanta >= this.state.recording.length){
@@ -281,14 +249,6 @@ class Live extends Component {
         }
     }
 
-    formatTime = (timer) => {
-        const getSeconds = `0${(timer % 60)}`.slice(-2)
-        const minutes = `${Math.floor(timer / 60)}`
-        const getMinutes = `0${minutes % 60}`.slice(-2)
-
-        return `${getMinutes} : ${getSeconds}`
-    }
-
     handleStart = () => {
         this.setState({recordedNotes:{}})
         this.setState({recording:{quanta:0, wait:true}})
@@ -296,22 +256,10 @@ class Live extends Component {
         this.interval = setInterval(this.incTimer, (this.state.recording.bpm*1000)/960)
     }
 
-    valueToNote = (k) =>{
-        let noteArray = ["C","C#/Db","D","D#/Eb","E","F","F#/Gb","G","G#/Ab","A","A#/Bb","B"]
-        let offset = k % 12
-        let octave = Math.floor((k / 12) % 128)
-        let note = noteArray[offset]
-        return (note+" "+octave)
+    setRecordedNotes = (val) =>{
+        this.setState({recordedNotes:val})
     }
 
-    handleClickOpen = () => {
-        this.setOpen(true)
-        this.forceUpdate()
-    }
-
-    handleClose = () => {
-        this.setOpen(false)
-    }
     /**
      * This method returns the elements that we want displayed
      *
@@ -428,7 +376,6 @@ class Live extends Component {
                                                                         mode={this.state.recording.mode}
                                                                         BPM={this.state.recording.bpm}
                                                                         Length={this.state.recording.length}
-                                                                        update={this.updateWH}
                                                                     />
                                                                 </Grid>
                                                                 <Grid item>
@@ -487,83 +434,7 @@ class Live extends Component {
                         <br/>
                     <SimpleCard title="Piano Roll">
                         <div>
-                            <Button
-                                onClick={this.handleClickOpen}
-                                color="primary"
-                                aria-label="Settings"
-                                variant="outlined"
-                                disabled={(this.state.recording.mode==="RECORDING")}
-                            >
-                                <Icon>apps</Icon>
-                                <span>&nbsp;View Piano Roll</span>
-                            </Button>
-                            <Dialog
-                                fullWidth
-                                maxWidth="xl"
-                                maxHeight="xl"
-                                style={{
-                                    whiteSpace:"nowrap",
-                                    position: 'absolute',
-                                }}
-                                open={this.state.open}
-                                onClose={this.handleClose}
-                            >
-                                <DialogTitle>Piano Roll</DialogTitle>
-                                    <DialogContent style={{height: "800px"}}>
-                                        <Scrollbar>
-                                        <div>
-                                            {
-                                                this.state.w.map((group, groupIndex) => {
-                                                    return(
-                                                        <div>
-                                                            {
-                                                                (groupIndex > 0)?
-                                                                    <Button className="text-muted" style={{height:"30px", margin:"2px", width:"80px"}} disabled="true">
-                                                                    {this.valueToNote(groupIndex+this.state.config.noteRange.first-13)}
-                                                                    </Button>:<div style={{width:"80px", display:"inline-block"}}/>
-                                                            }
-                                                            {this.state.h.map((pad, i) => {
-                                                                return (
-                                                                    <div
-                                                                        style={{
-                                                                            display:"inline"
-                                                                        }}
-                                                                    >
-                                                                        {
-                                                                            (groupIndex > 0)?
-                                                                            <Button
-                                                                                style={{height:"30px", minWidth:"30px", margin:"2px"}}
-                                                                                variant={
-                                                                                    (this.state.recordedNotes[i+":"+groupIndex])?
-                                                                                        "contained"
-                                                                                        :"outlined"
-                                                                                }
-                                                                                key={`button-${i}`}
-                                                                                onClick={()=>{this.onButtonClick(i,groupIndex)}}
-                                                                                color={
-                                                                                    (this.state.recordedNotes[i+":"+groupIndex])?
-                                                                                        "secondary"
-                                                                                        :"default"
-                                                                                }
-                                                                            />
-                                                                                : <Button size={"small"} className="text-muted" style={{height:"30px", minWidth:"32px", margin:"2px"}} disabled="true" key={`button-${i}`}>{i}</Button>
-                                                                        }
-                                                                    </div>
-                                                                )
-                                                            })}
-                                                        </div>
-                                                    )}
-                                                )
-                                            }
-                                        </div>
-                                        </Scrollbar>
-                                    </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={this.handleClose} color="primary">
-                                        Ok
-                                    </Button>
-                                </DialogActions>
-                            </Dialog>
+                            <PianoRoll state={this.state} setNotes={this.setRecordedNotes}/>
                         </div>
                     </SimpleCard>
                     </div>
