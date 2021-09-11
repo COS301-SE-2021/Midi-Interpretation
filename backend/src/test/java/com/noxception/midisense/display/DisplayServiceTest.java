@@ -45,6 +45,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
     /**GetPieceMetaData*/
+
     /**Description: tests the getPieceMetadata() function by passing in a valid UUID and
      * the entry is in the database
      * precondition - valid UUID in database passed in
@@ -118,7 +119,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-
     /**Description: tests the getPieceMetadata() function by passing in a valid UUID
      * and the entry is not in the database
      * precondition - valid UUID not in database passed in
@@ -146,7 +146,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         )));
     }
 
-
     /**Description: tests the getTPieceMetadata() function by passing in an empty request
      * precondition - empty request passed in
      * post condition - correct exception thrown
@@ -171,7 +170,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
     /**GetTrackInfo*/
-
 
     /**Description: tests the getTrackInfo() function by passing in a valid UUID and
      * the entry is in the database
@@ -223,7 +221,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-
     /**Description: tests the getTrackInfo() function by passing in a valid UUID
      * and the entry is not in the database
      * precondition - valid UUID not in database passed in
@@ -250,7 +247,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
                 ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
         )));
     }
-
 
     /**Description: tests the getTrackInfo() function by passing in an empty request
      * precondition - empty request passed in
