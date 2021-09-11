@@ -285,58 +285,35 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
 
 
+    /**ParseJSON*/
+    /**
+     * Description: tests the parseJSON() function by passing in a midi file designator that is not in storage
+     * precondition - fileDesignator for a midi file that doesn't exist in storage passed in
+     * post condition - appropriate exception thrown
+     */
+    @Test
+    @DisplayName("Parsing JSON: input [designator for a file that doesnt exist] expect [file does not exist exception]")
+    public void test_ParseJSON_IfNotInStorage_ThenException() {
 
-//
-//    /**
-//     * Description: tests the interpretSignature() function by passing in no parameters
-//     * precondition - no parameters passed in
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Key Signature: input [empty] expect [empty request exception]")
-//    public void test_InterpretKeySignature_IfEmptyRequest_ThenException() {
-//        //Check that the right error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a null request
-//                () -> interpreterService.interpretKeySignature(null), //when interpreting KeySignature
-//                "A null request should not be processed."); //because
-//
-//        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(configurations.configuration(
-//                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
-//        )));
-//    }
-//
-//
-//    /**ParseJSON*/
-//    /**
-//     * Description: tests the parseJSON() function by passing in a midi file designator that is not in storage
-//     * precondition - fileDesignator for a midi file that doesn't exist in storage passed in
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Parsing JSON: input [designator for a file that doesnt exist] expect [file does not exist exception]")
-//    public void test_ParseJSON_IfNotInStorage_ThenException() {
-//
-//        // Generate a new UUID - is unique and so is different from all existing in storage
-//        UUID fileDesignator = UUID.randomUUID();
-//
-//        // Make a request with the new designator
-//        ParseJSONRequest req = new ParseJSONRequest(fileDesignator);
-//
-//        // Check that the error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for invalid designator - no file
-//                () -> interpreterService.parseJSON(req), //when parsing
-//                "No file with this designator should exists in storage" //because
-//        );
-//
-//        // Finally, see that the right message was delivered - File does not exist
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
-//        ));
-//
-//    }
+        // Generate a new UUID - is unique and so is different from all existing in storage
+        UUID fileDesignator = UUID.randomUUID();
+
+        // Make a request with the new designator
+        ParseJSONRequest req = new ParseJSONRequest(fileDesignator);
+
+        // Check that the error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for invalid designator - no file
+                () -> interpreterService.parseJSON(req), //when parsing
+                "No file with this designator should exists in storage" //because
+        );
+
+        // Finally, see that the right message was delivered - File does not exist
+        assertTrue(thrown.getMessage().contains(
+                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
+        ));
+
+    }
 
     /**
      * Description: tests the parseJSON() function by passing in a midi file designator that is in storage
