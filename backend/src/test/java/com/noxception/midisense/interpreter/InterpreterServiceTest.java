@@ -245,268 +245,47 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
     }
 
-//    /**
-//     * Description: tests the processFile() function by passing in a midi file designator that
-//     * already exists in the database
-//     * precondition - fileDesignator for file already processed is passed in
-//     * post condition - appropriate exception thrown
-//     */
-//    @Transactional
-//    @Rollback(value = true)
-//    @Test
-//    @DisplayName("Processing File: input [designator for a file that has already been processed] expect [file already processed exception]")
-//    public void test_ProcessFile_IfAlreadyInDatabase_ThenException() {
-//
-//        //Get a designator corresponding to a score in the database - whether or not it actually exists
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //make the request
-//        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
-//
-//        //mock the database with the designator
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        databaseManager.save(testEntity);
-//
-//        // Check that the error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a file that already exists in DB
-//                () -> interpreterService.processFile(req), //when processing
-//                "A file that already exists in the database cannot be interpreted"); //because
-//
-//        // Finally, see that the right message was delivered - FILE_ALREADY_EXISTS_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT)
-//        ));
-//    }
-//
-//
-//    /**InterpretMetre*/
-//    /**
-//     * Description: tests the interpretMetre() function by passing in a midi file designator that
-//     * does not exist in the database
-//     * precondition - fileDesignator for file not in Database passed in
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [designator for a file not in DB] expect [file does not exist exception]")
-//    public void test_InterpretMetre_IfNotInDatabase_ThenException() {
-//
-//        //Create a fake designator
-//        UUID fileDesignator = UUID.randomUUID();
-//
-//        //make the request
-//        InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
-//
-//        // Check that the error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a file that hasn't been interpreted
-//                () -> interpreterService.interpretMetre(req), //when interpreting metre
-//                "No processing should happen if a file doesn't exist." //because
-//        );
-//
-//        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
-//        ));
-//    }
-//
-//    /**
-//     * Description: tests the interpretMetre() function by passing in a midi file designator that
-//     * does exist in the database
-//     * precondition - fileDesignator for midi-file in Database passed in
-//     * post condition - Receive beat value and beat number
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
-//    public void test_InterpretMetre_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-//
-//        //Get a designator corresponding to a score in the database - whether or not it actually exists
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //mock the database with that designator and timeSignature
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        testEntity.setTimeSignature("4/4");
-//        databaseManager.save(testEntity);
-//
-//        //make a request
-//        InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
-//        InterpretMetreResponse res = interpreterService.interpretMetre(req);
-//
-//        //check that the beat value is a positive power of two
-//        int beatValue = res.getMetre().getBeatValue();
-//        double c = Math.log(beatValue) / Math.log(2);
-//        assertEquals(c, Math.floor(c));
-//
-//        //check that the number of beats is positive
-//        int numBeats = res.getMetre().getNumBeats();
-//        assertTrue(numBeats > 0);
-//    }
-//
-//    /**
-//     * Description: tests the interpretMetre() function by passing in a midi fileDesignator that does not exist in the database
-//     * precondition - no fileDesignator was passed into the function
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [empty] expect [empty request exception]")
-//    public void test_InterpretMetre_IfEmptyRequest_ThenException() {
-//        //Check that the right error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a null request
-//                () -> interpreterService.interpretMetre(null), //when interpreting metre
-//                "A null request should not be processed."); //because
-//
-//        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(configurations.configuration(
-//                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
-//        )));
-//    }
-//
-//
-//    /**InterpretTempo*/
-//    /**
-//     * Description: tests the interpretTempo() function by passing in a midi fileDesignator that does not exist in the database
-//     * precondition - fileDesignator given is not in the database
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Tempo: input [designator for a file not in DB] expect [file does not exist exception]")
-//    public void test_InterpretTempo_IfNotInDatabase_ThenException() {
-//
-//        //Create a fake designator
-//        UUID fileDesignator = UUID.randomUUID();
-//
-//        //make the request
-//        InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
-//
-//        // Check that the error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a file that hasn't been interpreted
-//                () -> interpreterService.interpretTempo(req), //when interpreting tempo
-//                "No processing should happen if a file doesn't exist." //because
-//        );
-//
-//        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
-//        ));
-//
-//    }
-//
-//    /**
-//     * Description: tests the interpretTempo() function by passing in a midi fileDesignator that exists in the database
-//     * precondition - fileDesignator for midi-file in Database passed in
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a positive integer]")
-//    public void test_InterpretTempo_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-//
-//        //Get a designator corresponding to a score in the database - whether or not it actually exists
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //mock the database with the designator and tempoIndication
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        testEntity.setTempoIndication(50);
-//        databaseManager.save(testEntity);
-//
-//        //make a request
-//        InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
-//        InterpretTempoResponse res = interpreterService.interpretTempo(req);
-//
-//        //see that the tempo is a positive integer
-//        TempoIndication t = res.getTempo();
-//        assertTrue(t.getTempo() > 0);
-//    }
-//
-//    /**
-//     * Description: tests the interpretTempo() function by passing in no parameters
-//     * precondition - no parameters passed in
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Tempo: input [empty] expect [empty request exception]")
-//    public void test_InterpretTempo_IfEmptyRequest_ThenException() {
-//        //Check that the right error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a null request
-//                () -> interpreterService.interpretTempo(null), //when interpreting Tempo
-//                "A null request should not be processed."); //because
-//
-//        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(configurations.configuration(
-//                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
-//        )));
-//    }
-//
-//
-//    /**InterpretKeySignature*/
-//    /**
-//     * Description: tests the interpretSignature() function by passing in a fileDesignator that is not in the database
-//     * precondition - fileDesignator is not in the database
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Key Signature: input [designator for a file not in DB] expect [file does not exist exception]")
-//    public void test_InterpretKeySignature_IfNotInDatabase_ThenException() {
-//
-//        //Create a fake designator
-//        UUID fileDesignator = UUID.randomUUID();
-//
-//        //make the request
-//        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
-//
-//        // Check that the error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a file that hasn't been interpreted
-//                () -> interpreterService.interpretKeySignature(req), //when interpreting KeySignature
-//                "No processing should happen if a file doesn't exist." //because
-//        );
-//
-//        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
-//        ));
-//    }
-//
-//    /**
-//     * Description: tests the interpretSignature() function by passing in a fileDesignator that is in the database
-//     * precondition - fileDesignator is in the database
-//     * post condition - Receive key signature and signature name
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a valid key signature string]")
-//    public void test_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-//
-//        //Get a designator corresponding to a score in the database - whether or not it actually exists
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //mock the database with the designator and keySignature
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        testEntity.setKeySignature("Ebmaj");
-//        databaseManager.save(testEntity);
-//
-//        //make a request
-//        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
-//        InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
-//
-//        //Check that the key is valid
-//        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
-//        boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().getSignatureName());
-//        assertTrue(b);
-//    }
+    /**
+     * Description: tests the processFile() function by passing in a midi file designator that
+     * already exists in the database
+     * precondition - fileDesignator for file already processed is passed in
+     * post condition - appropriate exception thrown
+     */
+    @Transactional
+    @Rollback(value = true)
+    @Test
+    @DisplayName("Processing File: input [designator for a file that has already been processed] expect [file already processed exception]")
+    public void test_ProcessFile_IfAlreadyInDatabase_ThenException() {
+
+        //Get a designator corresponding to a score in the database - whether or not it actually exists
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //make the request
+        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+
+        //mock the database with the designator
+        ScoreEntity testEntity = new ScoreEntity();
+        testEntity.setFileDesignator(fileDesignator.toString());
+        databaseManager.save(testEntity);
+
+        // Check that the error is thrown
+        InvalidDesignatorException thrown = assertThrows(
+                InvalidDesignatorException.class, //for a file that already exists in DB
+                () -> interpreterService.processFile(req), //when processing
+                "A file that already exists in the database cannot be interpreted"); //because
+
+        // Finally, see that the right message was delivered - FILE_ALREADY_EXISTS_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(
+                configurations.configuration(ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT)
+        ));
+    }
+
+
+
+
+
 //
 //    /**
 //     * Description: tests the interpretSignature() function by passing in no parameters
