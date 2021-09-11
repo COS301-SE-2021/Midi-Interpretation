@@ -285,65 +285,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
 
 
-//
-//    /**InterpretKeySignature*/
-//    /**
-//     * Description: tests the interpretSignature() function by passing in a fileDesignator that is not in the database
-//     * precondition - fileDesignator is not in the database
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Key Signature: input [designator for a file not in DB] expect [file does not exist exception]")
-//    public void test_InterpretKeySignature_IfNotInDatabase_ThenException() {
-//
-//        //Create a fake designator
-//        UUID fileDesignator = UUID.randomUUID();
-//
-//        //make the request
-//        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
-//
-//        // Check that the error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a file that hasn't been interpreted
-//                () -> interpreterService.interpretKeySignature(req), //when interpreting KeySignature
-//                "No processing should happen if a file doesn't exist." //because
-//        );
-//
-//        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
-//        ));
-//    }
-//
-//    /**
-//     * Description: tests the interpretSignature() function by passing in a fileDesignator that is in the database
-//     * precondition - fileDesignator is in the database
-//     * post condition - Receive key signature and signature name
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a valid key signature string]")
-//    public void test_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-//
-//        //Get a designator corresponding to a score in the database - whether or not it actually exists
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //mock the database with the designator and keySignature
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        testEntity.setKeySignature("Ebmaj");
-//        databaseManager.save(testEntity);
-//
-//        //make a request
-//        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
-//        InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
-//
-//        //Check that the key is valid
-//        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
-//        boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().getSignatureName());
-//        assertTrue(b);
-//    }
+
 //
 //    /**
 //     * Description: tests the interpretSignature() function by passing in no parameters
