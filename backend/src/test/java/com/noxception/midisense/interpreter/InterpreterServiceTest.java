@@ -501,42 +501,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
 
     }
-//
-//    /**
-//     * Description: tests the interpretMetre() function by passing in a midi file designator that
-//     * does exist in the database
-//     * precondition - fileDesignator for midi-file in Database passed in
-//     * post condition - Receive beat value and beat number
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
-//    public void testWhiteBox_InterpretMetre_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-//
-//        //Get a designator corresponding to a score in the database - whether or not it actually exists
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //mock the database with that designator and timeSignature
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        testEntity.setTimeSignature("4/4");
-//        databaseManager.save(testEntity);
-//
-//        //make a request
-//        InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
-//        InterpretMetreResponse res = interpreterService.interpretMetre(req);
-//
-//        //check that the beat value is a positive power of two
-//        int beatValue = res.getMetre().getBeatValue();
-//        double c = Math.log(beatValue) / Math.log(2);
-//        assertEquals(c, Math.floor(c));
-//
-//        //check that the number of beats is positive
-//        int numBeats = res.getMetre().getNumBeats();
-//        assertTrue(numBeats > 0);
-//    }
-//
+
 
 
     /**
