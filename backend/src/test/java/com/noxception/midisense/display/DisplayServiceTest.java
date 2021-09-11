@@ -8,14 +8,12 @@ import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.parser.*;
+import com.noxception.midisense.interpreter.parser.KeySignature;
 import com.noxception.midisense.repository.DatabaseManager;
-import com.noxception.midisense.repository.ScoreEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -33,58 +31,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         databaseManager = new MockRepository();
         configurations = new MockConfigurationSettings();
         displayService = new DisplayServiceImpl(databaseManager,configurations);
-    }
-
-    public void generateMockScore(UUID fileDesignator){
-        //mock the database with that designator
-        Score s = new Score();
-        ScoreEntity testEntity = new ScoreEntity();
-        testEntity.setFileDesignator(fileDesignator.toString());
-
-        //Add key signature to score
-        KeySignature keySignature = new KeySignature();
-        keySignature.tick =0;
-        keySignature.commonName = "Cb";
-        s.KeySignatureMap = new ArrayList<>();
-        s.KeySignatureMap.add(keySignature);
-
-        //Add tempo indication to score
-        TempoIndication tempoIndication = new TempoIndication();
-        tempoIndication.tick=0;
-        tempoIndication.tempoIndication = 70;
-        s.TempoIndicationMap = new ArrayList<>();
-        s.TempoIndicationMap.add(tempoIndication);
-
-        //Add time signature beat value and number of beats to score
-        TimeSignature timeSignature = new TimeSignature();
-        TimeSignature.InnerTime innerTime = new TimeSignature.InnerTime();
-        innerTime.beatValue =4;
-        innerTime.numBeats=4;
-        timeSignature.tick=0;
-        timeSignature.time= innerTime;
-        s.TimeSignatureMap = new ArrayList<>();
-        s.TimeSignatureMap.add(timeSignature);
-
-        Channel channel = new Channel();
-        channel.channelNumber = 1;
-        channel.instrument = "Electric Bass (pick)";
-        channel.ticksPerBeat = 92;
-        Track track = new Track();
-        track.tick = 0;
-        track.notes = new ArrayList<>();
-        Note note = new Note();
-        note.duration = 600;
-        note.offVelocity = 0;
-        note.onVelocity = 100;
-        note.value = 69;
-        track.notes.add(note);
-        channel.trackMap = new ArrayList<>();
-        channel.trackMap.add(track);
-        s.channelList = new ArrayList<>();
-        s.channelList.add(channel);
-
-        testEntity.encodeScore(s);
-        databaseManager.save(testEntity);
     }
 
 
@@ -109,7 +55,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
                 ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
-        generateMockScore(fileDesignator);
+        ((MockRepository) this.databaseManager).generateMockScore(fileDesignator);
 
         //Make request
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
@@ -208,7 +154,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         ));
 
         //generate a score for the db
-        generateMockScore(fileDesignator);
+        ((MockRepository) this.databaseManager).generateMockScore(fileDesignator);
 
         //Make request
         GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
