@@ -8,10 +8,7 @@ import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.interpreter.parser.KeySignature;
-import com.noxception.midisense.interpreter.parser.Score;
-import com.noxception.midisense.interpreter.parser.TempoIndication;
-import com.noxception.midisense.interpreter.parser.TimeSignature;
+import com.noxception.midisense.interpreter.parser.*;
 import com.noxception.midisense.repository.DatabaseManager;
 import com.noxception.midisense.repository.ScoreEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,28 +35,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         displayService = new DisplayServiceImpl(databaseManager,configurations);
     }
 
-
-    //====================================================================================================================//
-    //                                  BLACK BOX TESTING BELOW                                                           //
-    //====================================================================================================================//
-
-
-    /**GetPieceMetaData*/
-
-    /**Description: tests the getPieceMetadata() function by passing in a valid UUID and
-     * the entry is in the database
-     * precondition - valid UUID in database passed in
-     * post condition - returned data is accurate
-     */
-    @Test
-    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
-    public void test_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
-
-        //Get the designator of a file in the DB
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
+    public void generateMockScore(UUID fileDesignator){
         //mock the database with that designator
         Score s = new Score();
         ScoreEntity testEntity = new ScoreEntity();
@@ -89,9 +65,51 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         s.TimeSignatureMap = new ArrayList<>();
         s.TimeSignatureMap.add(timeSignature);
 
+        Channel channel = new Channel();
+        channel.channelNumber = 1;
+        channel.instrument = "Electric Bass (pick)";
+        channel.ticksPerBeat = 92;
+        Track track = new Track();
+        track.tick = 0;
+        track.notes = new ArrayList<>();
+        Note note = new Note();
+        note.duration = 600;
+        note.offVelocity = 0;
+        note.onVelocity = 100;
+        note.value = 69;
+        track.notes.add(note);
+        channel.trackMap = new ArrayList<>();
+        channel.trackMap.add(track);
+        s.channelList = new ArrayList<>();
+        s.channelList.add(channel);
 
         testEntity.encodeScore(s);
         databaseManager.save(testEntity);
+    }
+
+
+    //====================================================================================================================//
+    //                                  BLACK BOX TESTING BELOW                                                           //
+    //====================================================================================================================//
+
+
+    /**GetPieceMetaData*/
+
+    /**Description: tests the getPieceMetadata() function by passing in a valid UUID and
+     * the entry is in the database
+     * precondition - valid UUID in database passed in
+     * post condition - returned data is accurate
+     */
+    @Test
+    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
+    public void test_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        generateMockScore(fileDesignator);
 
         //Make request
         GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
@@ -189,29 +207,8 @@ class DisplayServiceTest extends MIDISenseUnitTest {
                 ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
-        //old code
-//        //mock the database with that designator
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        TrackEntity trackEntity =  new TrackEntity();
-//        trackEntity.setNotes("THIS IS SAMPLE");
-//        testEntity.addTrack(trackEntity);
-//        databaseManager.save(testEntity);
-
-//        //new code
-//        //mock the database with that designator
-//        Score s = new Score();
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//
-//        Track t = new Track();
-//        Note note = new Note();
-//        t.tick=0;
-//        t.notes.add(note);
-//
-//
-//        testEntity.encodeScore(s);
-//        databaseManager.save(testEntity);
+        //generate a score for the db
+        generateMockScore(fileDesignator);
 
         //Make request
         GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
