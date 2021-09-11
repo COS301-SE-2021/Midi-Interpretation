@@ -281,73 +281,9 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
                 configurations.configuration(ConfigurationName.FILE_ALREADY_EXISTS_EXCEPTION_TEXT)
         ));
     }
-//
-//
-//    /**InterpretMetre*/
-//    /**
-//     * Description: tests the interpretMetre() function by passing in a midi file designator that
-//     * does not exist in the database
-//     * precondition - fileDesignator for file not in Database passed in
-//     * post condition - appropriate exception thrown
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [designator for a file not in DB] expect [file does not exist exception]")
-//    public void test_InterpretMetre_IfNotInDatabase_ThenException() {
-//
-//        //Create a fake designator
-//        UUID fileDesignator = UUID.randomUUID();
-//
-//        //make the request
-//        InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
-//
-//        // Check that the error is thrown
-//        InvalidDesignatorException thrown = assertThrows(
-//                InvalidDesignatorException.class, //for a file that hasn't been interpreted
-//                () -> interpreterService.interpretMetre(req), //when interpreting metre
-//                "No processing should happen if a file doesn't exist." //because
-//        );
-//
-//        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(
-//                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
-//        ));
-//    }
-//
-//    /**
-//     * Description: tests the interpretMetre() function by passing in a midi file designator that
-//     * does exist in the database
-//     * precondition - fileDesignator for midi-file in Database passed in
-//     * post condition - Receive beat value and beat number
-//     */
-//    @Test
-//    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
-//    public void test_InterpretMetre_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-//
-//        //Get a designator corresponding to a score in the database - whether or not it actually exists
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //mock the database with that designator and timeSignature
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        testEntity.setTimeSignature("4/4");
-//        databaseManager.save(testEntity);
-//
-//        //make a request
-//        InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
-//        InterpretMetreResponse res = interpreterService.interpretMetre(req);
-//
-//        //check that the beat value is a positive power of two
-//        int beatValue = res.getMetre().getBeatValue();
-//        double c = Math.log(beatValue) / Math.log(2);
-//        assertEquals(c, Math.floor(c));
-//
-//        //check that the number of beats is positive
-//        int numBeats = res.getMetre().getNumBeats();
-//        assertTrue(numBeats > 0);
-//    }
-//
+
+
+
 //    /**
 //     * Description: tests the interpretMetre() function by passing in a midi fileDesignator that does not exist in the database
 //     * precondition - no fileDesignator was passed into the function
