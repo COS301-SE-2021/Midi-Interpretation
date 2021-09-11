@@ -470,37 +470,37 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         assertTrue(newlyCreated.delete());
     }
 
-//    /**
-//     * Description: tests the processFile() function by passing in a midi file designator that
-//     * exists in storage
-//     * precondition - valid fileDesignator in storage passed in
-//     * post condition - appropriate success message returned
-//     */
-//    @Transactional
-//    @Rollback(value = true)
-//    @Test
-//    @DisplayName("Processing File: input [designator for a file that exists] expect [success value and message]")
-//    public void testWhiteBox_ProcessFile_IfInStorage_ThenAccurate() throws IOException, InvalidDesignatorException {
-//        //Create a temporary file to parse
-//        UUID fileDesignator = UUID.randomUUID();
-//        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
-//
-//        //copy temp file from testing data
-//        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-//        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
-//        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
-//
-//        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
-//        ProcessFileResponse res = interpreterService.processFile(req);
-//
-//        //Check that the processing is successful
-//        assertEquals(res.getSuccess(), true);
-//        assertEquals(res.getMessage(), configurations.configuration(ConfigurationName.SUCCESSFUL_PARSING_TEXT));
-//
-//        //delete the temporary file
-//        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
-//
-//    }
+    /**
+     * Description: tests the processFile() function by passing in a midi file designator that
+     * exists in storage
+     * precondition - valid fileDesignator in storage passed in
+     * post condition - appropriate success message returned
+     */
+    @Transactional
+    @Rollback(value = true)
+    @Test
+    @DisplayName("Processing File: input [designator for a file that exists] expect [success value and message]")
+    public void testWhiteBox_ProcessFile_IfInStorage_ThenAccurate() throws IOException, InvalidDesignatorException {
+        //Create a temporary file to parse
+        UUID fileDesignator = UUID.randomUUID();
+        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
+
+        //copy temp file from testing data
+        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
+        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
+        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+
+        ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
+        ProcessFileResponse res = interpreterService.processFile(req);
+
+        //Check that the processing is successful
+        assertEquals(res.getSuccess(), true);
+        assertEquals(res.getMessage(), configurations.configuration(ConfigurationName.SUCCESSFUL_PARSING_TEXT));
+
+        //delete the temporary file
+        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
+
+    }
 //
 //    /**
 //     * Description: tests the interpretMetre() function by passing in a midi file designator that
