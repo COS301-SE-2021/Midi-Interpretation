@@ -12,6 +12,7 @@ import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorExceptio
 import com.noxception.midisense.interpreter.parser.KeySignature;
 import com.noxception.midisense.interpreter.parser.TempoIndication;
 import com.noxception.midisense.interpreter.parser.TimeSignature;
+import com.noxception.midisense.interpreter.parser.Track;
 import com.noxception.midisense.repository.DatabaseManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.internal.verification.Times;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -495,34 +497,30 @@ class DisplayServiceTest extends MIDISenseUnitTest {
      * precondition - valid UUID in database passed in
      * post condition - returned data is accurate
      */
-//
-//    @Test
-//    @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
-//    public void testWhiteBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
-//
-//        //Get the designator of a file in the DB
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //mock the database with that designator
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        TrackEntity trackEntity =  new TrackEntity();
-//        testEntity.addTrack(trackEntity);
-//        databaseManager.save(testEntity);
-//
-//        //Make request
-//        GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
-//
-//        //Get response
-//        GetTrackInfoResponse res = displayService.getTrackInfo(req);
-//
-//        //Check we receive an array back with at least one entry in it
-//        assertFalse(res.getTrackMap().isEmpty());
-//
-//
-//    }
+
+    @Test
+    @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
+    public void testWhiteBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        ((MockRepository) this.databaseManager).generateMockScore(fileDesignator);
+
+        //Make request
+        GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
+
+        //Get response
+        GetTrackInfoResponse res = displayService.getTrackInfo(req);
+
+        //TODO: adapt to white box
+        //Check we receive an array back with at least one entry in it
+        assertFalse(res.getTrackMap().isEmpty());
+
+
+    }
 
     /**GetTrackMetadata*/
 
