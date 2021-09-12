@@ -266,6 +266,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //Get response
         GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
 
+        //TODO: Adapt to new format
         //Check that there is a substring for an inner array with countably many items
         Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
         Matcher matcher = validResponse.matcher(res.getTrackString());
@@ -451,6 +452,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
                 ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
+        //generate a score for the db
         ((MockRepository) this.databaseManager).generateMockScore(fileDesignator);
 
         //Make request
@@ -507,6 +509,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
                 ConfigurationName.MIDI_TESTING_DESIGNATOR
         ));
 
+        //generate a score for the db
         ((MockRepository) this.databaseManager).generateMockScore(fileDesignator);
 
         //Make request
@@ -531,43 +534,39 @@ class DisplayServiceTest extends MIDISenseUnitTest {
      * post condition - returned data is accurate
      */
 
-//    @Test
-//    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
-//    public void testWhiteBox_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
-//
-//        //Get the designator of a file in the DB
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //Get a valid track index
-//        int validTrackIndex = Integer.parseInt(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_TRACK_INDEX
-//        ));
-//
-//        //mock the database with that designator
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        TrackEntity trackEntity =  new TrackEntity();
-//        trackEntity.setNotes("{ \"notes\": [] }");
-//        testEntity.addTrack(trackEntity);
-//        databaseManager.save(testEntity);
-//
-//        //Make request
-//        GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator, (byte) validTrackIndex);
-//
-//        //Get response
-//        GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
-//
-//        //Check that there is a substring for an inner array with countably many items
-//        Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
-//        Matcher matcher = validResponse.matcher(res.getTrackString());
-//
-//        //see that the substring is present
-//        assertTrue(matcher.find());
-//    }
-//
-//
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
+    public void testWhiteBox_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get a valid track index
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        ));
+
+        //generate a score for the db
+        ((MockRepository) this.databaseManager).generateMockScore(fileDesignator);
+
+        //Make request
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator, (byte) validTrackIndex);
+
+        //Get response
+        GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
+
+        //TODO: adapt to white box
+        //Check that there is a substring for an inner array with countably many items
+        Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
+        Matcher matcher = validResponse.matcher(res.getTrackString());
+
+        //see that the substring is present
+        assertTrue(matcher.find());
+    }
+
+
 
 }
 
