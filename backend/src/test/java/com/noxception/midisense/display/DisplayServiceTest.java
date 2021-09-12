@@ -315,40 +315,36 @@ class DisplayServiceTest extends MIDISenseUnitTest {
      * precondition - valid UUID, invalid Track (-1 - format error) passed in
      * post condition - correct exception thrown
      */
-//    @Test
-//    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [invalid track index exception]")
-//    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() {
-//
-//        //Get the designator of a file in the DB
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //Get an invalid track index - too high
-//        int invalidTrackIndex = -1;
-//
-//        //mock the database with that designator
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        TrackEntity trackEntity =  new TrackEntity();
-//        testEntity.addTrack(trackEntity);
-//        databaseManager.save(testEntity);
-//
-//        //Make request
-//        GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,(byte) invalidTrackIndex);
-//
-//        //Check the error is thrown
-//        InvalidTrackException thrown = assertThrows(
-//                InvalidTrackException.class,//for a request
-//                ()->displayService.getTrackMetadata(req),//when function called
-//                "No processing should happen if the track index is invalid.");//because
-//
-//        // Finally, see that the right message was delivered - INVALID_TRACK_INDEX_EXCEPTION_TEXT
-//        assertTrue(thrown.getMessage().contains(configurations.configuration(
-//                ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT
-//        )));
-//
-//    }
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [invalid track index exception]")
+    public void test_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() {
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get an invalid track index - too high
+        int invalidTrackIndex = -1;
+
+        //generate a score for the db
+        ((MockRepository) this.databaseManager).generateMockScore(fileDesignator);
+
+        //Make request
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,(byte) invalidTrackIndex);
+
+        //Check the error is thrown
+        InvalidTrackException thrown = assertThrows(
+                InvalidTrackException.class,//for a request
+                ()->displayService.getTrackMetadata(req),//when function called
+                "No processing should happen if the track index is invalid.");//because
+
+        // Finally, see that the right message was delivered - INVALID_TRACK_INDEX_EXCEPTION_TEXT
+        assertTrue(thrown.getMessage().contains(configurations.configuration(
+                ConfigurationName.INVALID_TRACK_INDEX_EXCEPTION_TEXT
+        )));
+
+    }
 
 
     /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Valid Track
