@@ -439,9 +439,14 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
 
+
+
     //====================================================================================================================//
     //                                  WHITE BOX TESTING BELOW                                                                //
     //====================================================================================================================//
+
+
+
 
     @Test
     @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
@@ -489,17 +494,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         }
     }
 
-
-
-/**GetTrackInfo*/
-
-
-/**Description: tests the getTrackInfo() function by passing in a valid UUID and
-     * the entry is in the database
-     * precondition - valid UUID in database passed in
-     * post condition - returned data is accurate
-     */
-
     @Test
     @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
     public void testWhiteBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
@@ -524,15 +518,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
     }
-
-    /**GetTrackMetadata*/
-
-
-/**Description: tests the getTrackMetadata() function by passing in a valid UUID and valid Track
-     * and the entry is in the database
-     * precondition - valid UUID, valid Track passed in
-     * post condition - returned data is accurate
-     */
 
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
