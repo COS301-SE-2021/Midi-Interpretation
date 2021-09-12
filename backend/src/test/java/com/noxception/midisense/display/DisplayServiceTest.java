@@ -6,6 +6,7 @@ import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.dataclass.TestingDictionary;
+import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.parser.KeySignature;
@@ -19,6 +20,8 @@ import org.mockito.internal.verification.Times;
 
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -236,41 +239,44 @@ class DisplayServiceTest extends MIDISenseUnitTest {
      * precondition - valid UUID, valid Track passed in
      * post condition - returned data is accurate
      */
-//    @Test
-//    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
-//    public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
-//
-//        //Get the designator of a file in the DB
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //Get a valid track index
-//        int validTrackIndex = Integer.parseInt(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_TRACK_INDEX
-//        ));
-//
-//        //mock the database with that designator
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        TrackEntity trackEntity =  new TrackEntity();
-//        trackEntity.setNotes("{\"notes\": []}");
-//        testEntity.addTrack(trackEntity);
-//        databaseManager.save(testEntity);
-//
-//        //Make request
-//        GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator, (byte) validTrackIndex);
-//
-//        //Get response
-//        GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
-//
-//        //Check that there is a substring for an inner array with countably many items
-//        Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
-//        Matcher matcher = validResponse.matcher(res.getTrackString());
-//
-//        //see that the substring is present
-//        assertTrue(matcher.find());
-//    }
+    @Test
+    @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
+    public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException, InvalidTrackException {
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        //Get a valid track index
+        int validTrackIndex = Integer.parseInt(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_TRACK_INDEX
+        ));
+
+        //mock the database with that designator
+        //ScoreEntity testEntity = new ScoreEntity();
+        //testEntity.setFileDesignator(fileDesignator.toString());
+        //TrackEntity trackEntity =  new TrackEntity();
+        //trackEntity.setNotes("{\"notes\": []}");
+        //testEntity.addTrack(trackEntity);
+        //databaseManager.save(testEntity);
+
+        //generate a score for the db
+        ((MockRepository) this.databaseManager).generateMockScore(fileDesignator);
+
+        //Make request
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator, (byte) validTrackIndex);
+
+        //Get response
+        GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
+
+        //Check that there is a substring for an inner array with countably many items
+        Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
+        Matcher matcher = validResponse.matcher(res.getTrackString());
+
+        //see that the substring is present
+        assertTrue(matcher.find());
+    }
 
 
     /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track (Too High)
