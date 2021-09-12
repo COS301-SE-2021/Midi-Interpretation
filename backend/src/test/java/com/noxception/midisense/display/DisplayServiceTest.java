@@ -231,6 +231,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
 
+
     /**GetTrackMetadata*/
 
 
@@ -439,49 +440,50 @@ class DisplayServiceTest extends MIDISenseUnitTest {
     //                                  WHITE BOX TESTING BELOW                                                                //
     //====================================================================================================================//
 
-//    @Test
-//    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
-//    public void testWhiteBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
-//
-//        //Get the designator of a file in the DB
-//        UUID fileDesignator = UUID.fromString(configurations.configuration(
-//                ConfigurationName.MIDI_TESTING_DESIGNATOR
-//        ));
-//
-//        //mock the database with that designator
-//        ScoreEntity testEntity = new ScoreEntity();
-//        testEntity.setFileDesignator(fileDesignator.toString());
-//        testEntity.setKeySignature("Cbmaj");
-//        testEntity.setTempoIndication(70);
-//        testEntity.setTimeSignature("4/4");
-//        databaseManager.save(testEntity);
-//
-//        //Make request
-//        GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
-//
-//        //Get response
-//        GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
-//
-//        //Check that the key signature is valid
-//        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
-//        boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().getSignatureName());
-//        assertTrue(b);
-//
-//        //Check the tempo is an integer greater than 0
-//        assertTrue(res.getTempoIndication().getTempo()>0);
-//
-//
-//        // Check the beat value for time signature is a power of two (Greater than one)
-//        int beatValue = res.getTimeSignature().getBeatValue();
-//        double c = Math.log(beatValue)/Math.log(2);
-//        assertEquals(c,Math.floor(c));
-//
-//
-//        //Check the beat number for time signature is a positive integer
-//        int numBeats = res.getTimeSignature().getNumBeats();
-//        assertTrue(numBeats>0);
-//
-//    }
+    @Test
+    @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
+    public void testWhiteBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
+
+        //Get the designator of a file in the DB
+        UUID fileDesignator = UUID.fromString(configurations.configuration(
+                ConfigurationName.MIDI_TESTING_DESIGNATOR
+        ));
+
+        ((MockRepository) this.databaseManager).generateMockScore(fileDesignator);
+
+        //Make request
+        GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
+
+        //Get response
+        GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
+
+
+        //Check that the key signature is valid
+        String[] keyArray = {"Cb"};
+        for(KeySignature k : res.getKeySignature()){
+            assertTrue(Arrays.asList(keyArray).contains(k.commonName));
+        }
+
+
+        //Check the tempo is an integer greater than 0
+        for(TempoIndication t : res.getTempoIndication()){
+            assertEquals(70, t.tempoIndication);
+        }
+
+
+        //Check the beat value for time signature is a power of two (Greater than one)
+        for(TimeSignature ts : res.getTimeSignature()){
+            int beatValue = ts.time.beatValue;
+            assertEquals(4,beatValue);
+        }
+
+
+        //Check the beat number for time signature is a positive integer
+        for(TimeSignature ts : res.getTimeSignature()){
+            int numBeats = ts.time.numBeats;
+            assertEquals(4, numBeats);
+        }
+    }
 
 
 
