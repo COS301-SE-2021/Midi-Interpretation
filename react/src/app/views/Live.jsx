@@ -436,6 +436,10 @@ class Live extends Component {
                                                                         Wow={this.state.recording.quantaLength}
                                                                     />
                                                                 </Grid>
+                                                                <Divider orientation="vertical" flexItem style={{marginInline:"20px"}}/>
+                                                                <Grid item>
+                                                                    <PianoRoll state={this.state} setNotes={this.setRecordedNotes}/>
+                                                                </Grid>
                                                                 <Grid item>
                                                                     <p style={{width:"20px"}}/>
                                                                 </Grid>
@@ -487,12 +491,6 @@ class Live extends Component {
                                         )}
                                     />
                                 </div>
-                            </div>
-                        </SimpleCard>
-                        <br/>
-                        <SimpleCard title="Piano Roll">
-                            <div>
-                                <PianoRoll state={this.state} setNotes={this.setRecordedNotes}/>
                             </div>
                         </SimpleCard>
                     </div>
