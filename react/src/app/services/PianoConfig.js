@@ -15,9 +15,7 @@ class PianoConfig extends React.Component {
       anchorElFirst: null,
       anchorElLast: null,
       selectedFirstIndex: this.props.config.noteRange.first,
-      selectedLastIndex: this.props.config.noteRange.last,
-      MIDI_LOWER: 0,
-      MIDI_UPPER: 127
+      selectedLastIndex: this.props.config.noteRange.last
     }
 
     this.setAnchorElFirst = (af) => {
@@ -188,7 +186,7 @@ class PianoConfig extends React.Component {
                   open={Boolean(this.state.anchorElFirst)}
                   onClose={this.handleCloseFirst}
               >
-                {MidiNumbers.NATURAL_MIDI_NUMBERS.slice(midiNumbersToIndex[this.state.MIDI_LOWER],midiNumbersToIndex[noteRange.last]).map((midiNumber, index) => (
+                {MidiNumbers.NATURAL_MIDI_NUMBERS.slice(midiNumbersToIndex[0],midiNumbersToIndex[noteRange.last]).map((midiNumber, index) => (
                     <MenuItem
                         key={midiNumber}
                         selected={index === midiNumbersToIndex[this.state.selectedFirstIndex]}
@@ -223,7 +221,7 @@ class PianoConfig extends React.Component {
                   open={Boolean(this.state.anchorElLast)}
                   onClose={this.handleCloseLast}
               >
-                {MidiNumbers.NATURAL_MIDI_NUMBERS.slice(midiNumbersToIndex[noteRange.first]+1, midiNumbersToIndex[this.state.MIDI_UPPER]).map((midiNumber, index) => (
+                {MidiNumbers.NATURAL_MIDI_NUMBERS.slice(midiNumbersToIndex[noteRange.first]+1, midiNumbersToIndex[127]).map((midiNumber, index) => (
                     <MenuItem
                         key={midiNumber}
                         selected={index+midiNumbersToIndex[noteRange.first]+1 === midiNumbersToIndex[this.state.selectedLastIndex]}
