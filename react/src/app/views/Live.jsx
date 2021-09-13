@@ -496,7 +496,6 @@ class Live extends Component {
                     </div>
                     <br/>
                     <SimpleCard title="Timeline" subtitle="Here you'll find the sequence of events for a chosen channel.">
-                        <div>Title</div>
                         <TrackViewer trackData={this.state.data}/>
                         <br/>
                         <Grid
