@@ -366,39 +366,37 @@ class Live extends Component {
                                                   justifyContent="flex-start"
                                                   direction="row"
                                                   alignItems="flex-start"
+                                                  style={{
+                                                  }}
                                             >
-                                                <div className="m10 justify-end">
-                                                    <Grid item>
-                                                        <InstrumentMenu
-                                                            setTrack={this.setInstrument}
-                                                            inputOptions={instrumentList || [this.state.config.instrumentName]}
-                                                        />
+                                                    <Grid item style={{
+                                                    }}>
+
                                                     </Grid>
                                                     <Grid item style={{
-                                                        backgroundColor:"#F5F5F5",
-                                                        boxShadow: "1px 2px #EAEAEAFF"
-                                                    }}>
+                                                    }} >
                                                         <Grid container
                                                               justifyContent="flex-start"
                                                               direction="row"
                                                               alignItems="center"
                                                         >
-                                                            <Grid item>
-                                                                <IconButton
-                                                                    style={{color: this.state.recording.color}}
-                                                                    aria-label="Record"
-                                                                    onClick={this.onClickRecord}
-                                                                >
-                                                                    <Icon>{this.state.recording.active}</Icon>
-                                                                </IconButton>
-                                                            </Grid>
+
                                                                 <Grid item>
-                                                                    {(this.state.recording.mode === "RECORDING")?
-                                                                        <span>
+                                                                    <IconButton
+                                                                        style={{color: this.state.recording.color}}
+                                                                        aria-label="Record"
+                                                                        onClick={this.onClickRecord}
+                                                                    >
+                                                                        <Icon>{this.state.recording.active}</Icon>
+                                                                    </IconButton>
+                                                                </Grid>
+                                                                <Grid item>
+                                                                {(this.state.recording.mode === "RECORDING")?
+                                                                    <span>
                                                                             {this.state.recording.elapsed}
                                                                         </span>
-                                                                        :<span/>}
-                                                                </Grid>
+                                                                    :<span/>}
+                                                            </Grid>
                                                                 <Grid item>
                                                                     <IconButton
                                                                         style={{color:"#38b000"}}
@@ -428,21 +426,34 @@ class Live extends Component {
                                                                 </Grid>
                                                                 <Divider orientation="vertical" flexItem style={{marginInline:"20px"}}/>
                                                                 <Grid item>
-                                                                    <LiveSettings
-                                                                        setRecording={this.setRecording}
-                                                                        mode={this.state.recording.mode}
-                                                                        BPM={this.state.recording.bpm}
-                                                                        Length={this.state.recording.length}
-                                                                        Wow={this.state.recording.quantaLength}
-                                                                    />
-                                                                </Grid>
+                                                                <InstrumentMenu
+                                                                    setTrack={this.setInstrument}
+                                                                    inputOptions={instrumentList || [this.state.config.instrumentName]}
+                                                                />
+                                                            </Grid>
+
+                                                                <Divider orientation="vertical" flexItem style={{marginInline:"20px"}}/>
                                                                 <Grid item>
-                                                                    <p style={{width:"20px"}}/>
+                                                                    <PianoRoll state={this.state} setNotes={this.setRecordedNotes}/>
                                                                 </Grid>
+
+                                                                <Divider orientation="vertical" flexItem style={{marginInline:"20px"}}/>
+                                                                <Grid item>
+                                                                <LiveSettings
+                                                                    setRecording={this.setRecording}
+                                                                    mode={this.state.recording.mode}
+                                                                    BPM={this.state.recording.bpm}
+                                                                    Length={this.state.recording.length}
+                                                                    Wow={this.state.recording.quantaLength}
+                                                                />
+                                                            </Grid>
+                                                                <Grid item>
+                                                                <p style={{width:"20px"}}/>
+                                                            </Grid>
+
                                                             </Grid>
                                                     </Grid>
                                                     <br/>
-                                                </div>
                                             </Grid>
                                         </div>
                                     )}
@@ -487,12 +498,6 @@ class Live extends Component {
                                     )}
                                 />
                             </div>
-                        </div>
-                    </SimpleCard>
-                        <br/>
-                    <SimpleCard title="Piano Roll">
-                        <div>
-                            <PianoRoll state={this.state} setNotes={this.setRecordedNotes}/>
                         </div>
                     </SimpleCard>
                     </div>
