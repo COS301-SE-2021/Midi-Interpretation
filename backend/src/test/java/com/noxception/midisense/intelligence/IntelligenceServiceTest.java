@@ -4,8 +4,10 @@ import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
+import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.intelligence.dataclass.ChordPrediction;
 import com.noxception.midisense.intelligence.dataclass.ChordType;
+import com.noxception.midisense.intelligence.exceptions.EmptyChordException;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseChordRequest;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseChordResponse;
@@ -14,15 +16,18 @@ import com.noxception.midisense.intelligence.rrobjects.AnalyseGenreResponse;
 import com.noxception.midisense.intelligence.strategies.DecisionTreeChordAnalysisStrategy;
 import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalysisStrategy;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.parser.Score;
+import com.noxception.midisense.repository.DatabaseManager;
+import com.noxception.midisense.repository.ScoreEntity;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,39 +36,38 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
-    private IntelligenceServiceImpl intelligenceService;
+    private IntelligenceService intelligenceService;
     private StandardConfig configurations;
+    private DatabaseManager databaseManager;
 
     @BeforeEach
     public void mountModule(){
+        databaseManager = new MockRepository();
         configurations = new MockConfigurationSettings();
-        intelligenceService = new IntelligenceServiceImpl(configurations);
-        intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy(configurations));
-        intelligenceService.attachChordStrategy(new DecisionTreeChordAnalysisStrategy());
+        intelligenceService = new IntelligenceServiceImpl(databaseManager,configurations);
+        ((IntelligenceServiceImpl) intelligenceService).attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy(configurations));
+        ((IntelligenceServiceImpl)intelligenceService).attachChordStrategy(new DecisionTreeChordAnalysisStrategy());
     }
 
     @Test
     public void test_AnalyseGenre_IfValidByteStream_ThenExpectPredictions() throws InvalidDesignatorException, MissingStrategyException, IOException {
 
-        //Create a temporary file to analyse
+        //Create a temporary entity to analyse
         UUID fileDesignator = UUID.randomUUID();
-        String testName = fileDesignator + configurations.configuration(ConfigurationName.FILE_FORMAT);
 
-        //copy temp file from testing data
-        Path copied = Paths.get(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName);
-        Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE)).toPath();
-        Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+        //copy test data from file to an entity - save it to the 'DB'
+        Path source = Paths.get(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE));
+        byte[] contents = Files.readAllBytes(source);
+        ScoreEntity entity = new ScoreEntity(new Score(),fileDesignator,contents);
+        databaseManager.save(entity);
 
         AnalyseGenreRequest request = new AnalyseGenreRequest(fileDesignator);
         AnalyseGenreResponse response = intelligenceService.analyseGenre(request);
         assertTrue(response.getGenreArray().length > 0);
-
-        //delete the temporary file
-        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfOpenFifth_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfOpenFifth_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -104,7 +108,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfMajor_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfMajor_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -145,7 +149,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfMinor_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfMinor_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -186,7 +190,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfDiminished_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfDiminished_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -227,7 +231,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfAugmented_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfAugmented_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -268,7 +272,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfSus4_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfSus4_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -309,7 +313,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfDominant7th_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfDominant7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -352,7 +356,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfMajor7th_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfMajor7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -395,7 +399,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfMinor7th_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfMinor7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -438,7 +442,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfDiminished7th_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfDiminished7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -481,7 +485,7 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
     }
 
     @Test
-    public void testWhiteBox_AnalyseChord_IfAltered_ThenAdheresToIntervals() throws MissingStrategyException {
+    public void testWhiteBox_AnalyseChord_IfAltered_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
         //For each pitch offset
         for(int k=0; k<12; k++){
@@ -524,6 +528,38 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    @Test
+    @DisplayName("Analyse Chord: input [Valid Byte Stream] expect [chord analysis]")
+    public void testBlackBox_AnalyseChord_IfValidByteStream() throws IllegalArgumentException, MissingStrategyException, EmptyChordException {
+
+        //valid byte stream
+        byte[] validStream = new byte[]{3, 6, 9, 12};
+
+        //test with request response
+        AnalyseChordRequest request = new AnalyseChordRequest(validStream);
+        AnalyseChordResponse response = intelligenceService.analyseChord(request);
+
+        //Expect chord analysis
+        Assertions.assertNotNull(response.getChord());
+
+    }
+
+    @Test
+    @DisplayName("Analyse Chord: input [Invalid Byte Stream] expect [Empty chord Exception]")
+    public void testBlackBox_AnalyseChord_IfEmptyByteStream_ThrowException() throws IllegalArgumentException{
+
+        //invalid byte stream
+        byte[] validStream = new byte[]{};
+
+        //test with request response
+        AnalyseChordRequest request = new AnalyseChordRequest(validStream);
+
+        //check that exception was thrown
+        Assertions.assertThrows(
+                EmptyChordException.class,//for a request
+                ()->intelligenceService.analyseChord(request));//because
+
+    }
 
 
 }

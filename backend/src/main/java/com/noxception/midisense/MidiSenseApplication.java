@@ -2,6 +2,8 @@ package com.noxception.midisense;
 
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.repository.ScoreMonitor;
+import com.noxception.midisense.repository.ScoreRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -36,9 +38,19 @@ public class MidiSenseApplication {
                     System.exit(0);
                 }
                 MIDISenseConfig.configurations.put(key, property);
-                log.info(String.format("Configuration loaded [%s=%s]",key,property));
+                log.debug(String.format("Configuration loaded [%s=%s]",key,property));
             }
         };
     }
+
+    @Bean("deletion daemon")
+    ApplicationRunner monitor (Environment environment, ScoreRepository scoreRepository){
+        return args -> {
+            ScoreMonitor scoreMonitor = new ScoreMonitor(scoreRepository);
+            scoreMonitor.start();
+        };
+    }
+
+
 
 }

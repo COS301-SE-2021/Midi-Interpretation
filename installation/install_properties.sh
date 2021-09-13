@@ -16,6 +16,7 @@ echo
 echo "Installing python modules"
 python -m pip install --upgrade pip
 pip install mido
+pip instal flask
 echo "Successfully installed python modules"
 
 file_name="application.properties"
@@ -40,7 +41,10 @@ spring.datasource.password=$MIDI_PASS
 
 # LOGGING
 
-logging.level.root=WARN
+logging.level.root=INFO
+debug=false
+spring.jpa.open-in-view=false
+spring.mustache.check-template-location=false
 
 # REQUESTS
 
@@ -49,6 +53,8 @@ midisense.config.CROSS_ORIGIN=*
 # SCRIPTING
 
 midisense.config.MIDI_INTERPRETATION_SCRIPT_PATH=$base_directory/backend/src/main/java/com/noxception/midisense/interpreter/parser/interpreter.py
+midisense.config.MIDI_INTERPRETATION_URL=http://localhost:8080/
+midisense.config.MIDI_INTERPRETATION_TIMEOUT=15
 
 # FILE STORAGE
 
@@ -77,7 +83,8 @@ midisense.config.MISSING_ANALYSIS_STRATEGY_EXCEPTION_TEXT = No AI classification
 
 # PARSING
 
-midisense.config.INVALID_MIDI_EXCEPTION_TEXT=MIDI Interpretation Failure
+midisense.config.INVALID_MIDI_EXCEPTION_TEXT=The server was unable to process the MIDI file
+midisense.config.INVALID_MIDI_TIMEOUT_EXCEPTION_TEXT=The server took too long to process the MIDI file
 midisense.config.INVALID_TRACK_INDEX_EXCEPTION_TEXT=Track Index Out Of Bounds
 midisense.config.SUCCESSFUL_PARSING_TEXT=Successfully Parsed MIDI File
 
@@ -85,6 +92,7 @@ midisense.config.SUCCESSFUL_PARSING_TEXT=Successfully Parsed MIDI File
 
 midisense.config.MIDI_TESTING_ROOT=$testing_root/
 midisense.config.MIDI_TESTING_FILE=$testing_root/testFile.mid
+midisense.config.MIDI_TESTING_SAMPLE_RESPONSE=$testing_root/sampleResponse.json
 midisense.config.MIDI_INVALID_TESTING_FILE=$testing_root/invalidMidi.JPG
 midisense.config.MIDI_TESTING_DESIGNATOR=3169d7ac-216a-4400-a530-36525d005fbe
 midisense.config.MIDI_TESTING_TRACK_INDEX=0

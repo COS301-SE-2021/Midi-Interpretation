@@ -1,20 +1,23 @@
 package com.noxception.midisense.intelligence;
 
 import com.noxception.midisense.config.ConfigurationName;
+import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.intelligence.dataclass.ChordPrediction;
 import com.noxception.midisense.intelligence.dataclass.GenrePredication;
+import com.noxception.midisense.intelligence.exceptions.EmptyChordException;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.*;
 import com.noxception.midisense.intelligence.strategies.ChordAnalysisStrategy;
 import com.noxception.midisense.intelligence.strategies.GenreAnalysisStrategy;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.repository.DatabaseManager;
+import com.noxception.midisense.repository.ScoreEntity;
+import com.noxception.midisense.repository.ScoreRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -31,11 +34,20 @@ import java.util.UUID;
 @Service
 public class IntelligenceServiceImpl implements IntelligenceService{
 
+    private final DatabaseManager databaseManager;
     private final StandardConfig configurations;
     private GenreAnalysisStrategy genreAnalysisStrategy;
     private ChordAnalysisStrategy chordAnalysisStrategy;
 
-    public IntelligenceServiceImpl(StandardConfig configurations) {
+    @Autowired
+    public IntelligenceServiceImpl(ScoreRepository scoreRepository, MIDISenseConfig configurations) {
+        this.databaseManager = new DatabaseManager();
+        this.databaseManager.attachRepository(scoreRepository);
+        this.configurations = configurations;
+    }
+
+    public IntelligenceServiceImpl(DatabaseManager databaseManager, StandardConfig configurations) {
+        this.databaseManager = databaseManager;
         this.configurations = configurations;
     }
 
@@ -56,18 +68,16 @@ public class IntelligenceServiceImpl implements IntelligenceService{
         byte[] fileContents;
 
         //====================================
-        try{
-            String fileName =
-                    configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)
-                    +fileDesignator
-                    +configurations.configuration(ConfigurationName.FILE_FORMAT);
+        //search the repository for the piece with that designator
+        Optional<ScoreEntity> searchResults = databaseManager.findByFileDesignator(fileDesignator.toString());
 
-            Path path = Paths.get(fileName);
-            fileContents = Files.readAllBytes(path);
-        }
-        catch (IOException e) {
+        if(searchResults.isEmpty())
+            //no such file exists - has yet to be interpreted
             throw new InvalidDesignatorException(configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT));
-        }
+
+        //else refer to score and get the metadata
+        ScoreEntity score = searchResults.get();
+        fileContents = score.decodeContents();
         //====================================
 
         //check to see if there is a strategy
@@ -89,14 +99,13 @@ public class IntelligenceServiceImpl implements IntelligenceService{
      * @throws MissingStrategyException if there is no predefined analysis strategy
      */
     @Override
-    public AnalyseChordResponse analyseChord(AnalyseChordRequest req) throws MissingStrategyException{
+    public AnalyseChordResponse analyseChord(AnalyseChordRequest req) throws MissingStrategyException, EmptyChordException {
         ChordPrediction prediction = chordAnalysisStrategy.classify(req.getCompound());
-        AnalyseChordResponse response = new AnalyseChordResponse(
+        return new AnalyseChordResponse(
                 prediction.getRootNote(),
                 prediction.getChordType().getShortName(),
                 prediction.getBassNote()
         );
-        return response;
     }
 
     /**Method that creates a list of tonal (key) classifications based on a byte stream of file features, according to a predefined

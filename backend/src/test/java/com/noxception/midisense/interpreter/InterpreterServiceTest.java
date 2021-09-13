@@ -5,15 +5,13 @@ import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.dataclass.MockRepository;
-import com.noxception.midisense.interpreter.dataclass.TempoIndication;
+import com.noxception.midisense.dataclass.MockRequestBroker;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import com.noxception.midisense.interpreter.exceptions.InvalidUploadException;
-import com.noxception.midisense.interpreter.parser.Score;
-import com.noxception.midisense.interpreter.parser.Track;
-import com.noxception.midisense.interpreter.repository.DatabaseManager;
-import com.noxception.midisense.interpreter.repository.ScoreEntity;
+import com.noxception.midisense.interpreter.parser.*;
 import com.noxception.midisense.interpreter.rrobjects.*;
-import org.apache.commons.io.IOUtils;
+import com.noxception.midisense.repository.DatabaseManager;
+import com.noxception.midisense.repository.ScoreEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,15 +20,11 @@ import org.springframework.test.annotation.Rollback;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,15 +39,15 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
     public void mountModule() {
         configurations = new MockConfigurationSettings();
         databaseManager = new MockRepository();
-
         interpreterService = new InterpreterServiceImpl(databaseManager,configurations);
+        ((InterpreterServiceImpl) interpreterService).addDefaultBroker(new MockRequestBroker(configurations));
     }
 
 
-    //====================================================================================================================//
-    //                                  BLACK BOX TESTING BELOW                                                           //
-    //====================================================================================================================//
-
+//    //====================================================================================================================//
+//    //                                  BLACK BOX TESTING BELOW                                                           //
+//    //====================================================================================================================//
+//
 
     /**UploadFile*/
     /**
@@ -76,13 +70,6 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
         //check the designator is not null
         assertNotNull(fileDesignator);
-
-        ScoreEntity testEntity = new ScoreEntity();
-        testEntity.setFileDesignator(fileDesignator.toString());
-        testEntity.setKeySignature("Cbmaj");
-        testEntity.setTempoIndication(70);
-        testEntity.setTimeSignature("4/4");
-        databaseManager.save(testEntity);
 
         //check that the resultant file can be opened : was saved to the right directory
         String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)
@@ -184,6 +171,11 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         Path originalPath = new File(configurations.configuration(ConfigurationName.MIDI_INVALID_TESTING_FILE)).toPath();
         Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
 
+        //set the message broker to reject the interpretation
+        MockRequestBroker requestBroker = new MockRequestBroker(this.configurations);
+        requestBroker.isRejecting();
+        ((InterpreterServiceImpl) interpreterService).addDefaultBroker(requestBroker);
+
         ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
         ProcessFileResponse res = interpreterService.processFile(req);
 
@@ -253,9 +245,6 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         assertEquals(res.getSuccess(), true);
         assertEquals(res.getMessage(), configurations.configuration(ConfigurationName.SUCCESSFUL_PARSING_TEXT));
 
-        //delete the temporary file
-        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
-
     }
 
     /**
@@ -296,250 +285,6 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
     }
 
 
-    /**InterpretMetre*/
-    /**
-     * Description: tests the interpretMetre() function by passing in a midi file designator that
-     * does not exist in the database
-     * precondition - fileDesignator for file not in Database passed in
-     * post condition - appropriate exception thrown
-     */
-    @Test
-    @DisplayName("Interpret Metre: input [designator for a file not in DB] expect [file does not exist exception]")
-    public void test_InterpretMetre_IfNotInDatabase_ThenException() {
-
-        //Create a fake designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //make the request
-        InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
-
-        // Check that the error is thrown
-        InvalidDesignatorException thrown = assertThrows(
-                InvalidDesignatorException.class, //for a file that hasn't been interpreted
-                () -> interpreterService.interpretMetre(req), //when interpreting metre
-                "No processing should happen if a file doesn't exist." //because
-        );
-
-        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(
-                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
-        ));
-    }
-
-    /**
-     * Description: tests the interpretMetre() function by passing in a midi file designator that
-     * does exist in the database
-     * precondition - fileDesignator for midi-file in Database passed in
-     * post condition - Receive beat value and beat number
-     */
-    @Test
-    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
-    public void test_InterpretMetre_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-
-        //Get a designator corresponding to a score in the database - whether or not it actually exists
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //mock the database with that designator and timeSignature
-        ScoreEntity testEntity = new ScoreEntity();
-        testEntity.setFileDesignator(fileDesignator.toString());
-        testEntity.setTimeSignature("4/4");
-        databaseManager.save(testEntity);
-
-        //make a request
-        InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
-        InterpretMetreResponse res = interpreterService.interpretMetre(req);
-
-        //check that the beat value is a positive power of two
-        int beatValue = res.getMetre().getBeatValue();
-        double c = Math.log(beatValue) / Math.log(2);
-        assertEquals(c, Math.floor(c));
-
-        //check that the number of beats is positive
-        int numBeats = res.getMetre().getNumBeats();
-        assertTrue(numBeats > 0);
-    }
-
-    /**
-     * Description: tests the interpretMetre() function by passing in a midi fileDesignator that does not exist in the database
-     * precondition - no fileDesignator was passed into the function
-     * post condition - appropriate exception thrown
-     */
-    @Test
-    @DisplayName("Interpret Metre: input [empty] expect [empty request exception]")
-    public void test_InterpretMetre_IfEmptyRequest_ThenException() {
-        //Check that the right error is thrown
-        InvalidDesignatorException thrown = assertThrows(
-                InvalidDesignatorException.class, //for a null request
-                () -> interpreterService.interpretMetre(null), //when interpreting metre
-                "A null request should not be processed."); //because
-
-        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(configurations.configuration(
-                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
-        )));
-    }
-
-
-    /**InterpretTempo*/
-    /**
-     * Description: tests the interpretTempo() function by passing in a midi fileDesignator that does not exist in the database
-     * precondition - fileDesignator given is not in the database
-     * post condition - appropriate exception thrown
-     */
-    @Test
-    @DisplayName("Interpret Tempo: input [designator for a file not in DB] expect [file does not exist exception]")
-    public void test_InterpretTempo_IfNotInDatabase_ThenException() {
-
-        //Create a fake designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //make the request
-        InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
-
-        // Check that the error is thrown
-        InvalidDesignatorException thrown = assertThrows(
-                InvalidDesignatorException.class, //for a file that hasn't been interpreted
-                () -> interpreterService.interpretTempo(req), //when interpreting tempo
-                "No processing should happen if a file doesn't exist." //because
-        );
-
-        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(
-                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
-        ));
-
-    }
-
-    /**
-     * Description: tests the interpretTempo() function by passing in a midi fileDesignator that exists in the database
-     * precondition - fileDesignator for midi-file in Database passed in
-     * post condition - appropriate exception thrown
-     */
-    @Test
-    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a positive integer]")
-    public void test_InterpretTempo_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-
-        //Get a designator corresponding to a score in the database - whether or not it actually exists
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //mock the database with the designator and tempoIndication
-        ScoreEntity testEntity = new ScoreEntity();
-        testEntity.setFileDesignator(fileDesignator.toString());
-        testEntity.setTempoIndication(50);
-        databaseManager.save(testEntity);
-
-        //make a request
-        InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator);
-        InterpretTempoResponse res = interpreterService.interpretTempo(req);
-
-        //see that the tempo is a positive integer
-        TempoIndication t = res.getTempo();
-        assertTrue(t.getTempo() > 0);
-    }
-
-    /**
-     * Description: tests the interpretTempo() function by passing in no parameters
-     * precondition - no parameters passed in
-     * post condition - appropriate exception thrown
-     */
-    @Test
-    @DisplayName("Interpret Tempo: input [empty] expect [empty request exception]")
-    public void test_InterpretTempo_IfEmptyRequest_ThenException() {
-        //Check that the right error is thrown
-        InvalidDesignatorException thrown = assertThrows(
-                InvalidDesignatorException.class, //for a null request
-                () -> interpreterService.interpretTempo(null), //when interpreting Tempo
-                "A null request should not be processed."); //because
-
-        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(configurations.configuration(
-                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
-        )));
-    }
-
-
-    /**InterpretKeySignature*/
-    /**
-     * Description: tests the interpretSignature() function by passing in a fileDesignator that is not in the database
-     * precondition - fileDesignator is not in the database
-     * post condition - appropriate exception thrown
-     */
-    @Test
-    @DisplayName("Interpret Key Signature: input [designator for a file not in DB] expect [file does not exist exception]")
-    public void test_InterpretKeySignature_IfNotInDatabase_ThenException() {
-
-        //Create a fake designator
-        UUID fileDesignator = UUID.randomUUID();
-
-        //make the request
-        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
-
-        // Check that the error is thrown
-        InvalidDesignatorException thrown = assertThrows(
-                InvalidDesignatorException.class, //for a file that hasn't been interpreted
-                () -> interpreterService.interpretKeySignature(req), //when interpreting KeySignature
-                "No processing should happen if a file doesn't exist." //because
-        );
-
-        // Finally, see that the right message was delivered - FILE_DOES_NOT_EXIST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(
-                configurations.configuration(ConfigurationName.FILE_DOES_NOT_EXIST_EXCEPTION_TEXT)
-        ));
-    }
-
-    /**
-     * Description: tests the interpretSignature() function by passing in a fileDesignator that is in the database
-     * precondition - fileDesignator is in the database
-     * post condition - Receive key signature and signature name
-     */
-    @Test
-    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a valid key signature string]")
-    public void test_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-
-        //Get a designator corresponding to a score in the database - whether or not it actually exists
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //mock the database with the designator and keySignature
-        ScoreEntity testEntity = new ScoreEntity();
-        testEntity.setFileDesignator(fileDesignator.toString());
-        testEntity.setKeySignature("Ebmaj");
-        databaseManager.save(testEntity);
-
-        //make a request
-        InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator);
-        InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
-
-        //Check that the key is valid
-        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
-        boolean b = Arrays.asList(keyArray).contains(res.getKeySignature().getSignatureName());
-        assertTrue(b);
-    }
-
-    /**
-     * Description: tests the interpretSignature() function by passing in no parameters
-     * precondition - no parameters passed in
-     * post condition - appropriate exception thrown
-     */
-    @Test
-    @DisplayName("Interpret Key Signature: input [empty] expect [empty request exception]")
-    public void test_InterpretKeySignature_IfEmptyRequest_ThenException() {
-        //Check that the right error is thrown
-        InvalidDesignatorException thrown = assertThrows(
-                InvalidDesignatorException.class, //for a null request
-                () -> interpreterService.interpretKeySignature(null), //when interpreting KeySignature
-                "A null request should not be processed."); //because
-
-        // Finally, see that the right message was delivered - EMPTY_REQUEST_EXCEPTION_TEXT
-        assertTrue(thrown.getMessage().contains(configurations.configuration(
-                ConfigurationName.EMPTY_REQUEST_EXCEPTION_TEXT
-        )));
-    }
 
 
     /**ParseJSON*/
@@ -600,46 +345,68 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //delete the temporary file
         assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
 
-        //1.1 There are at most 16 tracks
-        Map<Integer, Track> trackMap = score.getTrackMap();
-        assertTrue(trackMap.keySet().size() <= 16);
+        //has a track
+        assertTrue(score.channelList.size()>0);
 
-        //1.2 There is a valid key signature
-        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
-        boolean b = Arrays.asList(keyArray).contains(score.getKeySignature().getSignatureName());
-        assertTrue(b);
+        //within max amount of tracks
+        assertTrue(score.channelList.size()<=16);
+
+        //1.2 There is a valid key signature for every tick
+        String[] keyArray = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"};
+        for(KeySignature k : score.KeySignatureMap){
+            //check the key is a key
+            boolean b = Arrays.asList(keyArray).contains(k.commonName);
+            assertTrue(b);
+            //check the tick is valid
+            assertTrue(k.tick >= 0);
+        }
+
 
         //1.3 The tempo is a positive integer
-        assertTrue(score.getTempoIndication().getTempo() > 0);
+        for(TempoIndication t : score.TempoIndicationMap){
+            //valid tempo is positive
+            assertTrue(t.tempoIndication > 0);
+            //check the tick is valid
+            assertTrue(t.tick >= 0);
+        }
 
+        for(TimeSignature t : score.TimeSignatureMap){
+            //The beat value is an integer power of two
+            int beatValue = t.time.beatValue;
+            double c = Math.log(beatValue) / Math.log(2);
+            assertEquals(c, Math.floor(c));
 
-        //1.4 The beat value is an integer power of two
-        int beatValue = score.getTimeSignature().getBeatValue();
-        double c = Math.log(beatValue) / Math.log(2);
-        assertEquals(c, Math.floor(c));
+            //The beat number is positive
+            int numBeats = t.time.numBeats;
+            assertTrue(numBeats > 0);
 
+            //check the tick is valid
+            assertTrue(t.tick >= 0);
+        }
 
-        //1.5 The beat number is positive
-        int numBeats = score.getTimeSignature().getNumBeats();
-        assertTrue(numBeats > 0);
+        for(Channel c : score.channelList){
+            int channelNum = c.channelNumber;
+            //check the channel is valid
+            assertTrue(channelNum>=0);
+            assertTrue(channelNum<=15);
 
-//        //1.6 For all tracks
-//        for (Track t : trackMap.values()) {
-//            //There is an instrument line
-//            assertNotEquals(t.getInstrumentString(), "");
-//            //There is a sequence of notes
-//            assertTrue(t.getNoteSequence().size() > 0);
-//        }
+            //check there is an insrument name
+            assertNotEquals(c.instrument,"");
+
+            //check the ticks per beat is valid
+            assertTrue(c.ticksPerBeat > 0);
+        }
+        
 
     }
 
 
 
-
-    //====================================================================================================================//
-    //                                  WHITE BOX TESTING BELOW                                                           //
-    //====================================================================================================================//
-
+//
+//    //====================================================================================================================//
+//    //                                  WHITE BOX TESTING BELOW                                                           //
+//    //====================================================================================================================//
+//
     /**UploadFile*/
     /**
      * Description: tests the uploadFile() function by passing in a valid file and saving
@@ -661,13 +428,6 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
         //check the designator is not null
         assertNotNull(fileDesignator);
-
-        ScoreEntity testEntity = new ScoreEntity();
-        testEntity.setFileDesignator(fileDesignator.toString());
-        testEntity.setKeySignature("Cbmaj");
-        testEntity.setTempoIndication(70);
-        testEntity.setTimeSignature("4/4");
-        databaseManager.save(testEntity);
 
         //check that the resultant file can be opened : was saved to the right directory
         String filename = configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT)
@@ -711,121 +471,9 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         assertEquals(res.getSuccess(), true);
         assertEquals(res.getMessage(), configurations.configuration(ConfigurationName.SUCCESSFUL_PARSING_TEXT));
 
-        //delete the temporary file
-        assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
-
     }
 
-    /**
-     * Description: tests the interpretMetre() function by passing in a midi file designator that
-     * does exist in the database
-     * precondition - fileDesignator for midi-file in Database passed in
-     * post condition - Receive beat value and beat number
-     */
-    @Test
-    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
-    public void testWhiteBox_InterpretMetre_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
 
-        //Get a designator corresponding to a score in the database - whether or not it actually exists
-        UUID fileDesignator = UUID.fromString(configurations.configuration(
-                ConfigurationName.MIDI_TESTING_DESIGNATOR
-        ));
-
-        //mock the database with that designator and timeSignature
-        ScoreEntity testEntity = new ScoreEntity();
-        testEntity.setFileDesignator(fileDesignator.toString());
-        testEntity.setTimeSignature("4/4");
-        databaseManager.save(testEntity);
-
-        //make a request
-        InterpretMetreRequest req = new InterpretMetreRequest(fileDesignator);
-        InterpretMetreResponse res = interpreterService.interpretMetre(req);
-
-        //check that the beat value is a positive power of two
-        int beatValue = res.getMetre().getBeatValue();
-        double c = Math.log(beatValue) / Math.log(2);
-        assertEquals(c, Math.floor(c));
-
-        //check that the number of beats is positive
-        int numBeats = res.getMetre().getNumBeats();
-        assertTrue(numBeats > 0);
-    }
-
-    /**
-     * Description: tests the interpretTempo() function by passing in a midi fileDesignator that exists in the database
-     * precondition - fileDesignator for midi-file in Database passed in
-     * post condition - appropriate exception thrown
-     */
-    @Test
-    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a positive integer]")
-    public void testWhiteBox_InterpretTempo_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-
-        //Setup for testing 3 different cases
-        ScoreEntity[] testCases = new ScoreEntity[]{new ScoreEntity(),new ScoreEntity(),new ScoreEntity()};
-        int[] tempoIndications = new int[]{50, 60, 30};
-        int iterator = 0;
-
-        for(ScoreEntity score: testCases){
-
-            //Get a designator corresponding to a score in the database - whether or not it actually exists
-            UUID fileDesignator0 = UUID.randomUUID();
-
-            //mock the database with the designator and keySignature
-            testCases[iterator].setFileDesignator(fileDesignator0.toString());
-            testCases[iterator].setTempoIndication(tempoIndications[iterator]);
-            databaseManager.save(testCases[iterator]);
-
-            //make a request
-            InterpretTempoRequest req = new InterpretTempoRequest(fileDesignator0);
-            InterpretTempoResponse res = interpreterService.interpretTempo(req);
-
-            //check it is correct
-            assertEquals(res.getTempo().getTempo(), tempoIndications[iterator]);
-
-            //see that the tempo is a positive integer
-            TempoIndication t = res.getTempo();
-            assertTrue(t.getTempo() > 0);
-
-            iterator=iterator+1;
-        }
-
-
-    }
-
-    /**
-     * Description: tests the interpretSignature() function by passing in a fileDesignator that is in the database
-     * precondition - fileDesignator is in the database
-     * post condition - Receive key signature and signature name
-     */
-    @Test
-    @DisplayName("Interpret Metre: input [designator for a file in DB] expect [a valid key signature string]")
-    public void testWhiteBox_InterpretKeySignature_IfInDatabase_ThenAccurate() throws InvalidDesignatorException {
-
-        //Setup for testing 3 different cases
-        ScoreEntity[] testCases = new ScoreEntity[]{new ScoreEntity(),new ScoreEntity(),new ScoreEntity()};
-        String[] keySignatures = new String[]{"Ebmaj", "Cmin", "Amaj"};
-        int iterator = 0;
-
-        for(ScoreEntity score: testCases){
-
-            //Get a designator corresponding to a score in the database - whether or not it actually exists
-            UUID fileDesignator0 = UUID.randomUUID();
-
-            //mock the database with the designator and keySignature
-            testCases[iterator].setFileDesignator(fileDesignator0.toString());
-            testCases[iterator].setKeySignature(keySignatures[iterator]);
-            databaseManager.save(testCases[iterator]);
-
-            //make a request
-            InterpretKeySignatureRequest req = new InterpretKeySignatureRequest(fileDesignator0);
-            InterpretKeySignatureResponse res = interpreterService.interpretKeySignature(req);
-
-            //check it is correct
-            assertEquals(res.getKeySignature().getSignatureName(), keySignatures[iterator]);
-
-            iterator=iterator+1;
-        }
-    }
 
     /**
      * Description: tests the parseJSON() function by passing in a midi file designator that is in storage
@@ -855,38 +503,62 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         //delete the temporary file
         assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
 
-        //1.1 There are at most 16 tracks
-        Map<Integer, Track> trackMap = score.getTrackMap();
-        assertTrue(trackMap.keySet().size() <= 16);
+        //1.1 ensure track list has no more than 16 tracks
+        //has a track
+        assertTrue(score.channelList.size()>0);
 
-        //1.2 There is a valid key signature
-        String[] keyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj", "Abmin", "Ebmin", "Bbmin", "Fmin", "Cmin", "Gmin", "Dmin", "Amin", "Emin", "Bmin", "F#min", "C#min", "G#min", "D#min", "A#min"};
-        boolean b = Arrays.asList(keyArray).contains(score.getKeySignature().getSignatureName());
-        assertTrue(b);
+        //within max amount of tracks
+        assertTrue(score.channelList.size()<=16);
+
+        //1.2 There is a valid key signature for every tick
+        String[] keyArray = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"};
+        for(KeySignature k : score.KeySignatureMap){
+            //check the key is a key
+            boolean b = Arrays.asList(keyArray).contains(k.commonName);
+            assertTrue(b);
+            //check the tick is valid
+            assertTrue(k.tick >= 0);
+        }
 
         //1.3 The tempo is a positive integer
-        assertTrue(score.getTempoIndication().getTempo() > 0);
-
+        for(TempoIndication t : score.TempoIndicationMap){
+            //valid tempo is positive
+            assertTrue(t.tempoIndication > 0);
+            //check the tick is valid
+            assertTrue(t.tick >= 0);
+        }
 
         //1.4 The beat value is an integer power of two
-        int beatValue = score.getTimeSignature().getBeatValue();
-        double c = Math.log(beatValue) / Math.log(2);
-        assertEquals(c, Math.floor(c));
+        for(TimeSignature t : score.TimeSignatureMap){
+            //The beat value is an integer power of two
+            int beatValue = t.time.beatValue;
+            double c = Math.log(beatValue) / Math.log(2);
+            assertEquals(c, Math.floor(c));
 
+            //The beat number is positive
+            int numBeats = t.time.numBeats;
+            assertTrue(numBeats > 0);
 
-        //1.5 The beat number is positive
-        int numBeats = score.getTimeSignature().getNumBeats();
-        assertTrue(numBeats > 0);
+            //check the tick is valid
+            assertTrue(t.tick >= 0);
+        }
 
-//        //1.6 For all tracks
-//        for (Track t : trackMap.values()) {
-//            //There is an instrument line
-//            assertNotEquals(t.getInstrumentString(), "");
-//            //There is a sequence of notes
-//            assertTrue(t.getNoteSequence().size() > 0);
-//        }
+        //1.6 for all tracks
+        for(Channel c : score.channelList){
+            int channelNum = c.channelNumber;
+            //check the channel is valid
+            assertTrue(channelNum>=0);
+            assertTrue(channelNum<=15);
 
-    }
-    
+            //check there is an instrument name
+            assertNotEquals(c.instrument,"");
 
-}
+            //check the ticks per beat is valid
+            assertTrue(c.ticksPerBeat > 0);
+        }
+      }
+
+   }
+//
+//
+//}

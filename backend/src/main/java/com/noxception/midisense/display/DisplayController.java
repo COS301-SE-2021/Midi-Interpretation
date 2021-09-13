@@ -4,6 +4,9 @@ import com.noxception.midisense.api.DisplayApi;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.parser.KeySignature;
+import com.noxception.midisense.interpreter.parser.TempoIndication;
+import com.noxception.midisense.interpreter.parser.TimeSignature;
 import com.noxception.midisense.models.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -72,15 +76,35 @@ public class DisplayController implements DisplayApi {
             log.info(String.format("Request | To: %s | For: %s | Assigned: %s","getPieceMetadata",fileDesignator,req.getDesignator()));
 
             GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
-            responseObject.setKeySignature(res.getKeySignature().toString());
 
-            responseObject.setTempoIndication(res.getTempoIndication().getTempo());
+            //set the tempo map items
+            for(TempoIndication tempo : res.getTempoIndication()){
+                DisplayGetPieceMetadataResponseTempoIndicationMap t = new DisplayGetPieceMetadataResponseTempoIndicationMap();
+                t.setTick(tempo.tick);
+                t.setTempoIndication(BigDecimal.valueOf(tempo.tempoIndication));
+                responseObject.addTempoIndicationMapItem(t);
+            }
 
-            DisplayGetPieceMetadataResponseTimeSignature timeSignature = new DisplayGetPieceMetadataResponseTimeSignature();
-            timeSignature.setBeatValue(res.getTimeSignature().getBeatValue());
-            timeSignature.setNumBeats(res.getTimeSignature().getNumBeats());
+            //set the key signature map items
+            for(KeySignature key : res.getKeySignature()){
+                DisplayGetPieceMetadataResponseKeySignatureMap k = new DisplayGetPieceMetadataResponseKeySignatureMap();
+                k.setTick(key.tick);
+                k.setKeySignature(key.commonName);
+                responseObject.addKeySignatureMapItem(k);
+            }
 
-            responseObject.setTimeSignature(timeSignature);
+            //set the time signature map items
+            for(TimeSignature time : res.getTimeSignature()){
+                DisplayGetPieceMetadataResponseTimeSignatureMap t = new DisplayGetPieceMetadataResponseTimeSignatureMap();
+                t.setTick(time.tick);
+
+                DisplayGetPieceMetadataResponseTimeSignature inner = new DisplayGetPieceMetadataResponseTimeSignature();
+                inner.setNumBeats(time.time.numBeats);
+                inner.setBeatValue(time.time.beatValue);
+                t.setTimeSignature(inner);
+                responseObject.addTimeSignatureMapItem(t);
+            }
+
             responseObject.setSuccess(true);
             responseObject.setMessage("Successfully retrieved metadata for "+fileDesignator);
 
