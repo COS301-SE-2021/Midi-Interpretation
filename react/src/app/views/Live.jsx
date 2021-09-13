@@ -86,18 +86,18 @@ class Live extends Component {
                 elapsed: 0,
                 wait: true,
                 bpm:100,
-                length:32,
+                length:64,
                 quanta:0,
                 quantaLength:1/16,
                 mode: 'STOP',
                 active: "fiber_manual_record",
-                color: "#c20000"
+                color: "#d00000"
             },
             config: {
                 instrumentName: 'accordion',
                 noteRange: {
                     first: MidiNumbers.fromNote('c3'),
-                    last: MidiNumbers.fromNote('f5'),
+                    last: MidiNumbers.fromNote('f4'),
                 },
                 keyboardShortcutOffset: 0,
             },
@@ -216,7 +216,7 @@ class Live extends Component {
             this.setRecording({
                 mode: "STOP",
                 active:"fiber_manual_record",
-                color: "#c20000",
+                color: "#d00000",
                 initialTime: null,
             })
         }
@@ -236,7 +236,7 @@ class Live extends Component {
             let newElapsed =  new Date().getTime() - this.state.recording.initialTime
             let date = new Date(0)
             date.setSeconds(newElapsed);
-            const timeString = date.toISOString().substr(11, 8);
+            const timeString = date.toISOString().substr(11, 5);
             this.setRecording({elapsed:timeString})
             console.log(this.state.recordedNotes)
         }
@@ -312,10 +312,10 @@ class Live extends Component {
             tempData.push({tick: tick , notes: quantaMap[tick]})
         }
         let dataElement = {data:{
-            trackData:tempData,
+                trackData:tempData,
                 ticksPerBeat:this.state.ticksPerBeat,
                 instrument:this.state.config.instrumentName
-        }}
+            }}
         this.setState(dataElement)
     }
 
@@ -356,42 +356,42 @@ class Live extends Component {
                     <div>
                         <SimpleCard>
                             <div>
-                            <h1 className="h3">Live Analysis</h1>
-                            <div className="mt-5">
-                                <InstrumentListProvider
-                                    hostname={soundfontHostname}
-                                    render={(instrumentList) => (
-                                        <div>
-                                            <Grid container
-                                                  justifyContent="flex-start"
-                                                  direction="row"
-                                                  alignItems="flex-start"
-                                            >
-                                                <div className="m10 justify-end">
-                                                    <Grid item>
-                                                        <InstrumentMenu
-                                                            setTrack={this.setInstrument}
-                                                            inputOptions={instrumentList || [this.state.config.instrumentName]}
-                                                        />
-                                                    </Grid>
-                                                    <Grid item style={{
-                                                        backgroundColor:"#F5F5F5",
-                                                        boxShadow: "1px 2px #EAEAEAFF"
-                                                    }}>
-                                                        <Grid container
-                                                              justifyContent="flex-start"
-                                                              direction="row"
-                                                              alignItems="center"
-                                                        >
-                                                            <Grid item>
-                                                                <IconButton
-                                                                    style={{color: this.state.recording.color}}
-                                                                    aria-label="Record"
-                                                                    onClick={this.onClickRecord}
-                                                                >
-                                                                    <Icon>{this.state.recording.active}</Icon>
-                                                                </IconButton>
-                                                            </Grid>
+                                <h1 className="h3">Live Analysis</h1>
+                                <div className="mt-5">
+                                    <InstrumentListProvider
+                                        hostname={soundfontHostname}
+                                        render={(instrumentList) => (
+                                            <div>
+                                                <Grid container
+                                                      justifyContent="flex-start"
+                                                      direction="row"
+                                                      alignItems="flex-start"
+                                                >
+                                                    <div className="m10 justify-end">
+                                                        <Grid item>
+                                                            <InstrumentMenu
+                                                                setTrack={this.setInstrument}
+                                                                inputOptions={instrumentList || [this.state.config.instrumentName]}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item style={{
+                                                            backgroundColor:"#F5F5F5",
+                                                            boxShadow: "1px 2px #EAEAEAFF"
+                                                        }}>
+                                                            <Grid container
+                                                                  justifyContent="flex-start"
+                                                                  direction="row"
+                                                                  alignItems="center"
+                                                            >
+                                                                <Grid item>
+                                                                    <IconButton
+                                                                        style={{color: this.state.recording.color}}
+                                                                        aria-label="Record"
+                                                                        onClick={this.onClickRecord}
+                                                                    >
+                                                                        <Icon>{this.state.recording.active}</Icon>
+                                                                    </IconButton>
+                                                                </Grid>
                                                                 <Grid item>
                                                                     {(this.state.recording.mode === "RECORDING")?
                                                                         <span>
@@ -399,18 +399,18 @@ class Live extends Component {
                                                                         </span>
                                                                         :<span/>}
                                                                 </Grid>
+                                                                {/*<Grid item>*/}
+                                                                {/*    <IconButton*/}
+                                                                {/*        style={{color:"#38b000"}}*/}
+                                                                {/*        aria-label="Play"*/}
+                                                                {/*        onClick={this.onClickPlay}*/}
+                                                                {/*    >*/}
+                                                                {/*        <Icon>play_arrow</Icon>*/}
+                                                                {/*    </IconButton>*/}
+                                                                {/*</Grid>*/}
                                                                 <Grid item>
                                                                     <IconButton
-                                                                        style={{color:"#38b000"}}
-                                                                        aria-label="Play"
-                                                                        onClick={this.onClickPlay}
-                                                                    >
-                                                                        <Icon>play_arrow</Icon>
-                                                                    </IconButton>
-                                                                </Grid>
-                                                                <Grid item>
-                                                                    <IconButton
-                                                                        style={{color:(Object.keys(this.state.recordedNotes).length !== 0)?("#ffba08"):("#555555")}}
+                                                                        style={{color:(Object.keys(this.state.recordedNotes).length !== 0)?("#ffd300"):("#555555")}}
                                                                         aria-label="Clear"
                                                                         onClick={this.onClickClear}
                                                                     >
@@ -419,11 +419,11 @@ class Live extends Component {
                                                                 </Grid>
                                                                 <Grid item>
                                                                     <IconButton
-                                                                        color="primary"
+                                                                        style={{color:"#aacc00"}}
                                                                         aria-label="Process"
                                                                         onClick={this.processData}
                                                                     >
-                                                                        <Icon>get_app</Icon>
+                                                                        <Icon>timeline</Icon>
                                                                     </IconButton>
                                                                 </Grid>
                                                                 <Divider orientation="vertical" flexItem style={{marginInline:"20px"}}/>
@@ -440,65 +440,65 @@ class Live extends Component {
                                                                     <p style={{width:"20px"}}/>
                                                                 </Grid>
                                                             </Grid>
-                                                    </Grid>
-                                                    <br/>
-                                                </div>
-                                            </Grid>
-                                        </div>
-                                    )}
-                                />
-                                <DimensionsProvider>
-                                    {({ containerWidth }) => (
-                                        <SoundfontProvider
-                                            instrumentName={this.state.config.instrumentName}
-                                            audioContext={audioContext}
-                                            hostname={soundfontHostname}
-                                            render={({ isLoading, playNote, stopNote}) => (
-                                                <PianoWithRecording
-                                                    recordedNotes={this.state.recordedNotes}
-                                                    recording={this.state.recording}
-                                                    setRecording={this.setRecording}
-                                                    noteRange={this.state.config.noteRange}
-                                                    width={containerWidth}
-                                                    playNote={playNote}
-                                                    stopNote={stopNote}
-                                                    disabled={isLoading}
-                                                    keyboardShortcuts={keyboardShortcuts}
-                                                    length={this.state.recording.length}
-                                                />
-                                            )}
-                                        />
-                                    )}
-                                </DimensionsProvider>
-                                <InstrumentListProvider
-                                    hostname={soundfontHostname}
-                                    render={(instrumentList) => (
-                                        <div>
-                                            <PianoConfig
-                                                config={this.state.config}
-                                                setConfig={(config) => {
-                                                    this.setState({
-                                                        config: Object.assign({}, this.state.config, config)
-                                                    })
-                                                }}
-                                                keyboardShortcuts={keyboardShortcuts}
+                                                        </Grid>
+                                                        <br/>
+                                                    </div>
+                                                </Grid>
+                                            </div>
+                                        )}
+                                    />
+                                    <DimensionsProvider>
+                                        {({ containerWidth }) => (
+                                            <SoundfontProvider
+                                                instrumentName={this.state.config.instrumentName}
+                                                audioContext={audioContext}
+                                                hostname={soundfontHostname}
+                                                render={({ isLoading, playNote, stopNote}) => (
+                                                    <PianoWithRecording
+                                                        recordedNotes={this.state.recordedNotes}
+                                                        recording={this.state.recording}
+                                                        setRecording={this.setRecording}
+                                                        noteRange={this.state.config.noteRange}
+                                                        width={containerWidth}
+                                                        playNote={playNote}
+                                                        stopNote={stopNote}
+                                                        disabled={isLoading}
+                                                        keyboardShortcuts={keyboardShortcuts}
+                                                        length={this.state.recording.length}
+                                                    />
+                                                )}
                                             />
-                                        </div>
-                                    )}
-                                />
+                                        )}
+                                    </DimensionsProvider>
+                                    <InstrumentListProvider
+                                        hostname={soundfontHostname}
+                                        render={(instrumentList) => (
+                                            <div>
+                                                <PianoConfig
+                                                    config={this.state.config}
+                                                    setConfig={(config) => {
+                                                        this.setState({
+                                                            config: Object.assign({}, this.state.config, config)
+                                                        })
+                                                    }}
+                                                    keyboardShortcuts={keyboardShortcuts}
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    </SimpleCard>
+                        </SimpleCard>
                         <br/>
-                    <SimpleCard title="Piano Roll">
-                        <div>
-                            <PianoRoll state={this.state} setNotes={this.setRecordedNotes}/>
-                        </div>
-                    </SimpleCard>
+                        <SimpleCard title="Piano Roll">
+                            <div>
+                                <PianoRoll state={this.state} setNotes={this.setRecordedNotes}/>
+                            </div>
+                        </SimpleCard>
                     </div>
                     <br/>
                     <SimpleCard title="Timeline" subtitle="Here you'll find the sequence of events for a chosen channel.">
-                       <div>Title</div>
+                        <div>Title</div>
                         <TrackViewer trackData={this.state.data}/>
                         <br/>
                         <Grid

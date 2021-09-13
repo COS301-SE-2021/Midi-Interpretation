@@ -33,12 +33,14 @@ function PianoRoll(props) {
         return [...Array(n).keys()]
     }
 
+    const color = "#747474"
+
     const getStyle = (active,y) => {
         let color = colorMap[y % 12]
         let dragCursor = "grabbing"
         let defaultCursor = "pointer"
-        if(active) return {height: "10px", width: "10px", display: "inline", backgroundColor:color, cursor: (isDragging?dragCursor:defaultCursor)}
-        return {height: "10px", width: "10px", display: "inline", backgroundColor:"grey", cursor: (isDragging?dragCursor:defaultCursor)}
+        if(active) return {height: "25px", minWidth: "25px",borderRadius: "0px",border: "0px", display: "inline", backgroundColor:color, cursor: (isDragging?dragCursor:defaultCursor)}
+        return {height: "25px", minWidth: "25px", borderRadius: "0px", border: "1px solid #DEDEDEFF", display: "inline", backgroundColor:"white", cursor: (isDragging?dragCursor:defaultCursor)}
     }
 
     const adjustStyle = (target, targetStyle) => {
@@ -89,117 +91,104 @@ function PianoRoll(props) {
         })
     })
 
-        // <Button
-        //     style={style}
-        //     variant={(notes[x+":"+y])?"contained":"outlined"}
-        //     key={`button-${i}`}
-        //     onClick={()=>{onButtonClick(x,y)}}
-        //     color={
-        //         (notes[x+":"+y])?
-        //             "secondary"
-        //             :"default"
-        //     }
-        // />
+    const keyboardKey = (groupIndex, i) => {
+        let x = i, y = groupIndex - 1
+        let id = x + ":" + y
+        let active = props.state.recordedNotes[id] === true
+        let style = getStyle(active, y)
 
-
-        const keyboardKey = (groupIndex, i) => {
-            let x = i, y = groupIndex - 1
-            let id = x + ":" + y
-            let active = props.state.recordedNotes[id] === true
-            let style = getStyle(active, y)
-
-
-            return (
-                <Button style={style}
-                        onClick={(event) => onButtonClick(x, y, event)}
-                        onMouseOver={(event) => {
-                            if (isDragging)
-                                onButtonClick(x, y, event)
-                        }}
-                />
-            )
-
-        }
-
-        const renderRow = (groupIndex) => {
-            let noteValue = props.state.config.noteRange.first + (groupIndex - 1)
-            let quanta = props.state.recording.quantaLength
-            let blockStyle = {display: "inline", margin: "0px", width: "80px"}
-            return ((groupIndex !== 0) ?
-                (
-
-                    <div>
-                        <div style={blockStyle}>
-                            <Button className="text-muted" style={{height: "30px", margin: "2px", width: "80px"}}
-                                    disabled={true}>
-                                {valueToNote(noteValue)}
-                            </Button>
-                        </div>
-                        {range(ymax).map((pad, index) => {
-                                let beat = 1 + (4 * index * quanta)
-                                let isDivider = Math.floor(beat) === beat
-                                return (
-                                    <Tooltip title={valueToNote(noteValue) + " at beat " + beat}>
-                                        <div style={blockStyle}>
-                                            {(isDivider && index) ? <div style={blockStyle}>|</div> :
-                                                <div style={blockStyle}/>}
-                                            {keyboardKey(groupIndex, index)}
-                                        </div>
-                                    </Tooltip>
-                                )
-                            }
-                        )}
-                    </div>
-
-                )
-                :
-                null)
-        }
 
         return (
-            <div>
-                <Button
-                    onClick={handleClickOpen}
-                    color="primary"
-                    aria-label="Settings"
-                    variant="outlined"
-                    disabled={(props.state.recording.mode === "RECORDING")}
-                >
-                    <Icon>apps</Icon>
-                    <span>&nbsp;View Piano Roll</span>
-                </Button>
-                <Dialog
-                    fullWidth
-                    maxWidth="xl"
-                    style={{
-                        whiteSpace: "nowrap",
-                        position: 'absolute',
+            <button style={style}
+                    onClick={(event) => onButtonClick(x, y, event)}
+                    onMouseOver={(event) => {
+                        if (isDragging)
+                            onButtonClick(x, y, event)
                     }}
-                    open={open}
-                    onClose={handleClose}
-                >
-                    <DialogTitle>Piano Roll</DialogTitle>
-                    <DialogContent style={{height: "600px"}}>
-                        <Scrollbar>
-                            <Grid container>
-                                <Grid item>
-                                    {
-                                        range(xmax).map((group, groupIndex) => {
-                                            return renderRow(groupIndex, 4)
-                                        })
-                                    }
-                                </Grid>
-                            </Grid>
-                        </Scrollbar>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose} color="primary">
-                            Ok
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
+            />
         )
+
     }
+
+    const renderRow = (groupIndex) => {
+        let noteValue = props.state.config.noteRange.first + (groupIndex - 1)
+        let quanta = props.state.recording.quantaLength
+        let blockStyle = {display: "inline", margin: "0px", width: "80px"}
+        return ((groupIndex !== 0) ?
+            (
+
+                <div>
+                    <div style={blockStyle}>
+                        <Button className="text-muted" style={{height: "30px", margin: "2px", width: "80px"}}
+                                disabled={true}>
+                            {valueToNote(noteValue)}
+                        </Button>
+                    </div>
+                    {range(xmax).map((pad, index) => {
+                            let beat = 1 + (4 * index * quanta)
+                            let isDivider = Math.floor(beat) === beat
+                            return (
+                                <Tooltip title={valueToNote(noteValue) + " at beat " + beat}>
+                                    <div style={blockStyle}>
+                                        {(isDivider && index) ? <div style={blockStyle}>  </div> :
+                                            <div style={blockStyle}/>}
+                                        {keyboardKey(groupIndex, index)}
+                                    </div>
+                                </Tooltip>
+                            )
+                        }
+                    )}
+                </div>
+
+            )
+            :
+            null)
+    }
+
+    return (
+        <div>
+            <Button
+                onClick={handleClickOpen}
+                color="primary"
+                aria-label="Settings"
+                variant="outlined"
+                disabled={(props.state.recording.mode === "RECORDING")}
+            >
+                <Icon>apps</Icon>
+                <span>&nbsp;View Piano Roll</span>
+            </Button>
+            <Dialog
+                fullWidth
+                maxWidth="xl"
+                style={{
+                    whiteSpace: "nowrap",
+                    position: 'absolute',
+                }}
+                open={open}
+                onClose={handleClose}
+            >
+                <DialogTitle>Piano Roll</DialogTitle>
+                <DialogContent style={{height: "600px"}}>
+                    <Scrollbar>
+                        <Grid container>
+                            <Grid item>
+                                {
+                                    range(ymax).map((group, groupIndex) => {
+                                        return renderRow(groupIndex, 4)
+                                    })
+                                }
+                            </Grid>
+                        </Grid>
+                    </Scrollbar>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Ok
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+    )
+}
 
 export default PianoRoll
