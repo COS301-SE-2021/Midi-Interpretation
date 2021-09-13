@@ -1,8 +1,27 @@
-import {Brush, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis,} from 'recharts';
-import React from "react";
+import {
+    Brush,
+    CartesianGrid,
+    Legend,
+    Line,
+    LineChart,
+    ReferenceLine,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from 'recharts';
+import React, {Component} from "react";
 import {Grid} from "@material-ui/core";
 import * as ReactDOMServer from "react-dom/server";
 import MidiSenseService from "../../app/services/MidiSenseService";
+
+
+const signatureColors = {
+    time: "#ad0e0e",
+    key: "#459a30",
+    tempo: "#1e34c1"
+}
+
 
 /**
  * voiceName
@@ -10,7 +29,7 @@ import MidiSenseService from "../../app/services/MidiSenseService";
  * @returns {string}
  */
 function voiceName (index){
-    return "Line "+(index+1)
+    return "Voice "+(index+1)
 }
 
 /**
@@ -75,6 +94,16 @@ function getInterval(notes, dictionary){
 
 }
 
+function getCurrentMapItem(tick,map){
+    if(map.length===0) return null
+    let last = map[0]
+    for(let item of map){
+        if(item['tick'] > tick) break
+        last = item
+    }
+    return last
+}
+
 /**
  * getChord
  * @param notes
@@ -123,6 +152,7 @@ function CustomTooltip (props) {
     // is not empty
     if(props.payload.length !== 0) {
         let multi_note_type = ""
+        let currentTick = props.payload[0].payload['tick']
 
         if(props.payload[0].payload['composite'] !== undefined && !props.payload[0].payload["composite"][0].isPercussive) {
             if (props.payload.length === 2) {
@@ -200,6 +230,42 @@ function CustomTooltip (props) {
         )
 
 
+        let currentKey = getCurrentMapItem(currentTick,props.keyMap)
+        let currentTime = getCurrentMapItem(currentTick,props.timeMap)
+        let currentTempo = getCurrentMapItem(currentTick,props.tempoMap)
+
+        let renderSignatures = () => {
+            return [
+                (currentKey === null) ?
+                    null :
+                    (
+                        <Grid item>
+                            <aside style={{color: signatureColors.key}}>Key
+                                Signature: {currentKey['keySignature']}</aside>
+                        </Grid>
+                    ),
+                (currentTime === null) ?
+                    null :
+                    (
+                        <Grid item>
+                            <aside style={{color: signatureColors.time}}>Time
+                                Signature: {currentTime['timeSignature']['numBeats']}|{currentTime['timeSignature']['beatValue']}</aside>
+                        </Grid>
+                    ),
+                (currentTempo === null) ?
+                    null :
+                    (
+                        <Grid item>
+                            <aside
+                                style={{color: signatureColors.tempo}}>Tempo: {currentTempo['tempoIndication']} Crotchet
+                                BPM
+                            </aside>
+                        </Grid>
+                    )
+            ]
+
+        }
+
         return (
             <div className="custom-tooltip bg-white text-primary elevation-z3 ">
                 <div className="m-3">
@@ -211,8 +277,16 @@ function CustomTooltip (props) {
                     >
 
                         <Grid item>
-                            <p className="label">Beat {props.payload[0].payload['beat']}</p>
+                            <p className="label">Crotchet Beat: {props.payload[0].payload['beat']}</p>
                         </Grid>
+
+                        {renderSignatures()}
+
+                        <Grid item>
+                            <aside className="label">Pitches:</aside>
+                        </Grid>
+
+
                         {props.payload.map((item, index) => {
                             const note = valueToNote(item.value)
                             const comp = item.payload['composite'][index]
@@ -226,7 +300,7 @@ function CustomTooltip (props) {
                             }
                             else return (
                                 <Grid item>
-                                    <aside style={{color: `${item.stroke}`}}>{note['pitch']}|{note['octave']}</aside>
+                                    <aside style={{color: `${item.stroke}`}}>{note['pitch']}-{note['octave']}</aside>
                                 </Grid>
                             )
                         })}
@@ -307,6 +381,8 @@ function TrackViewer (props) {
         for(let x = 0; x < maxVoices; x++){
             items.push(x)
         }
+
+
         return (
             <div style={{ height: '400px', width: '100%'}}>
                 <ResponsiveContainer width="100%" height="100%">
@@ -324,8 +400,32 @@ function TrackViewer (props) {
                         <CartesianGrid strokeDasharray="1 1" />
                         <XAxis domain={`[0,${lineData.length}]`} scale="linear" interval="preserveStart" type="number" dataKey="beat" label={{ value: 'Beat number', position: 'bottom' }}/>
                         <YAxis domain={["dataMin-10","dataMax+10"]}  label={{ value: 'Pitch (~log Hz)', angle: -90, position: 'left' }}/>
-                        <Tooltip content={ <CustomTooltip payload chordDictionary={chordDictionary} intervalDictionary={intervalDictionary} props/> }/>
+                        <Tooltip content={
+                            <CustomTooltip
+                                payload
+                                keyMap={(typeof props.keySignatureMap==="undefined"?[]:props.keySignatureMap)}
+                                timeMap={(typeof props.timeSignatureMap==="undefined"?[]:props.timeSignatureMap)}
+                                tempoMap={(typeof props.tempoIndicationMap==="undefined"?[]:props.tempoIndicationMap)}
+                                chordDictionary={chordDictionary}
+                                intervalDictionary={intervalDictionary}
+                                props/> }
+                        />
                         <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
+                        {
+                            (typeof props.keySignatureMap==="undefined"?[]:props.keySignatureMap).map((item,index)=>{
+                                return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.key} strokeDasharray="3 3" strokeWidth={2}/>
+                            })
+                        }
+                        {
+                            (typeof props.timeSignatureMap==="undefined"?[]:props.timeSignatureMap).map((item,index)=>{
+                                return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.time} strokeDasharray="3 3" strokeWidth={2}/>
+                            })
+                        }
+                        {
+                            (typeof props.tempoIndicationMap==="undefined"?[]:props.tempoIndicationMap).map((item,index)=>{
+                                return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.tempo} strokeDasharray="3 3" strokeWidth={2}/>
+                            })
+                        }
                         <Brush dataKey="beat" height={30} stroke="#387dd6"/>
 
                         {items.map((value,index)=>{

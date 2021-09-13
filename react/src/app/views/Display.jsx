@@ -3,12 +3,13 @@ import {Breadcrumb, SimpleCard} from "../../matx";
 import TrackMenu from "../../matx/components/TrackMenu";
 import MidiSenseService from "../services/MidiSenseService";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Grid} from "@material-ui/core";
+import {Grid, Slider} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import GenreTable from "../../matx/components/GenreTable";
 import {withStyles} from "@material-ui/core/styles";
 import KeySignature from "../../styles/images/keyMap"
 import TimeSignature from "../../styles/images/timeMap"
+import Typography from "@material-ui/core/Typography";
 
 /**
  * This class defines the interpretation of a midi file that has been supplied by the server
@@ -53,9 +54,9 @@ class Display extends Component {
 
       this.state = {
         songTitle: "Song Title",
-        keySignature: "Unknown",
-        tempoIndication: "Unknown",
-        timeSignature: {},
+        keySignatureMap: [{"tick": 0, "keySignature": "Cmaj"}],
+        tempoIndicationMap: [{"tick": 0, "tempoIndication": 120}],
+        timeSignatureMap: [{"tick": 0, "timeSignature": {"numBeats": 4, "beatValue": 4}}],
         currentTrack: 0,
         trackListing: [],
         trackData:[],
@@ -86,6 +87,10 @@ class Display extends Component {
           keyMap: new KeySignature(),
           timeMap: new TimeSignature(),
       }
+
+      this.setState({keySignatureMap : [this.state.keySignature]})
+      this.setState({timeSignatureMap : [this.state.timeSignature]})
+      this.setState({tempoIndicationMap : [this.state.tempoIndication]})
 
       // Check if a track has been processed previously, otherwise navigate back to upload
 
@@ -258,14 +263,11 @@ class Display extends Component {
        */
      this.state.midisenseService.displayGetPieceMetadata(this.state.fileDesignator,
         (res) => {
-          const keySignatureMap = res['keySignatureMap']
-          const tempoIndicationMap = res['tempoIndicationMap']
-          const timeSignatureMap = res['timeSignatureMap']
-          this.setKeySignature(keySignatureMap[0]["keySignature"])
-          this.setTempoIndication(tempoIndicationMap[0]['tempoIndication'])
-          this.setTimeSignature(timeSignatureMap[0]['timeSignature'])
-        })
+          this.setState({keySignatureMap: res['keySignatureMap']})
+          this.setState({tempoIndicationMap: res['tempoIndicationMap']})
+          this.setState({timeSignatureMap: res['timeSignatureMap']})
 
+        })
       /**
        * displayGetTrackInfo
        */
@@ -310,7 +312,6 @@ class Display extends Component {
               this.setTrackData(trackString['track'])
               this.setTicksPerBeat(trackString['ticks_per_beat'])
               this.setInstrument(trackString['instrument'])
-
           })
   }
 
@@ -377,7 +378,7 @@ class Display extends Component {
                                           <Grid container item lg={12} style={{textAlign:'center'}}>
                                               <Grid item lg={12}>
                                                   <h1>{this.state.songTitle}</h1>
-                                                  <aside>Data found at the start of the piece</aside>
+                                                  <aside>Data found at the start of the file</aside>
                                               </Grid>
                                           </Grid>
 
@@ -385,31 +386,31 @@ class Display extends Component {
 
                                               <Grid item m={4} lg={4}>
                                                   <h5>Key Signature</h5>
-                                                  <h6>{this.state.keySignature}</h6>
+                                                  <h6>{this.state.keySignatureMap[0]['keySignature']}</h6>
                                                   <br/>
                                                   <div>
-                                                      <img alt={"key signature"} src={this.state.keyMap.getLinkForKey(this.state.keySignature)} style={{ height: '100px'}}/>
+                                                      <img alt={"key signature"} src={this.state.keyMap.getLinkForKey(this.state.keySignatureMap[0]['keySignature'])} style={{ height: '100px'}}/>
                                                   </div>
 
                                               </Grid>
                                               <Grid item m={4} lg={4}>
 
                                                   <h5>Time Signature</h5>
-                                                  <h6>{this.state.timeSignature['numBeats'] + "/" + this.state.timeSignature['beatValue']}</h6>
+                                                  <h6>{this.state.timeSignatureMap[0]['timeSignature']['numBeats'] + "/" + this.state.timeSignatureMap[0]['timeSignature']['beatValue']}</h6>
                                                   <br/>
                                                   <div>
-                                                      <img alt={"time signature"}  src={this.state.timeMap.getLinkForTime(this.state.timeSignature['numBeats'])} style={{ height: '40px'}}/>
+                                                      <img alt={"time signature"}  src={this.state.timeMap.getLinkForTime(this.state.timeSignatureMap[0]['timeSignature']['numBeats'])} style={{ height: '40px'}}/>
                                                       <br/>
-                                                      <img alt={"time signature"} src={this.state.timeMap.getLinkForTime(this.state.timeSignature['beatValue'])} style={{ height: '40px'}}/>
+                                                      <img alt={"time signature"} src={this.state.timeMap.getLinkForTime(this.state.timeSignatureMap[0]['timeSignature']['beatValue'])} style={{ height: '40px'}}/>
                                                   </div>
 
                                               </Grid>
                                               <Grid item m={4} lg={4}>
                                                   <h5>Tempo Indication</h5>
-                                                  <h6>{this.state.tempoIndication}</h6>
+                                                  <h6>{this.state.tempoIndicationMap[0]['tempoIndication']} Crotchet BPM</h6>
                                                   <br/>
                                                   {
-                                                      this.getDigitsFromNumber(this.state.tempoIndication).map((item)=>{
+                                                      this.getDigitsFromNumber(this.state.tempoIndicationMap[0]['tempoIndication']).map((item)=>{
                                                           return <span><img alt={"Tempo"} src={this.state.timeMap.getLinkForTime(item)}/></span>
                                                       })
                                                   }
@@ -421,10 +422,23 @@ class Display extends Component {
                               </SimpleCard>
                           </Grid>
                           <Grid item xs={12} sm={12} m={12} lg={6}>
-                              <SimpleCard title="Genre Analysis" subtitle="Here's what we think your file sounds like.">
+                              <SimpleCard title="Genre Analysis" subtitle="Here's what we think your file sounds like. Slide to adjust the number of suggestions.">
                                   <div style={{ height: '300px', width: '100%'}}>
                                       <GenreTable genreData={this.state.genreData.slice(0,this.state.numberOfGenres)}/>
                                   </div>
+                                  <Typography id="discrete-slider" gutterBottom>
+                                      Suggestions
+                                  </Typography>
+                                  <Slider
+                                      defaultValue={5}
+                                      aria-labelledby="discrete-slider"
+                                      valueLabelDisplay="auto"
+                                      step={1}
+                                      marks
+                                      min={5}
+                                      max={10}
+                                      onChange={(e,val)=>{this.setState({numberOfGenres: val})}}
+                                  />
                               </SimpleCard>
                           </Grid>
                       </Grid>
@@ -435,7 +449,11 @@ class Display extends Component {
 
                   <SimpleCard title="Timeline" subtitle="Here you'll find the sequence of events for a chosen channel.">
                       <TrackMenu setTrack={this.setCurrentTrack} inputOptions={this.state.trackListing}/>
-                      <TrackViewer trackData={{"trackData":this.state.trackData, "ticksPerBeat":this.state.ticksPerBeat, "instrument": this.state.instrument}} callSelect={this.setSelected}/>
+                      <TrackViewer
+
+                          trackData={{"trackData":this.state.trackData, "ticksPerBeat":this.state.ticksPerBeat, "instrument": this.state.instrument, "keySignatureMap":this.state.keySignatureMap, "timeSignatureMap":this.state.timeSignatureMap,"tempoIndicationMap":this.state.tempoIndicationMap}}
+                          callSelect={this.setSelected}
+                      />
                       <br/>
                       <Grid
                           container
