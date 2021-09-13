@@ -80,14 +80,14 @@ function PianoRoll(props) {
     const valueToNote = (k) =>{
         let noteArray = ["C","C#/Db","D","D#/Eb","E","F","F#/Gb","G","G#/Ab","A","A#/Bb","B"]
         let offset = k % 12
-        let octave = Math.floor((k / 12) % 128)
+        let octave = Math.floor((k / 12) % 128) - 1
         let note = noteArray[offset]
         return (note+" "+octave)
     }
 
     useEffect(()=> {
         window.addEventListener('keydown', (keyEvent) => {
-            if (keyEvent.shiftKey) setDragging(!(isDragging))
+            if (keyEvent.shiftKey && open) setDragging(!(isDragging))
         })
     })
 
