@@ -15,7 +15,7 @@ public class ScoreMonitor extends Thread{
 
     private final Thread thread;
 
-    private final int retentionPolicy = 60 * 1000;
+    private final int retentionPolicy = 24 * 60 * 60 * 1000;
     private Date retention;
     private boolean active;
 

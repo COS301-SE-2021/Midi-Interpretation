@@ -97,7 +97,7 @@ def parse(parser):
                 time_signatures[clock] = {'num_beats': msg.numerator, 'beat_value': msg.denominator}
 
             elif msg.type == 'set_tempo' and tempos.get(clock) is None:
-                tempos[clock] = 60000000/msg.tempo
+                tempos[clock] = 60000000 / msg.tempo
 
             elif msg.type == "note_on" and msg.velocity > 0:
                 channel = msg.channel
@@ -145,7 +145,8 @@ def parse(parser):
     key_list = [{'tick': t, "key": key_signatures.get(t)} for t in key_signatures.keys()]
     time_list = [{'tick': t, "time": time_signatures.get(t)} for t in time_signatures.keys()]
     tempo_list = [{'tick': t, "tempo": tempos.get(t)} for t in tempos.keys()]
-    return {"key_signatures": key_list, "time_signatures": time_list, "tempos": tempo_list, "channel_list": channel_array}
+    return {"key_signatures": key_list, "time_signatures": time_list, "tempos": tempo_list,
+            "channel_list": channel_array}
 
 
 # ======================================================

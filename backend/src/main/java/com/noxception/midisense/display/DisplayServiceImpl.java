@@ -78,11 +78,26 @@ public class DisplayServiceImpl implements DisplayService{
         ScoreEntity score = searchResults.get();
         Score targetScore = score.decodeScore();
 
+        //make the key signature more comprehensive
+        for(KeySignature key : targetScore.KeySignatureMap){
+            if(Character.isUpperCase(key.commonName.charAt(0)))
+                key.commonName+="maj";
+            else
+                key.commonName+="min";
+
+        }
+
+        //make the tempo indications suitable
+        for(TempoIndication tempo : targetScore.TempoIndicationMap){
+            tempo.tempoIndication = Math.floor(tempo.tempoIndication);
+
+        }
+
         //default key signature if none present
         if(targetScore.KeySignatureMap.size()==0){
             KeySignature defaultSignature = new KeySignature();
             defaultSignature.tick = 0;
-            defaultSignature.commonName = "C";
+            defaultSignature.commonName = "Cmaj";
             targetScore.KeySignatureMap.add(defaultSignature);
         }
 

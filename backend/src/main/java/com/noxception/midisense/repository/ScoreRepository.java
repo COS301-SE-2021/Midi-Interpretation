@@ -27,7 +27,7 @@ public interface ScoreRepository extends CrudRepository<ScoreEntity, Long> {
      * @return a collection of scores whose file designator is matched completely. Returns none if there is no such score
      * in the repository
      */
-    @Query("SELECT s FROM ScoreEntity s WHERE s.fileDesignator=:fileDesignator")
+    @Query("SELECT s FROM ScoreEntity s LEFT JOIN FETCH s.fileContents WHERE s.fileDesignator=:fileDesignator")
     Optional<ScoreEntity> findByFileDesignator(@Param("fileDesignator") String fileDesignator);
 
     @Transactional

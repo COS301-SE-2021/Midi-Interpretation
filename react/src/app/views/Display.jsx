@@ -258,12 +258,12 @@ class Display extends Component {
        */
      this.state.midisenseService.displayGetPieceMetadata(this.state.fileDesignator,
         (res) => {
-          const keySignature = res['keySignature']
-          const tempoIndication = res['tempoIndication']
-          const timeSignature = res['timeSignature']
-          this.setKeySignature(keySignature)
-          this.setTempoIndication(tempoIndication)
-          this.setTimeSignature(timeSignature)
+          const keySignatureMap = res['keySignatureMap']
+          const tempoIndicationMap = res['tempoIndicationMap']
+          const timeSignatureMap = res['timeSignatureMap']
+          this.setKeySignature(keySignatureMap[0]["keySignature"])
+          this.setTempoIndication(tempoIndicationMap[0]['tempoIndication'])
+          this.setTimeSignature(timeSignatureMap[0]['timeSignature'])
         })
 
       /**
