@@ -356,8 +356,8 @@ class Live extends Component {
                     <div>
                         <SimpleCard>
                             <div>
-                            <h1 className="h3">Live Analysis</h1>
-                            <div className="mt-5">
+                                <h1 className="h3">Live Analysis</h1>
+                                <div className="mt-5">
                                 <InstrumentListProvider
                                     hostname={soundfontHostname}
                                     render={(instrumentList) => (
@@ -498,8 +498,8 @@ class Live extends Component {
                                     )}
                                 />
                             </div>
-                        </div>
-                    </SimpleCard>
+                            </div>
+                        </SimpleCard>
                     </div>
                     <br/>
                     <SimpleCard title="Timeline" subtitle="Here you'll find the sequence of events for a chosen channel.">
