@@ -1,37 +1,41 @@
 import React from 'react';
-import { Piano } from 'react-piano';
+import {Piano} from 'react-piano';
 
 class PianoWithRecording extends React.Component {
 
+
+
     constructor(props) {
         super(props);
-        this.playingNote = {}
+        this.playingNotes = {}
+        this.totalNotes = []
     }
 
-    onPlayNoteInput = midiNumber => {
-        if (this.props.recording.mode === 'RECORDING') {
-            if(Object.keys(this.props.recordedNotes).length === 0)
-                this.props.setRecording({wait:false})
-
-            this.playingNote[midiNumber] = this.props.recording.quanta
+    onPlayNoteInput = (midiNumber) => {
+        if(this.props.recording['mode'] === 'RECORDING'){
+            const time = (new Date().getTime() - this.props.recording['initialTime'])/1000
+            this.playingNotes[midiNumber] = this.quantaFromTime(time, this.props.recording.bpm, this.props.recording.quantaLength)
         }
-
     }
 
     onStopNoteInput = (midiNumber) => {
-        if (this.props.recording.mode === 'RECORDING' && Object.keys(this.playingNote).length !== 0) {
-            const start = this.playingNote[midiNumber]
-            const end = this.props.recording.quanta
+        if(this.props.recording['mode'] === 'RECORDING'){
+            const endTime = (new Date().getTime() - this.props.recording['initialTime'])/1000
+            const startQuanta = this.playingNotes[midiNumber]
+            let endQuanta = this.quantaFromTime(endTime,this.props.recording.bpm,this.props.recording.quantaLength)
+            this.totalNotes.push({note:midiNumber, start: startQuanta, end: endQuanta})
+            delete this.playingNotes[midiNumber]
 
-            console.log(this.playingNote)
-
-            for(let n = start; n <= end; n++){
+            for(let n = startQuanta; n <= endQuanta; n++){
                 this.props.recordedNotes[n+":"+(midiNumber-this.props.noteRange.first)] = true
             }
-
-            delete this.playingNote[midiNumber]
         }
     }
+
+    quantaFromTime = (time,bpm,quantaLength)=>{
+        return Math.floor(60*time/(bpm*quantaLength))
+    }
+
 
     render() {
         const {

@@ -42,7 +42,7 @@ function getPercussiveInstrument(value){
 function valueToNote(k){
     let noteArray = ["C","C#/Db","D","D#/Eb","E","F","F#/Gb","G","G#/Ab","A","A#/Bb","B"]
     let offset = k % 12
-    let octave = Math.floor((k / 12) % 128)
+    let octave = Math.floor((k / 12) % 128)-1
     let note = noteArray[offset]
     return {"pitch": note, "octave":octave}
 }
@@ -248,8 +248,6 @@ function CustomTooltip (props) {
 
 function TrackViewer (props) {
     props = props.trackData
-
-    console.log(props)
 
     // check if track data is appropriate
     if(props.trackData.length === 0)

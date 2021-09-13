@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Breadcrumb, SimpleCard} from "../../matx";
 import MidiSenseService from "../services/MidiSenseService";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Divider, Grid, Icon, IconButton, LinearProgress} from "@material-ui/core";
+import {Divider, Grid, Icon, IconButton} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import {withStyles} from "@material-ui/core/styles";
 import { KeyboardShortcuts, MidiNumbers } from 'react-piano';
@@ -65,7 +65,7 @@ class Live extends Component {
             recordedNotes: {},
             open:false,
             display: "",
-            ticksPerBeat:16,
+            ticksPerBeat:1,
             midisenseService: new MidiSenseService(),
             color : [
                 "#37A2DA",
@@ -80,13 +80,15 @@ class Live extends Component {
                 "#e7bcf3",
                 "#9d96f5",
                 "#8378EA",
-                "#96BFFF"
             ],
             recording: {
+                initialTime: null,
+                elapsed: 0,
                 wait: true,
-                bpm:120,
+                bpm:100,
                 length:32,
                 quanta:0,
+                quantaLength:1/16,
                 mode: 'STOP',
                 active: "fiber_manual_record",
                 color: "#c20000"
@@ -205,7 +207,8 @@ class Live extends Component {
             this.setRecording({
                 mode: "RECORDING",
                 active:"stop",
-                color: "#555"
+                color: "#555",
+                initialTime: new Date().getTime(),
             })
         }
         else if(this.state.recording.mode === "RECORDING"){
@@ -213,7 +216,8 @@ class Live extends Component {
             this.setRecording({
                 mode: "STOP",
                 active:"fiber_manual_record",
-                color: "#c20000"
+                color: "#c20000",
+                initialTime: null,
             })
         }
     }
@@ -226,21 +230,24 @@ class Live extends Component {
         if(this.isActive) {
             if(this.state.recording.quanta >= this.state.recording.length){
                 clearInterval(this.interval)
-                this.setRecording({quanta:0})
+                this.setRecording({elapsed:0})
                 this.onClickRecord()
             }
-
-            if(!this.state.recording.wait)
-                this.setRecording({quanta: this.state.recording.quanta + 1})
+            let newElapsed =  new Date().getTime() - this.state.recording.initialTime
+            let date = new Date(0)
+            date.setSeconds(newElapsed);
+            const timeString = date.toISOString().substr(11, 8);
+            this.setRecording({elapsed:timeString})
+            console.log(this.state.recordedNotes)
         }
         else{
             clearInterval(this.interval)
-            this.setRecording({quanta:0})
+            this.setRecording({elapsed:0})
         }
     }
 
     onClickClear = () => {
-        this.setRecording({quanta:0})
+        this.setRecording({elapsed:0, initialTime: null})
 
         this.setState({recordedNotes: {}})
 
@@ -257,7 +264,7 @@ class Live extends Component {
         this.setState({recordedNotes:{}})
         this.setState({recording:{quanta:0, wait:true}})
         this.isActive = true
-        this.interval = setInterval(this.incTimer, (this.state.recording.bpm*1000)/960)
+        this.interval = setInterval(this.incTimer, 100)
     }
 
     setRecordedNotes = (val) =>{
@@ -266,31 +273,50 @@ class Live extends Component {
 
     processData = () =>{
         const tempData = []
-        let tempNotes = []
-        for (let x = 0; x < this.state.recording.length; x++) {
-            for (let y = 0; y <= (this.state.config.noteRange.last - this.state.config.noteRange.first + 1); y++) {
+
+        let quantaMap = {}
+        for (let y = 0; y <= (this.state.config.noteRange.last - this.state.config.noteRange.first + 1); y++) {
+            let noteBuffer = []
+            let noteStart = null
+            for (let x = 0; x < this.state.recording.length; x++) {
                 if(this.state.recordedNotes[x+":"+y]) {
-                    tempNotes.push({
-                        value: y + this.state.config.noteRange.first-1,
-                        on_velocity: 0,
+                    noteBuffer.push(x)
+                    noteStart = (noteStart!==null)?noteStart:x
+                }
+                else if (noteStart !== null){
+                    let tick = (4 * noteStart * this.state.recording.quantaLength) * this.state.ticksPerBeat
+                    noteStart = null
+                    let note = {
+                        value: y + this.state.config.noteRange.first,
+                        on_velocity: 100,
                         off_velocity: 0,
-                        duration: this.state.ticksPerBeat / 16,
-                        duration_beats: 0.0625,
+                        duration: (4 * noteBuffer.length * this.state.recording.quantaLength) * this.state.ticksPerBeat,
+                        duration_beats: (4 * noteBuffer.length * this.state.recording.quantaLength),
                         isPercussive: false
-                    })
+                    }
+                    if(!quantaMap[tick]){
+                        quantaMap[tick] = [note]
+                    }
+                    else{
+                        quantaMap[tick].push(note)
+                    }
+                    noteBuffer = []
                 }
             }
-            if(tempNotes.length !== 0)
-                tempData.push({tick: x * this.state.ticksPerBeat, notes: tempNotes})
-            tempNotes = []
+
+
         }
-        this.setState({
-            data:{
-                trackData:tempData,
+        let keys = Object.keys(quantaMap)
+        keys.sort((item1,item2)=>{return (1.0*item1 - 1.0*item2)})
+        for(let tick of keys){
+            tempData.push({tick: tick , notes: quantaMap[tick]})
+        }
+        let dataElement = {data:{
+            trackData:tempData,
                 ticksPerBeat:this.state.ticksPerBeat,
                 instrument:this.state.config.instrumentName
-            }
-        })
+        }}
+        this.setState(dataElement)
     }
 
     /**
@@ -369,10 +395,7 @@ class Live extends Component {
                                                                 <Grid item>
                                                                     {(this.state.recording.mode === "RECORDING")?
                                                                         <span>
-                                                                            <LinearProgress
-                                                                                style={{width:"100px"}}
-                                                                                variant="determinate"
-                                                                                value={this.state.recording.quanta/this.state.recording.length * 100} />
+                                                                            {this.state.recording.elapsed}
                                                                         </span>
                                                                         :<span/>}
                                                                 </Grid>
@@ -387,7 +410,7 @@ class Live extends Component {
                                                                 </Grid>
                                                                 <Grid item>
                                                                     <IconButton
-                                                                        style={{color:"#ffba08"}}
+                                                                        style={{color:(Object.keys(this.state.recordedNotes).length !== 0)?("#ffba08"):("#555555")}}
                                                                         aria-label="Clear"
                                                                         onClick={this.onClickClear}
                                                                     >
@@ -410,6 +433,7 @@ class Live extends Component {
                                                                         mode={this.state.recording.mode}
                                                                         BPM={this.state.recording.bpm}
                                                                         Length={this.state.recording.length}
+                                                                        Wow={this.state.recording.quantaLength}
                                                                     />
                                                                 </Grid>
                                                                 <Grid item>

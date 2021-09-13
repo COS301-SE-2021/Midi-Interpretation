@@ -2,53 +2,76 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import {Scrollbar} from "react-scrollbars-custom";
-import {Button, Grid, Icon} from "@material-ui/core";
+import {Button, Grid, Icon, Tooltip} from "@material-ui/core";
 import DialogActions from "@material-ui/core/DialogActions";
-import React, {useReducer} from "react";
+import React, {useEffect} from "react";
 
 function PianoRoll(props) {
     const [open, setOpen] = React.useState(false);
-    const [h, setH] = React.useState([]);
-    const [w, setW] = React.useState([]);
-    const [notes, setNotes] = React.useState({});
-    const [, forceUpdate] = useReducer(x => x + 1, 0);
+    const [xmax, setXMax] = React.useState(0);
+    const [ymax, setYMax] = React.useState(0);
 
-    const onButtonClick = (x,y) => {
-        const temp = notes
+    const colorMap = [
+        "#37A2DA",
+        "#32C5E9",
+        "#67E0E3",
+        "#9FE6B8",
+        "#FFDB5C",
+        "#ff9f7f",
+        "#fb7293",
+        "#E062AE",
+        "#E690D1",
+        "#e7bcf3",
+        "#9d96f5",
+        "#8378EA",
+    ]
 
-        if(temp[x+":"+y])
-            delete temp[x+":"+y]
-        else
-            temp[x+":"+y] = true
+    const [isDragging, setDragging] = React.useState(false);
 
-        setNotes(temp)
-        forceUpdate()
+
+    const range = (n) => {
+        return [...Array(n).keys()]
+    }
+
+    const getStyle = (active,y) => {
+        let color = colorMap[y % 12]
+        let dragCursor = "grabbing"
+        let defaultCursor = "pointer"
+        if(active) return {height: "10px", width: "10px", display: "inline", backgroundColor:color, cursor: (isDragging?dragCursor:defaultCursor)}
+        return {height: "10px", width: "10px", display: "inline", backgroundColor:"grey", cursor: (isDragging?dragCursor:defaultCursor)}
+    }
+
+    const adjustStyle = (target, targetStyle) => {
+        for(let attribute of Object.keys(targetStyle))
+            target.style[attribute] = targetStyle[attribute]
+    }
+
+    const onButtonClick = (x,y,event) => {
+
+        let index = x+":"+y
+        let active = props.state.recordedNotes[index]===true
+
+        if(active)
+            delete props.state.recordedNotes[index]
+        else props.state.recordedNotes[index] = true
+
+        let targetStyle = getStyle(!active,y)
+        adjustStyle(event.target,targetStyle)
+
     }
 
     const updateWH = () => {
-        const tempH = []
-        const tempW = []
-
-        for (let x = 0; x < props.state.recording.length; x++) {
-            tempH.push(x)
-        }
-
-        for (let x = 0; x <= (props.state.config.noteRange.last - props.state.config.noteRange.first + 1); x++) {
-            tempW.push(x)
-        }
-
-        setH(tempH)
-        setW(tempW)
+        setXMax(props.state.recording.length)
+        setYMax(props.state.config.noteRange.last - props.state.config.noteRange.first + 1)
     }
 
     const handleClickOpen = () => {
         updateWH()
-        loadNotes()
+        setDragging(false)
         setOpen(true)
     }
 
     const handleClose = () => {
-        saveNotes()
         setOpen(false)
     }
 
@@ -60,103 +83,123 @@ function PianoRoll(props) {
         return (note+" "+octave)
     }
 
-    const loadNotes = () => {
-        setNotes(props.state.recordedNotes)
-    }
+    useEffect(()=> {
+        window.addEventListener('keydown', (keyEvent) => {
+            if (keyEvent.shiftKey) setDragging(!(isDragging))
+        })
+    })
 
-    const saveNotes = () => {
-        props.setNotes(notes)
-    }
+        // <Button
+        //     style={style}
+        //     variant={(notes[x+":"+y])?"contained":"outlined"}
+        //     key={`button-${i}`}
+        //     onClick={()=>{onButtonClick(x,y)}}
+        //     color={
+        //         (notes[x+":"+y])?
+        //             "secondary"
+        //             :"default"
+        //     }
+        // />
 
-    return(
-        <div>
-            <Button
-                onClick={handleClickOpen}
-                color="primary"
-                aria-label="Settings"
-                variant="outlined"
-                disabled={(props.state.recording.mode==="RECORDING")}
-            >
-                <Icon>apps</Icon>
-                <span>&nbsp;View Piano Roll</span>
-            </Button>
-            <Dialog
-                fullWidth
-                maxWidth="xl"
-                style={{
-                    whiteSpace:"nowrap",
-                    position: 'absolute',
-                }}
-                open={open}
-                onClose={handleClose}
-            >
-                <DialogTitle>Piano Roll</DialogTitle>
-                <DialogContent style={{height: "600px"}}>
-                    <Scrollbar>
-                        <Grid container >
-                            <Grid item>
-                            {
-                                w.map((group, groupIndex) => {
-                                    return(
-                                        <div>
-                                            {
-                                                (groupIndex > 0)?
-                                                    <Button className="text-muted" style={{height:"30px", margin:"2px", width:"80px"}} disabled={true}>
-                                                        {valueToNote(groupIndex+props.state.config.noteRange.first-13)}
-                                                    </Button>:<div style={{width:"80px", display:"inline-block"}}/>
-                                            }
-                                            {h.map((pad, i) => {
-                                                return (
-                                                    <div
-                                                        style={{
-                                                            display:"inline"
-                                                        }}
-                                                    >
-                                                        {
-                                                            (groupIndex > 0)?
-                                                                <Button
-                                                                    style={{height:"30px", minWidth:"30px", margin:"2px"}}
-                                                                    variant={
-                                                                        (notes[i+":"+groupIndex])?
-                                                                            "contained"
-                                                                            :"outlined"
-                                                                    }
-                                                                    key={`button-${i}`}
-                                                                    onClick={()=>{onButtonClick(i,groupIndex)}}
-                                                                    color={
-                                                                        (notes[i+":"+groupIndex])?
-                                                                            "secondary"
-                                                                            :"default"
-                                                                    }
-                                                                />
-                                                                : <Button
-                                                                    size={"small"}
-                                                                    className="text-muted"
-                                                                    style={{height:"30px", minWidth:"32px", margin:"2px"}}
-                                                                    disabled={true}
-                                                                    key={`button-${i}`}>
-                                                                    {i}
-                                                                </Button>
-                                                        }
-                                                    </div>
-                                                )
-                                            })}
+
+        const keyboardKey = (groupIndex, i) => {
+            let x = i, y = groupIndex - 1
+            let id = x + ":" + y
+            let active = props.state.recordedNotes[id] === true
+            let style = getStyle(active, y)
+
+
+            return (
+                <Button style={style}
+                        onClick={(event) => onButtonClick(x, y, event)}
+                        onMouseOver={(event) => {
+                            if (isDragging)
+                                onButtonClick(x, y, event)
+                        }}
+                />
+            )
+
+        }
+
+        const renderRow = (groupIndex) => {
+            let noteValue = props.state.config.noteRange.first + (groupIndex - 1)
+            let quanta = props.state.recording.quantaLength
+            let blockStyle = {display: "inline", margin: "0px", width: "80px"}
+            return ((groupIndex !== 0) ?
+                (
+
+                    <div>
+                        <div style={blockStyle}>
+                            <Button className="text-muted" style={{height: "30px", margin: "2px", width: "80px"}}
+                                    disabled={true}>
+                                {valueToNote(noteValue)}
+                            </Button>
+                        </div>
+                        {range(ymax).map((pad, index) => {
+                                let beat = 1 + (4 * index * quanta)
+                                let isDivider = Math.floor(beat) === beat
+                                return (
+                                    <Tooltip title={valueToNote(noteValue) + " at beat " + beat}>
+                                        <div style={blockStyle}>
+                                            {(isDivider && index) ? <div style={blockStyle}>|</div> :
+                                                <div style={blockStyle}/>}
+                                            {keyboardKey(groupIndex, index)}
                                         </div>
-                                    )}
+                                    </Tooltip>
                                 )
                             }
+                        )}
+                    </div>
+
+                )
+                :
+                null)
+        }
+
+        return (
+            <div>
+                <Button
+                    onClick={handleClickOpen}
+                    color="primary"
+                    aria-label="Settings"
+                    variant="outlined"
+                    disabled={(props.state.recording.mode === "RECORDING")}
+                >
+                    <Icon>apps</Icon>
+                    <span>&nbsp;View Piano Roll</span>
+                </Button>
+                <Dialog
+                    fullWidth
+                    maxWidth="xl"
+                    style={{
+                        whiteSpace: "nowrap",
+                        position: 'absolute',
+                    }}
+                    open={open}
+                    onClose={handleClose}
+                >
+                    <DialogTitle>Piano Roll</DialogTitle>
+                    <DialogContent style={{height: "600px"}}>
+                        <Scrollbar>
+                            <Grid container>
+                                <Grid item>
+                                    {
+                                        range(xmax).map((group, groupIndex) => {
+                                            return renderRow(groupIndex, 4)
+                                        })
+                                    }
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Scrollbar>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Ok
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
-    )
-}
+                        </Scrollbar>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            Ok
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        )
+    }
 
 export default PianoRoll
