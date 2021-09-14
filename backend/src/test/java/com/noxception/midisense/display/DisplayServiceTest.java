@@ -514,7 +514,8 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
         //TODO: adapt to white box
         //Check we receive an array back with at least one entry in it
-        assertFalse(res.getTrackMap().isEmpty());
+        //SHOULD BE ASSERT FALSE() but made this so that test fails while not adapted
+        assertTrue(res.getTrackMap().isEmpty());
 
 
     }
