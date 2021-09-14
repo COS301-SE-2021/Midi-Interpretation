@@ -48,7 +48,6 @@ class Help extends Component {
                         style={{marginLeft:"0px"}}
                         container
                         alignContent="space-between"
-                        justify="space-evenly"
                         spacing={5}
                         className="bg-white">
                         <Grid item xs={12} sm={12} m={12} lg={8}>
