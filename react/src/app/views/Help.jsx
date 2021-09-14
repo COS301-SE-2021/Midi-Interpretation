@@ -2,7 +2,8 @@ import React, {Component} from "react";
 import {Breadcrumb} from "matx";
 import { withStyles } from "@material-ui/styles";
 import 'react-responsive-combo-box/dist/index.css';
-import { Grid } from '@material-ui/core';
+import {Avatar, Grid, Icon} from '@material-ui/core';
+import {GitHub} from "@material-ui/icons";
 
 /**
  * The view will explain how to use MIDISense
@@ -51,18 +52,73 @@ class Help extends Component {
                         spacing={5}
                         className="bg-white">
                         <Grid item xs={12} sm={12} m={12} lg={8}>
-                            <h4>How To Use MIDISense</h4>
+
+                            <h3>Help</h3>
                             <br/>
-                            <div className="text-20">
-                                <li>Navigate to the Upload page using the navigation bar on the left.</li>
-                                <li>Find a midi file you want to know more about.</li>
-                                <li>Drag and drop your file onto the provided area or simply click to browse.</li>
-                                <li>Wait for it to upload and then hit submit.</li>
-                                <li>Hit the process button!</li>
-                                <li>Let our system do it's magic.</li>
-                                <li>Look through all the details of your file.</li>
-                            </div>
+                            <div>Our pages contain instructions to help you with the process of using MIDISense.
+                                For more information about our team we suggest looking over our About page.
+                                Our public repository and documentation is addresses many common issues but
+                                don't be afraid to contact us or create an issue.</div>
                             <br/>
+
+                            <Grid container direction="column"  spacing={5}>
+                                <Grid item>
+                                    <Grid container direction="row" spacing={5}>
+                                        <Grid item>
+                                            <Avatar variant="rounded" className="bg-primary">
+                                                <GitHub color="#FFF"/>
+                                            </Avatar>
+                                        </Grid>
+                                        <Grid item>
+                                            <h5><a href="https://github.com/COS301-SE-2021/Midi-Interpretation">Repository.</a></h5>
+                                            <aside className="text-muted font-medium">For technical information visit our public github repository.</aside>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid item>
+                                    <Grid container direction="row" spacing={5}>
+                                        <Grid item>
+                                            <Avatar variant="rounded" className="bg-primary">
+                                                <Icon color="#FFF">bug_report</Icon>
+                                            </Avatar>
+                                        </Grid>
+                                        <Grid item>
+                                            <h5><a href="https://github.com/COS301-SE-2021/Midi-Interpretation/issues">Issues.</a></h5>
+                                            <aside className="text-muted font-medium">Have any major issues? Check out our issues page to report them. </aside>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid item>
+                                    <Grid container direction="row" spacing={5}>
+                                        <Grid item>
+                                            <Avatar variant="rounded" className="bg-primary">
+                                                <Icon color="#FFF">menu_book</Icon>
+                                            </Avatar>
+                                        </Grid>
+                                        <Grid item>
+                                            <h5><a href="https://www.overleaf.com/read/ddyfqzkcspzd">User Manual.</a></h5>
+                                            <aside className="text-muted font-medium">Our user manual is a great place to learn how to use MIDISense.</aside>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid item>
+                                    <Grid container direction="row" spacing={5}>
+                                        <Grid item>
+                                            <Avatar variant="rounded" className="bg-primary">
+                                                <Icon color="#FFF">person</Icon>
+                                            </Avatar>
+                                        </Grid>
+                                        <Grid item>
+                                            <h5>Contact Us.</h5>
+                                            <aside className="text-muted font-medium">Contact us directly here: <span className="text-primary">noexceptionteam@gmail.com</span></aside>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+
                         </Grid>
                         <Grid item xs={12} sm={12} m={12} lg={4}>
                             <div className={"max-w-300 min-w-200"}>
