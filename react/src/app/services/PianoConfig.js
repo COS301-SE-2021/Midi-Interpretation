@@ -60,7 +60,7 @@ class PianoConfig extends React.Component {
 
   handleCloseFirst = () => {
     this.setAnchorElFirst(null);
-    this.props.update()
+    this.props.setConfig({})
   }
 
   /**
@@ -91,7 +91,6 @@ class PianoConfig extends React.Component {
 
   handleCloseLast = () => {
     this.setAnchorElLast(null);
-    this.props.update()
   }
 
   componentDidMount = () => {

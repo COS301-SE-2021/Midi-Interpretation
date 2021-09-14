@@ -181,7 +181,7 @@ function AboutTabs() {
                                                     <Avatar variant="rounded" alt="Remy Sharp" src={process.env.PUBLIC_URL + '/assets/images/adrian.jpg'}/>
                                                 </Grid>
                                                 <Grid item>
-                                                    <h4>Mr. Adrian Rae | <a href="https://github.com/Adrian-Rae-19004029">GitHub</a> | <a href="https://www.linkedin.com/in/adrian-rae-5796b31bb/">LinkedIn</a></h4>
+                                                    <h4>Adrian Rae | <a href="https://github.com/Adrian-Rae-19004029">GitHub</a> | <a href="https://www.linkedin.com/in/adrian-rae-5796b31bb/">LinkedIn</a></h4>
                                                     <aside className="text-muted font-medium">System architect and backend lead</aside>
                                                 </Grid>
                                             </Grid>
