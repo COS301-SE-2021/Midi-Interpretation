@@ -130,7 +130,7 @@ function PianoRoll(props) {
                             return (
                                 <Tooltip id={"tool" + pad + index} title={valueToNote(noteValue) + " at beat " + beat}>
                                     <div id={"div" + pad + index} style={blockStyle}>
-                                        {(isDivider && index) ? <div id={"space" + pad + index} style={blockStyle}/> :
+                                        {(isDivider && index) ? <div id={"space" + pad + index} style={blockStyle}>  </div> :
                                             <div id={"innerdiv" + pad + index} style={blockStyle}/>}
                                         {keyboardKey(groupIndex, index)}
                                     </div>
