@@ -12,19 +12,14 @@ import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorExceptio
 import com.noxception.midisense.interpreter.parser.KeySignature;
 import com.noxception.midisense.interpreter.parser.TempoIndication;
 import com.noxception.midisense.interpreter.parser.TimeSignature;
-import com.noxception.midisense.interpreter.parser.Track;
 import com.noxception.midisense.repository.DatabaseManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.verification.Times;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,13 +38,14 @@ class DisplayServiceTest extends MIDISenseUnitTest {
     }
 
 
+
+
     //====================================================================================================================//
     //                                  BLACK BOX TESTING BELOW                                                           //
     //====================================================================================================================//
 
 
-    /**GetPieceMetaData*/
-
+    /*GetPieceMetaData*/
     /**Description: tests the getPieceMetadata() function by passing in a valid UUID and
      * the entry is in the database
      * precondition - valid UUID in database passed in
@@ -103,6 +99,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
+    /*GetPieceMetaData*/
     /**Description: tests the getPieceMetadata() function by passing in a valid UUID
      * and the entry is not in the database
      * precondition - valid UUID not in database passed in
@@ -130,6 +127,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         )));
     }
 
+    /*GetPieceMetaData*/
     /**Description: tests the getTPieceMetadata() function by passing in an empty request
      * precondition - empty request passed in
      * post condition - correct exception thrown
@@ -153,8 +151,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
 
-    /**GetTrackInfo*/
-
+    /*GetTrackInfo*/
     /**Description: tests the getTrackInfo() function by passing in a valid UUID and
      * the entry is in the database
      * precondition - valid UUID in database passed in
@@ -184,6 +181,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
+    /*GetTrackInfo*/
     /**Description: tests the getTrackInfo() function by passing in a valid UUID
      * and the entry is not in the database
      * precondition - valid UUID not in database passed in
@@ -211,6 +209,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         )));
     }
 
+    /*GetTrackInfo*/
     /**Description: tests the getTrackInfo() function by passing in an empty request
      * precondition - empty request passed in
      * post condition - correct exception thrown
@@ -235,9 +234,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
 
-    /**GetTrackMetadata*/
-
-
+    /*GetTrackMetadata*/
     /**Description: tests the getTrackMetadata() function by passing in a valid UUID and valid Track
      * and the entry is in the database
      * precondition - valid UUID, valid Track passed in
@@ -245,7 +242,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
      */
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
-    public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException, InvalidTrackException {
+    public void test_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
 
         //Get the designator of a file in the DB
         UUID fileDesignator = UUID.fromString(configurations.configuration(
@@ -271,7 +268,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         assertTrue(res.getTrackString().contains("\"notes\":[{"));
     }
 
-
+    /*GetTrackMetadata*/
     /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track (Too High)
      * and the entry is in the database
      * precondition - valid UUID, invalid Track (16 - too high for a track index) passed in
@@ -309,7 +306,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-
+    /*GetTrackMetadata*/
     /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track (Too Low)
      * and the entry is in the database
      * precondition - valid UUID, invalid Track (-1 - format error) passed in
@@ -346,7 +343,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-
+    /*GetTrackMetadata*/
     /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Valid Track
      * but the entry is not in the database
      * precondition - valid UUID, valid Track passed in
@@ -379,7 +376,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-
+    /*GetTrackMetadata*/
     /**Description: tests the getTrackMetadata() function by passing in a valid UUID and Invalid Track
      * but the entry is not in the database
      * precondition - valid UUID, invalid Track passed in
@@ -407,7 +404,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
-
+    /*GetTrackMetadata*/
     /**Description: tests the getTrackMetadata() function by passing in an empty request
      * precondition - empty request passed in
      * post condition - correct exception thrown
@@ -443,7 +440,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
 
-
+    /*GetPieceMetaData*/
+    /**Description: tests the getPieceMetadata() function by passing in a valid UUID and
+     * the entry is in the database
+     * precondition - valid UUID in database passed in
+     * post condition - returned data is accurate
+     */
     @Test
     @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
     public void testWhiteBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
@@ -490,6 +492,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /*GetTrackInfo*/
+    /**Description: tests the getTrackInfo() function by passing in a valid UUID and
+     * the entry is in the database
+     * precondition - valid UUID in database passed in
+     * post condition - returned data is accurate
+     */
     @Test
     @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
     public void testWhiteBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws InvalidDesignatorException {
@@ -517,6 +525,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     }
 
+    /*GetTrackMetadata*/
+    /**Description: tests the getTrackMetadata() function by passing in a valid UUID and valid Track
+     * and the entry is in the database
+     * precondition - valid UUID, valid Track passed in
+     * post condition - returned data is accurate
+     */
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
     public void testWhiteBox_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws InvalidDesignatorException, InvalidTrackException {
