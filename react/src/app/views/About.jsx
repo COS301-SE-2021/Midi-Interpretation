@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Breadcrumb} from "matx";
 import { withStyles } from "@material-ui/styles";
 import 'react-responsive-combo-box/dist/index.css';
-import {Avatar, Grid, Icon} from '@material-ui/core';
+import {Avatar, Grid} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
@@ -10,7 +10,6 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
-import {GitHub} from "@material-ui/icons";
 
 /**
  * The view will act as an about page for MIDISense and give information on
