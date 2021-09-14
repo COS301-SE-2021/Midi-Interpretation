@@ -103,6 +103,7 @@ class PianoConfig extends React.Component {
   }
 
   handleKeyDown = (event) => {
+
     const numNotes = this.props.config.noteRange.last - this.props.config.noteRange.first + 1;
     const minOffset = 0;
     const maxOffset = numNotes - this.props.keyboardShortcuts.length;
@@ -157,12 +158,6 @@ class PianoConfig extends React.Component {
     return (
       <div>
         <div>
-          <div>
-            <small className="text-muted">
-              Use <strong>left arrow</strong> and <strong>right arrow</strong> to move the keyboard
-              shortcuts around.
-            </small>
-          </div>
           <Grid container direction="row" justifyContent="space-between">
             <Grid item>
               <List component="nav" aria-label="Device settings">
@@ -229,7 +224,6 @@ class PianoConfig extends React.Component {
                             index+midiNumbersToIndex[noteRange.first]+1,
                             MidiNumbers.NATURAL_MIDI_NUMBERS[index+midiNumbersToIndex[noteRange.first]+1])}
                     >
-
                           <option value={midiNumber} disabled={midiNumber <= noteRange.first} key={midiNumber}>
                             {midiNumbersToNotes[midiNumber]}
                           </option>
