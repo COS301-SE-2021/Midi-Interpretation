@@ -184,12 +184,8 @@ class Upload extends Component {
                   />
               </div>
 
-              <asside className="text-muted">To use <b>MIDISense File Analysis</b>: first, <b>Upload</b> a midi file
-                  bellow, <b>Wait</b> for it to upload then press the <b>Submit</b> button. Finally, process the <b>Process</b> button</asside>
-
               <div style={{height:"50px"}}/>
-
-              <Grid container direction="row" justifyContent="space-evenly" spacing={3} alignItems="flex-start">
+              <Grid container direction="row" justifyContent="space-evenly" spacing={5} alignItems="flex-start">
               <SimpleCard title="Upload File">
                       <Grid item>
                               <Dropzone
@@ -249,12 +245,18 @@ class Upload extends Component {
                       }
                   </Button>
               </SimpleCard>
+                  <br/>
                   <Grid item>
                       <div className={"max-w-500 min-w-300"}>
                           <img src={process.env.PUBLIC_URL + '/assets/images/illustrations/Technical_character.svg'} alt={"Person singing"}/>
                       </div>
                   </Grid>
               </Grid>
+
+              <div style={{height:"50px"}}/>
+              <div><asside className="text-muted">To use MIDISense File Analysis:</asside></div>
+              <div><asside className="text-muted">First, <b>Upload</b> a midi file bellow, <b>Wait</b> for it to upload
+                  then press the <b>Submit</b> button. Finally, process the <b>Process</b> button</asside></div>
               {
                   this.cookies.get('allowCookies') === undefined ?
                   <ResponsiveDialog/> :
