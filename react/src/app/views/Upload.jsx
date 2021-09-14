@@ -105,7 +105,6 @@ class Upload extends Component {
       this.beginInterpretation = () => {
           const designator = this.cookies.get('fileDesignator')
           this.backendService = new MidiSenseService()
-          console.log("Call to interpret current file")
           this.backendService.interpreterProcessFile(
               designator,
 
@@ -116,9 +115,6 @@ class Upload extends Component {
                */
 
               (res)=>{
-                  const success = res['success']
-                  const message = res['message']
-                  console.log("Interpretation request "+(success===true?"accepted":"declined")+": "+message)
                   this.props.history.push("/Display")
 
                   if(this.state.first){
@@ -133,7 +129,6 @@ class Upload extends Component {
                */
 
               (error)=>{
-                  console.error("Interpretation request failed : "+JSON.stringify(error))
                   this.props.history.push("/Upload");
               }
           )
@@ -189,7 +184,7 @@ class Upload extends Component {
                   />
               </div>
 
-              <Grid container justify="space-evenly" spacing={3} alignItems="center">
+              <Grid container justifyContent="space-evenly" spacing={3} alignItems="center">
 
               <SimpleCard title="Upload File">
                       <Grid item>
