@@ -69,7 +69,19 @@ class Home extends Component {
                                         onClick={() => this.props.history.push("/Upload")}
                                     >
                                         <div className="text-16 font-medium">
-                                            Use MIDISense
+                                            File Analysis
+                                        </div>
+                                    </Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button
+                                        className="capitalize"
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={() => this.props.history.push("/Live")}
+                                    >
+                                        <div className="text-16 font-medium">
+                                            Live Analysis
                                         </div>
                                     </Button>
                                 </Grid>
