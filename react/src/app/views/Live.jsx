@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Breadcrumb, SimpleCard} from "../../matx";
 import MidiSenseService from "../services/MidiSenseService";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Divider, Grid, Icon, IconButton, Tooltip} from "@material-ui/core";
+import {Divider, Grid, Icon, IconButton, LinearProgress, Tooltip} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import {withStyles} from "@material-ui/core/styles";
 import { KeyboardShortcuts, MidiNumbers } from 'react-piano';
@@ -415,6 +415,13 @@ class Live extends Component {
                                                                             <Icon>{this.state.recording.active}</Icon>
                                                                         </IconButton>
                                                                     </Tooltip>
+                                                                </Grid>
+                                                                <Grid item>
+                                                                    {(this.state.recording.mode === "RECORDING")?
+                                                                        <span>
+                                                                            <LinearProgress style={{width:"50px"}} color="primary" />
+                                                                        </span>
+                                                                        :<span/>}
                                                                 </Grid>
                                                                 <Grid item>
                                                                     <Tooltip title="Clear" placement="top">
