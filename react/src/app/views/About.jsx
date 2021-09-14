@@ -120,39 +120,39 @@ function AboutTabs() {
             <TabPanel value={value} index={0}>
                 <Grid container
                       alignContent="space-between"
-                      justify="space-between"
+                      justifyContent="space-between"
                       spacing={5}>
                         <Grid  item xs={12} sm={12} m={12} lg={8} >
                             <div className="text-20">
                                 <br/>
                                 <div className="font-bold">About Us</div>
 
-                                <p>
+                                <span>
                                     NoXception is a team of five third-year EBIT undergraduates from the University of
                                     Pretoria with a determination to embody best practices in real-world software
                                     engineering. We have the drive to engage in development projects which challenge us
                                     on a professional basis and enrich us on a personal level.
-                                </p>
-                                <p>
+                                </span>
+                                <span>
                                     We were tasked to create a System that would be able to Interpret Midi music files
                                     and display gathered information. This is the system you are currently using
                                     This system enables the interpretation, display and analysis of musical data stored
                                     in a midi format.
-                                </p>
-                                <p>
+                                </span>
+                                <span>
                                     Music forms an integral part of modern society. It is without a doubt, the most
                                     ubiquitous of art forms, permeating through the day-to-day lives of most
                                     individuals in some form or another and is one that most people would find
                                     challenging to live without.
-                                </p>
-                                <p>
+                                </span>
+                                <span>
                                     As with most artistic disciplines, the accessibility
                                     of music and a rise in music education among the youth have made its practises an
                                     appropriate target for rapid digitisation. As the composition, arrangement and
                                     transcription of works are common industry practises, there has been a drive in
                                     recent years to marry these processes with technologies that enhance both the
                                     sensory and extrasensory perception of a work during such tasks.
-                                </p>
+                                </span>
                             </div>
                             <br/>
                         </Grid>
@@ -167,12 +167,12 @@ function AboutTabs() {
                 <br/>
                 <Grid container
                       alignContent="space-between"
-                      justify="space-between"
+                      justifyContent="space-between"
                       spacing={5}>
                     <Grid item xs={12} sm={12} m={12} lg={8}>
                         <div className="font-bold text-20">How We Gathered Data</div>
                         <div className="text-20">
-                            <p>In order to train our system AI we needed to gather a thousands of midi files.</p>
+                            <span>In order to train our system AI we needed to gather a thousands of midi files.</span>
                             <li>First, we went to <a href="https://freemidi.org/">Free Midi</a> and gathered a list of all
                                 it's tracks, their authors and download links</li>
                             <li>Next, we categorized the tracks based on their name and author using the
@@ -195,7 +195,7 @@ function AboutTabs() {
                 <br/>
                 <Grid container
                       alignContent="space-between"
-                      justify="space-between"
+                      justifyContent="space-between"
                       spacing={5}>
                     <Grid item xs={12} sm={12} m={12} lg={8}>
                         <div className="font-bold text-20">Credits</div>
