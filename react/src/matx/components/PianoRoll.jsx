@@ -182,6 +182,9 @@ function PianoRoll(props) {
                     </Scrollbar>
                 </DialogContent>
                 <DialogActions>
+                    <asside className="text-muted" ><b>Click</b> to add or remove notes to the sequence.
+                        Press <b>Shift</b> to toggle paint mode, this will automatically paint notes as
+                        your selection moves.</asside><span style={{width: "20px"}}/>
                     <Button onClick={handleClose} color="primary">
                         Ok
                     </Button>

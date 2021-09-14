@@ -378,6 +378,9 @@ class Live extends Component {
                         <SimpleCard>
                             <div>
                                 <h1 className="h3">Live Analysis</h1>
+                                <asside className="text-muted">Here you can <b>Record</b> a sequence of notes or enter them manually
+                                    in the <b>Piano Roll</b> to begin analysis. Press the green <b>Send to Viewer</b> button to process
+                                    your sequence.</asside>
                                 <div className="mt-5">
                                     <InstrumentListProvider
                                         hostname={soundfontHostname}
