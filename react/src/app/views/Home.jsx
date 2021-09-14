@@ -41,14 +41,14 @@ class Home extends Component {
                 }}
                 className="text-white mt-6"
                 >
-                    <Grid container justify="space-between" alignItems="center" spacing={3} direction="column">
+                    <Grid container justifyContent="space-between" alignItems="center" spacing={3} direction="column">
                         <Grid item>
                             <div className={"max-w-400"}>
                                 <img src={process.env.PUBLIC_URL + '/assets/images/logo-full-dark.png'} alt={"MidiSense Logo"}/>
                             </div>
                         </Grid>
                         <Grid item>
-                            <Grid container justify="space-between" spacing="2">
+                            <Grid container justifyContent="space-between" spacing={2}>
                                 <Grid item>
                                     <Button
                                         className="capitalize"
