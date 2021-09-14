@@ -545,13 +545,8 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //Get response
         GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
 
-        //TODO: adapt to white box
-        //Check that there is a substring for an inner array with countably many items
-        Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
-        Matcher matcher = validResponse.matcher(res.getTrackString());
-
-        //see that the substring is present
-        assertTrue(matcher.find());
+        //Check that there is a substring with correct values
+        assertTrue(res.getTrackString().contains("{\"channel\":1,\"instrument\":\"Electric Bass (pick)\",\"ticks_per_beat\":92,\"track\":[{\"tick\":0,\"notes\":[{\"value\":69,\"on_velocity\":100,\"off_velocity\":0,\"duration\":600}]}]}"));
     }
 
 
