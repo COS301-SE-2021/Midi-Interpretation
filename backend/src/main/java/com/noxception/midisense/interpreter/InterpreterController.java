@@ -88,6 +88,7 @@ public class InterpreterController implements InterpreterApi {
 
             responseObject.setMessage(res.getMessage());
             responseObject.setSuccess(res.getSuccess());
+            returnStatus = res.getSuccess()?HttpStatus.OK:HttpStatus.BAD_REQUEST;
 
         }
         catch (InvalidDesignatorException | IllegalArgumentException e) {
