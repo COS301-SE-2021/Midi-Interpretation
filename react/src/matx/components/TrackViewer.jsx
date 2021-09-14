@@ -10,7 +10,7 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
-import React, {Component} from "react";
+import React from "react";
 import {Grid} from "@material-ui/core";
 import * as ReactDOMServer from "react-dom/server";
 import MidiSenseService from "../../app/services/MidiSenseService";
@@ -412,17 +412,17 @@ function TrackViewer (props) {
                         />
                         <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
                         {
-                            (typeof props.keySignatureMap==="undefined"?[]:props.keySignatureMap).map((item,index)=>{
+                            (typeof props.keySignatureMap==="undefined"?[]:props.keySignatureMap).map((item)=>{
                                 return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.key} strokeDasharray="3 3" strokeWidth={2}/>
                             })
                         }
                         {
-                            (typeof props.timeSignatureMap==="undefined"?[]:props.timeSignatureMap).map((item,index)=>{
+                            (typeof props.timeSignatureMap==="undefined"?[]:props.timeSignatureMap).map((item)=>{
                                 return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.time} strokeDasharray="3 3" strokeWidth={2}/>
                             })
                         }
                         {
-                            (typeof props.tempoIndicationMap==="undefined"?[]:props.tempoIndicationMap).map((item,index)=>{
+                            (typeof props.tempoIndicationMap==="undefined"?[]:props.tempoIndicationMap).map((item)=>{
                                 return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.tempo} strokeDasharray="3 3" strokeWidth={2}/>
                             })
                         }

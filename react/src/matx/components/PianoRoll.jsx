@@ -33,8 +33,6 @@ function PianoRoll(props) {
         return [...Array(n).keys()]
     }
 
-    const color = "#747474"
-
     const getStyle = (active,y) => {
         let color = colorMap[y % 12]
         let dragCursor = "grabbing"
@@ -99,12 +97,14 @@ function PianoRoll(props) {
 
 
         return (
-            <button style={style}
-                    onClick={(event) => onButtonClick(x, y, event)}
-                    onMouseOver={(event) => {
-                        if (isDragging)
-                            onButtonClick(x, y, event)
-                    }}
+            <button
+                id={id}
+                style={style}
+                onClick={(event) => onButtonClick(x, y, event)}
+                onMouseOver={(event) => {
+                    if (isDragging)
+                        onButtonClick(x, y, event)
+                }}
             />
         )
 
@@ -119,7 +119,7 @@ function PianoRoll(props) {
 
                 <div>
                     <div style={blockStyle}>
-                        <Button className="text-muted" style={{height: "30px", margin: "2px", width: "80px"}}
+                        <Button id={groupIndex+"Label"} className="text-muted" style={{height: "30px", margin: "2px", width: "80px"}}
                                 disabled={true}>
                             {valueToNote(noteValue)}
                         </Button>
@@ -128,10 +128,10 @@ function PianoRoll(props) {
                             let beat = 1 + (4 * index * quanta)
                             let isDivider = Math.floor(beat) === beat
                             return (
-                                <Tooltip title={valueToNote(noteValue) + " at beat " + beat}>
-                                    <div style={blockStyle}>
-                                        {(isDivider && index) ? <div style={blockStyle}>  </div> :
-                                            <div style={blockStyle}/>}
+                                <Tooltip id={"tool" + pad + index} title={valueToNote(noteValue) + " at beat " + beat}>
+                                    <div id={"div" + pad + index} style={blockStyle}>
+                                        {(isDivider && index) ? <div id={"space" + pad + index} style={blockStyle}/> :
+                                            <div id={"innerdiv" + pad + index} style={blockStyle}/>}
                                         {keyboardKey(groupIndex, index)}
                                     </div>
                                 </Tooltip>

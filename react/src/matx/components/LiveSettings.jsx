@@ -7,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
-import {Icon, IconButton, Slider} from "@material-ui/core";
+import {Icon, IconButton, Slider, Tooltip} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -36,8 +36,7 @@ export default function DialogSelect(props) {
         setOpen(false)
     }
     const handleSubmit = () => {
-        props.setRecording({bpm:BPM})
-        props.setRecording({length:Length})
+        props.setRecording({bpm:BPM,length:Length})
         setOpen(false)
     }
 
@@ -51,14 +50,16 @@ export default function DialogSelect(props) {
 
     return (
         <div>
-            <IconButton
-                onClick={handleClickOpen}
-                color="primary"
-                aria-label="Settings"
-                disabled={props.mode !== "STOP"}
-            >
-                <Icon>settings</Icon>
-            </IconButton>
+            <Tooltip title="Settings" placement="top">
+                <IconButton
+                    onClick={handleClickOpen}
+                    color="primary"
+                    aria-label="Settings"
+                    disabled={props.mode !== "STOP"}
+                >
+                    <Icon>settings</Icon>
+                </IconButton>
+            </Tooltip>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Analysis Settings</DialogTitle>
                 <DialogContent>
