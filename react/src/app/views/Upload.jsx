@@ -184,8 +184,12 @@ class Upload extends Component {
                   />
               </div>
 
-              <Grid container justifyContent="space-evenly" spacing={3} alignItems="center">
+              <asside className="text-muted">To use <b>MIDISense File Analysis</b>: first, <b>Upload</b> a midi file
+                  bellow, <b>Wait</b> for it to upload then press the <b>Submit</b> button. Finally, process the <b>Process</b> button</asside>
 
+              <div style={{height:"50px"}}/>
+
+              <Grid container direction="row" justifyContent="space-evenly" spacing={3} alignItems="flex-start">
               <SimpleCard title="Upload File">
                       <Grid item>
                               <Dropzone
