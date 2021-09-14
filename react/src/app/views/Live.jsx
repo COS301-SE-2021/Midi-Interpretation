@@ -18,28 +18,22 @@ import PianoRoll from "../../matx/components/PianoRoll";
 import MIDISounds from 'midi-sounds-react';
 
 /**
- * This class defines the interpretation of a midi file that has been supplied by the server
+ * This class defines the interpretation of a midi sequence that has been supplied by the user
  * It displays:
- *      - Song Title
- *      - Piece Meta Data
- *          - Key
- *          - Time Signature
- *          - Tempo Indication
- *          - Genres
- *      - Tracks
- *      - Location In Track
- *      - Bar Information
- *          - Bar number
- *          - Chords
- *          - Bar events
- *          - Notes
- *              - Pitch
- *              - Velocity
- *              - Octave Value
  *
- * Navigation:
- *      -> Upload
- *
+ *      - Control tab (live settings)
+ *      - Piano with recording
+ *      - Piano Config
+ *      - Piano Roll
+ *      - Track Viewer
+ *          - Bar Information
+ *              - Bar number
+ *              - Chords
+ *              - Bar events
+ *              - Notes
+ *                  - Pitch
+ *                  - Velocity
+ *                  - Octave Value
  */
 
 class Live extends Component {
@@ -111,6 +105,10 @@ class Live extends Component {
         }
     }
 
+    /**
+     * When the component mounts this will initialize the audio volume to 10%
+     */
+
     componentDidMount() {
         this.midiSounds.setMasterVolume(0.1);
     }
@@ -121,6 +119,9 @@ class Live extends Component {
 
     /**
      * setTrackData
+     *
+     * This is a setter used to populate the track array that is passed to the track viewer
+     *
      * @param td
      */
 
@@ -132,18 +133,10 @@ class Live extends Component {
     }
 
     /**
-     * setTicksPerBeat
-     * @param t
-     */
-
-    setTicksPerBeat = (t) => {
-        this.setState({
-            ticksPerBeat: t
-        })
-    }
-
-    /**
      * setInstrument
+     *
+     * This sets the current instrument. The config will change the type of midi instrument that the on screen piano uses
+     *
      * @param i
      */
 
@@ -160,52 +153,31 @@ class Live extends Component {
         })
     }
 
-    /**
-     * getDigitsFromNumber
-     * @param t
-     * @returns {number[]|*[]}
-     */
-
-    getDigitsFromNumber = (t) => {
-        if (typeof t !== 'number')
-            return [0]
-
-        t = ""+t
-        let arrayDigits = []
-        for(let char of t){
-            arrayDigits.push(char)
-        }
-        return arrayDigits
-    }
-
-
 
     //====================================
     // DISPLAY METHODS
     //====================================
 
     /**
-     * getTrackMetadata
+     * setRecording
      *
-     * Get the note data associated with recorded track
-     * @param trackString
-     * @param instrument
-     * @param ticks_per_beat
+     * This sets the state.recording value without needing to go through the normal state procedures. This method is used in child components.
+     *
+     * @param value
      */
-    getTrackMetadata = (trackString, instrument, ticks_per_beat) =>{
-
-        trackString = JSON.parse(trackString)
-        this.setTrackData(trackString)
-        this.setTicksPerBeat(trackString[ticks_per_beat])
-        this.setInstrument(trackString[instrument])
-
-    }
 
     setRecording = value => {
         this.setState({
             recording: Object.assign({}, this.state.recording, value),
         });
     };
+
+    /**
+     * onClickRecord
+     *
+     * This method handles the record button being pressed.
+     * It calls start recording, starts the metronome and changes the display state so that the record button is reactive.
+     */
 
     onClickRecord = () => {
         if(this.state.recording.mode === "STOP"){
@@ -230,25 +202,13 @@ class Live extends Component {
         }
     }
 
-    // incTimer = () => {
-    //     if(this.isActive) {
-    //         if(this.state.recording.quanta >= this.state.recording.length){
-    //             clearInterval(this.interval)
-    //             this.setRecording({elapsed:0})
-    //             this.onClickRecord()
-    //         }
-    //         let newElapsed =  new Date().getTime() - this.state.recording.initialTime
-    //         let date = new Date(0)
-    //         date.setSeconds(newElapsed);
-    //
-    //         const timeString = date.toISOString().substr(11, 5);
-    //         //this.setRecording({elapsed:timeString})
-    //     }
-    //     else{
-    //         clearInterval(this.interval)
-    //         //this.setRecording({elapsed:0})
-    //     }
-    // }
+    /**
+     * onClickClear
+     *
+     * This method handles the clear button being pressed.
+     * It resets the elapsed and initial time, clears the recorded notes, stops the metronome and changes the
+     * display state so that the clear button is reactive.
+     */
 
     onClickClear = () => {
         this.setRecording({elapsed:0, initialTime: null})
@@ -266,24 +226,59 @@ class Live extends Component {
         }
     }
 
+    /**
+     * handleStart
+     *
+     * This method starts the recording.
+     * It clears the recorded notes dictionary, resets quanta and sets active. This is mainly used in PianoWithRecording component.
+     */
+
     handleStart = () => {
         this.setState({recordedNotes:{}})
         this.setState({recording:{quanta:0, wait:true}})
         this.isActive = true
-        this.interval = setInterval(this.incTimer, this.state.recording.timerInterval)
     }
+
+    /**
+     * setRecordedNotes
+     *
+     * This is a setter for the recorded notes state variable.
+     *
+     * @param val
+     */
 
     setRecordedNotes = (val) =>{
         this.setState({recordedNotes:val})
     }
 
+    /**
+     * playLoop
+     *
+     * This method begins the metronome loop in the midisounds component.
+     */
+
     playLoop(){
         console.log(this.state.recording.bpm)
         this.midiSounds.startPlayLoop([[[10],[]]], this.state.recording.bpm, 1/4, 1);
     }
+
+    /**
+     * stopLoop
+     *
+     * This method stops the metronome loop in the midisounds component.
+     */
+
     stopLoop(){
         this.midiSounds.stopPlayLoop();
     }
+
+    /**
+     * processData
+     *
+     * This is the preprocessing method before the data is delivered to the track viewer.
+     * It converts the recordedNotes dictionary into a data object inline with the JSON received from the server in
+     * File Analysis.
+     */
 
     processData = () =>{
         const tempData = []
@@ -343,14 +338,31 @@ class Live extends Component {
 
     render() {
 
-        // webkitAudioContext fallback needed to support Safari
+        /**
+         * Audio context with a fallback.
+         * webkitAudioContext fallback needed to support Safari.
+         */
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        /**
+         * Soundfont initializer.
+         * @type {string}
+         */
         const soundfontHostname = 'https://d1pzp51pvbm36p.cloudfront.net';
 
+        /**
+         * initialize the note range.
+         * @type {{last: *, first: *}}
+         */
         const noteRange = {
             first: MidiNumbers.fromNote('c3'),
             last: MidiNumbers.fromNote('f4'),
         }
+
+        /**
+         * Initialize keyboard shortcut for piano config.
+         * @type {[]}
+         */
         const keyboardShortcuts = KeyboardShortcuts.create({
             firstNote: noteRange.first,
             lastNote: noteRange.last,

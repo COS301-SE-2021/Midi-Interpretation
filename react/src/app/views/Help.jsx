@@ -6,10 +6,7 @@ import {Avatar, Grid, Icon} from '@material-ui/core';
 import {GitHub} from "@material-ui/icons";
 
 /**
- * The view will explain how to use MIDISense
- *
- * Navigation:
- *      -> Upload
+ * The view will explain how to get more information about using MIDISense
  */
 
 class Help extends Component {
