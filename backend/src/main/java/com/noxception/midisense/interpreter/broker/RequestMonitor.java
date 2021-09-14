@@ -1,38 +1,41 @@
 package com.noxception.midisense.interpreter.broker;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class RequestMonitor<T> {
-    private RequestStatus requestStatus;
+    private AtomicReference<RequestStatus> requestStatus;
     private T resource;
 
     public RequestMonitor() {
         resource = null;
-        requestStatus = RequestStatus.EMPTY;
+        requestStatus = new AtomicReference<>();
+        requestStatus.set(RequestStatus.EMPTY);
     }
 
     public void monitor(){
         resource = null;
-        requestStatus = RequestStatus.EMPTY;
+        requestStatus.set(RequestStatus.EMPTY);
     }
 
     public void await(){
-        while(requestStatus.equals(RequestStatus.EMPTY));
+        while(requestStatus.get().equals(RequestStatus.EMPTY));
     }
 
     public T getResource(){
         T response = resource;
         this.resource = null;
-        this.requestStatus = RequestStatus.EMPTY;
+        this.requestStatus.set(RequestStatus.EMPTY);
         return response;
     }
 
     public void acquire(T resource){
         this.resource = resource;
-        this.requestStatus = RequestStatus.LOADED;
+        this.requestStatus.set(RequestStatus.LOADED);
     }
 
     public void abort(){
         this.resource = null;
-        this.requestStatus = RequestStatus.FAILED;
+        this.requestStatus.set(RequestStatus.FAILED);
     }
 
     enum RequestStatus{
