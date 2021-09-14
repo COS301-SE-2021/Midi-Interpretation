@@ -10,6 +10,17 @@ import {withStyles} from "@material-ui/core/styles";
 import KeySignature from "../../styles/images/keyMap"
 import TimeSignature from "../../styles/images/timeMap"
 import Typography from "@material-ui/core/Typography";
+import * as PropTypes from "prop-types";
+
+function Alert(props) {
+    return null;
+}
+
+Alert.propTypes = {
+    severity: PropTypes.string,
+    onClose: PropTypes.any,
+    children: PropTypes.node
+};
 
 /**
  * This class defines the interpretation of a midi file that has been supplied by the server
@@ -219,6 +230,7 @@ class Display extends Component {
   }
 
     /**
+    /**
      * setSelected
      * @param s
      */
@@ -267,7 +279,10 @@ class Display extends Component {
           this.setState({tempoIndicationMap: res['tempoIndicationMap']})
           this.setState({timeSignatureMap: res['timeSignatureMap']})
 
-        })
+        },
+         (res) =>{
+            this.handleError(res)
+         })
       /**
        * displayGetTrackInfo
        */
@@ -278,20 +293,32 @@ class Display extends Component {
               currentListing.push((track['index'] + 1) + ". " + track['trackName'])
               this.setTrackListing(currentListing)
             }
-        })
+        },
+         (res) =>{
+            this.handleError(res)
+         })
 
       /**
        * intelligenceAnalyseGenre
        */
       this.state.midisenseService.intelligenceAnalyseGenre(this.state.fileDesignator,
          (res) => {
-         const genreData = res['genreArray']
+             const success = res['success']
+             if(success === undefined || !success)
+                 this.handleError(res)
+             else {
 
-             for (let i = 0 ; i < genreData.length ; i++){
-                 genreData[i].Certainty = parseFloat(genreData[i].Certainty).toFixed(3);
+                 const genreData = res['genreArray']
+
+                 for (let i = 0; i < genreData.length; i++) {
+                     genreData[i].Certainty = parseFloat(genreData[i].Certainty).toFixed(3);
+                 }
+
+                 this.setState({genreData: genreData})
              }
-
-             this.setState({genreData: genreData})
+          },
+          (res)=>{
+              this.handleError(res)
           })
   }
 
@@ -307,11 +334,19 @@ class Display extends Component {
 
       this.state.midisenseService.displayGetTrackMetadata(this.state.fileDesignator, n,
           (res) => {
-              let trackString = res['trackString']
-              trackString = JSON.parse(trackString)
-              this.setTrackData(trackString['track'])
-              this.setTicksPerBeat(trackString['ticks_per_beat'])
-              this.setInstrument(trackString['instrument'])
+              const success = res['success']
+              if(success === undefined || !success)
+                  this.handleError(res)
+              else {
+                  let trackString = res['trackString']
+                  trackString = JSON.parse(trackString)
+                  this.setTrackData(trackString['track'])
+                  this.setTicksPerBeat(trackString['ticks_per_beat'])
+                  this.setInstrument(trackString['instrument'])
+              }
+          },
+          (res) =>{
+              this.handleError(res)
           })
   }
 
@@ -329,8 +364,10 @@ class Display extends Component {
       }
   }
 
-
-
+  handleError = () => {
+      this.cookies.remove('fileDesignator')
+      this.props.history.push("/Upload")
+  }
 
 
 
@@ -355,7 +392,6 @@ class Display extends Component {
                           ]}
                       />
                   </div>
-
                   <div>
                       <Grid container
                             justify="space-evenly"
