@@ -19,6 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.verification.Times;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
@@ -512,11 +513,12 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //Get response
         GetTrackInfoResponse res = displayService.getTrackInfo(req);
 
-        //TODO: adapt to white box
-        //Check we receive an array back with at least one entry in it
-        //SHOULD BE ASSERT FALSE() but made this so that test fails while not adapted
-        assertTrue(res.getTrackMap().isEmpty());
 
+        //Check we receive an array back with at least one entry in it
+        assertFalse(res.getTrack((byte) 0).isEmpty());
+
+        //check the entry to be what we put in
+        assertEquals("Electric Bass (pick)", res.getTrack((byte) 0));
 
     }
 
