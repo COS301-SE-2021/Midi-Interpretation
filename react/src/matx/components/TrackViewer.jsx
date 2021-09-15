@@ -204,10 +204,10 @@ function CustomTooltip (props) {
                                 <Grid item>
                                     <div key={index} style={{padding:"10px"}}>
                                     <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
-                                    <div className="text-14">Instrument: {getPercussiveInstrument(item.value)} </div>
-                                    <div className="text-14">On Velocity: {onVelocity} ({onDynamic})</div>
-                                    <div className="text-14">Off Velocity: {offVelocity} ({offDynamic})</div>
-                                    <div className="text-14">Duration: {duration}</div>
+                                        <div className="text-14">Instrument: <b>{getPercussiveInstrument(item.value)}</b> </div>
+                                        <div className="text-14">On Velocity: <b>{onVelocity} ({onDynamic})</b></div>
+                                        <div className="text-14">Off Velocity: <b>{offVelocity} ({offDynamic})</b></div>
+                                        <div className="text-14">Duration: <b>{duration}</b></div>
                                     </div>
                                 </Grid>
                             )
@@ -217,12 +217,12 @@ function CustomTooltip (props) {
                                 <Grid item>
                                     <div key={index} style={{padding: "10px"}}>
                                         <div className="text-16" style={{color: item.color}}><b>{voiceName(index)}</b></div>
-                                        <div className="text-14">Frequency: {frequency(item.value)} Hz</div>
-                                        <div className="text-14">Pitch: {valueToNote(item.value)['pitch']}</div>
-                                        <div className="text-14">Octave: {valueToNote(item.value)['octave']}</div>
-                                        <div className="text-14">On Velocity: {onVelocity} ({onDynamic})</div>
-                                        <div className="text-14">Off Velocity: {offVelocity} ({offDynamic})</div>
-                                        <div className="text-14">Duration: {duration}</div>
+                                        <div className="text-14">Frequency: <b>{frequency(item.value)} Hz</b></div>
+                                        <div className="text-14">Pitch: <b>{valueToNote(item.value)['pitch']}</b></div>
+                                        <div className="text-14">Octave: <b>{valueToNote(item.value)['octave']}</b></div>
+                                        <div className="text-14">On Velocity: <b>{onVelocity} ({onDynamic})</b></div>
+                                        <div className="text-14">Off Velocity: <b>{offVelocity} ({offDynamic})</b></div>
+                                        <div className="text-14">Duration: <b>{duration}</b></div>
                                     </div>
                                 </Grid>
                             )
