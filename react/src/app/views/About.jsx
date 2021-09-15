@@ -126,6 +126,9 @@ function AboutTabs() {
                             <br/>
                             <Grid container justifyContent="space-evenly" direction="row">
                                 <Grid item>
+                                    <img style={{width:"500px"}} src={process.env.PUBLIC_URL + '/assets/images/logo-full.png'} alt={"MidiSense Logo"}/>
+                                </Grid>
+                                <Grid item>
                                     <Grid container direction="column"  spacing={5} justifyContent="space-between">
                                         <Grid item>
                                             <Grid container direction="row" spacing={5}>
@@ -188,9 +191,6 @@ function AboutTabs() {
                                         </Grid>
                                         <br/>
                                     </Grid>
-                                </Grid>
-                                <Grid item>
-                                    <img style={{width:"500px"}} src={process.env.PUBLIC_URL + '/assets/images/logo-full.png'} alt={"MidiSense Logo"}/>
                                 </Grid>
                             </Grid>
 
