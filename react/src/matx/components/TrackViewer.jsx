@@ -121,7 +121,6 @@ function getChord(notes, dictionary){
     }
 
     const backendService = new MidiSenseService()
-    console.log("Call to server")
     backendService.intelligenceAnalyseChord(
         notes,
 
@@ -448,83 +447,89 @@ function TrackViewer (props) {
 
 
 
-        return [(
-            <Grid container justifyContent={"center"} style={{border:"1px solid red"}}>
-                <Grid item container alignItems={"center"} style={{display:"inline",border:"1px solid red"}}>
-                    <Grid item><Icon style={{color: signatureColors.rit}}>fiber_manual_record</Icon></Grid>
-                    <Grid item>Ritardando</Grid>
+        return (
+            <div>
+
+                <Grid container direction="row" justifyContent={"center"} spacing={2}>
+                    <Grid item justifyContent={"center"}>
+                        <Grid container alignItems={"stretch"}>
+                            <Grid item><Icon style={{fontSize:"12px",color: signatureColors.rit}}>fiber_manual_record</Icon></Grid>
+                            <Grid item> Ritardando</Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item justifyContent={"center"}>
+                        <Grid container alignItems={"center"}>
+                            <Grid item><Icon style={{fontSize:"12px",color: signatureColors.acc}}>fiber_manual_record</Icon></Grid>
+                            <Grid item> Accelerando</Grid>
+                        </Grid>
+                    </Grid>
                 </Grid>
-                <Grid item container alignItems={"center"} style={{display:"inline",border:"1px solid red"}}>
-                    <Grid item><Icon style={{color: signatureColors.acc}}>fiber_manual_record</Icon></Grid>
-                    <Grid item>Accelerando</Grid>
-                </Grid>
-            </Grid>),(
 
-            <div style={{ height: '400px', width: '100%'}}>
+                <div style={{ height: '400px', width: '100%'}}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                                width={500}
+                                height={300}
+                                data={lineData}
+                                margin={{
+                                        top: 5,
+                                        right: 30,
+                                        left: 20,
+                                        bottom: 5,
+                                }}
+                            >
+                            <CartesianGrid strokeDasharray="1 1" />
+                            <XAxis domain={`[0,${lineData.length}]`} scale="linear" interval="preserveStart" type="number" dataKey="beat" label={{ value: 'Beat number', position: 'bottom' }}/>
+                            <YAxis domain={["dataMin-10","dataMax+10"]}  label={{ value: 'Pitch (~log Hz)', angle: -90, position: 'left' }}/>
+                            <Tooltip content={
+                                <CustomTooltip
+                                    payload
+                                    keyMap={(typeof props.keySignatureMap==="undefined"?[]:props.keySignatureMap)}
+                                    timeMap={(typeof props.timeSignatureMap==="undefined"?[]:props.timeSignatureMap)}
+                                    tempoMap={(typeof props.tempoIndicationMap==="undefined"?[]:props.tempoIndicationMap)}
+                                    chordDictionary={chordDictionary}
+                                    intervalDictionary={intervalDictionary}
+                                    props/> }
+                            />
+                            <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
+                            {
+                                (typeof props.keySignatureMap==="undefined"?[]:props.keySignatureMap).map((item)=>{
+                                    return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.key} strokeDasharray="3 3" strokeWidth={2}/>
+                                })
+                            }
+                            {
+                                (typeof props.timeSignatureMap==="undefined"?[]:props.timeSignatureMap).map((item)=>{
+                                    return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.time} strokeDasharray="3 3" strokeWidth={2}/>
+                                })
+                            }
+                            {
+                                (typeof props.tempoIndicationMap==="undefined"?[]:props.tempoIndicationMap).map((item)=>{
+                                    if(blacklistedTempoTicks.includes(item['tick'])) return null;
+                                    return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.tempo} strokeDasharray="3 3" strokeWidth={2}/>
+                                })
+                            }
+                            {
+                                paceArray.map((item)=> {
+                                    let quality = (item['accelerating']) ? "Accel." : "Rit."
+                                    let col = (item['accelerating']) ? signatureColors.acc : signatureColors.rit
+                                    return (
+                                        <ReferenceArea x1={1 + (item['start'] / ticksPerBeat)}
+                                                       x2={1 + (item['end'] / ticksPerBeat)} stroke={col}
+                                                       fill={col}
+                                        />
+                                    )
+                                })
+                            }
+                            <Brush dataKey="beat" height={30} stroke="#387dd6"/>
 
-                <ResponsiveContainer width="100%" height="100%">
-                    <LineChart
-                            width={500}
-                            height={300}
-                            data={lineData}
-                            margin={{
-                                    top: 5,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
-                            }}
-                        >
-                        <CartesianGrid strokeDasharray="1 1" />
-                        <XAxis domain={`[0,${lineData.length}]`} scale="linear" interval="preserveStart" type="number" dataKey="beat" label={{ value: 'Beat number', position: 'bottom' }}/>
-                        <YAxis domain={["dataMin-10","dataMax+10"]}  label={{ value: 'Pitch (~log Hz)', angle: -90, position: 'left' }}/>
-                        <Tooltip content={
-                            <CustomTooltip
-                                payload
-                                keyMap={(typeof props.keySignatureMap==="undefined"?[]:props.keySignatureMap)}
-                                timeMap={(typeof props.timeSignatureMap==="undefined"?[]:props.timeSignatureMap)}
-                                tempoMap={(typeof props.tempoIndicationMap==="undefined"?[]:props.tempoIndicationMap)}
-                                chordDictionary={chordDictionary}
-                                intervalDictionary={intervalDictionary}
-                                props/> }
-                        />
-                        <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
-                        {
-                            (typeof props.keySignatureMap==="undefined"?[]:props.keySignatureMap).map((item)=>{
-                                return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.key} strokeDasharray="3 3" strokeWidth={2}/>
-                            })
-                        }
-                        {
-                            (typeof props.timeSignatureMap==="undefined"?[]:props.timeSignatureMap).map((item)=>{
-                                return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.time} strokeDasharray="3 3" strokeWidth={2}/>
-                            })
-                        }
-                        {
-                            (typeof props.tempoIndicationMap==="undefined"?[]:props.tempoIndicationMap).map((item)=>{
-                                if(blacklistedTempoTicks.includes(item['tick'])) return null;
-                                return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.tempo} strokeDasharray="3 3" strokeWidth={2}/>
-                            })
-                        }
-                        {
-                            paceArray.map((item)=> {
-                                let quality = (item['accelerating']) ? "Accel." : "Rit."
-                                let col = (item['accelerating']) ? signatureColors.acc : signatureColors.rit
-                                return (
-                                    <ReferenceArea x1={1 + (item['start'] / ticksPerBeat)}
-                                                   x2={1 + (item['end'] / ticksPerBeat)} stroke={col}
-                                                   fill={col}
-                                    />
-                                )
-                            })
-                        }
-                        <Brush dataKey="beat" height={30} stroke="#387dd6"/>
-
-                        {items.map((value,index)=>{
-                            return <Line key={voiceName(value)} dataKey={voiceName(value)} stroke={color[index%13]} type="monotone" strokeWidth={2}/>
-                        })}
-                    </LineChart>
-                </ResponsiveContainer>
+                            {items.map((value,index)=>{
+                                return <Line key={voiceName(value)} dataKey={voiceName(value)} stroke={color[index%13]} type="monotone" strokeWidth={2}/>
+                            })}
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
             </div>
-        )]
+        )
     }
 }
 
