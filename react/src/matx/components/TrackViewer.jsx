@@ -18,6 +18,8 @@ import {Label} from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 
 
+const zoomProportion = 0.2
+
 const signatureColors = {
     time: "#43aa8b",
     key: "#184589",
@@ -139,7 +141,6 @@ function getChord(notes, dictionary){
          * @param error
          */
         (error)=>{
-            console.error("Chord request failed : "+JSON.stringify(error))
             return ""
         }
     )
@@ -381,6 +382,8 @@ function TrackViewer (props) {
             counter++
         }
 
+        lineData.sort((a,b)=>{return a['tick']-b['tick']})
+
         const items = []
         for(let x = 0; x < maxVoices; x++){
             items.push(x)
@@ -404,6 +407,9 @@ function TrackViewer (props) {
         let blacklistedTempoTicks = []
         let isRit = false
         let isAcc = false
+        let isTempoChange = (props.tempoIndicationMap.length > 1)
+        let isKeyChange = (props.keySignatureMap.length > 1)
+        let isTimeChange = (props.timeSignatureMap.length > 1)
         if(typeof props.tempoIndicationMap!=="undefined" && typeof props.timeSignatureMap!=="undefined"){
             //go through all pairs of items in the map
             props.tempoIndicationMap.sort((a,b)=>{return a['tick'] - b['tick']})
@@ -425,30 +431,42 @@ function TrackViewer (props) {
                         if(!blacklistedTempoTicks.includes(tick)) blacklistedTempoTicks.push(tick)
                 }
             }
-            let currentIndex = 0
-            while(true){
-                let currentItem = paceArray[currentIndex]
-                if(typeof currentItem === 'undefined') break //stop if there are no more items
-                //combine as many items as possible
-                let lookahead = currentIndex
-                let lookaheadItem = currentItem
-                let nextItem = paceArray[lookahead+1]
-                while(typeof nextItem !== 'undefined' && nextItem['start']){
-                    lookahead++
-                    lookaheadItem = paceArray[lookahead]
-                    nextItem = paceArray[lookahead+1]
-                }
-                //combine all the items between the indices
-                let merged = {start:currentItem['start'], end: lookaheadItem['end'], accelerating: currentItem['accelerating']}
-                let deleted = (lookahead - currentIndex) + 1
-                paceArray.splice(currentIndex,deleted,merged)
 
-                currentIndex++
+            let startIndex = 0
+            while(true){
+                let startItem = paceArray[startIndex]
+                if(typeof startItem === 'undefined') break //stop if there are no more items
+
+                //combine as many items as possible
+                let currIndex = startIndex
+                let curr = startItem
+                let next = paceArray[currIndex+1]
+                while(next && next['start']===curr['end'] && next['accelerating']===curr['accelerating']){
+                    currIndex++
+                    curr = paceArray[currIndex]
+                    next = paceArray[currIndex+1]
+                }
+
+                let threshold = ticksPerBeat
+                let rangeTicks = curr['end']-startItem['start']
+                if(rangeTicks > threshold){
+                    //combine all the items between the indices
+                    let merged = {start:startItem['start'], end: curr['end'], accelerating: startItem['accelerating']}
+                    let deleted = (currIndex - startIndex) + 1
+                    paceArray.splice(startIndex,deleted,merged)
+                    startIndex++
+                }
+                else{
+                    let deleted = (currIndex - startIndex) + 1
+                    paceArray.splice(startIndex,deleted)
+                }
             }
+
 
         }
 
-
+        let startIndex = (lineData.length!==0)?(lineData[0]['tick'] / ticksPerBeat)+1:1
+        let endIndex = (lineData.length!==0)?Math.floor((1 + (lineData[0]['tick'] / ticksPerBeat) + (lineData[lineData.length-1]['tick'] / ticksPerBeat))/2):0
 
 
         return (
@@ -475,6 +493,37 @@ function TrackViewer (props) {
                         </Grid>:
                         null
                     }
+                    {
+                        isKeyChange?
+                            <Grid item justifyContent={"center"}>
+                                <Grid container alignItems={"center"}>
+                                    <Grid item><Icon style={{fontSize:"12px",color: signatureColors.key}}>fiber_manual_record</Icon></Grid>
+                                    <Grid item> Key Signature Change </Grid>
+                                </Grid>
+                            </Grid>:
+                            null
+                    }
+                    {
+                        isTimeChange?
+                            <Grid item justifyContent={"center"}>
+                                <Grid container alignItems={"center"}>
+                                    <Grid item><Icon style={{fontSize:"12px",color: signatureColors.time}}>fiber_manual_record</Icon></Grid>
+                                    <Grid item> Time Signature Change </Grid>
+                                </Grid>
+                            </Grid>:
+                            null
+                    }
+                    {
+                        isTempoChange?
+                            <Grid item justifyContent={"center"}>
+                                <Grid container alignItems={"center"}>
+                                    <Grid item><Icon style={{fontSize:"12px",color: signatureColors.tempo}}>fiber_manual_record</Icon></Grid>
+                                    <Grid item> Tempo Indication Change </Grid>
+                                </Grid>
+                            </Grid>:
+                            null
+                    }
+
                 </Grid>
 
                 <div style={{ height: '400px', width: '100%'}}>
@@ -491,7 +540,7 @@ function TrackViewer (props) {
                                 }}
                             >
                             <CartesianGrid strokeDasharray="1 1" />
-                            <XAxis domain={`[0,${lineData.length}]`} scale="linear" interval="preserveStart" type="number" dataKey="beat" label={{ value: 'Beat number', position: 'bottom' }}/>
+                            <XAxis domain={null} scale="linear" interval="preserveStart" type="number" dataKey="beat" label={{ value: 'Beat number', position: 'bottom' }}/>
                             <YAxis domain={["dataMin-10","dataMax+10"]}  label={{ value: 'Pitch (~log Hz)', angle: -90, position: 'left' }}/>
                             <Tooltip content={
                                 <CustomTooltip
