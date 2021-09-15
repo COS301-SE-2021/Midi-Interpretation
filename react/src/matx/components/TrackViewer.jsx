@@ -421,10 +421,18 @@ function TrackViewer (props) {
         let blacklistedTempoTicks = []
         let isRit = false
         let isAcc = false
-        let isTempoChange = (props.tempoIndicationMap.length > 1)
-        let isKeyChange = (props.keySignatureMap.length > 1)
-        let isTimeChange = (props.timeSignatureMap.length > 1)
+        let isTempoChange = false
+        let isKeyChange = false
+        let isTimeChange = false
+
+
         if(typeof props.tempoIndicationMap!=="undefined" && typeof props.timeSignatureMap!=="undefined"){
+
+            isTempoChange = (props.tempoIndicationMap.length > 1)
+            isKeyChange = (props.keySignatureMap.length > 1)
+            isTimeChange = (props.timeSignatureMap.length > 1)
+
+
             //go through all pairs of items in the map
             props.tempoIndicationMap.sort((a,b)=>{return a['tick'] - b['tick']})
             for(let pair of pairwise(props.tempoIndicationMap)){
@@ -478,9 +486,6 @@ function TrackViewer (props) {
 
 
         }
-
-        let startIndex = (lineData.length!==0)?(lineData[0]['tick'] / ticksPerBeat)+1:1
-        let endIndex = (lineData.length!==0)?Math.floor((1 + (lineData[0]['tick'] / ticksPerBeat) + (lineData[lineData.length-1]['tick'] / ticksPerBeat))/2):0
 
 
         return (
