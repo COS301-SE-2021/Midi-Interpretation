@@ -271,6 +271,7 @@ function CustomTooltip (props) {
         }
 
         return (
+
             <div className="custom-tooltip bg-white text-primary elevation-z3 ">
                 <div className="m-3">
                     <Grid container
@@ -286,27 +287,40 @@ function CustomTooltip (props) {
 
                         {renderSignatures()}
 
-                        <Grid item>
-                            <aside className="label">Pitches:</aside>
-                        </Grid>
-
-
                         {props.payload.map((item, index) => {
                             const note = valueToNote(item.value)
                             const comp = item.payload['composite'][index]
                             let isPercussive = comp['isPercussive']
                             if(isPercussive) {
-                                return(
+                                let k =[(
                                     <Grid item>
                                         <aside style={{color: `${item.stroke}`}}>{getPercussiveInstrument(item.value)}</aside>
                                     </Grid>
-                                )
+                                )]
+                                if(index===0){
+                                    k.unshift(
+                                        <Grid item>
+                                            <aside className="label">Timbres:</aside>
+                                        </Grid>
+                                    )
+                                }
+                                return k
                             }
-                            else return (
-                                <Grid item>
-                                    <aside style={{color: `${item.stroke}`}}>{note['pitch']}-{note['octave']}</aside>
-                                </Grid>
-                            )
+                            else{
+                                let k =[(
+                                    <Grid item>
+                                        <aside style={{color: `${item.stroke}`}}>{note['pitch']}-{note['octave']}</aside>
+                                    </Grid>
+                                )]
+                                if(index===0){
+                                    k.unshift(
+                                        <Grid item>
+                                            <aside className="label">Pitches:</aside>
+                                        </Grid>
+                                    )
+                                }
+                                return k
+                            }
                         })}
                     </Grid>
                 </div>
