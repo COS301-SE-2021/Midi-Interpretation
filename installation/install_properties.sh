@@ -53,7 +53,7 @@ midisense.config.CROSS_ORIGIN=*
 # SCRIPTING
 
 midisense.config.MIDI_INTERPRETATION_SCRIPT_PATH=$base_directory/backend/src/main/java/com/noxception/midisense/interpreter/parser/interpreter.py
-midisense.config.MIDI_INTERPRETATION_URL=http://localhost:8080/
+midisense.config.MIDI_INTERPRETATION_URL=http://localhost:5000/interpret
 midisense.config.MIDI_INTERPRETATION_TIMEOUT=15
 
 # FILE STORAGE
