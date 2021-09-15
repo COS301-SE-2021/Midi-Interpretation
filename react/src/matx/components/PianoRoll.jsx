@@ -121,7 +121,7 @@ function PianoRoll(props) {
 
     const updateWH = () => {
         setXMax(props.state.recording.length)
-        setYMax(props.state.config.noteRange.last - props.state.config.noteRange.first + 1)
+        setYMax(props.state.config.noteRange.last - props.state.config.noteRange.first + 2)
     }
 
     /**
@@ -278,7 +278,7 @@ function PianoRoll(props) {
                             <Grid item>
                                 {
                                     range(ymax).map((group, groupIndex) => {
-                                        return renderRow(groupIndex, 4)
+                                        return renderRow(groupIndex)
                                     })
                                 }
                             </Grid>
