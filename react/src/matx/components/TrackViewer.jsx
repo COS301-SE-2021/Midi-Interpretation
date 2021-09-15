@@ -402,6 +402,8 @@ function TrackViewer (props) {
         //pre-processing ritardando / ritenueto
         let paceArray = []
         let blacklistedTempoTicks = []
+        let isRit = false
+        let isAcc = false
         if(typeof props.tempoIndicationMap!=="undefined" && typeof props.timeSignatureMap!=="undefined"){
             //go through all pairs of items in the map
             props.tempoIndicationMap.sort((a,b)=>{return a['tick'] - b['tick']})
@@ -415,6 +417,8 @@ function TrackViewer (props) {
                 let endTick = pair[1]['tick']
                 if(endTick < startTick+length){
                     let accelerating = (pair[0]['tempoIndication'] <= pair[1]['tempoIndication'])
+                    if(accelerating) isAcc = true
+                    if(!accelerating) isRit = true
                     paceArray.push({start:startTick, end: endTick, accelerating: accelerating})
                     //blacklist from representation
                     for(let tick of [startTick,endTick])
@@ -451,18 +455,26 @@ function TrackViewer (props) {
             <div>
 
                 <Grid container direction="row" justifyContent={"center"} spacing={2}>
-                    <Grid item justifyContent={"center"}>
-                        <Grid container alignItems={"stretch"}>
-                            <Grid item><Icon style={{fontSize:"12px",color: signatureColors.rit}}>fiber_manual_record</Icon></Grid>
-                            <Grid item> Ritardando</Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item justifyContent={"center"}>
-                        <Grid container alignItems={"center"}>
-                            <Grid item><Icon style={{fontSize:"12px",color: signatureColors.acc}}>fiber_manual_record</Icon></Grid>
-                            <Grid item> Accelerando</Grid>
-                        </Grid>
-                    </Grid>
+                    {
+                        isRit?
+                        <Grid item justifyContent={"center"}>
+                            <Grid container alignItems={"stretch"}>
+                                <Grid item><Icon style={{fontSize:"12px",color: signatureColors.rit}}>fiber_manual_record</Icon></Grid>
+                                <Grid item> Ritardando</Grid>
+                            </Grid>
+                        </Grid>:
+                        null
+                    }
+                    {
+                        isAcc?
+                        <Grid item justifyContent={"center"}>
+                            <Grid container alignItems={"center"}>
+                                <Grid item><Icon style={{fontSize:"12px",color: signatureColors.acc}}>fiber_manual_record</Icon></Grid>
+                                <Grid item> Accelerando</Grid>
+                            </Grid>
+                        </Grid>:
+                        null
+                    }
                 </Grid>
 
                 <div style={{ height: '400px', width: '100%'}}>
