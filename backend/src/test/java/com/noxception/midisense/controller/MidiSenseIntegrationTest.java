@@ -25,7 +25,7 @@ public class MidiSenseIntegrationTest {
                 .content(convertToJson(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
-        return handleResponse(mvc,req,useCase,startTime, conditions, maxRequestTime);
+        return handleResponse(mvc,req,useCase,startTime, conditions, requestTimeout);
     }
 
     public MvcResult mockRequest(String subsystem, String useCase, Object request, MockMvc mvc) throws Exception {
