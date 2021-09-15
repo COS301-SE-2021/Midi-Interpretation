@@ -486,7 +486,6 @@ class Display extends Component {
                   <SimpleCard title="Timeline" subtitle="Here you'll find the sequence of events for a chosen channel.">
                       <TrackMenu setTrack={this.setCurrentTrack} inputOptions={this.state.trackListing}/>
                       <TrackViewer
-
                           trackData={{"trackData":this.state.trackData, "ticksPerBeat":this.state.ticksPerBeat, "instrument": this.state.instrument, "keySignatureMap":this.state.keySignatureMap, "timeSignatureMap":this.state.timeSignatureMap,"tempoIndicationMap":this.state.tempoIndicationMap}}
                           callSelect={this.setSelected}
                       />

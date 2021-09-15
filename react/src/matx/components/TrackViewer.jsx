@@ -3,7 +3,7 @@ import {
     CartesianGrid,
     Legend,
     Line,
-    LineChart,
+    LineChart, ReferenceArea,
     ReferenceLine,
     ResponsiveContainer,
     Tooltip,
@@ -11,15 +11,19 @@ import {
     YAxis,
 } from 'recharts';
 import React from "react";
-import {Grid} from "@material-ui/core";
+import {Grid, Icon} from "@material-ui/core";
 import * as ReactDOMServer from "react-dom/server";
 import MidiSenseService from "../../app/services/MidiSenseService";
+import {Label} from "@material-ui/icons";
+import Button from "@material-ui/core/Button";
 
 
 const signatureColors = {
-    time: "#ad0e0e",
-    key: "#459a30",
-    tempo: "#1e34c1"
+    time: "#43aa8b",
+    key: "#184589",
+    tempo: "#f8961e",
+    acc: "#74bb25",
+    rit: "#F94144"
 }
 
 
@@ -241,7 +245,7 @@ function CustomTooltip (props) {
                     (
                         <Grid item>
                             <aside style={{color: signatureColors.key}}>Key
-                                Signature: {currentKey['keySignature']}</aside>
+                                Signature: <b>{currentKey['keySignature']}</b></aside>
                         </Grid>
                     ),
                 (currentTime === null) ?
@@ -249,7 +253,7 @@ function CustomTooltip (props) {
                     (
                         <Grid item>
                             <aside style={{color: signatureColors.time}}>Time
-                                Signature: {currentTime['timeSignature']['numBeats']}|{currentTime['timeSignature']['beatValue']}</aside>
+                                Signature: <b>{currentTime['timeSignature']['numBeats']}|{currentTime['timeSignature']['beatValue']}</b></aside>
                         </Grid>
                     ),
                 (currentTempo === null) ?
@@ -257,7 +261,7 @@ function CustomTooltip (props) {
                     (
                         <Grid item>
                             <aside
-                                style={{color: signatureColors.tempo}}>Tempo: {currentTempo['tempoIndication']} Crotchet
+                                style={{color: signatureColors.tempo}}>Tempo: <b>{currentTempo['tempoIndication']}</b> Crotchet
                                 BPM
                             </aside>
                         </Grid>
@@ -277,7 +281,7 @@ function CustomTooltip (props) {
                     >
 
                         <Grid item>
-                            <p className="label">Crotchet Beat: {props.payload[0].payload['beat']}</p>
+                            <p className="label">Crotchet Beat: <b>{props.payload[0].payload['beat']}</b></p>
                         </Grid>
 
                         {renderSignatures()}
@@ -348,6 +352,7 @@ function TrackViewer (props) {
             "#8378EA",
             "#96BFFF"
         ]
+        //pre-processing lines
         let maxVoices = 0
         for(let tick of props.trackData){
             if(tick.notes.length>maxVoices){
@@ -383,8 +388,80 @@ function TrackViewer (props) {
         }
 
 
-        return (
+
+        function * pairwise (iterable) {
+            const iterator = iterable[Symbol.iterator]()
+            let current = iterator.next()
+            let next = iterator.next()
+            while (!next.done) {
+                yield [current.value, next.value]
+                current = next
+                next = iterator.next()
+            }
+        }
+
+        //pre-processing ritardando / ritenueto
+        let paceArray = []
+        let blacklistedTempoTicks = []
+        if(typeof props.tempoIndicationMap!=="undefined" && typeof props.timeSignatureMap!=="undefined"){
+            //go through all pairs of items in the map
+            props.tempoIndicationMap.sort((a,b)=>{return a['tick'] - b['tick']})
+            for(let pair of pairwise(props.tempoIndicationMap)){
+                //get the time signature at the point of start
+                let startTick = pair[0]['tick']
+                let ts = getCurrentMapItem(startTick, props.timeSignatureMap)
+                //get the length of bar in ticks
+                let length = (4*ts['timeSignature']['numBeats']*ticksPerBeat)/ts['timeSignature']['beatValue']
+                //check to see if the next change is within a bar
+                let endTick = pair[1]['tick']
+                if(endTick < startTick+length){
+                    let accelerating = (pair[0]['tempoIndication'] <= pair[1]['tempoIndication'])
+                    paceArray.push({start:startTick, end: endTick, accelerating: accelerating})
+                    //blacklist from representation
+                    for(let tick of [startTick,endTick])
+                        if(!blacklistedTempoTicks.includes(tick)) blacklistedTempoTicks.push(tick)
+                }
+            }
+            let currentIndex = 0
+            while(true){
+                let currentItem = paceArray[currentIndex]
+                if(typeof currentItem === 'undefined') break //stop if there are no more items
+                //combine as many items as possible
+                let lookahead = currentIndex
+                let lookaheadItem = currentItem
+                let nextItem = paceArray[lookahead+1]
+                while(typeof nextItem !== 'undefined' && nextItem['start']){
+                    lookahead++
+                    lookaheadItem = paceArray[lookahead]
+                    nextItem = paceArray[lookahead+1]
+                }
+                //combine all the items between the indices
+                let merged = {start:currentItem['start'], end: lookaheadItem['end'], accelerating: currentItem['accelerating']}
+                let deleted = (lookahead - currentIndex) + 1
+                paceArray.splice(currentIndex,deleted,merged)
+
+                currentIndex++
+            }
+
+        }
+
+
+
+
+        return [(
+            <Grid container justifyContent={"center"} style={{border:"1px solid red"}}>
+                <Grid item container alignItems={"center"} style={{display:"inline",border:"1px solid red"}}>
+                    <Grid item><Icon style={{color: signatureColors.rit}}>fiber_manual_record</Icon></Grid>
+                    <Grid item>Ritardando</Grid>
+                </Grid>
+                <Grid item container alignItems={"center"} style={{display:"inline",border:"1px solid red"}}>
+                    <Grid item><Icon style={{color: signatureColors.acc}}>fiber_manual_record</Icon></Grid>
+                    <Grid item>Accelerando</Grid>
+                </Grid>
+            </Grid>),(
+
             <div style={{ height: '400px', width: '100%'}}>
+
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                             width={500}
@@ -423,7 +500,20 @@ function TrackViewer (props) {
                         }
                         {
                             (typeof props.tempoIndicationMap==="undefined"?[]:props.tempoIndicationMap).map((item)=>{
+                                if(blacklistedTempoTicks.includes(item['tick'])) return null;
                                 return <ReferenceLine x={1+(item['tick'] / ticksPerBeat)} stroke={signatureColors.tempo} strokeDasharray="3 3" strokeWidth={2}/>
+                            })
+                        }
+                        {
+                            paceArray.map((item)=> {
+                                let quality = (item['accelerating']) ? "Accel." : "Rit."
+                                let col = (item['accelerating']) ? signatureColors.acc : signatureColors.rit
+                                return (
+                                    <ReferenceArea x1={1 + (item['start'] / ticksPerBeat)}
+                                                   x2={1 + (item['end'] / ticksPerBeat)} stroke={col}
+                                                   fill={col}
+                                    />
+                                )
                             })
                         }
                         <Brush dataKey="beat" height={30} stroke="#387dd6"/>
@@ -434,7 +524,7 @@ function TrackViewer (props) {
                     </LineChart>
                 </ResponsiveContainer>
             </div>
-        )
+        )]
     }
 }
 
