@@ -23,6 +23,29 @@ Such that novices and experts alike can find some value in the resultant musicol
 # Version Changelog #
 
 ---
+## + Version 1.0.0  | <b style="color:green">Demo 4</b> standard
+#### New Additions and Fixes: ####
+
+- Live Analysis feature addition.
+
+
+### Notes and Resources ###
+For a detailed description of the system, its requirement satisfactions and architecture, consult the following resources.
+* :open_book: [Software Requirements Specification](https://www.overleaf.com/read/qsxnfqfpwsjx)
+* :open_book: [Architectural Requirements](https://www.overleaf.com/read/cxcxhxdqwvcm )
+* :open_book: [Coding Quality Document](https://www.overleaf.com/read/nnvdgdcnctyk)
+* :open_book: [Testing Policy](https://www.overleaf.com/read/rnpmsnsvbnjh)
+* 
+For a detailed description of how to install and use the service, see the resources below.
+* :open_book: [Installation Manual](https://www.overleaf.com/read/wqzgbdtyczry)
+* :open_book: [User Manual](https://www.overleaf.com/read/qvwdczpqtwmk)
+
+
+### Demonstration ###
+
+For a run-through of the changes made since Demo 2, consult the following demonstration recording.
+
+* :tv: [Demonstration 3](https://drive.google.com/file/d/19XxAZ-36f_93X-xQWs0fHf8Z1O3AfQsu/view)
 
 ## + Version 1.0.0  | <b style="color:green">Demo 3</b> standard 
 #### New Additions and Fixes: ####
