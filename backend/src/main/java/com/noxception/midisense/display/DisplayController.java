@@ -138,11 +138,13 @@ public class DisplayController implements DisplayApi {
     @Override
     public ResponseEntity<DisplayGetTrackInfoResponse> getTrackInfo(DisplayGetTrackInfoRequest body) {
 
+        //define response object
         DisplayGetTrackInfoResponse responseObject = new DisplayGetTrackInfoResponse();
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
 
+            //pass file designator into request object
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
@@ -154,12 +156,15 @@ public class DisplayController implements DisplayApi {
 
             for(byte index: res.getTrackIndices()){
 
+                //define inner object to add indexes and tracks
                 String trackName = res.getTrackMap().get(index);
                 DisplayGetTrackInfoResponseInner inner = new DisplayGetTrackInfoResponseInner();
 
+                //add trackName from trackmap in response
                 inner.setIndex((int) index);
                 inner.setTrackName(trackName);
 
+                //add the inner object to response object and success message to response
                 responseObject.add(inner);
                 inner.setSuccess(true);
                 inner.setMessage("Successfully retrieved track");
