@@ -4,6 +4,10 @@ import com.jayway.jsonpath.JsonPath;
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.dataclass.MidiSenseIntegrationTest;
+import com.noxception.midisense.intelligence.exceptions.EmptyChordException;
+import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
+import com.noxception.midisense.intelligence.rrobjects.AnalyseChordRequest;
+import com.noxception.midisense.intelligence.rrobjects.AnalyseChordResponse;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreRequest;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import org.junit.Test;
@@ -202,6 +206,37 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest {
         MvcResult response = mockRequest(
                 "intelligence",
                 "analyseGenre",
+                request,
+                mvc,
+                conditions,
+                maxAnalyseGenreTime
+
+        );
+
+    }
+
+    @Test
+    @DisplayName("Analyse Chord: input [Valid Byte Stream] expect [chord analysis]")
+    public void testBlackBox_AnalyseChord_IfValidByteStream() throws Exception {
+
+        //valid byte stream
+        byte[] validStream = new byte[]{3, 6, 9, 12};
+
+        //test with request response
+        AnalyseChordRequest request = new AnalyseChordRequest(validStream);
+
+        //specify condition of request
+        List<ResultMatcher> conditions = new ArrayList<>();
+
+        //expect 200 response code
+        conditions.add(status().is2xxSuccessful());
+        //for a json response
+        conditions.add(content().contentType(MediaType.APPLICATION_JSON));
+
+        //make a request
+        MvcResult response = mockRequest(
+                "intelligence",
+                "analyseChord",
                 request,
                 mvc,
                 conditions,
