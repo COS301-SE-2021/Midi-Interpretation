@@ -29,12 +29,6 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-/**
- * Class that implements testing against the Interpreter Service, both in terms of white and blackbox testing.
- *
- * See {@link com.noxception.midisense.dataclass.MidiSenseIntegrationTest} for an explanation of the mechanisms underlying
- * the actual mock request framework. This class merely illustrates testing against a specific collection of endpoints.
- */
 class InterpreterServiceTest {
 
     //services and configs

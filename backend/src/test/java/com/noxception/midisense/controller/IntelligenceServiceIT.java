@@ -34,6 +34,12 @@ import java.util.UUID;
 import static com.noxception.midisense.dataclass.TestTimeouts.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Class that implements testing against the Intelligence Service, both in terms of white and blackbox testing.
+ *
+ * See {@link com.noxception.midisense.dataclass.MidiSenseIntegrationTest} for an explanation of the mechanisms underlying
+ * the actual mock request framework. This class merely illustrates testing against a specific collection of endpoints.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
