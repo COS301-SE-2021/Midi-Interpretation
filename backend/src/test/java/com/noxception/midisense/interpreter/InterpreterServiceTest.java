@@ -2,7 +2,6 @@ package com.noxception.midisense.interpreter;
 
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.StandardConfig;
-import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.dataclass.MockRequestBroker;
@@ -29,7 +28,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InterpreterServiceTest extends MIDISenseUnitTest {
+class InterpreterServiceTest {
 
     //services and configs
     private InterpreterService interpreterService;

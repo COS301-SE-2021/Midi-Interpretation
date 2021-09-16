@@ -2,7 +2,6 @@ package com.noxception.midisense.display;
 
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.StandardConfig;
-import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
@@ -23,7 +22,7 @@ import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DisplayServiceTest extends MIDISenseUnitTest {
+class DisplayServiceTest {
 
     //services and configs
     private DisplayServiceImpl displayService;

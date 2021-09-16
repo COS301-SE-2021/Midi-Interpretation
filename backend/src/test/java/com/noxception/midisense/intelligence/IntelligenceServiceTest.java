@@ -2,7 +2,6 @@ package com.noxception.midisense.intelligence;
 
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.StandardConfig;
-import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.dataclass.MockRepository;
 import com.noxception.midisense.intelligence.dataclass.ChordPrediction;
@@ -34,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class IntelligenceServiceTest extends MIDISenseUnitTest {
+public class IntelligenceServiceTest {
 
     private IntelligenceService intelligenceService;
     private StandardConfig configurations;
@@ -99,8 +98,6 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                //System.out.printf("TESTING PITCH OFFSET: ", k);
-                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -140,8 +137,6 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                //System.out.printf("TESTING PITCH OFFSET: ", k);
-                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -181,8 +176,6 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                //System.out.printf("TESTING PITCH OFFSET: ", k);
-                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -222,8 +215,6 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                //System.out.printf("TESTING PITCH OFFSET: ", k);
-                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -263,8 +254,6 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                //System.out.printf("TESTING PITCH OFFSET: ", k);
-                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -304,8 +293,6 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                //System.out.printf("TESTING PITCH OFFSET: ", k);
-                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -347,8 +334,6 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                //System.out.printf("TESTING PITCH OFFSET: ", k);
-                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -390,8 +375,6 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                //System.out.printf("TESTING PITCH OFFSET: ", k);
-                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -433,8 +416,6 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                //System.out.printf("TESTING PITCH OFFSET: ", k);
-                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -476,8 +457,6 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                //System.out.printf("TESTING PITCH OFFSET: ", k);
-                //System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
                 assertEquals(responseChord,expectedChord);
             }
 
@@ -520,8 +499,6 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
                 String responseChord = response.getChord();
                 String expectedChord = testingResponses[j].getCommonName();
-                System.out.printf("TESTING PITCH OFFSET: ", k);
-                System.out.printf("EXPECTED %s GOT %s%n",expectedChord,responseChord);
                 assertEquals(responseChord,expectedChord);
             }
 
