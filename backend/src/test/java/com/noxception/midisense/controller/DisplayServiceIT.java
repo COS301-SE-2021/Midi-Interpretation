@@ -215,7 +215,6 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest {
                 maxDisplayTime
         );
 
-        //TODO: Match regex response
         String trackString = JsonPath.read(response.getResponse().getContentAsString(), "$.trackString");
         //Check that there is a substring for an inner array with countably many items
         Pattern validResponse = Pattern.compile(this.validTrackPattern,Pattern.MULTILINE);

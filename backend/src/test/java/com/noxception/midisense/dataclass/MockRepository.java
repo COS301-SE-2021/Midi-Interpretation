@@ -30,10 +30,6 @@ public class MockRepository extends DatabaseManager {
     private final int mockOffVelocity = 0;
     private final int mockDuration = 600;
 
-    //TODO: Claudio find a way to load and save scores. Maybe try saving before you need to make calls:
-    // Hint: generate a temp midi file and use parseJSON to
-    // generate a score to save, before you need to find by designator
-
     @Override
     public Optional<ScoreEntity> findByFileDesignator(String fileDesignator) {
         for(ScoreEntity s: database){

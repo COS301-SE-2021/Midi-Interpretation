@@ -15,8 +15,6 @@ import java.util.Properties;
  */
 public class MockConfigurationSettings extends StandardConfig {
 
-    //TODO: Claudio fill in a framework for loading settings here
-
     public MockConfigurationSettings(){
         try {
             FileInputStream configFile = new FileInputStream("src/main/resources/application.properties");
