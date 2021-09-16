@@ -32,38 +32,29 @@ install_dir="$base_directory/$install_location"
 max_file_upload_size=128
 
 prop_content="
-# REPOSITORY
+# REPOSITORY-BASED CONFIGURATION
 
 spring.jpa.hibernate.ddl-auto=update
 spring.datasource.url=$MIDI_URL
 spring.datasource.username=$MIDI_USER
 spring.datasource.password=$MIDI_PASS
 
-# LOGGING
+# LOGGING-RELATED CONFIGURATIONS
 
 logging.level.root=INFO
 debug=false
 spring.jpa.open-in-view=false
 spring.mustache.check-template-location=false
 
-# REQUESTS
+# LINK TO INTERPRETATION
 
-midisense.config.CROSS_ORIGIN=*
-
-# SCRIPTING
-
-midisense.config.MIDI_INTERPRETATION_SCRIPT_PATH=$base_directory/backend/src/main/java/com/noxception/midisense/interpreter/parser/interpreter.py
 midisense.config.MIDI_INTERPRETATION_URL=http://localhost:5000/interpret
 midisense.config.MIDI_INTERPRETATION_TIMEOUT=15
 
-# FILE STORAGE
+# FILE STORAGE CONFIGURATIONS
 
 midisense.config.MIDI_STORAGE_ROOT=$MIDI_STORAGE_ROOT/
-
 midisense.config.FILE_FORMAT=.mid
-
-# MAX FILE SIZE
-
 midisense.config.MAX_FILE_UPLOAD_SIZE=$max_file_upload_size
 midisense.config.DELETE_UPON_INTERPRET=false
 

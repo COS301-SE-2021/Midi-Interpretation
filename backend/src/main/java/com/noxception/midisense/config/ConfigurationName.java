@@ -5,9 +5,6 @@ package com.noxception.midisense.config;
  */
 public enum ConfigurationName {
 
-    //handles request logic
-    CROSS_ORIGIN,
-
     //handles file storage logic
     MIDI_STORAGE_ROOT,
     FILE_FORMAT,
@@ -15,7 +12,6 @@ public enum ConfigurationName {
     DELETE_UPON_INTERPRET,
 
     //handles interpretation
-    MIDI_INTERPRETATION_SCRIPT_PATH,
     MIDI_INTERPRETATION_URL,
     MIDI_INTERPRETATION_TIMEOUT,
 
