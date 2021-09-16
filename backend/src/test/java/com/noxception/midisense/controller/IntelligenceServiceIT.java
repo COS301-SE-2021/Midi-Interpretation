@@ -33,7 +33,13 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
     @Autowired
     private MIDISenseConfig configurations;
 
-    /**analyseGenre*/
+
+
+    //====================================================================================================================//
+    //                                           BLACK BOX TESTING BELOW                                                  //
+    //====================================================================================================================//
+
+    /*AnalyseGenre*/
     @Test
     @DisplayName("Analyse Genre: input [designator for a file in storage] expect [genre array]")
     public void test_BlackBox_AnalyseGenre_IfValidFileDesignator_ThenAccurateInfo() throws Exception {
@@ -71,6 +77,7 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
 
     }
 
+    /*AnalyseGenre*/
     @Test
     @DisplayName("Analyse Genre: input [designator for a file not in DB] expect [genre array]")
     public void test_BlackBox_AnalyseGenre_IfNotValidDesignator_ThenException() throws Exception {
@@ -97,6 +104,13 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
 
     }
 
+
+
+    //====================================================================================================================//
+    //                                           WHITE BOX TESTING BELOW                                                  //
+    //====================================================================================================================//
+
+    /*AnalyseGenre*/
     @Test
     @DisplayName("Analyse Genre: input [designator for a file in storage] expect [genre array]")
     public void test_WhiteBox_AnalyseGenre_IfValidFileDesignator_ThenAccurateInfo() throws Exception {

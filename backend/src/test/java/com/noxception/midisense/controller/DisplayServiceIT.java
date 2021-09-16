@@ -40,7 +40,11 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     //                                         WHITE BOX TESTING BELOW                                                    //
     //====================================================================================================================//
 
-    /**GetPieceMetadata*/
+    /*GetPieceMetadata*/
+    /**Description: tests the getPieceMetadata() function to see if an object is in the database
+     * precondition - object is present in the data base
+     * post condition - returned data is accurate
+     */
     @Test
     @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [beat value a positive power of 2, beat number a positive integer]")
     public void test_WhiteBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
@@ -76,6 +80,10 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     /**GetTrackInfo*/
+    /**Description: tests the getTrackInfo() function to see if an object is in the database
+     * precondition - object is present in the data base
+     * post condition - returned data is accurate
+     */
     @Test
     @DisplayName("Get Track Info: input [Designator for file in DB] expect [A map consisting of at least 1 track]")
     public void test_WhiteBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
@@ -109,6 +117,10 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
     /**GetTrackMetadata*/
+    /**Description: tests the getTrackMetadata() function to see if an object is in the database
+     * precondition - object is present in the data base
+     * post condition - returned data is accurate
+     */
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [array consisting of metadata of 1 track]")
     public void test_WhiteBox_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception{
