@@ -12,15 +12,12 @@ import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorExceptio
 import com.noxception.midisense.interpreter.parser.KeySignature;
 import com.noxception.midisense.interpreter.parser.TempoIndication;
 import com.noxception.midisense.interpreter.parser.TimeSignature;
-import com.noxception.midisense.interpreter.parser.Track;
 import com.noxception.midisense.repository.DatabaseManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.verification.Times;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,10 +26,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DisplayServiceTest extends MIDISenseUnitTest {
 
-
+    //services and configs
     private DisplayServiceImpl displayService;
     private StandardConfig configurations;
     private DatabaseManager databaseManager;
+
+    //testing constants
+    private final String[] validKeyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj"};
+    private final String validTrackPattern = "\\{\\\"channel\\\":([0-9]|(1[0-5])),\\\"instrument\\\":\\\".+\\\",\\\"ticks_per_beat\\\":([1-9]([0-9])*),\\\"track\\\":\\[(\\{.+\\})*\\]\\}";
+
 
     @BeforeEach
     public void mountModule() {
@@ -73,9 +75,9 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
         //Check that the key signature is valid
-        String[] keyArray = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"};
+
         for(KeySignature k : res.getKeySignature()){
-            assertTrue(Arrays.asList(keyArray).contains(k.commonName));
+            assertTrue(Arrays.asList(this.validKeyArray).contains(k.commonName));
         }
 
 
@@ -268,7 +270,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
         //TODO: Adapt to new format
         //Check that there is a substring for an inner array with countably many items
-        Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
+        Pattern validResponse = Pattern.compile(validTrackPattern,Pattern.MULTILINE);
         Matcher matcher = validResponse.matcher(res.getTrackString());
 
         //see that the substring is present
@@ -468,9 +470,8 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
         //Check that the key signature is valid
-        String[] keyArray = {"Cb"};
         for(KeySignature k : res.getKeySignature()){
-            assertTrue(Arrays.asList(keyArray).contains(k.commonName));
+            assertTrue(Arrays.asList(this.validKeyArray).contains(k.commonName));
         }
 
 
@@ -512,7 +513,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //Get response
         GetTrackInfoResponse res = displayService.getTrackInfo(req);
 
-        //TODO: adapt to white box
         //Check we receive an array back with at least one entry in it
         assertFalse(res.getTrackMap().isEmpty());
 
@@ -544,7 +544,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
         //TODO: adapt to white box
         //Check that there is a substring for an inner array with countably many items
-        Pattern validResponse = Pattern.compile("\\\"notes\\\": \\[(\\{.+\\})*\\]",Pattern.MULTILINE);
+        Pattern validResponse = Pattern.compile(validTrackPattern,Pattern.MULTILINE);
         Matcher matcher = validResponse.matcher(res.getTrackString());
 
         //see that the substring is present
