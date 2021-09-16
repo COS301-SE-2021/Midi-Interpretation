@@ -146,7 +146,7 @@ public class InterpreterController implements InterpreterApi {
             responseObject.setMessage(e.getMessage());
 
         }
-
+        //return response
         return new ResponseEntity<>(responseObject,returnStatus);
     }
 
@@ -205,8 +205,11 @@ public class InterpreterController implements InterpreterApi {
      */
     private byte[] intArrayToByteArray(List<Integer> list)
     {
+        //create byte array and pass into output stream
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(baos);
+
+        //copy items in list to output stream
         for (int element : list) {
             try {
                 out.writeUTF(Integer.toString(element));
@@ -214,6 +217,7 @@ public class InterpreterController implements InterpreterApi {
                 e.printStackTrace();
             }
         }
+        //return byte array
         return baos.toByteArray();
     }
 
