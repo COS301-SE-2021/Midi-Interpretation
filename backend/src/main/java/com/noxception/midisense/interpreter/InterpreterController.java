@@ -76,7 +76,7 @@ public class InterpreterController implements InterpreterApi {
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
-
+            //pass file designator into request object
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
@@ -86,6 +86,7 @@ public class InterpreterController implements InterpreterApi {
 
             ProcessFileResponse res = interpreterService.processFile(req);
 
+            //set response status
             responseObject.setMessage(res.getMessage());
             responseObject.setSuccess(res.getSuccess());
             returnStatus = res.getSuccess()?HttpStatus.OK:HttpStatus.BAD_REQUEST;
@@ -101,7 +102,7 @@ public class InterpreterController implements InterpreterApi {
             responseObject.setMessage(e.getMessage());
 
         }
-
+        //return response object
         return new ResponseEntity<>(responseObject,returnStatus);
     }
 
