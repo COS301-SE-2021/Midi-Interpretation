@@ -65,10 +65,12 @@ public class DisplayController implements DisplayApi {
     @Override
     public ResponseEntity<DisplayGetPieceMetadataResponse> getPieceMetadata(DisplayGetPieceMetadataRequest body) {
 
+        //define response object
         DisplayGetPieceMetadataResponse responseObject = new DisplayGetPieceMetadataResponse();
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
+            //pass fileDesignator into request
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
             GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
 
@@ -105,6 +107,7 @@ public class DisplayController implements DisplayApi {
                 responseObject.addTimeSignatureMapItem(t);
             }
 
+            //set response to successful if no exceptions throw
             responseObject.setSuccess(true);
             responseObject.setMessage("Successfully retrieved metadata for "+fileDesignator);
 
@@ -114,6 +117,7 @@ public class DisplayController implements DisplayApi {
             //Log the error
             log.warn(String.format("FAILURE | To: %s | Because: %s ","getPieceMetadata",e.getMessage()));
 
+            //set response to unsuccessful
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(true);
             responseObject.setMessage(e.getMessage());
