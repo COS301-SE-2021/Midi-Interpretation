@@ -65,12 +65,12 @@ public class IntelligenceController implements IntelligenceApi {
 
     @Override
     public ResponseEntity<IntelligenceAnalyseGenreResponse> analyseGenre(IntelligenceAnalyseGenreRequest body) {
-
+        //create response object and set return status
         IntelligenceAnalyseGenreResponse responseObject = new IntelligenceAnalyseGenreResponse();
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
-
+            //pass file designator into request object
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             AnalyseGenreRequest req = new AnalyseGenreRequest(fileDesignator);
@@ -78,11 +78,14 @@ public class IntelligenceController implements IntelligenceApi {
             //Log the call for request
             log.info(String.format("Request | To: %s | For: %s | Assigned: %s","analyseGenre",fileDesignator,req.getDesignator()));
 
+            //assign genre strategy if no strategy is found
             if(!intelligenceService.hasGenreStrategy())
                 intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy(new MIDISenseConfig()));
+
+            //create response object
             AnalyseGenreResponse res = intelligenceService.analyseGenre(req);
 
-
+            //set list of recommended genres
             List<IntelligenceAnalyseGenreResponseGenreArray> list = new ArrayList<>();
             for(GenrePredication genre: res.getGenreArray()){
                 IntelligenceAnalyseGenreResponseGenreArray inner = new IntelligenceAnalyseGenreResponseGenreArray();
@@ -107,7 +110,7 @@ public class IntelligenceController implements IntelligenceApi {
             responseObject.setMessage(e.getMessage());
 
         }
-
+        //return the response object
         return new ResponseEntity<>(responseObject,returnStatus);
     }
 
