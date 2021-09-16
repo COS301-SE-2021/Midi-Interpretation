@@ -49,6 +49,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         ((IntelligenceServiceImpl)intelligenceService).attachChordStrategy(new DecisionTreeChordAnalysisStrategy());
     }
 
+    /*AnalyseGenre*/
+    /**Description: tests the analyseGenre() function by passing in a valid byte stream
+     * precondition - valid byte stream in database passed in
+     * post condition - returns predictions
+     */
     @Test
     public void test_AnalyseGenre_IfValidByteStream_ThenExpectPredictions() throws InvalidDesignatorException, MissingStrategyException, IOException {
 
@@ -66,6 +71,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         assertTrue(response.getGenreArray().length > 0);
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function
+     * precondition - different chord test cases passed in
+     * post condition - returned data is accurate for the test cases type
+     */
     @Test
     public void testWhiteBox_AnalyseChord_IfOpenFifth_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
@@ -107,6 +117,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function
+     * precondition - different chord test cases passed in
+     * post condition - returned data is accurate for the test cases
+     */
     @Test
     public void testWhiteBox_AnalyseChord_IfMajor_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
@@ -148,6 +163,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function
+     * precondition - different chord test cases passed in
+     * post condition - returned data is accurate for the test cases
+     */
     @Test
     public void testWhiteBox_AnalyseChord_IfMinor_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
@@ -189,6 +209,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function
+     * precondition - different chord test cases passed in
+     * post condition - returned data is accurate for the test cases
+     */
     @Test
     public void testWhiteBox_AnalyseChord_IfDiminished_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
@@ -230,6 +255,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function
+     * precondition - different chord test cases passed in
+     * post condition - returned data is accurate for the test cases
+     */
     @Test
     public void testWhiteBox_AnalyseChord_IfAugmented_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
@@ -271,6 +301,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function
+     * precondition - different chord test cases passed in
+     * post condition - returned data is accurate for the test cases
+     */
     @Test
     public void testWhiteBox_AnalyseChord_IfSus4_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
@@ -312,6 +347,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function
+     * precondition - different chord test cases passed in
+     * post condition - returned data is accurate for the test cases
+     */
     @Test
     public void testWhiteBox_AnalyseChord_IfDominant7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
@@ -355,6 +395,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function
+     * precondition - different chord test cases passed in
+     * post condition - returned data is accurate for the test cases
+     */
     @Test
     public void testWhiteBox_AnalyseChord_IfMajor7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
@@ -398,6 +443,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function
+     * precondition - different chord test cases passed in
+     * post condition - returned data is accurate for the test cases
+     */
     @Test
     public void testWhiteBox_AnalyseChord_IfMinor7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
@@ -441,6 +491,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function
+     * precondition - different chord test cases passed in
+     * post condition - returned data is accurate for the test cases
+     */
     @Test
     public void testWhiteBox_AnalyseChord_IfDiminished7th_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
@@ -484,6 +539,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function
+     * precondition - different chord test cases passed in
+     * post condition - returned data is accurate for the test cases
+     */
     @Test
     public void testWhiteBox_AnalyseChord_IfAltered_ThenAdheresToIntervals() throws MissingStrategyException, EmptyChordException {
 
@@ -528,6 +588,20 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
         }
     }
 
+
+
+
+
+    //====================================================================================================================//
+    //                                  BLACK BOX TESTING BELOW                                                           //
+    //====================================================================================================================//
+
+
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function with a valid byte stream
+     * precondition - valid byte stream passed in
+     * post condition - returned data is accurate
+     */
     @Test
     @DisplayName("Analyse Chord: input [Valid Byte Stream] expect [chord analysis]")
     public void testBlackBox_AnalyseChord_IfValidByteStream() throws IllegalArgumentException, MissingStrategyException, EmptyChordException {
@@ -544,6 +618,11 @@ public class IntelligenceServiceTest extends MIDISenseUnitTest {
 
     }
 
+    /*AnalyseChord*/
+    /**Description: tests the analyseChord() function with an empty byte stream
+     * precondition - valid byte stream passed in
+     * post condition - returned exception is accurate
+     */
     @Test
     @DisplayName("Analyse Chord: input [Invalid Byte Stream] expect [Empty chord Exception]")
     public void testBlackBox_AnalyseChord_IfEmptyByteStream_ThrowException() throws IllegalArgumentException{

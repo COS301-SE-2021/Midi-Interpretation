@@ -151,6 +151,8 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
 
+
+
     /*GetTrackInfo*/
     /**Description: tests the getTrackInfo() function by passing in a valid UUID and
      * the entry is in the database
@@ -435,9 +437,8 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
     //====================================================================================================================//
-    //                                  WHITE BOX TESTING BELOW                                                                //
+    //                                  WHITE BOX TESTING BELOW                                                           //
     //====================================================================================================================//
-
 
 
     /*GetPieceMetaData*/
