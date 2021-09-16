@@ -3,7 +3,6 @@ package com.noxception.midisense.controller;
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +27,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.noxception.midisense.controller.TestTimeouts.maxProcessFileTime;
+import static com.noxception.midisense.controller.TestTimeouts.maxUploadFileTime;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -48,6 +50,8 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     //checking returned code and designator is correct
 
     /**UploadFile*/
+    @Transactional
+    @Rollback
     @Test
     @DisplayName("Upload File: input [valid file] expect [correct response code]")
     void test_WhiteBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
@@ -86,7 +90,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 //With these test conditions
                 conditions,
                 //With this timeout (in ms)
-                1000
+                maxUploadFileTime
         );
 
         //delete the file used to test
@@ -145,7 +149,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 //With these conditions
                 conditions,
                 //With this timeout (in ms)
-                15000
+                maxProcessFileTime
         );
 
     }
@@ -158,6 +162,8 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
     //checking returned code returned is correct
 
     /**UploadFile*/
+    @Transactional
+    @Rollback
     @Test
     @DisplayName("Upload File: input [valid file] expect [positive integer]")
     void test_BlackBox_UploadFile_IfValidFile_ThenAccurateResponse() throws Exception{
@@ -192,7 +198,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 //With these test conditions
                 conditions,
                 //With this timeout (in ms)
-                1000
+                maxUploadFileTime
         );
 
         //delete the file used to test
@@ -203,7 +209,8 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
 
     }
 
-    @Ignore
+    @Transactional
+    @Rollback
     @Test
     @DisplayName("Upload File: input [invalid file] expect [positive integer]")
     void test_BlackBox_UploadFile_IfInvalidFile_ThenAccurateResponse() throws Exception{
@@ -237,7 +244,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 //With these test conditions
                 conditions,
                 //With this timeout (in ms)
-                1000
+                maxUploadFileTime
         );
 
     }
@@ -284,7 +291,7 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 //With these conditions
                 conditions,
                 //With this timeout (in ms)
-                15000
+                maxProcessFileTime
         );
 
     }
@@ -326,11 +333,9 @@ class InterpreterServiceIT extends MidiSenseIntegrationTest{
                 //With these conditions
                 conditions,
                 //With this timeout (in ms)
-                15000
+                maxProcessFileTime
         );
 
-        //check for failed response
-        Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
 
