@@ -471,7 +471,6 @@ public class IntelligenceServiceTest {
 
 
             byte[][] testingCases = new byte[][]{
-                    //these need to change a bit
                     new byte[]{(byte) (0+k),(byte) (2+k), (byte) (3+k), (byte) (4+k)},
                     new byte[]{(byte) (60+k),(byte) (85+k), (byte) (61+k), (byte) (62+k)},
                     new byte[]{(byte) (0+k),(byte) (3+k),(byte) (17+k),(byte) (4+k),(byte) (5+k), (byte) (15+k),(byte) (18+k), (byte) (21+k)},
