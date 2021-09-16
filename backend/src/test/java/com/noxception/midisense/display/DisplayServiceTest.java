@@ -33,7 +33,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
     //testing constants
     private final String[] validKeyArray = {"Cbmaj", "Gbmaj", "Dbmaj", "Abmaj", "Ebmaj", "Bbmaj", "Fmaj", "Cmaj", "Gmaj", "Dmaj", "Amaj", "Emaj", "Bmaj", "F#maj", "C#maj"};
-    private final String validTrackPattern = "\\{\\\"channel\\\":([0-9]|(1[0-5])),\\\"instrument\\\":\\\".+\\\",\\\"ticks_per_beat\\\":([1-9]([0-9])*),\\\"track\\\":\\[(\\{.+\\})*\\]\\}";
+    private final String validTrackPattern = "\\{\\\"channel\\\":([0-9]|(1[0-5])),\\\"instrument\\\":\\\".+\\\",\\\"ticks_per_beat\\\":([1-9]([0-9])*),\\\"track\\\":\\[(\\{\\\"tick\\\":([1-9])*([0-9])+,\\\"notes\\\":\\[(\\{\\\"value\\\":([1-9])*([0-9])+,\\\"on_velocity\\\":([1-9])*([0-9])+,\\\"off_velocity\\\":([1-9])*([0-9])+,\\\"duration\\\":([1-9])*([0-9])+\\})+\\]\\})*\\]\\}";
 
 
     @BeforeEach

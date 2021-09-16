@@ -35,6 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.noxception.midisense.controller.TestTimeouts.maxDisplayTime;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -42,14 +43,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
+    //Services and configs
     @Autowired
     private MockMvc mvc;
-
     @Autowired
     private MIDISenseConfig configurations;
 
+    //Testing Constants
     private UUID testDesignator;
+    //regex for track string - need not be as comprehensive as the unit test
+    private final String validTrackPattern = "\\{\\\"channel\\\":([0-9]|(1[0-5])),\\\"instrument\\\":\\\"(.){1,30}\\\",\\\"ticks_per_beat\\\":([1-9]([0-9])*),\\\"track\\\":\\[.+\\]\\}";
 
+    //Method to setup a file in the DB
     @Transactional
     @Rollback
     @Test
@@ -204,14 +209,13 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         );
 
         //TODO: Match regex response
-        String trackString = response.getResponse().getContentAsString();
+        String trackString = JsonPath.read(response.getResponse().getContentAsString(), "$.trackString");
         //Check that there is a substring for an inner array with countably many items
-        String regex = "\\{\\\"trackString\\\":\\\"\\{\\\\\\\"channel\\\\\\\": ([0-9]|(1[0-5])), \\\\\\\"instrument\\\\\\\": \\\\\\\".+\\\\\\\", \\\\\\\"ticks_per_beat\\\\\\\": ([1-9]([0-9])*), \\\\\\\"track\\\\\\\": \\[(\\{.+\\})*\\]\\}\\\"(,.+)*\\}";
-        Pattern validResponse = Pattern.compile(regex,Pattern.MULTILINE);
+        Pattern validResponse = Pattern.compile(this.validTrackPattern,Pattern.MULTILINE);
         Matcher matcher = validResponse.matcher(trackString);
 
         //see that the substring is present
-        //assertTrue(matcher.find());
+        assertTrue(matcher.find());
 
     }
 
