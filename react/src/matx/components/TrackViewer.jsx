@@ -14,11 +14,6 @@ import React from "react";
 import {Grid, Icon} from "@material-ui/core";
 import * as ReactDOMServer from "react-dom/server";
 import MidiSenseService from "../../app/services/MidiSenseService";
-import {Label} from "@material-ui/icons";
-import Button from "@material-ui/core/Button";
-
-
-const zoomProportion = 0.2
 
 const signatureColors = {
     time: "#43aa8b",
@@ -590,7 +585,6 @@ function TrackViewer (props) {
                             }
                             {
                                 paceArray.map((item)=> {
-                                    let quality = (item['accelerating']) ? "Accel." : "Rit."
                                     let col = (item['accelerating']) ? signatureColors.acc : signatureColors.rit
                                     return (
                                         <ReferenceArea x1={1 + (item['start'] / ticksPerBeat)}
