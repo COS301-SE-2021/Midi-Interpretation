@@ -5,7 +5,22 @@ import com.noxception.midisense.intelligence.exceptions.MissingStrategyException
 import com.noxception.midisense.intelligence.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
 import org.springframework.stereotype.Service;
-
+/**
+ * Class that is used for delivering structured responses to queries concerning:
+ *
+ * <ul>
+ * <li>Genre Analysis </li>
+ * <li>Chord Analysis</li>
+ * <li>Tonality Analysis</li>
+ * </ul>
+ *
+ * @author Adrian Rae
+ * @author Claudio Teixeira
+ * @author Hendro Smit
+ * @author Mbuso Shakoane
+ * @author Rearabetswe Maeko
+ * @since 1.0.0
+ */
 @Service
 public interface IntelligenceService {
 
