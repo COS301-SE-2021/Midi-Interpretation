@@ -34,9 +34,6 @@ class DisplayServiceImplTest extends MIDISenseUnitTest {
         this.monitor(monitorList);
     }
 
-    //TODO: CLAUDIO DO ALL UNIT TESTS FOR THE 4 FUNCTIONS TOMORROW MORNING
-    //below are sample tests I used in unit testing on another branch to make it easier for myself
-
     @Test
     @DisplayName("Tests getting metadata with a valid file designator, should return a trio of key sig, time sig and tempo.")
     @Tag(TestTags.VALID_INPUT)
