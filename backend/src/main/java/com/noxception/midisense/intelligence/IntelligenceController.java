@@ -165,7 +165,7 @@ public class IntelligenceController implements IntelligenceApi {
             responseObject.setMessage(e.getMessage());
 
         }
-
+        //return response object
         return new ResponseEntity<>(responseObject,returnStatus);
     }
 
