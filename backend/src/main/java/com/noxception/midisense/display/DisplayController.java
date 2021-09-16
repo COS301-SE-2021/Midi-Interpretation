@@ -194,11 +194,13 @@ public class DisplayController implements DisplayApi {
     @Override
     public ResponseEntity<DisplayGetTrackMetadataResponse> getTrackMetadata(DisplayGetTrackMetadataRequest body) {
 
+        //define response object
         DisplayGetTrackMetadataResponse responseObject = new DisplayGetTrackMetadataResponse();
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
 
+            //pass file designator and track index into request object
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
             int trackIndex = body.getTrackIndex();
 
@@ -209,6 +211,7 @@ public class DisplayController implements DisplayApi {
 
             GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
 
+            //set response to successful if no exceptions throw and set trackString
             responseObject.setTrackString(res.getTrackString());
             responseObject.setSuccess(true);
             responseObject.setMessage(String.format("Successfully retrieved track [%s:%s]",trackIndex,fileDesignator));
@@ -219,6 +222,7 @@ public class DisplayController implements DisplayApi {
             //Log the error
             log.warn(String.format("FAILURE | To: %s | Because: %s ","getTrackMetadata",e.getMessage()));
 
+            //set response to unsuccessful
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(false);
             responseObject.setMessage(e.getMessage());
@@ -238,11 +242,13 @@ public class DisplayController implements DisplayApi {
     @Override
     public ResponseEntity<DisplayGetTrackOverviewResponse> getTrackOverview(DisplayGetTrackOverviewRequest body) {
 
+        //define response object
         DisplayGetTrackOverviewResponse responseObject = new DisplayGetTrackOverviewResponse();
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
 
+            //pass file designator into request object
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
             int trackIndex = body.getTrackIndex();
 
@@ -253,6 +259,7 @@ public class DisplayController implements DisplayApi {
 
             GetTrackOverviewResponse res = displayService.getTrackOverview(req);
 
+            //set response to successful if no exceptions throw
             responseObject.setTrackArray(res.getPitchArray());
             responseObject.setSuccess(true);
             responseObject.setMessage(String.format("Successfully retrieved track [%s:%s]",trackIndex,fileDesignator));
@@ -263,6 +270,7 @@ public class DisplayController implements DisplayApi {
             //Log the error
             log.warn(String.format("FAILURE | To: %s | Because: %s ","getTrackOverview",e.getMessage()));
 
+            //set response to unsuccessful
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(false);
             responseObject.setMessage(e.getMessage());
