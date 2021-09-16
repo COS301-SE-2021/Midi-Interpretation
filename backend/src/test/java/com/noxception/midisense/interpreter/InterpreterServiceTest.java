@@ -49,7 +49,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 //    //====================================================================================================================//
 //
 
-    /**UploadFile*/
+    /*UploadFile*/
     /**
      * Description: tests the uploadFile() function by passing in a valid file and saving
      * to the right directory
@@ -86,6 +86,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         assertTrue(newlyCreated.delete());
     }
 
+    /*UploadFile*/
     /**
      * Description: tests the uploadFile() function by passing in an empty file
      * precondition - empty byte stream passed in
@@ -110,6 +111,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         ));
     }
 
+    /*UploadFile*/
     /**
      * Description: tests the uploadFile() function by passing in a file that's too large
      * precondition - byte stream of the max file size passed in
@@ -150,7 +152,8 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
     }
 
 
-    /**ProcessFile*/
+
+    /*ProcessFile*/
     /**ProcessFile
      * Description: tests the processFile() function by passing in a non-midi file
      * precondition - fileDesignator for a non-midi file passed in
@@ -187,6 +190,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         assertTrue(new File(configurations.configuration(ConfigurationName.MIDI_STORAGE_ROOT) + testName).delete());
     }
 
+    /*ProcessFile*/
     /**
      * Description: tests the processFile() function by passing in a midi file designator
      * that is not in storage
@@ -218,6 +222,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
     }
 
+    /*ProcessFile*/
     /**
      * Description: tests the processFile() function by passing in a midi file designator that
      * exists in storage
@@ -247,6 +252,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
     }
 
+    /*ProcessFile*/
     /**
      * Description: tests the processFile() function by passing in a midi file designator that
      * already exists in the database
@@ -287,7 +293,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
 
 
-    /**ParseJSON*/
+    /*ParseJSON*/
     /**
      * Description: tests the parseJSON() function by passing in a midi file designator that is not in storage
      * precondition - fileDesignator for a midi file that doesn't exist in storage passed in
@@ -317,6 +323,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
     }
 
+    /*ParseJSON*/
     /**
      * Description: tests the parseJSON() function by passing in a midi file designator that is in storage
      * precondition - fileDesignator for a midi file that exists in storage passed in
@@ -407,7 +414,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
     //                                  WHITE BOX TESTING BELOW                                                           //
     //====================================================================================================================//
 
-    /**UploadFile*/
+    /*UploadFile*/
     /**
      * Description: tests the uploadFile() function by passing in a valid file and saving
      * to the right directory
@@ -444,6 +451,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         assertTrue(newlyCreated.delete());
     }
 
+    /*ProcessFile*/
     /**
      * Description: tests the processFile() function by passing in a midi file designator that
      * exists in storage
@@ -473,8 +481,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
 
     }
 
-
-
+    /*ParseJSON*/
     /**
      * Description: tests the parseJSON() function by passing in a midi file designator that is in storage
      * precondition - fileDesignator for a midi file that exists in storage passed in
