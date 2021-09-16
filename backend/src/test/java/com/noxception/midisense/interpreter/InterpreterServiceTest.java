@@ -31,9 +31,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InterpreterServiceTest extends MIDISenseUnitTest {
 
+    //services and configs
     private InterpreterService interpreterService;
     private StandardConfig configurations;
     private DatabaseManager databaseManager;
+
+    private final String[] keyArray = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"};
 
     @BeforeEach
     public void mountModule() {
@@ -352,7 +355,7 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         assertTrue(score.channelList.size()<=16);
 
         //1.2 There is a valid key signature for every tick
-        String[] keyArray = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"};
+
         for(KeySignature k : score.KeySignatureMap){
             //check the key is a key
             boolean b = Arrays.asList(keyArray).contains(k.commonName);
@@ -511,7 +514,6 @@ class InterpreterServiceTest extends MIDISenseUnitTest {
         assertTrue(score.channelList.size()<=16);
 
         //1.2 There is a valid key signature for every tick
-        String[] keyArray = {"Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"};
         for(KeySignature k : score.KeySignatureMap){
             //check the key is a key
             boolean b = Arrays.asList(keyArray).contains(k.commonName);
