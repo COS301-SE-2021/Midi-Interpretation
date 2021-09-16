@@ -107,8 +107,9 @@ class Display extends Component {
       // Check if a track has been processed previously, otherwise navigate back to upload
 
       if(this.cookies.get('fileDesignator') === undefined){
-          this.props.history.push("/Upload")
-          window.location.reload(false)
+          //this.props.history.push("/Upload")
+          //window.location.reload(false)
+          this.handleError()
       }
 
       // Begin gathering data from the server
@@ -313,7 +314,6 @@ class Display extends Component {
                   this.setState({
                       expired: true
                   })
-                  this.cookies.remove('fileDesignator')
               }
               else {
                   let trackString = res['trackString']
@@ -321,14 +321,13 @@ class Display extends Component {
                   this.setTrackData(trackString['track'])
                   this.setTicksPerBeat(trackString['ticks_per_beat'])
                   this.setInstrument(trackString['instrument'])
-                  this.setState({error:false})
+                  this.setState({expired: false})
               }
           },
           (res) =>{
               this.setState({
                   expired: true
               })
-              this.cookies.remove('fileDesignator')
           })
   }
 
@@ -357,11 +356,10 @@ class Display extends Component {
           error: true
       })
 
-      if(this.state.errorCount >= 3){
+      if(this.state.errorCount >= 5){
           this.setState({
               openError: true
           })
-          this.cookies.remove('fileDesignator')
       }
 
   }

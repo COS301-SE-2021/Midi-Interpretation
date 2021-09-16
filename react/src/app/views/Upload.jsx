@@ -115,6 +115,7 @@ class Upload extends Component {
                */
 
               (res)=>{
+                  console.log(res)
                   this.props.history.push("/Display")
 
                   if(this.state.first){
