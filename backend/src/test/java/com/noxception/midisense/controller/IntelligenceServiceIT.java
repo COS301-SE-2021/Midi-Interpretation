@@ -3,6 +3,7 @@ package com.noxception.midisense.controller;
 import com.jayway.jsonpath.JsonPath;
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.dataclass.MidiSenseIntegrationTest;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreRequest;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import org.junit.Test;
@@ -30,13 +31,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.noxception.midisense.controller.TestTimeouts.*;
+import static com.noxception.midisense.dataclass.TestTimeouts.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class IntelligenceServiceIT extends MidiSenseIntegrationTest{
+public class IntelligenceServiceIT extends MidiSenseIntegrationTest {
     @Autowired
     private MockMvc mvc;
 

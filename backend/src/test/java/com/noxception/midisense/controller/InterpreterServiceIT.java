@@ -2,6 +2,7 @@ package com.noxception.midisense.controller;
 
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.dataclass.MidiSenseIntegrationTest;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -28,14 +29,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.noxception.midisense.controller.TestTimeouts.maxProcessFileTime;
-import static com.noxception.midisense.controller.TestTimeouts.maxUploadFileTime;
+import static com.noxception.midisense.dataclass.TestTimeouts.maxProcessFileTime;
+import static com.noxception.midisense.dataclass.TestTimeouts.maxUploadFileTime;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class InterpreterServiceIT extends MidiSenseIntegrationTest{
+class InterpreterServiceIT extends MidiSenseIntegrationTest {
 
     @Autowired
     private MockMvc mvc;

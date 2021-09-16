@@ -32,9 +32,15 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
+/**
+ * Class that implements testing against the Intelligence Service, both in terms of white and blackbox testing.
+ *
+ * See {@link com.noxception.midisense.dataclass.MidiSenseIntegrationTest} for an explanation of the mechanisms underlying
+ * the actual mock request framework. This class merely illustrates testing against a specific collection of endpoints.
+ */
 public class IntelligenceServiceTest {
 
+    //Services and Configs
     private IntelligenceService intelligenceService;
     private StandardConfig configurations;
     private DatabaseManager databaseManager;
@@ -57,6 +63,7 @@ public class IntelligenceServiceTest {
         //copy test data from file to an entity - save it to the 'DB'
         Path source = Paths.get(configurations.configuration(ConfigurationName.MIDI_TESTING_FILE));
         byte[] contents = Files.readAllBytes(source);
+        //only care abouts contents
         ScoreEntity entity = new ScoreEntity(new Score(),fileDesignator,contents);
         databaseManager.save(entity);
 

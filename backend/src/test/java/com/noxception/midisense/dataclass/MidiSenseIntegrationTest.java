@@ -1,4 +1,4 @@
-package com.noxception.midisense.controller;
+package com.noxception.midisense.dataclass;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,10 @@ import java.util.List;
 
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
+/**
+ * Class that provides an abstractions of operations made against a Mock MVC interface. Allows for the testing of system endpoint,
+ * the testing of conditions upon requests and responses along with the timing and logging of service methods.
+ */
 @Slf4j
 public class MidiSenseIntegrationTest {
 

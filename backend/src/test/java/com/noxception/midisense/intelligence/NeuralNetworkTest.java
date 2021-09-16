@@ -12,11 +12,10 @@ import org.junit.jupiter.api.Test;
 public class NeuralNetworkTest {
 
     private NeuralNetworkGenreAnalysisStrategy strategy;
-    private StandardConfig configurations;
 
     @BeforeEach
     public void mountModule(){
-        this.configurations = new MockConfigurationSettings();
+        StandardConfig configurations = new MockConfigurationSettings();
         this.strategy = new NeuralNetworkGenreAnalysisStrategy(configurations);
     }
 

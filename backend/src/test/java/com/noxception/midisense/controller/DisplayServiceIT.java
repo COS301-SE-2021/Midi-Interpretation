@@ -3,6 +3,7 @@ package com.noxception.midisense.controller;
 import com.jayway.jsonpath.JsonPath;
 import com.noxception.midisense.config.ConfigurationName;
 import com.noxception.midisense.config.MIDISenseConfig;
+import com.noxception.midisense.dataclass.MidiSenseIntegrationTest;
 import com.noxception.midisense.models.DisplayGetPieceMetadataRequest;
 import com.noxception.midisense.models.DisplayGetTrackInfoRequest;
 import com.noxception.midisense.models.DisplayGetTrackMetadataRequest;
@@ -34,14 +35,14 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.noxception.midisense.controller.TestTimeouts.maxDisplayTime;
+import static com.noxception.midisense.dataclass.TestTimeouts.maxDisplayTime;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class DisplayServiceIT extends MidiSenseIntegrationTest{
+public class DisplayServiceIT extends MidiSenseIntegrationTest {
 
     //Services and configs
     @Autowired
