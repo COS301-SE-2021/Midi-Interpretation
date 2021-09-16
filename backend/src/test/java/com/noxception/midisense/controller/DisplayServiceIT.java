@@ -199,7 +199,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     //====================================================================================================================//
 
 
-    /**GetPieceMetadata*/
+    /*GetPieceMetadata*/
     @Test
     @DisplayName("Get Piece Metadata: input [designator for a file in DB] expect [positive integer]")
     public void test_BlackBox_GetPieceMetadata_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
@@ -227,6 +227,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
+    /*GetPieceMetadata*/
     @Test
     @DisplayName("Get Piece Metadata: input [designator for a file not in DB] expect [positive integer]")
     public void test_BlackBox_GetPieceMetadata_IfNotInDatabase_ThenException() throws Exception{
@@ -251,6 +252,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+    /*GetPieceMetadata*/
     @Test
     @DisplayName("Get Piece Metadata: input [empty] expect [positive integer]")
     public void test_BlackBox_GetPieceMetadata_IfEmptyRequest_ThenException() throws Exception {
@@ -274,7 +276,9 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
 
-    /**GetTrackInfo*/
+
+
+    /*GetTrackInfo*/
     @Test
     @DisplayName("Get Track Info: input [Designator for file in DB] expect [positive integer]")
     public void test_BlackBox_GetTrackInfo_IfPresentInDatabase_ThenAccurateInfo() throws Exception {
@@ -302,6 +306,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
+    /*GetTrackInfo*/
     @Test
     @DisplayName("Get Track Info: input [Designator for file not in DB] expect [positive integer]")
     public void test_BlackBox_GetTrackInfo_IfNotInDatabase_ThenException() throws Exception{
@@ -327,6 +332,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+    /*GetTrackInfo*/
     @Test
     @DisplayName("Get Track Info: input [empty] expect [positive integer]")
     public void test_BlackBox_GetTrackInfo_IfEmptyRequest_ThenException() throws Exception{
@@ -350,7 +356,10 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
 
-    /**GetTrackMetadata*/
+
+
+
+    /*GetTrackMetadata*/
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and valid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception{
@@ -383,6 +392,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
+    /*GetTrackMetadata*/
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too high)] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenAccurateInfo() throws Exception {
@@ -415,6 +425,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+    /*GetTrackMetadata*/
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file in DB and invalid track index (too low)] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenAccurateInfo() throws Exception{
@@ -446,6 +457,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+    /*GetTrackMetadata*/
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file not in DB and valid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfNotInDatabaseAndValidTrack_ThenException() throws Exception{
@@ -475,6 +487,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+    /*GetTrackMetadata*/
     @Test
     @DisplayName("Get Track Metadata: input [Designator for file not in DB and invalid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfNotInDatabaseAndInvalidTrack_ThenException() throws Exception{
@@ -504,6 +517,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+    /*GetTrackMetadata*/
     @Test
     @DisplayName("Get Track Metadata: input [empty] expect [positive integer]")
     public void test_BlackBox_GetTrackMetadata_IfEmptyRequest_ThenException() throws Exception{
@@ -527,7 +541,10 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
     }
 
 
-    /**GetTrackOverview*/
+
+
+
+    /*GetTrackOverview*/
     @Test
     @DisplayName("Get Track Overview: input [Designator for file in DB and valid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfPresentInDatabaseWithValidTrackAndValidID_ThenAccurateInfo() throws Exception {
@@ -559,6 +576,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(200, response.getResponse().getStatus());
     }
 
+    /*GetTrackOverview*/
     @Test
     @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooHighAndInvalidID_ThenException() throws Exception{
@@ -590,6 +608,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+    /*GetTrackOverview*/
     @Test
     @DisplayName("Get Track Overview: input [Designator for file in DB and invalid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfPresentInDatabaseWithInvalidTrackTooLowAndInvalidID_ThenException() throws Exception{
@@ -621,6 +640,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+    /*GetTrackOverview*/
     @Test
     @DisplayName("Get Track Overview: input [Designator for file not in DB and valid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfNotInDatabaseAndValidTrack_ThenException() throws Exception{
@@ -651,6 +671,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
 
     }
 
+    /*GetTrackOverview*/
     @Test
     @DisplayName("Get Track Overview: input [Designator for file not in DB and invalid track index] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfNotInDatabaseAndInvalidTrack_ThenException() throws Exception{
@@ -680,6 +701,7 @@ public class DisplayServiceIT extends MidiSenseIntegrationTest{
         Assertions.assertEquals(400, response.getResponse().getStatus());
     }
 
+    /*GetTrackOverview*/
     @Test
     @DisplayName("Get Track Overview: input [empty] expect [positive integer]")
     public void test_BlackBox_GetTrackOverview_IfEmptyRequest_ThenException() throws Exception{
