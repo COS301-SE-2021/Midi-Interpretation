@@ -17,6 +17,18 @@ import java.util.UUID;
 public class MockRepository extends DatabaseManager {
 
     List<ScoreEntity> database = new ArrayList<>();
+    private final int mockTick = 0;
+    private final String mockKey = "Cb";
+    private final int mockTempo = 70;
+    private final int mockNumBeats = 4;
+    private final int mockBeatValue = 4;
+    private final int mockChannelNumber = 1;
+    private final String mockInstrument = "Electric Bass (pick)";
+    private final int mockTicksPerBeat = 192;
+    private final int mockValue = 69;
+    private final int mockOnVelocity = 100;
+    private final int mockOffVelocity = 0;
+    private final int mockDuration = 600;
 
     //TODO: Claudio find a way to load and save scores. Maybe try saving before you need to make calls:
     // Hint: generate a temp midi file and use parseJSON to
@@ -45,40 +57,41 @@ public class MockRepository extends DatabaseManager {
 
         //Add key signature to score
         KeySignature keySignature = new KeySignature();
-        keySignature.tick =0;
-        keySignature.commonName = "Cb";
+        keySignature.tick = this.mockTick;
+        keySignature.commonName = this.mockKey;
         s.KeySignatureMap = new ArrayList<>();
         s.KeySignatureMap.add(keySignature);
 
         //Add tempo indication to score
         TempoIndication tempoIndication = new TempoIndication();
-        tempoIndication.tick=0;
-        tempoIndication.tempoIndication = 70;
+        tempoIndication.tick = this.mockTick;
+        tempoIndication.tempoIndication = this.mockTempo;
         s.TempoIndicationMap = new ArrayList<>();
         s.TempoIndicationMap.add(tempoIndication);
 
         //Add time signature beat value and number of beats to score
         TimeSignature timeSignature = new TimeSignature();
         TimeSignature.InnerTime innerTime = new TimeSignature.InnerTime();
-        innerTime.beatValue =4;
-        innerTime.numBeats=4;
-        timeSignature.tick=0;
+        innerTime.beatValue =this.mockBeatValue;
+        innerTime.numBeats= this.mockNumBeats;
+        timeSignature.tick=this.mockTick;
         timeSignature.time= innerTime;
         s.TimeSignatureMap = new ArrayList<>();
         s.TimeSignatureMap.add(timeSignature);
 
+        //Add channel Details
         Channel channel = new Channel();
-        channel.channelNumber = 1;
-        channel.instrument = "Electric Bass (pick)";
-        channel.ticksPerBeat = 92;
+        channel.channelNumber = this.mockChannelNumber;
+        channel.instrument = this.mockInstrument;
+        channel.ticksPerBeat = this.mockTicksPerBeat;
         Track track = new Track();
-        track.tick = 0;
+        track.tick = this.mockTick;
         track.notes = new ArrayList<>();
         Note note = new Note();
-        note.duration = 600;
-        note.offVelocity = 0;
-        note.onVelocity = 100;
-        note.value = 69;
+        note.duration = this.mockDuration;
+        note.offVelocity = this.mockOffVelocity;
+        note.onVelocity = this.mockOnVelocity;
+        note.value = this.mockValue;
         track.notes.add(note);
         channel.trackMap = new ArrayList<>();
         channel.trackMap.add(track);
@@ -87,5 +100,56 @@ public class MockRepository extends DatabaseManager {
 
         testEntity.encodeScore(s);
         this.save(testEntity);
+    }
+
+    //Getters and Setters
+
+
+    public int getMockTick() {
+        return mockTick;
+    }
+
+    public String getMockKey() {
+        return mockKey;
+    }
+
+    public int getMockTempo() {
+        return mockTempo;
+    }
+
+    public int getMockNumBeats() {
+        return mockNumBeats;
+    }
+
+    public int getMockBeatValue() {
+        return mockBeatValue;
+    }
+
+    public int getMockChannelNumber() {
+        return mockChannelNumber;
+    }
+
+    public String getMockInstrument() {
+        return mockInstrument;
+    }
+
+    public int getMockTicksPerBeat() {
+        return mockTicksPerBeat;
+    }
+
+    public int getMockValue() {
+        return mockValue;
+    }
+
+    public int getMockOnVelocity() {
+        return mockOnVelocity;
+    }
+
+    public int getMockOffVelocity() {
+        return mockOffVelocity;
+    }
+
+    public int getMockDuration() {
+        return mockDuration;
     }
 }

@@ -5,7 +5,6 @@ import com.noxception.midisense.config.StandardConfig;
 import com.noxception.midisense.dataclass.MIDISenseUnitTest;
 import com.noxception.midisense.dataclass.MockConfigurationSettings;
 import com.noxception.midisense.dataclass.MockRepository;
-import com.noxception.midisense.dataclass.TestingDictionary;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
@@ -268,7 +267,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //Get response
         GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
 
-        //TODO: Adapt to new format
         //Check that there is a substring for an inner array with countably many items
         Pattern validResponse = Pattern.compile(validTrackPattern,Pattern.MULTILINE);
         Matcher matcher = validResponse.matcher(res.getTrackString());
@@ -294,7 +292,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
         //Get an invalid track index - too high
         int invalidTrackIndex = 16;
-
 
         //generate a score for the db
         ((MockRepository) this.databaseManager).generateMockScore(fileDesignator);
@@ -372,7 +369,7 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
 
         //Make request
-        GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator,TestingDictionary.display_all_valid_track_index);
+        GetTrackMetadataRequest req = new GetTrackMetadataRequest(fileDesignator, (byte) validTrackIndex);
 
         //Check the error is thrown
         InvalidDesignatorException thrown = assertThrows(
@@ -471,27 +468,27 @@ class DisplayServiceTest extends MIDISenseUnitTest {
 
         //Check that the key signature is valid
         for(KeySignature k : res.getKeySignature()){
-            assertTrue(Arrays.asList(this.validKeyArray).contains(k.commonName));
+            assertEquals(((MockRepository) this.databaseManager).getMockKey()+"maj", k.commonName);
         }
 
 
         //Check the tempo is an integer greater than 0
         for(TempoIndication t : res.getTempoIndication()){
-            assertEquals(70, t.tempoIndication);
+            assertEquals(((MockRepository) this.databaseManager).getMockTempo(), t.tempoIndication);
         }
 
 
         //Check the beat value for time signature is a power of two (Greater than one)
         for(TimeSignature ts : res.getTimeSignature()){
             int beatValue = ts.time.beatValue;
-            assertEquals(4,beatValue);
+            assertEquals(((MockRepository) this.databaseManager).getMockBeatValue(),beatValue);
         }
 
 
         //Check the beat number for time signature is a positive integer
         for(TimeSignature ts : res.getTimeSignature()){
             int numBeats = ts.time.numBeats;
-            assertEquals(4, numBeats);
+            assertEquals(((MockRepository) this.databaseManager).getMockNumBeats(), numBeats);
         }
     }
 
@@ -516,6 +513,10 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //Check we receive an array back with at least one entry in it
         assertFalse(res.getTrackMap().isEmpty());
 
+        //check to see it matches the mocked equivalent
+        for(byte index : res.getTrackMap().keySet()){
+            assertEquals(((MockRepository) this.databaseManager).getMockInstrument(),res.getTrackMap().get(index));
+        }
 
     }
 
@@ -542,7 +543,6 @@ class DisplayServiceTest extends MIDISenseUnitTest {
         //Get response
         GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
 
-        //TODO: adapt to white box
         //Check that there is a substring for an inner array with countably many items
         Pattern validResponse = Pattern.compile(validTrackPattern,Pattern.MULTILINE);
         Matcher matcher = validResponse.matcher(res.getTrackString());
