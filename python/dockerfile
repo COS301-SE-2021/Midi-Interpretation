@@ -1,0 +1,18 @@
+# set base image (host OS)
+FROM python:3.8
+
+# set the working directory in the container
+WORKDIR /code
+
+COPY interpreter.py interpreter.py
+
+# install dependencies
+RUN pip install mido
+RUN pip install flask
+
+# Expose port 80 to the Docker host, so we can access it
+# from the outside.
+EXPOSE 5000
+
+# command to run on container start
+CMD [ "python", "./interpreter.py" ]

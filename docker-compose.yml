@@ -1,0 +1,84 @@
+# Docker Compose file Reference (https://docs.docker.com/compose/compose-file/)
+
+version: '3.3'
+
+# Define services
+services:
+  # App backend service
+  springboot:
+    # Configuration for building the docker image for the backend service
+    build:
+      context: backend # Use an image built from the specified dockerfile in the `polling-app-server` directory.
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
+    restart: always
+    depends_on:
+      - db # This service depends on mysql. Start that first.
+      - python # This service depends on the python server. Start that next.
+
+    environment: # Pass environment variables to the service
+      SPRING_DATASOURCE_URL: jdbc:mysql://10.5.0.4:3306/midisense
+      SPRING_DATASOURCE_USERNAME: noxception
+      SPRING_DATASOURCE_PASSWORD: E@iG[YD!?q7d[E5
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.2
+
+
+  # Frontend Service
+  react:
+    build:
+      context: react # Use an image built from the specified dockerfile in the `react` directory.
+      dockerfile: dockerfile
+    ports:
+      - "9090:80" # Map the exposed port 80 on the container to port 9090 on the host machine
+    restart: always
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.5
+
+
+  # Interpreter Service
+  python:
+    build:
+      context: python # Use an image built from the specified dockerfile in the `react` directory.
+      dockerfile: dockerfile
+    ports:
+      - "5000:5000" # Map the exposed port 80 on the container to port 9090 on the host machine
+    restart: always
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.3
+
+
+  # Database Service (Mysql)
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    expose:
+      - '3306'
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'midisense'
+      MYSQL_USER: 'noxception'
+      MYSQL_PASSWORD: 'E@iG[YD!?q7d[E5'
+      MYSQL_ROOT_PASSWORD: 'P@<G^3R3i.UW4v#'
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.4
+
+# Volumes
+volumes:
+  db-data:
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.0.0/16
+         gateway: 10.5.0.1

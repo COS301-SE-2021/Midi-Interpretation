@@ -55,7 +55,8 @@
     "build": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "ghp": "react-scripts build && gh-pages -d build"
+    "ghp": "react-scripts build && gh-pages -d build",
+    "serve": "serve -s build -l 4000"
   },
   "eslintConfig": {
     "extends": "react-app"

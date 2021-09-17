@@ -81,8 +81,7 @@ class Upload extends Component {
           }
       }
 
-      // TODO: url must be defined dynamically and not hard coded
-      this.getUploadParams = () => { return { url: 'http://localhost:8080/interpreter/uploadFile' } }
+      this.getUploadParams = () => { return { url: 'http://127.0.0.1:8080/interpreter/uploadFile' } }
 
         /**
          * Handle the form submission
