@@ -1599,3 +1599,4 @@ backend/src/main/resources/application.properties
 *.csv
 backend/src/main/resources/testing.properties
 /venv/
+docker-compose.yml

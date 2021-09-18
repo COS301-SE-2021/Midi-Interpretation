@@ -81,7 +81,7 @@ class Upload extends Component {
           }
       }
 
-      this.getUploadParams = () => { return { url: 'http://127.0.0.1:8080/interpreter/uploadFile' } }
+      this.getUploadParams = () => { return { url: 'http://127.0.0.1:7070/interpreter/uploadFile' } }
 
         /**
          * Handle the form submission

@@ -9,7 +9,7 @@ class MidiSenseService {
     // private targetMethod: string;
 
     constructor() {
-        this.targetURL = "http://127.0.0.1:8080"
+        this.targetURL = "http://127.0.0.1:7070"
         this.targetHeaders = {
             'accept': 'application/json',
             'Content-Type': 'application/json'

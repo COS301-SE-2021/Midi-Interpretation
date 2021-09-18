@@ -3,7 +3,6 @@ import os
 import mido
 from flask import Flask, request
 import uuid
-import json
 
 # ======================================================
 # CONFIGURATION
@@ -154,4 +153,4 @@ def parse(parser):
 # ======================================================
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(host='10.5.0.3', port=5000)
