@@ -8,6 +8,7 @@ import com.noxception.midisense.intelligence.exceptions.EmptyChordException;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseChordRequest;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseChordResponse;
+import com.noxception.midisense.models.IntelligenceAnalyseChordRequest;
 import com.noxception.midisense.models.IntelligenceAnalyseGenreRequest;
 import com.noxception.midisense.models.InterpreterProcessFileRequest;
 import org.junit.Test;
@@ -220,10 +221,17 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest {
     public void testBlackBox_AnalyseChord_IfValidByteStream() throws Exception {
 
         //valid byte stream
-        byte[] validStream = new byte[]{3, 6, 9, 12};
+        List<Integer> validStream = new ArrayList<>();
 
-        //test with request response
-        AnalyseChordRequest request = new AnalyseChordRequest(validStream);
+        validStream.add(3);
+        validStream.add(6);
+        validStream.add(9);
+        validStream.add(12);
+
+        //make request
+        IntelligenceAnalyseChordRequest request = new IntelligenceAnalyseChordRequest();
+
+        request.setPitchArray(validStream);
 
         //specify condition of request
         List<ResultMatcher> conditions = new ArrayList<>();
