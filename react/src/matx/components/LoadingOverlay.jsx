@@ -6,39 +6,21 @@ import InteractiveDemo from "../../app/services/InteractiveDemo";
 import {Button, Grid} from "@material-ui/core";
 import MdArrowDownward from "@material-ui/icons/ArrowDownward";
 
-
-const styles = {
-    modal: {
-        backgroundColor: "transparent",
-        boxShadow: "none",
-        display: "flex",
-        overflow: "none",
-        width: "100%",
-        padding: "0",
-        margin: "0",
-        height: "100%",
-        minWidth: "100%",
-        justifyContent: "center"
-    },
-    overlay: {
-        backgroundColor: "#1cccc",
-        padding: 0
-    },
-    closeIcon: {
-        fill: "#fff"
-    }
-};
-
+/**
+ * getModalStyle
+ * @returns {{top: number, left: number}}
+ */
 function getModalStyle() {
-    const top = 50
-    const left = 50
-
     return {
         top: 0,
         left: 0,
     };
 }
 
+/**
+ * getUseStyles
+ * @returns {{backgroundColor: string, width: string, position: string, height: string}}
+ */
 function getUseStyles (){
     return {
         position: 'absolute',
@@ -48,6 +30,12 @@ function getUseStyles (){
     }
 }
 
+/**
+ * Load
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function Load (props) {
 
     const [modalStyle] = React.useState(getModalStyle);

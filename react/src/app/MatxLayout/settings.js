@@ -33,10 +33,4 @@ export const MatxLayoutSettings = {
 
   themes: themes,
   layout1Settings, // Layout1/Layout1Settings.js
-
-  secondarySidebar: {
-    show: true,
-    open: true,
-    theme: "slateDark1"
-  }
 };

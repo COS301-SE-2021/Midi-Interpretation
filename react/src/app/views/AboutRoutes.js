@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * Route of the Welcome page
+ * Route of the About page
  * @type {[{path: string, component: React.LazyExoticComponent<React.ComponentType<any>>}]}
  */
 

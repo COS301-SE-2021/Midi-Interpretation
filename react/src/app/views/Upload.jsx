@@ -1,4 +1,4 @@
-import React, {Component, useState} from "react";
+import React, {Component} from "react";
 import {Grid, Button, Icon} from "@material-ui/core";
 import {Breadcrumb, SimpleCard} from "matx";
 import { withStyles } from "@material-ui/styles";
@@ -6,11 +6,10 @@ import {makeStyles} from "@material-ui/core/styles";
 import 'react-responsive-combo-box/dist/index.css'
 import MidiSenseService from "../services/MidiSenseService";
 import Cookies from 'universal-cookie';
-import ResponsiveDialog from "./ResponsiveDialog";
+import ResponsiveDialog from "../../matx/components/ResponsiveDialog";
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import Load from "../../matx/components/LoadingOverlay";
-
 
 
 /**
@@ -22,11 +21,6 @@ import Load from "../../matx/components/LoadingOverlay";
  * Navigation:
  *      -> Display
  *
- * Components:
- *      -> MidiSenseService
- *      -> LocalStorageService
- *      -> Breadcrumb
- *      -> SimpleCard
  */
 
 class Upload extends Component {
@@ -40,7 +34,10 @@ class Upload extends Component {
 
   constructor(props){
       super(props);
+
+      // Initialize the cookie system
       this.cookies = new Cookies();
+
       this.state = {
           files: [],
           isFileSet: false,
@@ -53,7 +50,8 @@ class Upload extends Component {
           trackIndex: 0,
           modalVisible: false,
           cookies: this.cookies.get('allowCookies'),
-          path: ""
+          path: "",
+          first: true
       }
       this.backendService = new MidiSenseService()
 
@@ -70,6 +68,10 @@ class Upload extends Component {
 
               let response = JSON.parse(xhr.response);
               let designator = response.fileDesignator
+
+              if(this.state.fileDesignator !== "")
+                  this.setState({first:false})
+
               this.cookies.set('fileDesignator', designator, { path: '/',
                   expires: tomorrow // Will expire after 24hr from setting (value is in Date object)
               });
@@ -77,13 +79,15 @@ class Upload extends Component {
                   expires: tomorrow // Will expire after 24hr from setting (value is in Date object)
               });
           }
-
-          console.log(status, meta, file)
-
       }
-      this.getUploadParams = ({ meta }) => { return { url: 'http://localhost:8080/interpreter/uploadFile' } }
 
-      this.onSubmit = () => {
+      this.getUploadParams = () => { return { url: 'http://127.0.0.1:7070/interpreter/uploadFile' } }
+
+        /**
+         * Handle the form submission
+         */
+
+        this.onSubmit = () => {
           this.setState({
               isFileSet: this.cookies.get('allowCookies') !== undefined,
               uploadButtonText: "UploadFile",
@@ -100,26 +104,45 @@ class Upload extends Component {
       this.beginInterpretation = () => {
           const designator = this.cookies.get('fileDesignator')
           this.backendService = new MidiSenseService()
-          console.log("Call to interpret current file")
           this.backendService.interpreterProcessFile(
               designator,
 
+              /**
+               * onSuccess
+               * handles navigation to Display
+               * @param res
+               */
+
               (res)=>{
-                  const success = res['success']
-                  const message = res['message']
-                  console.log("Interpretation request "+(success===true?"accepted":"declined")+": "+message)
-                  this.props.history.push("/Display");
+                  console.log(res)
+                  this.props.history.push("/Display")
+
+                  if(this.state.first){
+                      window.location.reload(false)
+                  }
               },
 
+              /**
+               * onFailure
+               * reloads page on failure (room for extended error handling)
+               * @param error
+               */
+
               (error)=>{
-                  console.error("Interpretation request failed : "+JSON.stringify(error))
                   this.props.history.push("/Upload");
               }
           )
       }
 
+        /**
+         * ProcessFile
+         * Calls sub-methods to begin processing
+         * @constructor
+         */
       this.ProcessFile = () => {
+          //ensure cookies are allowed
           if(this.cookies.get('allowCookies') !== undefined) {
+              //ensure there were no errors in processing the file
               if (this.state.isFileSet) {
                   this.setModalVisible(true)
                   this.beginInterpretation()
@@ -128,34 +151,16 @@ class Upload extends Component {
           }
       }
 
-        this.setModalVisible = (v) => {
-            this.setState({
-                modalVisible:v
-            })
-            console.log(this.state.modalVisible)
+        /**
+         * setModalVisible
+         * Popup to indicate that the system is processing the file
+         * @param v
+         */
+      this.setModalVisible = (v) => {
+          this.setState({
+              modalVisible:v
+          })
         }
-  }
-
-    /**
-     * componentDidMount is invoked immediately after a component is mounted (inserted into the tree)
-     */
-
-  componentDidMount() {
-
-  }
-
-    /**
-     * shouldComponentUpdate lets React know if a component’s output is not affected by the current change in state
-     * or props. In our case, true.
-     *
-     * @param nextProps
-     * @param nextState
-     * @param nextBool
-     * @returns {boolean}
-     */
-
-  shouldComponentUpdate(nextProps, nextState, nextBool) {
-    return true;
   }
 
     /**
@@ -167,27 +172,6 @@ class Upload extends Component {
      */
 
   render() {
-        const styles = {
-            modal: {
-                backgroundColor: "transparent",
-                boxShadow: "none",
-                display: "flex",
-                overflow: "none",
-                width: "100%",
-                padding: "0",
-                margin: "0",
-                height: "100%",
-                minWidth: "100%",
-                justifyContent: "center"
-            },
-            overlay: {
-                backgroundColor: "#1cccc",
-                padding: 0
-            },
-            closeIcon: {
-                fill: "#fff"
-            }
-        };
       const classes = makeStyles;
       return (
           <div className="m-sm-30" >
@@ -200,18 +184,10 @@ class Upload extends Component {
                   />
               </div>
 
-              <Grid container justify="space-evenly" spacing={3} alignItems="center">
-
+              <div style={{height:"50px"}}/>
+              <Grid container direction="row" justifyContent="space-evenly" spacing={5} alignItems="flex-start">
               <SimpleCard title="Upload File">
                       <Grid item>
-                          <div
-                              className={`h-200 w-full border-radius-8 elevation-z6 bg-light-gray flex justify-center items-center cursor-pointer`}
-                          >
-                          <div>
-                              <div id="toast">
-
-                              </div>
-
                               <Dropzone
                                   disabled={this.cookies.get('allowCookies') === undefined}
                                   getUploadParams={this.getUploadParams}
@@ -222,20 +198,38 @@ class Upload extends Component {
                                   canCancel={false}
                                   onSubmit={this.onSubmit}
                                   inputContent={
-                                      <div key="key" className={"m-10"}>
-                                          <Icon className={"center"} fontSize="large">backup</Icon>
-                                          <p>Drag your midi file here, or click to browse for a file</p>
-                                          <aside>
-                                              {this.state.path}
-                                          </aside>
-                                      </div>
+                                      <Grid style={{padding:"20px"}} container key="key" className={"m-10 text-primary"}
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            direction="column"
+                                            spacing={2}
+                                      >
+                                          <Grid item>
+                                            <Icon className={"center"} fontSize="large">backup</Icon>
+                                          </Grid>
+                                          <Grid item>
+                                            <p>Drag your midi file here, or click to browse for a file</p>
+                                          </Grid>
+                                      </Grid>
                                   }
-                                  styles={{dropzone: { width: 400, height: 200 },}}
-                              />
-                          </div>
-                      </div>
-                      </Grid>
+                                  styles={{
+                                      dropzone: {
+                                          borderRadius: "",
+                                          overflow: "hidden",
+                                          width: 400,
+                                          height: 200,
+                                          backgroundColor:"#FFF",
+                                          border: "1px dashed #D2D2D2FF"
+                                      },
+                                      submitButton:{
+                                          backgroundColor:"#FFf",
+                                          border:"1px solid #387dd6",
+                                          color:"#387dd6"
+                                      }
 
+                                  }}
+                              />
+                      </Grid>
                   <br/>
                   <Button
                       variant="outlined"
@@ -251,12 +245,18 @@ class Upload extends Component {
                       }
                   </Button>
               </SimpleCard>
+                  <br/>
                   <Grid item>
                       <div className={"max-w-500 min-w-300"}>
                           <img src={process.env.PUBLIC_URL + '/assets/images/illustrations/Technical_character.svg'} alt={"Person singing"}/>
                       </div>
                   </Grid>
               </Grid>
+
+              <div style={{height:"50px"}}/>
+              <div><asside className="text-muted">To use MIDISense File Analysis:</asside></div>
+              <div><asside className="text-muted">First, <b>Upload</b> a midi file bellow, <b>Wait</b> for it to upload
+                  then press the <b>Submit</b> button. Finally, process the <b>Process</b> button</asside></div>
               {
                   this.cookies.get('allowCookies') === undefined ?
                   <ResponsiveDialog/> :

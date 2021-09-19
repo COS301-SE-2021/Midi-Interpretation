@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 import { navigations } from "app/navigations";
 import { SET_USER_NAVIGATION } from "../actions/NavigationAction";
 

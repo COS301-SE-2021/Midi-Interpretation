@@ -1,12 +1,8 @@
 import {
-    Bar,
-    CartesianGrid, Legend, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar,
+    Legend, PolarAngleAxis, PolarGrid, Radar,
     ResponsiveContainer,
     Tooltip,
-    XAxis,
-    YAxis
 } from "recharts";
-import {BarChart} from "recharts";
 import React from "react";
 import RadarChart from "recharts/lib/chart/RadarChart";
 
@@ -29,36 +25,16 @@ const GenreTable = (genreData) => {
     let data = genreData.genreData
 
     return (
-        // <BarChart
-        //     width={500}
-        //     height={300}
-        //     data={genreData.genreData}
-        //     margin={{
-        //         top: 5,
-        //         right: 30,
-        //         left: 20,
-        //         bottom: 5,
-        //     }}
-        // >
-        //     <CartesianGrid strokeDasharray="3 3" />
-        //     <XAxis dataKey="Name" label={{ value: 'Genre', position: 'bottom' }}/>
-        //     <YAxis unit="%" label={{ value: 'Likelihood', angle: -90, position: 'left' }} domain={[genreData[9], genreData[0]]}/>
-        //     <Tooltip />
-        //     <Bar dataKey="PercentCertainty" fill="#7467ef"/>
-        // </BarChart>
-
         <ResponsiveContainer width="100%" height="100%">
             <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
                 <PolarGrid />
                 <PolarAngleAxis dataKey="Name" />
-                <Radar name="% Certainty" dataKey="PercentCertainty" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                <Radar name="% Certainty" dataKey="PercentCertainty" stroke="#387dd6" fill="#387dd6" fillOpacity={0.5} />
                 <Tooltip/>
                 <Legend />
             </RadarChart>
         </ResponsiveContainer>
-
     )
 }
 
 export default GenreTable;
-//{[genreData[9]-((genreData[0]-genreData[9])/5), ((genreData[0]-genreData[9])/5)+genreData[0]]}

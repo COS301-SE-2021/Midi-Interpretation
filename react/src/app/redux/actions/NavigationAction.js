@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 export const SET_USER_NAVIGATION = "SET_USER_NAVIGATION";
 
 const getfilteredNavigations = (navList = [], role) => {

@@ -4,6 +4,9 @@ import com.noxception.midisense.api.DisplayApi;
 import com.noxception.midisense.display.exceptions.InvalidTrackException;
 import com.noxception.midisense.display.rrobjects.*;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
+import com.noxception.midisense.interpreter.parser.KeySignature;
+import com.noxception.midisense.interpreter.parser.TempoIndication;
+import com.noxception.midisense.interpreter.parser.TimeSignature;
 import com.noxception.midisense.models.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -61,10 +65,12 @@ public class DisplayController implements DisplayApi {
     @Override
     public ResponseEntity<DisplayGetPieceMetadataResponse> getPieceMetadata(DisplayGetPieceMetadataRequest body) {
 
+        //define response object
         DisplayGetPieceMetadataResponse responseObject = new DisplayGetPieceMetadataResponse();
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
+            //pass fileDesignator into request
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
             GetPieceMetadataRequest req = new GetPieceMetadataRequest(fileDesignator);
 
@@ -72,15 +78,36 @@ public class DisplayController implements DisplayApi {
             log.info(String.format("Request | To: %s | For: %s | Assigned: %s","getPieceMetadata",fileDesignator,req.getDesignator()));
 
             GetPieceMetadataResponse res = displayService.getPieceMetadata(req);
-            responseObject.setKeySignature(res.getKeySignature().toString());
 
-            responseObject.setTempoIndication(res.getTempoIndication().getTempo());
+            //set the tempo map items
+            for(TempoIndication tempo : res.getTempoIndication()){
+                DisplayGetPieceMetadataResponseTempoIndicationMap t = new DisplayGetPieceMetadataResponseTempoIndicationMap();
+                t.setTick(tempo.tick);
+                t.setTempoIndication(BigDecimal.valueOf(tempo.tempoIndication));
+                responseObject.addTempoIndicationMapItem(t);
+            }
 
-            DisplayGetPieceMetadataResponseTimeSignature timeSignature = new DisplayGetPieceMetadataResponseTimeSignature();
-            timeSignature.setBeatValue(res.getTimeSignature().getBeatValue());
-            timeSignature.setNumBeats(res.getTimeSignature().getNumBeats());
+            //set the key signature map items
+            for(KeySignature key : res.getKeySignature()){
+                DisplayGetPieceMetadataResponseKeySignatureMap k = new DisplayGetPieceMetadataResponseKeySignatureMap();
+                k.setTick(key.tick);
+                k.setKeySignature(key.commonName);
+                responseObject.addKeySignatureMapItem(k);
+            }
 
-            responseObject.setTimeSignature(timeSignature);
+            //set the time signature map items
+            for(TimeSignature time : res.getTimeSignature()){
+                DisplayGetPieceMetadataResponseTimeSignatureMap t = new DisplayGetPieceMetadataResponseTimeSignatureMap();
+                t.setTick(time.tick);
+
+                DisplayGetPieceMetadataResponseTimeSignature inner = new DisplayGetPieceMetadataResponseTimeSignature();
+                inner.setNumBeats(time.time.numBeats);
+                inner.setBeatValue(time.time.beatValue);
+                t.setTimeSignature(inner);
+                responseObject.addTimeSignatureMapItem(t);
+            }
+
+            //set response to successful if no exceptions throw
             responseObject.setSuccess(true);
             responseObject.setMessage("Successfully retrieved metadata for "+fileDesignator);
 
@@ -90,6 +117,7 @@ public class DisplayController implements DisplayApi {
             //Log the error
             log.warn(String.format("FAILURE | To: %s | Because: %s ","getPieceMetadata",e.getMessage()));
 
+            //set response to unsuccessful
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(true);
             responseObject.setMessage(e.getMessage());
@@ -110,11 +138,13 @@ public class DisplayController implements DisplayApi {
     @Override
     public ResponseEntity<DisplayGetTrackInfoResponse> getTrackInfo(DisplayGetTrackInfoRequest body) {
 
+        //define response object
         DisplayGetTrackInfoResponse responseObject = new DisplayGetTrackInfoResponse();
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
 
+            //pass file designator into request object
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             GetTrackInfoRequest req = new GetTrackInfoRequest(fileDesignator);
@@ -126,12 +156,15 @@ public class DisplayController implements DisplayApi {
 
             for(byte index: res.getTrackIndices()){
 
+                //define inner object to add indexes and tracks
                 String trackName = res.getTrackMap().get(index);
                 DisplayGetTrackInfoResponseInner inner = new DisplayGetTrackInfoResponseInner();
 
+                //add trackName from trackmap in response
                 inner.setIndex((int) index);
                 inner.setTrackName(trackName);
 
+                //add the inner object to response object and success message to response
                 responseObject.add(inner);
                 inner.setSuccess(true);
                 inner.setMessage("Successfully retrieved track");
@@ -161,11 +194,13 @@ public class DisplayController implements DisplayApi {
     @Override
     public ResponseEntity<DisplayGetTrackMetadataResponse> getTrackMetadata(DisplayGetTrackMetadataRequest body) {
 
+        //define response object
         DisplayGetTrackMetadataResponse responseObject = new DisplayGetTrackMetadataResponse();
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
 
+            //pass file designator and track index into request object
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
             int trackIndex = body.getTrackIndex();
 
@@ -176,6 +211,7 @@ public class DisplayController implements DisplayApi {
 
             GetTrackMetadataResponse res = displayService.getTrackMetadata(req);
 
+            //set response to successful if no exceptions throw and set trackString
             responseObject.setTrackString(res.getTrackString());
             responseObject.setSuccess(true);
             responseObject.setMessage(String.format("Successfully retrieved track [%s:%s]",trackIndex,fileDesignator));
@@ -186,6 +222,7 @@ public class DisplayController implements DisplayApi {
             //Log the error
             log.warn(String.format("FAILURE | To: %s | Because: %s ","getTrackMetadata",e.getMessage()));
 
+            //set response to unsuccessful
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(false);
             responseObject.setMessage(e.getMessage());
@@ -205,11 +242,13 @@ public class DisplayController implements DisplayApi {
     @Override
     public ResponseEntity<DisplayGetTrackOverviewResponse> getTrackOverview(DisplayGetTrackOverviewRequest body) {
 
+        //define response object
         DisplayGetTrackOverviewResponse responseObject = new DisplayGetTrackOverviewResponse();
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
 
+            //pass file designator into request object
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
             int trackIndex = body.getTrackIndex();
 
@@ -220,6 +259,7 @@ public class DisplayController implements DisplayApi {
 
             GetTrackOverviewResponse res = displayService.getTrackOverview(req);
 
+            //set response to successful if no exceptions throw
             responseObject.setTrackArray(res.getPitchArray());
             responseObject.setSuccess(true);
             responseObject.setMessage(String.format("Successfully retrieved track [%s:%s]",trackIndex,fileDesignator));
@@ -230,6 +270,7 @@ public class DisplayController implements DisplayApi {
             //Log the error
             log.warn(String.format("FAILURE | To: %s | Because: %s ","getTrackOverview",e.getMessage()));
 
+            //set response to unsuccessful
             returnStatus = HttpStatus.BAD_REQUEST;
             responseObject.setSuccess(false);
             responseObject.setMessage(e.getMessage());

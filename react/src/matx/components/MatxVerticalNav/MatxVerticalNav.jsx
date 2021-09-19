@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Icon } from "@material-ui/core";
@@ -50,7 +54,7 @@ const MatxVerticalNav = props => {
                 }
               })()}
               <span className="align-middle item-text">{item.name}</span>
-              <div className="mx-auto"></div>
+              <div className="mx-auto"/>
               {item.badge && (
                 <div className={`badge bg-${item.badge.color}`}>
                   {item.badge.value}
@@ -60,30 +64,58 @@ const MatxVerticalNav = props => {
           </a>
         );
       } else {
-        return (
-          <NavLink key={index} to={item.path} className="nav-item">
-            <TouchRipple key={item.name} name="child" className="w-full">
-              {(() => {
-                if (item.icon) {
-                  return (
-                    <Icon className="item-icon align-middle">{item.icon}</Icon>
-                  );
-                } else {
-                  return (
-                    <span className="item-icon icon-text">{item.iconText}</span>
-                  );
-                }
-              })()}
-              <span className="align-middle item-text">{item.name}</span>
-              <div className="mx-auto"></div>
-              {item.badge && (
-                <div className={`badge bg-${item.badge.color}`}>
-                  {item.badge.value}
-                </div>
-              )}
-            </TouchRipple>
-          </NavLink>
-        );
+        if(item.enabled) {
+          return (
+              <NavLink key={index} to={item.path} className="nav-item">
+                <TouchRipple key={item.name} name="child" className="w-full">
+                  {(() => {
+                    if (item.icon) {
+                      return (
+                          <Icon className="item-icon align-middle">{item.icon}</Icon>
+                      );
+                    } else {
+                      return (
+                          <span className="item-icon icon-text">{item.iconText}</span>
+                      );
+                    }
+                  })()}
+                  <span className="align-middle item-text">{item.name}</span>
+                  <div className="mx-auto"/>
+                  {item.badge && (
+                      <div className={`badge bg-${item.badge.color}`}>
+                        {item.badge.value}
+                      </div>
+                  )}
+                </TouchRipple>
+              </NavLink>
+          );
+        }
+        else {
+          return (
+              <div key={index}  className="nav-item">
+                <TouchRipple key={item.name} name="child" className="w-full" disabled>
+                  {(() => {
+                    if (item.icon) {
+                      return (
+                          <Icon className="item-icon align-middle text-muted-white">{item.icon}</Icon>
+                      );
+                    } else {
+                      return (
+                          <span className="item-icon icon-text text-muted-white">{item.iconText}</span>
+                      );
+                    }
+                  })()}
+                  <span className="align-middle item-text text-muted-white">{item.name}</span>
+                  <div className="mx-auto"/>
+                  {item.badge && (
+                      <div className={`badge bg-${item.badge.color}`}>
+                        {item.badge.value}
+                      </div>
+                  )}
+                </TouchRipple>
+              </div>
+          );
+        }
       }
     });
   };

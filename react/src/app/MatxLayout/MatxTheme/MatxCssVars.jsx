@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 import React from "react";
 import { withStyles } from "@material-ui/styles";
 
@@ -6,7 +10,7 @@ const generateFontProperty = fontObject => {
 };
 
 const generateShadowVars = theme => {
-  return theme.shadows.reduce(function(result, item, index, array) {
+  return theme.shadows.reduce(function(result, item, index) {
     result[`--elevation-z${index}`] = item;
     return result;
   }, {});

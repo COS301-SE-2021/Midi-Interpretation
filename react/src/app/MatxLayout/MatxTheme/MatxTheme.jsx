@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 import React from "react";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { connect } from "react-redux";
@@ -6,13 +10,9 @@ import { setLayoutSettings } from "app/redux/actions/LayoutActions";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import MatxCssVars from "./MatxCssVars";
 
-// import cssVars from "css-vars-ponyfill";
 
 const MatxTheme = ({ children, settings }) => {
   let activeTheme = { ...settings.themes[settings.activeTheme] };
-  // console.log(activeTheme);
-  // cssVars();
-  // activeTheme.direction = settings.direction;
   return (
     <ThemeProvider theme={activeTheme}>
       <CssBaseline />

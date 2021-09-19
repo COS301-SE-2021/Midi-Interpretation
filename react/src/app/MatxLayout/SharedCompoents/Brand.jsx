@@ -1,5 +1,12 @@
 import React from "react";
 
+/**
+ * Default branding information
+ * @param children
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 const Brand = ({ children }) => {
   return (
     <div className="flex items-center justify-between brand-area">

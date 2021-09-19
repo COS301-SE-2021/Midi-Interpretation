@@ -1,8 +1,8 @@
 import React, {Component} from "react";
-import {Breadcrumb, SimpleCard} from "matx";
+import {Breadcrumb} from "matx";
 import { withStyles } from "@material-ui/styles";
 import 'react-responsive-combo-box/dist/index.css';
-import { Grid, Container } from '@material-ui/core';
+import {Avatar, Grid} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
@@ -12,12 +12,22 @@ import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 
 /**
- * This class defines the first view that a user will be presented with
- * The view will explain how to use our service and act as an about page for MIDISense
+ * The view will act as an about page for MIDISense and give information on
  *
- * Navigation:
- *      -> Upload
+ * - Our development team
+ * - How we gathered the data for your AI
+ * - Credits for the external elements of our system
+ *
  */
+
+/**
+ * The tab navigation panel
+ *
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -38,11 +48,22 @@ function TabPanel(props) {
     );
 }
 
+/**
+ * TabPanel Prop type definition
+ */
+
 TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired,
 };
+
+/**
+ * a11yProps
+ *
+ * @param index
+ * @returns {{"aria-controls": string, id: string}}
+ */
 
 function a11yProps(index) {
     return {
@@ -50,6 +71,10 @@ function a11yProps(index) {
         'aria-controls': `scrollable-auto-tabpanel-${index}`,
     };
 }
+
+/**
+ * Styling information for the view
+ */
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -59,10 +84,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+/**
+ * AboutTabs adds the content to the tabs presented to the user by TabPanel
+ *
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 function AboutTabs() {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
+    // Change view to the new panel contents
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -81,66 +114,140 @@ function AboutTabs() {
                 >
                 <Tab label="About Our Project" {...a11yProps(0)} />
                 <Tab label="How We Gathered Data" {...a11yProps(1)} />
-                <Tab label="How To Use MIDISense" {...a11yProps(2)} />
-                <Tab label="Credits" {...a11yProps(3)} />
+                <Tab label="Credits" {...a11yProps(2)} />
             </Tabs>
             </AppBar>
             <TabPanel value={value} index={0}>
-                <Grid container
-                      alignContent="space-between"
-                      justify="space-between"
-                      spacing={5}>
-                        <Grid  item xs={12} sm={12} m={12} lg={8} >
-                            <div className="text-20">
-                                <h4>About Us</h4>
+                        <div className="text-20">
+                            <br/>
 
-                                <p>
-                                    NoXception is a team of five third-year EBIT undergraduates from the University of
-                                    Pretoria with a determination to embody best practices in real-world software
-                                    engineering. We have the drive to engage in development projects which challenge us
-                                    on a professional basis and enrich us on a personal level.
-                                </p>
-                                <p>
-                                    We were tasked to create a System that would be able to Interpret Midi music files
-                                    and display gathered information. This is the system you are currently using
-                                    This system enables the interpretation, display and analysis of musical data stored
-                                    in a midi format.
-                                </p>
-                                <p>
-                                    Music forms an integral part of modern society. It is without a doubt, the most
-                                    ubiquitous of art forms, permeating through the day-to-day lives of most
-                                    individuals in some form or another and is one that most people would find
-                                    challenging to live without.
-                                </p>
-                                <p>
-                                    As with most artistic disciplines, the accessibility
-                                    of music and a rise in music education among the youth have made its practises an
-                                    appropriate target for rapid digitisation. As the composition, arrangement and
-                                    transcription of works are common industry practises, there has been a drive in
-                                    recent years to marry these processes with technologies that enhance both the
-                                    sensory and extrasensory perception of a work during such tasks.
-                                </p>
+                            <div className="font-bold">Our Team</div>
+
+                            <br/>
+                            <Grid container justifyContent="space-evenly" direction="row">
+                                <Grid item>
+                                    <img style={{width:"500px"}} src={process.env.PUBLIC_URL + '/assets/images/logo-full.png'} alt={"MidiSense Logo"}/>
+                                </Grid>
+                                <Grid item>
+                                    <Grid container direction="column"  spacing={5} justifyContent="space-between">
+                                        <Grid item>
+                                            <Grid container direction="row" spacing={5}>
+                                                <Grid item>
+                                                    <Avatar variant="rounded" alt="Remy Sharp" src={process.env.PUBLIC_URL + '/assets/images/hendro.png'}/>
+                                                </Grid>
+                                                <Grid item>
+                                                    <h4>Hendro Smit | <a href="https://github.com/hendrosmit">GitHub</a> | <a href="https://www.linkedin.com/in/hendro-smit-328ba720b/">LinkedIn</a></h4>
+                                                    <aside className="text-muted font-medium">Front-end lead and UX engineer</aside>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+
+                                        <Grid item>
+                                            <Grid container direction="row" spacing={5}>
+                                                <Grid item>
+                                                    <Avatar variant="rounded" alt="Remy Sharp" src={process.env.PUBLIC_URL + '/assets/images/claudio.jpg'}/>
+                                                </Grid>
+                                                <Grid item>
+                                                    <h4>Claudio Teixeira | <a href="https://github.com/Claudio-Uni">GitHub</a> | <a href="https://www.linkedin.com/in/claudio-teixeira-b9bb9820b/">LinkedIn</a></h4>
+                                                    <aside className="text-muted font-medium">Business analyst and admin lead</aside>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+
+                                        <Grid item>
+                                            <Grid container direction="row" spacing={5}>
+                                                <Grid item>
+                                                    <Avatar variant="rounded" alt="Remy Sharp" src={process.env.PUBLIC_URL + '/assets/images/rea.jpg'}/>
+                                                </Grid>
+                                                <Grid item>
+                                                    <h4>Rearabetswe Maeko | <a href="https://github.com/u18094024">GitHub</a> | <a href="https://www.linkedin.com/in/rea-maeko-0b5a4a20b/">LinkedIn</a></h4>
+                                                    <aside className="text-muted font-medium">Backend developer and tester</aside>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+
+                                        <Grid item>
+                                            <Grid container direction="row" spacing={5}>
+                                                <Grid item>
+                                                    <Avatar variant="rounded" alt="Remy Sharp" src={process.env.PUBLIC_URL + '/assets/images/mbuso.jpg'}/>
+                                                </Grid>
+                                                <Grid item>
+                                                    <h4>Mbuso Shakoane | <a href="https://github.com/u18094024">GitHub</a> | <a href="https://www.linkedin.com/in/mbuso-shakoane-049a4920b/">LinkedIn</a></h4>
+                                                    <aside className="text-muted font-medium">Backend developer and tester</aside>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+
+                                        <Grid item>
+                                            <Grid container direction="row" spacing={5}>
+                                                <Grid item>
+                                                    <Avatar variant="rounded" alt="Remy Sharp" src={process.env.PUBLIC_URL + '/assets/images/adrian.jpg'}/>
+                                                </Grid>
+                                                <Grid item>
+                                                    <h4>Adrian Rae | <a href="https://github.com/Adrian-Rae-19004029">GitHub</a> | <a href="https://www.linkedin.com/in/adrian-rae-5796b31bb/">LinkedIn</a></h4>
+                                                    <aside className="text-muted font-medium">System architect and backend lead</aside>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                        <br/>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+
+                            <br/>
+
+                            <div className="font-bold">Our Project</div>
+
+                            <br/>
+
+                            <div>
+                                NoXception is a team of five third-year EBIT undergraduates from the University of
+                                Pretoria with a determination to embody best practices in real-world software
+                                engineering. We have the drive to engage in development projects which challenge us
+                                on a professional basis and enrich us on a personal level.
                             </div>
                             <br/>
-                        </Grid>
-                    <Grid  item xs={12} sm={12} m={12} lg={4} >
-                    <div className={"max-w-300 min-w-100"}>
-                        <img src={process.env.PUBLIC_URL + '/assets/images/illustrations/Forward_character.svg'} alt={"Person on laptop"}/>
-                    </div>
-                </Grid>
-                </Grid>
+                            <div>
+                                We were tasked to create a System that would be able to Interpret Midi music files
+                                and display gathered information. This is the system you are currently using
+                                This system enables the interpretation, display and analysis of musical data stored
+                                in a midi format.
+                            </div>
+                            <br/>
+                            <div>
+                                Music forms an integral part of modern society. It is without a doubt, the most
+                                ubiquitous of art forms, permeating through the day-to-day lives of most
+                                individuals in some form or another and is one that most people would find
+                                challenging to live without.
+                            </div>
+                            <br/>
+                            <div>
+                                As with most artistic disciplines, the accessibility
+                                of music and a rise in music education among the youth have made its practises an
+                                appropriate target for rapid digitisation. As the composition, arrangement and
+                                transcription of works are common industry practises, there has been a drive in
+                                recent years to marry these processes with technologies that enhance both the
+                                sensory and extrasensory perception of a work during such tasks.
+                            </div>
+                        </div>
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <br/>
                 <Grid container
-                      alignContent="space-between"
-                      justify="space-between"
-                      spacing={5}>
-                    <Grid item xs={12} sm={12} m={12} lg={8}>
-                        <h4>How We Gathered Data</h4>
-                        <br/>
+                      alignContent="center"
+                      justifyContent="space-evenly"
+                >
+
+                    <Grid item>
+                        <div style={{width:"150px"}}>
+                            <img src={process.env.PUBLIC_URL + '/assets/images/illustrations/Forward_character.svg'} alt={"Person on laptop"}/>
+                        </div>
+                    </Grid>
+
+                    <Grid item>
+                        <div className="font-bold text-20">How We Gathered Data</div>
                         <div className="text-20">
-                            <p>In order to train our system AI we needed to gather a thousands of midi files.</p>
+                            <span>In order to train our system AI we needed to gather a thousands of midi files.</span>
                             <li>First, we went to <a href="https://freemidi.org/">Free Midi</a> and gathered a list of all
                                 it's tracks, their authors and download links</li>
                             <li>Next, we categorized the tracks based on their name and author using the
@@ -152,48 +259,16 @@ function AboutTabs() {
                         </div>
                         <br/>
                     </Grid>
-                    <Grid item xs={12} sm={12} m={12} lg={4}>
-                        <div className={"max-w-400 min-w-100"}>
-                            <img src={process.env.PUBLIC_URL + '/assets/images/illustrations/Laptop_character_1.svg'} alt={"Person singing"}/>
-                        </div>
-                    </Grid>
                 </Grid>
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <br/>
                 <Grid container
-                      alignContent="space-between"
-                      justify="space-between"
+                      alignContent="center"
+                      justifyContent="space-evenly"
                       spacing={5}>
-                    <Grid item xs={12} sm={12} m={12} lg={8}>
-                        <h4>How To Use MIDISense</h4>
-                        <br/>
-                        <div className="text-20">
-                            <li>Navigate to the Upload page using the navigation bar on the lef.t</li>
-                            <li>Find a midi file you want to know more about.</li>
-                            <li>Drag and drop your file onto the provided area or simply click to browse.</li>
-                            <li>Wait for it to upload and then hit submit.</li>
-                            <li>Hit the process button!</li>
-                            <li>Let our system do it's magic.</li>
-                            <li>Look through all the details of your file.</li>
-                        </div>
-                        <br/>
-                    </Grid>
-                    <Grid item xs={12} sm={12} m={12} lg={4}>
-                        <div className={"max-w-300 min-w-200"}>
-                            <img src={process.env.PUBLIC_URL + '/assets/images/illustrations/Laptop_character_3.svg'} alt={"Person singing"}/>
-                        </div>
-                    </Grid>
-                </Grid>
-            </TabPanel>
-            <TabPanel value={value} index={3}>
-                <br/>
-                <Grid container
-                      alignContent="space-between"
-                      justify="space-between"
-                      spacing={5}>
-                    <Grid item xs={12} sm={12} m={12} lg={8}>
-                        <h4>Credits</h4>
+                    <Grid item>
+                        <div className="font-bold text-20">Credits</div>
                         <br/>
                         <div className="text-20">
                             <li><a href="https://github.com/uilibrary/matx-react">
@@ -217,8 +292,8 @@ function AboutTabs() {
                         </div>
                         <br/>
                     </Grid>
-                    <Grid item xs={12} sm={12} m={12} lg={4}>
-                        <div className={"max-w-400 min-w-100"}>
+                    <Grid item>
+                        <div style={{width:"250px"}}>
                             <img src={process.env.PUBLIC_URL + '/assets/images/illustrations/Thumbs_Up_character.svg'} alt={"Person singing"}/>
                         </div>
                     </Grid>
@@ -228,10 +303,14 @@ function AboutTabs() {
     );
 }
 
+/**
+ * The core About component
+ */
+
 class About extends Component {
 
     /**
-     * The main constructor for the Welcome view
+     * The main constructor for the About view
      *
      * @constructor
      * @param props
@@ -240,28 +319,6 @@ class About extends Component {
     constructor(props){
         super(props);
         this.state = {}
-    }
-
-    /**
-     * componentDidMount is invoked immediately after a component is mounted (inserted into the tree)
-     */
-
-    componentDidMount() {
-
-    }
-
-    /**
-     * shouldComponentUpdate lets React know if a component’s output is not affected by the current change in state
-     * or props. In our case, true.
-     *
-     * @param nextProps
-     * @param nextState
-     * @param nextBool
-     * @returns {boolean}
-     */
-
-    shouldComponentUpdate(nextProps, nextState, nextBool) {
-        return true;
     }
 
     /**
@@ -282,11 +339,9 @@ class About extends Component {
                         ]}
                     />
                 </div>
-                <SimpleCard>
                     <div>
                         <AboutTabs/>
                     </div>
-                </SimpleCard>
             </div>
         );
     };

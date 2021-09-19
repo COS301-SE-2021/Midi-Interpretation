@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 import React from "react";
 
 const MatxSidenavContent = ({ children }) => {
