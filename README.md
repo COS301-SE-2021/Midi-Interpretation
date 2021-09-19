@@ -53,7 +53,7 @@ For a detailed description of the system, its requirement satisfactions and arch
 
 For a detailed description of how to install and use the service, see the resources below.
 * :open_book: [Installation Manual](https://www.overleaf.com/read/wqzgbdtyczry)
-* :open_book: [User Manual](https://www.overleaf.com/read/qvwdczpqtwmk)
+* :open_book: [User Manual](https://drive.google.com/file/d/17mqOcWW_HHbbYmn3ynySits1FqbekJNC/view?usp=sharing)
 
 
 ### Demonstration ###
