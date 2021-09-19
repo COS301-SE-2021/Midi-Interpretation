@@ -34,9 +34,9 @@ public class NeuralNetworkGenreAnalysisStrategy implements GenreAnalysisStrategy
 
     private final StandardConfig configurations;
 
-    private int unscaledInputSize = 128 * (1<<10);
+    private final int unscaledInputSize = 128 * (1<<10);
 
-    private final int inputLayerSize = 500;
+    private final int inputLayerSize = 40;
     private final int hiddenLayerSize = 100;
 
     //PCA matrix

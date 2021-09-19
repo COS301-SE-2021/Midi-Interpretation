@@ -14,6 +14,9 @@ import FSharp from "../../styles/images/keys/F.svg"
 import GFlat from "../../styles/images/keys/Gb.svg"
 import G from "../../styles/images/keys/G.svg"
 
+/**
+ * KeySignature to svg map
+ */
 class KeySignature{
     constructor() {
         this.imageMap = {
@@ -50,6 +53,11 @@ class KeySignature{
         }
     }
 
+    /**
+     * getlinkForKey
+     * @param key
+     * @returns {*}
+     */
     getLinkForKey(key){
         if(typeof this.imageMap[key] === 'undefined')
             return this.imageMap['Cmaj']

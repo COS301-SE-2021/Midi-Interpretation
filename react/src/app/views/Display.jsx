@@ -1,16 +1,24 @@
 import React, {Component} from "react";
 import {Breadcrumb, SimpleCard} from "../../matx";
-import SelectedMenu from "../../matx/components/SelectedMenu";
+import TrackMenu from "../../matx/components/TrackMenu";
 import MidiSenseService from "../services/MidiSenseService";
 import TrackViewer from "../../matx/components/TrackViewer";
-import {Grid} from "@material-ui/core";
+import {Grid, Slider, Snackbar} from "@material-ui/core";
 import Cookies from "universal-cookie";
 import GenreTable from "../../matx/components/GenreTable";
 import {withStyles} from "@material-ui/core/styles";
 import KeySignature from "../../styles/images/keyMap"
 import TimeSignature from "../../styles/images/timeMap"
+import Typography from "@material-ui/core/Typography";
+import * as PropTypes from "prop-types";
+import {Alert} from '@material-ui/lab';
 
-//==============================================
+Alert.propTypes = {
+    severity: PropTypes.string,
+    onClose: PropTypes.any,
+    children: PropTypes.node
+};
+
 /**
  * This class defines the interpretation of a midi file that has been supplied by the server
  * It displays:
@@ -34,13 +42,6 @@ import TimeSignature from "../../styles/images/timeMap"
  * Navigation:
  *      -> Upload
  *
- * Components:
- *      -> MidiSenseService
- *      -> LocalStorageService
- *      -> Breadcrumb
- *      -> SimpleCard
- *      -> DiscreteSlider
- *      -> SelectedMenu
  */
 
 class Display extends Component {
@@ -54,15 +55,20 @@ class Display extends Component {
    */
 
   constructor(props) {
-      super(props);
-      this.cookies = new Cookies();
+      super(props)
+
+      // Initialize the cookie system
+      this.cookies = new Cookies()
+
       this.state = {
-        rowsPerPage: 5,
-        page: 0,
+        expired: false,
+        error: false,
+        openError:false,
+        errorCount: 0,
         songTitle: "Song Title",
-        keySignature: "Unknown",
-        tempoIndication: "Unknown",
-        timeSignature: {},
+        keySignatureMap: [{"tick": 0, "keySignature": "Cmaj"}],
+        tempoIndicationMap: [{"tick": 0, "tempoIndication": 120}],
+        timeSignatureMap: [{"tick": 0, "timeSignature": {"numBeats": 4, "beatValue": 4}}],
         currentTrack: 0,
         trackListing: [],
         trackData:[],
@@ -94,13 +100,27 @@ class Display extends Component {
           timeMap: new TimeSignature(),
       }
 
+      this.setState({keySignatureMap : [this.state.keySignature]})
+      this.setState({timeSignatureMap : [this.state.timeSignature]})
+      this.setState({tempoIndicationMap : [this.state.tempoIndication]})
+
+      // Check if a track has been processed previously, otherwise navigate back to upload
+
       if(this.cookies.get('fileDesignator') === undefined){
-          this.props.history.push("/Upload")
+          //this.props.history.push("/Upload")
+          //window.location.reload(false)
+          this.handleError()
       }
+
+      // Begin gathering data from the server
 
       this.getTrackMetadata(this.state.currentTrack)
 
   }
+
+    /**
+     * Update the display data when componentDidMount
+     */
 
   componentDidMount() {
       this.refreshScoreDetails()
@@ -111,27 +131,6 @@ class Display extends Component {
   //====================================
 
     /**
-     * setRowsPerPage
-     * @param rpp - new rows per page
-     */
-  setRowsPerPage = (rpp) => {
-      this.setState({
-        rowsPerPage: rpp
-      })
-  }
-
-    /**
-     * setPage
-     * @param p - new current page
-     */
-
-  setPage = (p) => {
-      this.setState({
-        page: p
-      })
-  }
-
-    /**
      * setSongTitle
      * @param st - new song title
      */
@@ -139,39 +138,6 @@ class Display extends Component {
   setSongTitle = (st) => {
       this.setState({
         songTitle: st
-      })
-  }
-
-    /**
-     * setKeySignature
-     * @param ks - new key signature
-     */
-
-  setKeySignature = (ks) => {
-      this.setState({
-        keySignature: ks
-      })
-  }
-
-    /**
-     * setTempoIndication
-     * @param ti - new tempo indication
-     */
-
-  setTempoIndication = (ti) => {
-      this.setState({
-        tempoIndication: ti
-      })
-  }
-
-    /**
-     * setTimeSignature
-     * @param ts - new time signature
-     */
-
-  setTimeSignature = (ts) => {
-      this.setState({
-        timeSignature: ts
       })
   }
 
@@ -199,8 +165,7 @@ class Display extends Component {
   }
 
     /**
-     *
-     * @property JSON
+     * setTrackData
      * @param td
      */
 
@@ -211,23 +176,45 @@ class Display extends Component {
       })
   }
 
-    setTicksPerBeat = (t) => {
-        this.setState({
-            ticksPerBeat: t
-        })
-    }
+    /**
+     * setTicksPerBeat
+     * @param t
+     */
 
-    setInstrument = (i) => {
-        this.setState({
-            instrument: i
-        })
-    }
+  setTicksPerBeat = (t) => {
+      this.setState({
+          ticksPerBeat: t
+      })
+  }
+
+    /**
+     * setInstrument
+     * @param i
+     */
+
+  setInstrument = (i) => {
+      this.setState({
+          instrument: i
+      })
+  }
+
+    /**
+    /**
+     * setSelected
+     * @param s
+     */
 
   setSelected = (s) => {
       this.setState({
           selectedIndex:s
       })
   }
+
+    /**
+     * getDigitsFromNumber
+     * @param t
+     * @returns {number[]|*[]}
+     */
 
   getDigitsFromNumber = (t) => {
       if (typeof t !== 'number')
@@ -248,85 +235,99 @@ class Display extends Component {
   //====================================
 
   /**
-   * handleChangePage sends the event and the new page to setPage when the current page is changed
-   * @param event
-   * @param newPage
-   */
-
-  handleChangePage = (event, newPage) => {
-    this.setPage(newPage);
-  };
-
-  /**
-   * handleChangeRowsPerPage sends the event to setRowsPerPage to change how many rows are displayed in the table
-   * @param event
-   */
-
-  handleChangeRowsPerPage = event => {
-    this.setRowsPerPage(+event.target.value);
-  };
-
-  /**
    * getScoreMetadata will get and set the key signature, tempt indication, time signature and track listing
    */
 
   getScoreMetadata = () => {
-
+      /**
+       * displayGetPieceMetadata
+       */
      this.state.midisenseService.displayGetPieceMetadata(this.state.fileDesignator,
         (res) => {
-          const keySignature = res['keySignature']
-          const tempoIndication = res['tempoIndication']
-          const timeSignature = res['timeSignature']
-          this.setKeySignature(keySignature)
-          this.setTempoIndication(tempoIndication)
-          this.setTimeSignature(timeSignature)
+            console.log(res)
+          this.setState({keySignatureMap: res['keySignatureMap']})
+          this.setState({tempoIndicationMap: res['tempoIndicationMap']})
+          this.setState({timeSignatureMap: res['timeSignatureMap']})
+          this.setState({error:false})
         },
-        (error) => {
-
-        })
-
+         (res) =>{
+            this.handleError(res)
+         })
+      /**
+       * displayGetTrackInfo
+       */
      this.state.midisenseService.displayGetTrackInfo(this.state.fileDesignator,
         (res) => {
+            console.log(res)
             for (const track of res) {
               let currentListing = this.state.trackListing
               currentListing.push((track['index'] + 1) + ". " + track['trackName'])
               this.setTrackListing(currentListing)
             }
+            this.setState({error:false})
         },
-        (error) => {
+         (res) =>{
+            this.handleError(res)
+         })
 
-        }
-     )
-
+      /**
+       * intelligenceAnalyseGenre
+       */
       this.state.midisenseService.intelligenceAnalyseGenre(this.state.fileDesignator,
-          (res) => {
-              const genreData = res['genreArray']
+         (res) => {
+             console.log(res)
+             const success = res['success']
+             if(success === undefined || !success)
+                 this.handleError(res)
+             else {
 
-              for (let i = 0 ; i < genreData.length ; i++){
-                  genreData[i].Certainty = parseFloat(genreData[i].Certainty).toFixed(3);
-              }
+                 const genreData = res['genreArray']
 
-              this.setState({genreData: genreData})
+                 for (let i = 0; i < genreData.length; i++) {
+                     genreData[i].Certainty = parseFloat(genreData[i].Certainty).toFixed(3);
+                 }
+
+                 this.setState({genreData: genreData})
+                 this.setState({error:false})
+             }
           },
-          (error) => {
-
-          }
-      )
+          (res)=>{
+              this.handleError(res)
+          })
   }
+
+    /**
+     * getTrackMetadata
+     *
+     * Get the note data associated with track n
+     *
+     * @param n
+     */
 
   getTrackMetadata = (n) =>{
 
       this.state.midisenseService.displayGetTrackMetadata(this.state.fileDesignator, n,
           (res) => {
-              let trackString = res['trackString']
-              trackString = JSON.parse(trackString)
-              this.setTrackData(trackString['track'])
-              this.setTicksPerBeat(trackString['ticks_per_beat'])
-              this.setInstrument(trackString['instrument'])
-
+            console.log(res)
+              const success = res['success']
+              if(success === undefined || !success) {
+                  this.setState({
+                      expired: true
+                  })
+              }
+              else {
+                  let trackString = res['trackString']
+                  trackString = JSON.parse(trackString)
+                  this.setTrackData(trackString['track'])
+                  this.setTicksPerBeat(trackString['ticks_per_beat'])
+                  this.setInstrument(trackString['instrument'])
+                  this.setState({expired: false})
+              }
           },
-          (error) => {
-
+          (res) =>{
+              this.setState({
+                  expired: true
+              })
           })
   }
 
@@ -336,6 +337,7 @@ class Display extends Component {
    */
 
   refreshScoreDetails = () => {
+      // Ensures that a file has been processed (this is a secondary level of protection)
       if(this.cookies.get('fileDesignator') !==undefined) {
           this.setSongTitle(this.cookies.get('title'))
           this.getScoreMetadata()
@@ -343,10 +345,24 @@ class Display extends Component {
       }
   }
 
+    /**
+     * handleError
+     * When an error occurs we will retry until a threshold is reached and then indicate the error.
+     */
 
+  handleError = () => {
+      this.setState({
+          errorCount: this.state.errorCount+1,
+          error: true
+      })
 
+      if(this.state.errorCount >= 5){
+          this.setState({
+              openError: true
+          })
+      }
 
-
+  }
 
   /**
    * This method returns the elements that we want displayed
@@ -369,7 +385,6 @@ class Display extends Component {
                           ]}
                       />
                   </div>
-
                   <div>
                       <Grid container
                             justify="space-evenly"
@@ -380,66 +395,95 @@ class Display extends Component {
                       >
                           <Grid item xs={12} sm={12} m={12} lg={6} >
                               <SimpleCard title="Metadata" subtitle="Technical and performance-related information.">
-                                  <div>
-                                      <Grid container
-                                            justify="space-evenly"
-                                            spacing={3}
-                                            direction="row"
-                                            justifyContent="space-evenly"
-                                            alignItems="center"
-                                      >
-                                          <br/>
-                                          <Grid container item lg={12} style={{textAlign:'center'}}>
-                                              <Grid item lg={12}>
-                                                  <h1>{this.state.songTitle}</h1>
-                                                  <aside>Data found at the start of the piece</aside>
+                                  {(this.state.error) ? <div/> :
+                                      <div>
+                                          <Grid container
+                                                justify="space-evenly"
+                                                spacing={3}
+                                                direction="row"
+                                                justifyContent="space-evenly"
+                                                alignItems="center"
+                                          >
+                                              <br/>
+                                              <Grid container item lg={12} style={{textAlign: 'center'}}>
+                                                  <Grid item lg={12}>
+                                                      <h1>{this.state.songTitle}</h1>
+                                                      <aside>Data found at the start of the file</aside>
+                                                  </Grid>
                                               </Grid>
-                                          </Grid>
 
-                                          <Grid container item lg={12} style={{textAlign:'center'}}>
+                                              <Grid container item lg={12} style={{textAlign: 'center'}}>
 
-                                              <Grid item m={4} lg={4}>
-                                                  <h5>Key Signature</h5>
-                                                  <h6>{this.state.keySignature}</h6>
-                                                  <br/>
-                                                  <div>
-                                                      <img src={this.state.keyMap.getLinkForKey(this.state.keySignature)} style={{ height: '100px'}}/>
-                                                  </div>
-
-                                              </Grid>
-                                              <Grid item m={4} lg={4}>
-
-                                                  <h5>Time Signature</h5>
-                                                  <h6>{this.state.timeSignature['numBeats'] + "/" + this.state.timeSignature['beatValue']}</h6>
-                                                  <br/>
-                                                  <div>
-                                                      <img src={this.state.timeMap.getLinkForTime(this.state.timeSignature['numBeats'])} style={{ height: '40px'}}/>
+                                                  <Grid item m={4} lg={4}>
+                                                      <h5>Key Signature</h5>
+                                                      <h6>{(this.state.keySignatureMap)?this.state.keySignatureMap[0]['keySignature']:null}</h6>
                                                       <br/>
-                                                      <img src={this.state.timeMap.getLinkForTime(this.state.timeSignature['beatValue'])} style={{ height: '40px'}}/>
-                                                  </div>
+                                                      <div>
+                                                          {(this.state.keySignatureMap)?<img alt={"key signature"}
+                                                               src={this.state.keyMap.getLinkForKey(this.state.keySignatureMap[0]['keySignature'])}
+                                                               style={{height: '100px'}}/>:<div/>}
+                                                      </div>
 
+                                                  </Grid>
+                                                  <Grid item m={4} lg={4}>
+
+                                                      <h5>Time Signature</h5>
+                                                      <h6>{(this.state.timeSignatureMap)?this.state.timeSignatureMap[0]['timeSignature']['numBeats'] + "/" + this.state.timeSignatureMap[0]['timeSignature']['beatValue']:null}</h6>
+                                                      <br/>
+                                                          {(this.state.timeSignatureMap)?
+                                                              <div>
+                                                                  <img alt={"time signature"}
+                                                                       src={this.state.timeMap.getLinkForTime(this.state.timeSignatureMap[0]['timeSignature']['numBeats'])}
+                                                                       style={{height: '40px'}}/>
+                                                                  <br/>
+                                                                  <img alt={"time signature"}
+                                                                  src={this.state.timeMap.getLinkForTime(this.state.timeSignatureMap[0]['timeSignature']['beatValue'])}
+                                                                  style={{height: '40px'}}/>
+                                                              </div>:<div/>
+                                                          }
+                                                  </Grid>
+                                                  <Grid item m={4} lg={4}>
+                                                      <h5>Tempo Indication</h5>
+                                                      <h6>{(this.state.tempoIndicationMap)?this.state.tempoIndicationMap[0]['tempoIndication']:null} Crotchet
+                                                          BPM</h6>
+                                                      <br/>
+                                                      {(this.state.tempoIndicationMap)?
+                                                          this.getDigitsFromNumber(this.state.tempoIndicationMap[0]['tempoIndication']).map((item) => {
+                                                              return <span><img alt={"Tempo"}
+                                                                                src={this.state.timeMap.getLinkForTime(item)}/></span>
+                                                          }):null
+                                                      }
+                                                  </Grid>
                                               </Grid>
-                                              <Grid item m={4} lg={4}>
-                                                  <h5>Tempo Indication</h5>
-                                                  <h6>{this.state.tempoIndication}</h6>
-                                                  <br/>
-                                                  {
-                                                      this.getDigitsFromNumber(this.state.tempoIndication).map((item)=>{
-                                                          return <span><img src={this.state.timeMap.getLinkForTime(item)}/></span>
-                                                      })
-                                                  }
-                                              </Grid>
+
                                           </Grid>
-
-                                      </Grid>
-                                  </div>
+                                      </div>
+                                  }
                               </SimpleCard>
                           </Grid>
                           <Grid item xs={12} sm={12} m={12} lg={6}>
-                              <SimpleCard title="Genre Analysis" subtitle="Here's what we think your file sounds like.">
-                                  <div style={{ height: '300px', width: '100%'}}>
-                                      <GenreTable genreData={this.state.genreData.slice(0,this.state.numberOfGenres)}/>
-                                  </div>
+                              <SimpleCard title="Genre Analysis" subtitle="Here's what we think your file sounds like. Slide to adjust the number of suggestions.">
+                                  {(this.state.error) ? <div/> :
+                                      <div>
+                                          <div style={{height: '300px', width: '100%'}}>
+                                              <GenreTable
+                                                  genreData={this.state.genreData.slice(0, this.state.numberOfGenres)}/>
+                                          </div>
+                                          <Typography id="discrete-slider" gutterBottom>
+                                          Suggestions
+                                          </Typography>
+                                          <Slider
+                                          defaultValue={5}
+                                          aria-labelledby="discrete-slider"
+                                          valueLabelDisplay="auto"
+                                          step={1}
+                                          marks
+                                          min={5}
+                                          max={10}
+                                          onChange={(e,val)=>{this.setState({numberOfGenres: val})}}
+                                          />
+                                      </div>
+                                  }
                               </SimpleCard>
                           </Grid>
                       </Grid>
@@ -449,22 +493,38 @@ class Display extends Component {
                   <br/>
 
                   <SimpleCard title="Timeline" subtitle="Here you'll find the sequence of events for a chosen channel.">
-                      <SelectedMenu setTrack={this.setCurrentTrack} inputOptions={this.state.trackListing}/>
-                      <TrackViewer trackData={{"trackData":this.state.trackData, "ticksPerBeat":this.state.ticksPerBeat, "instrument": this.state.instrument}} callSelect={this.setSelected}/>
-                      <br/>
-                      <Grid container
-                            justify="space-evenly"
-                            spacing={1}
-                            direction="row"
-                            justifyContent="space-evenly"
-                            alignItems="center"
-                      >
-                          <div id="dataDisplay"></div>
-                      </Grid>
-
+                      {(this.state.error) ? <div/> :
+                          <div>
+                              <TrackMenu setTrack={this.setCurrentTrack} inputOptions={this.state.trackListing}/>
+                              <TrackViewer
+                              trackData={{"trackData":this.state.trackData, "ticksPerBeat":this.state.ticksPerBeat, "instrument": this.state.instrument, "keySignatureMap":this.state.keySignatureMap, "timeSignatureMap":this.state.timeSignatureMap,"tempoIndicationMap":this.state.tempoIndicationMap}}
+                              callSelect={this.setSelected}
+                              />
+                              <br/>
+                              <Grid
+                              container
+                              spacing={1}
+                              direction="row"
+                              justifyContent="flex-start"
+                              alignItems="flex-start"
+                              >
+                              <div style={{marginLeft:"100px"}} id="dataDisplay"/>
+                              </Grid>
+                          </div>
+                      }
                   </SimpleCard>
 
+                  <Snackbar open={this.state.expired} onClose={()=>{this.setState({expired:false})}}>
+                      <Alert className="text-white" variant="filled" onClose={this.CloseError} severity="warning">
+                          Your file has expired. Try uploading a new file!
+                      </Alert>
+                  </Snackbar>
 
+                  <Snackbar open={this.state.openError || !this.state.keySignatureMap} onClose={()=>{this.setState({openError:false})}}>
+                      <Alert className="text-white" variant="filled" onClose={()=>{this.setState({openError:false})}} severity="error">
+                          The display has failed to load, your file may have been corrupted or has expired. Try uploading a new file!
+                      </Alert>
+                  </Snackbar>
               </div>
           </div>
       );

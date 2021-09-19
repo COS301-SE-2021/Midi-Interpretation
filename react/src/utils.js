@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 import { differenceInSeconds } from "date-fns";
 
 export function debounce(func, wait, immediate) {

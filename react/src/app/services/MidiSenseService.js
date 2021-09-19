@@ -9,7 +9,7 @@ class MidiSenseService {
     // private targetMethod: string;
 
     constructor() {
-        this.targetURL = "http://localhost:8080"
+        this.targetURL = "http://127.0.0.1:7070"
         this.targetHeaders = {
             'accept': 'application/json',
             'Content-Type': 'application/json'
@@ -19,6 +19,8 @@ class MidiSenseService {
             'Content-Type': 'multipart/form-data'
         }
         this.targetMethod = "POST"
+        this.simpleOctave = ["Perfect Unison","Semitone","Tone","Minor 3rd","Major 3rd","Perfect 4th","Tritone","Perfect 5th","Minor 6th","Major 6th","Minor 7th","Major 7th"]
+        this.compoundOctave = ["Perfect Octave","Minor 2nd","Major 2nd","Minor 3rd","Major 3rd","Perfect 4th","Tritone","Perfect 5th","Minor 6th","Major 6th","Minor 7th","Major 7th"]
     }
 
     //====================================
@@ -89,6 +91,18 @@ class MidiSenseService {
         )
     }
 
+    intelligenceAnalyseChord(pitchArray, onSuccess = (res)=>{}, onFailure= (res)=>{}){
+        const endpoint = "/intelligence/analyseChord"
+        this.genericRequest(
+            this.targetURL+endpoint,
+            {"pitchArray": pitchArray},
+            this.targetHeaders,
+            this.targetMethod,
+            onSuccess,
+            onFailure
+        )
+    }
+
     //====================================
     // INTERPRETER SYSTEM REQUESTS
     //====================================
@@ -121,6 +135,20 @@ class MidiSenseService {
             onSuccess,
             onFailure
         )
+    }
+
+    intelligenceAnalyseInterval(pitchArray){
+        let range = Math.abs(pitchArray[0]-pitchArray[1])
+        let isCompound = (range >= 12)
+        if (!isCompound)
+            return this.simpleOctave[range]
+        else{
+            range = range % 12
+            return (range===0?"":"Compound ")+this.compoundOctave[range]
+        }
+
+
+
     }
 
     //====================================

@@ -18,9 +18,37 @@ paths:
 
   #============= INTERPRETER ============================
 
+  /interpreter/uploadFile:
+    post:
+      summary: "API endpoint to upload file"
+      tags:
+        - "Interpreter"
+      description: UploadFile
+      operationId: UploadFile
+      requestBody:
+        description: "Request body of uploadFile endpoint, request must be sent in
+                      multipart file format"
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: "Describes response of uploadFile endpoint, will respond if
+                        successful, delivering the generated designator and references interpreterUploadFileResponse"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interpreterUploadFileResponse'
+
   /interpreter/processFile:
     post:
-      summary: "API endpoint to process File"
+      summary: "API endpoint to process file"
       tags:
         - "Interpreter"
       description: ProcessFile
@@ -163,6 +191,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/intelligenceAnalyseGenreResponse'
 
+  /intelligence/analyseChord:
+    post:
+      summary: "Endpoint for analysing the chord of input tone array"
+      tags:
+        - "Intelligence"
+      description: analyseChord
+      operationId: analyseChord
+      requestBody:
+        description: "Request body of analyseChord endpoint, request must be sent in
+                      JSON and references intelligenceAnalyseChordRequest in the schema"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/intelligenceAnalyseChordRequest'
+      responses:
+        '200':
+          description: "Describes response of analyseChord endpoint, will respond if
+                        successful and references intelligenceAnalyseChordResponse"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/intelligenceAnalyseChordResponse'
+
 
   #=================================================
   # SCHEMAS + OBJECTS
@@ -222,17 +274,39 @@ components:
           type: boolean
         message:
           type: string
-        tempoIndication:
-          type: integer
-        keySignature:
-          type: string
-        timeSignature:
-          type: object
-          properties:
-            numBeats:
-              type: integer
-            beatValue:
-              type: integer
+        tempoIndicationMap:
+          type: array
+          items:
+            type: object
+            properties:
+              tick:
+                type: integer
+              tempoIndication:
+                type: number
+        keySignatureMap:
+          type: array
+          items:
+            type: object
+            properties:
+              tick:
+                type: integer
+              keySignature:
+                type: string
+        timeSignatureMap:
+          type: array
+          items:
+            type: object
+            properties:
+              tick:
+                type: integer
+              timeSignature:
+                type: object
+                properties:
+                  numBeats:
+                    type: integer
+                  beatValue:
+                    type: integer
+
 
     displayGetTrackInfoRequest:
       description: "Expects UUID file designator"
@@ -319,6 +393,36 @@ components:
                 type: string
               Certainty:
                 type: number
+        success:
+          type: boolean
+        message:
+          type: string
+
+    intelligenceAnalyseChordRequest:
+      description: "Expects an array of byte values"
+      type: object
+      properties:
+        pitchArray:
+          type: array
+          items:
+            type: integer
+
+    intelligenceAnalyseChordResponse:
+      description: "Returns an array consisting of the most prevalent genres in the piece"
+      type: object
+      properties:
+        chord:
+          type: object
+          properties:
+            rootPitch:
+              type: integer
+            chordType:
+              type: string
+            inversionPitch:
+              type: integer
+            simpleName:
+              type: string
+
         success:
           type: boolean
         message:

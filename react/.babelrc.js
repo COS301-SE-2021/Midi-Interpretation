@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 const plugins = [
   [
     "babel-plugin-import",

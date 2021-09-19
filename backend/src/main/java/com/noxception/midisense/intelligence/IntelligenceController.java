@@ -3,14 +3,16 @@ package com.noxception.midisense.intelligence;
 import com.noxception.midisense.api.IntelligenceApi;
 import com.noxception.midisense.config.MIDISenseConfig;
 import com.noxception.midisense.intelligence.dataclass.GenrePredication;
+import com.noxception.midisense.intelligence.exceptions.EmptyChordException;
 import com.noxception.midisense.intelligence.exceptions.MissingStrategyException;
+import com.noxception.midisense.intelligence.rrobjects.AnalyseChordRequest;
+import com.noxception.midisense.intelligence.rrobjects.AnalyseChordResponse;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseGenreRequest;
 import com.noxception.midisense.intelligence.rrobjects.AnalyseGenreResponse;
+import com.noxception.midisense.intelligence.strategies.DecisionTreeChordAnalysisStrategy;
 import com.noxception.midisense.intelligence.strategies.NeuralNetworkGenreAnalysisStrategy;
 import com.noxception.midisense.interpreter.exceptions.InvalidDesignatorException;
-import com.noxception.midisense.models.IntelligenceAnalyseGenreRequest;
-import com.noxception.midisense.models.IntelligenceAnalyseGenreResponse;
-import com.noxception.midisense.models.IntelligenceAnalyseGenreResponseGenreArray;
+import com.noxception.midisense.models.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,12 +65,12 @@ public class IntelligenceController implements IntelligenceApi {
 
     @Override
     public ResponseEntity<IntelligenceAnalyseGenreResponse> analyseGenre(IntelligenceAnalyseGenreRequest body) {
-
+        //create response object and set return status
         IntelligenceAnalyseGenreResponse responseObject = new IntelligenceAnalyseGenreResponse();
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
-
+            //pass file designator into request object
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             AnalyseGenreRequest req = new AnalyseGenreRequest(fileDesignator);
@@ -75,11 +78,14 @@ public class IntelligenceController implements IntelligenceApi {
             //Log the call for request
             log.info(String.format("Request | To: %s | For: %s | Assigned: %s","analyseGenre",fileDesignator,req.getDesignator()));
 
+            //assign genre strategy if no strategy is found
             if(!intelligenceService.hasGenreStrategy())
                 intelligenceService.attachGenreStrategy(new NeuralNetworkGenreAnalysisStrategy(new MIDISenseConfig()));
+
+            //create response object
             AnalyseGenreResponse res = intelligenceService.analyseGenre(req);
 
-
+            //set list of recommended genres
             List<IntelligenceAnalyseGenreResponseGenreArray> list = new ArrayList<>();
             for(GenrePredication genre: res.getGenreArray()){
                 IntelligenceAnalyseGenreResponseGenreArray inner = new IntelligenceAnalyseGenreResponseGenreArray();
@@ -104,7 +110,63 @@ public class IntelligenceController implements IntelligenceApi {
             responseObject.setMessage(e.getMessage());
 
         }
-
+        //return the response object
         return new ResponseEntity<>(responseObject,returnStatus);
     }
+
+    @Override
+    public ResponseEntity<IntelligenceAnalyseChordResponse> analyseChord(IntelligenceAnalyseChordRequest body) {
+        IntelligenceAnalyseChordResponse responseObject = new IntelligenceAnalyseChordResponse();
+        HttpStatus returnStatus = HttpStatus.OK;
+
+        try{
+
+            //get the pitch array inputted as a list of bytes
+            List<Integer> inputList = body.getPitchArray();
+            int numPitches = inputList.size();
+
+            byte[] pitchArray = new byte[numPitches];
+            for(int i=0; i<numPitches; i++){
+                pitchArray[i] = inputList.get(i).byteValue();
+            }
+
+            //make the request
+            AnalyseChordRequest req = new AnalyseChordRequest(pitchArray);
+
+            //Log the call for request
+            log.info(String.format("Request | To: %s | For: %s | Assigned: %s","analyseChord", Arrays.toString(pitchArray),req.getDesignator()));
+
+            //perform analysis
+            if(!intelligenceService.hasChordStrategy())
+                intelligenceService.attachChordStrategy(new DecisionTreeChordAnalysisStrategy());
+            AnalyseChordResponse res = intelligenceService.analyseChord(req);
+
+            //get the chord info, return it
+            IntelligenceAnalyseChordResponseChord chord = new IntelligenceAnalyseChordResponseChord();
+            chord.setRootPitch((int) res.getRootPitch());
+            chord.setInversionPitch((int) res.getInversionPitch());
+            chord.setChordType(res.getChordType());
+            chord.setSimpleName(res.getChord());
+
+
+            responseObject.setChord(chord);
+
+            responseObject.setSuccess(true);
+            responseObject.setMessage("Successfully analysed chord");
+
+        }
+        catch(IllegalArgumentException | MissingStrategyException |EmptyChordException e){
+
+            //Log the error
+            log.warn(String.format("FAILURE | To: %s | Because: %s ","analyseChord",e.getMessage()));
+
+            returnStatus = HttpStatus.BAD_REQUEST;
+            responseObject.setSuccess(false);
+            responseObject.setMessage(e.getMessage());
+
+        }
+        //return response object
+        return new ResponseEntity<>(responseObject,returnStatus);
+    }
+
 }

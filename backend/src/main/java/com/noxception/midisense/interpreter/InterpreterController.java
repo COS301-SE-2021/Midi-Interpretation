@@ -14,9 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
@@ -76,7 +76,7 @@ public class InterpreterController implements InterpreterApi {
         HttpStatus returnStatus = HttpStatus.OK;
 
         try{
-
+            //pass file designator into request object
             UUID fileDesignator = UUID.fromString(body.getFileDesignator());
 
             ProcessFileRequest req = new ProcessFileRequest(fileDesignator);
@@ -86,8 +86,10 @@ public class InterpreterController implements InterpreterApi {
 
             ProcessFileResponse res = interpreterService.processFile(req);
 
+            //set response status
             responseObject.setMessage(res.getMessage());
             responseObject.setSuccess(res.getSuccess());
+            returnStatus = res.getSuccess()?HttpStatus.OK:HttpStatus.BAD_REQUEST;
 
         }
         catch (InvalidDesignatorException | IllegalArgumentException e) {
@@ -100,9 +102,10 @@ public class InterpreterController implements InterpreterApi {
             responseObject.setMessage(e.getMessage());
 
         }
-
+        //return response object
         return new ResponseEntity<>(responseObject,returnStatus);
     }
+
 
     /** Method that invokes the uploadFile method of the Interpreter service and allows for the uploading of the midi
      * file to the system
@@ -112,13 +115,8 @@ public class InterpreterController implements InterpreterApi {
      * Possible valid tuples are a 200 status code and an object that is not null corresponding to
      * a successful request, or a 400 status code and a null object corresponding to a malformed request field.
      */
-    @RequestMapping(
-            value="/interpreter/uploadFile",
-            method= RequestMethod.POST,
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
-    public ResponseEntity<InterpreterUploadFileResponse> uploadFile(@RequestParam("file") MultipartFile file) {
-
+    @Override
+    public ResponseEntity<InterpreterUploadFileResponse> uploadFile(MultipartFile file) {
         InterpreterUploadFileResponse responseObject = new InterpreterUploadFileResponse();
         HttpStatus returnStatus = HttpStatus.OK;
 
@@ -148,10 +146,51 @@ public class InterpreterController implements InterpreterApi {
             responseObject.setMessage(e.getMessage());
 
         }
-
+        //return response
         return new ResponseEntity<>(responseObject,returnStatus);
-
     }
+
+
+//    @RequestMapping(
+//            value="/interpreter/uploadFile",
+//            method= RequestMethod.POST,
+//            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+//    )
+//    public ResponseEntity<InterpreterUploadFileResponse> uploadFile(@RequestParam("file") MultipartFile file) {
+//
+//        InterpreterUploadFileResponse responseObject = new InterpreterUploadFileResponse();
+//        HttpStatus returnStatus = HttpStatus.OK;
+//
+//        try{
+//
+//            byte[] fileContents = file.getBytes();
+//
+//            UploadFileRequest req = new UploadFileRequest(fileContents);
+//
+//            //Log the call for request
+//            log.info(String.format("Request | To: %s | For: %s | Assigned: %s","uploadFile",file.getName(),req.getDesignator()));
+//
+//            UploadFileResponse res = interpreterService.uploadFile(req);
+//
+//            responseObject.setFileDesignator(res.getFileDesignator().toString());
+//            responseObject.setSuccess(true);
+//            responseObject.setMessage("Successfully uploaded file");
+//
+//        }
+//        catch (IllegalArgumentException | InvalidUploadException | IOException e) {
+//
+//            //Log the error
+//            log.warn(String.format("FAILURE | To: %s | Because: %s ","uploadFile",e.getMessage()));
+//
+//            returnStatus = HttpStatus.BAD_REQUEST;
+//            responseObject.setSuccess(false);
+//            responseObject.setMessage(e.getMessage());
+//
+//        }
+//
+//        return new ResponseEntity<>(responseObject,returnStatus);
+//
+//    }
 
     //================================
     // HELPER METHODS
@@ -166,8 +205,11 @@ public class InterpreterController implements InterpreterApi {
      */
     private byte[] intArrayToByteArray(List<Integer> list)
     {
+        //create byte array and pass into output stream
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(baos);
+
+        //copy items in list to output stream
         for (int element : list) {
             try {
                 out.writeUTF(Integer.toString(element));
@@ -175,6 +217,7 @@ public class InterpreterController implements InterpreterApi {
                 e.printStackTrace();
             }
         }
+        //return byte array
         return baos.toByteArray();
     }
 

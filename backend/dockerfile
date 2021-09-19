@@ -1,0 +1,21 @@
+FROM adoptopenjdk:11-jre-hotspot as builder
+WORKDIR application
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} application.jar
+RUN java -Djarmode=layertools -jar application.jar extract
+
+FROM adoptopenjdk:11-jre-hotspot
+WORKDIR application
+RUN mkdir -p store
+COPY --from=builder application/dependencies/ ./
+COPY --from=builder application/snapshot-dependencies/ ./
+COPY --from=builder application/spring-boot-loader/ ./
+COPY --from=builder application/application/ ./
+
+COPY src/main/java/com/noxception/midisense/intelligence/structure application/structure
+
+# Expose port 80 to the Docker host, so we can access it
+# from the outside.
+EXPOSE 3306
+
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]

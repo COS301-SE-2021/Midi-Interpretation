@@ -17,7 +17,7 @@ const settings = {
 
 
 /**
- * Route of the Welcome page
+ * Route of the Home page
  * @type {[{path: string, component: React.LazyExoticComponent<React.ComponentType<any>>}]}
  */
 

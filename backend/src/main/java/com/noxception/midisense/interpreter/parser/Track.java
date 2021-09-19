@@ -1,51 +1,23 @@
 package com.noxception.midisense.interpreter.parser;
 
-/** A class that encapsulates a high-level representation of an individual track sequence (instrument line) of a midi file.
- * The class provides methods that allow for a high-level interaction with musical elements and not low-level sequence data of a midi file
- *
- * For more information on parsing, see {@link MIDISenseParserListener}
- * @author Adrian Rae
- * @since 1.0.0
- */
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.noxception.midisense.interpreter.broker.JSONUtils;
+import lombok.SneakyThrows;
+
+import java.util.List;
+
 public class Track {
+    @JsonProperty("tick")
+    public int tick;
 
-    private int channel;
-    private String trackData;
+    @JsonProperty("notes")
+    public List<Note> notes;
 
-    public Track() {
-    }
-
-    public Track(int channel) {
-        this.channel = channel;
-    }
-
-    public Track(String trackData) {
-        this.trackData = trackData;
-    }
-
-    public Track(int channel, String trackData) {
-        this.channel = channel;
-        this.trackData = trackData;
-    }
-
-    public String getTrackData() {
-        return trackData;
-    }
-
-    public void setTrackData(String trackData) {
-        this.trackData = trackData;
-    }
-
-    public int getChannel() {
-        return channel;
-    }
-
-    public void setChannel(int channel) {
-        this.channel = channel;
-    }
-
+    @SneakyThrows
     @Override
     public String toString() {
-        return trackData;
+        return JSONUtils.ObjectToJSON(this);
+
     }
+
 }

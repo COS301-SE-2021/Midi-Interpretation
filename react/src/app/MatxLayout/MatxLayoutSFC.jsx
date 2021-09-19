@@ -5,10 +5,7 @@ import { withRouter } from "react-router-dom";
 import { matchRoutes } from "react-router-config";
 import { connect } from "react-redux";
 import AppContext from "app/appContext";
-import {
-  setLayoutSettings,
-  setDefaultSettings
-} from "app/redux/actions/LayoutActions";
+import {setLayoutSettings, setDefaultSettings} from "app/redux/actions/LayoutActions";
 import { isEqual, merge } from "lodash";
 import { isMdScreen } from "utils";
 import { MatxSuspense } from "matx";
@@ -28,8 +25,7 @@ const MatxLayoutSFC = props => {
   const {
     settings,
     defaultSettings,
-    setLayoutSettings,
-    setDefaultSettings
+    setLayoutSettings
   } = props;
 
   tempSettings = settings;
@@ -39,14 +35,17 @@ const MatxLayoutSFC = props => {
    */
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     listenWindowResize();
 
     if (window) {
       // LISTEN WINDOW RESIZE
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       window.addEventListener("resize", listenWindowResize);
     }
     return () => {
       if (window) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         window.removeEventListener("resize", listenWindowResize);
       }
     };
@@ -57,6 +56,7 @@ const MatxLayoutSFC = props => {
    */
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     updateSettingsFromRouter();
   }, [props.location]);
 

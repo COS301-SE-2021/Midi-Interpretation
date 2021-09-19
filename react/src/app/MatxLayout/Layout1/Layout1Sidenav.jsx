@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import { Switch, Icon, MenuItem, Tooltip, IconButton } from "@material-ui/core";
+import { Switch} from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { setLayoutSettings, setDefaultSettings} from "app/redux/actions/LayoutActions";
@@ -14,11 +14,10 @@ import { merge } from "lodash";
 /**
  * Styling for the layout 1 sidebar
  *
- * @param theme
  * @returns {{}}
  */
 
-const styles = theme => ({});
+const styles = () => ({});
 
 
 /**
@@ -36,7 +35,7 @@ class Layout1Sidenav extends Component {
 
   componentDidMount() {
     // CLOSE SIDENAV ON ROUTE CHANGE ON MOBILE
-    this.unlistenRouteChange = this.props.history.listen((location, action) => {
+    this.unlistenRouteChange = this.props.history.listen(() => {
       if (isMdScreen()) {
         this.updateSidebarMode({ mode: "compact" });
       }

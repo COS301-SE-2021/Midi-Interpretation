@@ -3,12 +3,11 @@ import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 
 /**
- * Styling for the page
- * @param theme
+ * Styling for the file not found page
  * @returns {{flexCenter: {alignItems: string, display: string, justifyContent: string}, wrapper: {width: string, height: string}, inner: {flexDirection: string, maxWidth: string}}}
  */
 
-const styles = theme => ({
+const styles = () => ({
     flexCenter: {
         display: "flex",
         justifyContent: "center",
@@ -55,5 +54,9 @@ class NotFound extends Component {
         );
     }
 }
+
+/**
+ * The final export of our view
+ */
 
 export default withStyles(styles, { withTheme: true })(NotFound);

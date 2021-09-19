@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 import {
   SET_LAYOUT_SETTINGS,
   SET_DEFAULT_LAYOUT_SETTINGS

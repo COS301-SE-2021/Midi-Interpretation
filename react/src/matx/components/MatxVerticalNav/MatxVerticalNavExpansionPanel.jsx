@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 import React, { Component } from "react";
 import { Icon } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";

@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 import React from "react";
 import { ThemeProvider } from "@material-ui/core/styles";
 import SidenavThemeStyles from "./SidenavThemeStyles";

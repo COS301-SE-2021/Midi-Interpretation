@@ -1598,3 +1598,4 @@ backend/src/main/resources/application.properties
 *.npy
 *.csv
 backend/src/main/resources/testing.properties
+/venv/

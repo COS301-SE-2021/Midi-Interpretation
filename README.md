@@ -50,7 +50,7 @@ For a detailed description of the system, its requirement satisfactions and arch
 * :open_book: [Architectural Requirements](https://www.overleaf.com/read/cxcxhxdqwvcm )
 * :open_book: [Coding Quality Document](https://www.overleaf.com/read/nnvdgdcnctyk)
 * :open_book: [Testing Policy](https://www.overleaf.com/read/rnpmsnsvbnjh)
-* 
+
 For a detailed description of how to install and use the service, see the resources below.
 * :open_book: [Installation Manual](https://www.overleaf.com/read/wqzgbdtyczry)
 * :open_book: [User Manual](https://www.overleaf.com/read/qvwdczpqtwmk)
@@ -147,7 +147,6 @@ Project boards concerning various facets of project development can be found at 
 ---
 Special thanks are made to the following projects:
 
-- [**jFugue**](http://www.jfugue.org/) | an open-source Java library, whose MIDI parser and listener interfaces are built upon in order to translate between midi events and their musicological counterparts. 
 - [**mido**](https://github.com/mido/mido) | an open-source Python library that handles MIDI messages, used to develop a comprehensive lookup of tick-to-event information.
 
 For a more comprehensive list of credits, please consult the "about us" page of the React service.

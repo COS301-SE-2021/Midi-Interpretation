@@ -1,3 +1,7 @@
+/**
+ * External from MIDISense
+ */
+
 import { red } from "@material-ui/core/colors";
 
 const shadows = [

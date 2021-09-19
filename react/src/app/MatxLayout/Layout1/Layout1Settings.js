@@ -8,7 +8,6 @@ const Layout1Settings = {
     show: true,
     mode: 'full',
     theme: 'slateDark1',
-    bgImgURL: '/assets/images/sidebar/sidebar-bg-dark.jpg'
   }
 }
 
