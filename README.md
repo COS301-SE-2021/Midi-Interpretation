@@ -52,7 +52,7 @@ For a detailed description of the system, its requirement satisfactions and arch
 * :open_book: [Testing Policy](https://drive.google.com/file/d/133imQBbwgno3LWMEDwUKvRmF4CTsVs7U/view?usp=sharing)
 
 For a detailed description of how to install and use the service, see the resources below.
-* :open_book: [Installation Manual](https://www.overleaf.com/read/wqzgbdtyczry)
+* :open_book: [Installation Manual](https://drive.google.com/file/d/1ae8WJ_0JSs-g_YeItVtfPFue6MfUG2rc/view?usp=sharing)
 * :open_book: [User Manual](https://drive.google.com/file/d/17mqOcWW_HHbbYmn3ynySits1FqbekJNC/view?usp=sharing)
 
 
