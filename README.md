@@ -26,8 +26,23 @@ Such that novices and experts alike can find some value in the resultant musicol
 ## + Version 1.0.0  | <b style="color:green">Demo 4</b> standard
 #### New Additions and Fixes: ####
 
-- Live Analysis feature addition.
 
+- Added time-series elements, such as time, tempo, and key signature changes. Hover over note groups to get a detailed description of the piece metadata at that time.
+- Added tempo-sensitivity to detect gradual changes in tempo like ritardandos and accelerandos.
+- Added chord and interval analysis. Hover of note groups to detect the group type.
+- Added live analysis mode:
+  - Allows one to record a sequence of specified length and BPM, with an onscreen keyboard. Keymaps/mouse clicks are used to play the keyboard.
+  - Allows for the adjustment of the output instrument sound.
+  - Allows editing/addition of content with a piano roll component.
+  - Allows the painting of piano roll element by toggling with shift key.
+  - Allows you to send a recorded sequence to the analysis engine.
+  - Allows for the adjustment of the input keyboard mode.
+- Added comprehensive help and about views.
+- New distributed interpretation architecture, powered by mido.
+- New broker architecture for interpretation requests.
+- New deamon to enforce file retention policy.
+- New request monitoring for interpretation requests.
+- Improved efficiency of local file storage. Interpreted files do not remain in local storage.
 
 ### Notes and Resources ###
 For a detailed description of the system, its requirement satisfactions and architecture, consult the following resources.
