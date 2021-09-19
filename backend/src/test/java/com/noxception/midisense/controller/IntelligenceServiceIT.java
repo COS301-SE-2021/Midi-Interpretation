@@ -215,7 +215,8 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest {
         );
 
     }
-
+    @Transactional
+    @Rollback
     @Test
     @DisplayName("Analyse Chord: input [Valid Byte Stream] expect [chord analysis]")
     public void testBlackBox_AnalyseChord_IfValidByteStream() throws Exception {
@@ -253,21 +254,24 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest {
         );
 
     }
-
+    @Transactional
+    @Rollback
     @Test
-    @DisplayName("Analyse Chord: input [Invalid Byte Stream] expect [Empty chord Exception]")
-    public void testBlackBox_AnalyseChord_IfEmptyByteStream_ThrowException() throws Exception {
+    @DisplayName("Analyse Chord: input [Valid Byte Stream] expect [chord analysis]")
+    public void testBlackBox_AnalyseChord_IfEmptyByteStream() throws Exception {
 
-        //invalid byte stream
-        byte[] validStream = new byte[]{};
+        //valid byte stream
+        List<Integer> validStream = new ArrayList<>();
 
-        //test with request response
-        AnalyseChordRequest request = new AnalyseChordRequest(validStream);
+        //make request
+        IntelligenceAnalyseChordRequest request = new IntelligenceAnalyseChordRequest();
+
+        request.setPitchArray(validStream);
 
         //specify condition of request
         List<ResultMatcher> conditions = new ArrayList<>();
 
-        //expect 400 response code
+        //expect 200 response code
         conditions.add(status().is4xxClientError());
         //for a json response
         conditions.add(content().contentType(MediaType.APPLICATION_JSON));
@@ -280,6 +284,7 @@ public class IntelligenceServiceIT extends MidiSenseIntegrationTest {
                 mvc,
                 conditions,
                 maxAnalyseGenreTime
+
         );
 
     }
