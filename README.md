@@ -132,7 +132,6 @@ Project boards concerning various facets of project development can be found at 
 ---
 Special thanks are made to the following projects:
 
-- [**jFugue**](http://www.jfugue.org/) | an open-source Java library, whose MIDI parser and listener interfaces are built upon in order to translate between midi events and their musicological counterparts. 
 - [**mido**](https://github.com/mido/mido) | an open-source Python library that handles MIDI messages, used to develop a comprehensive lookup of tick-to-event information.
 
 For a more comprehensive list of credits, please consult the "about us" page of the React service.
