@@ -35,7 +35,7 @@ For a detailed description of the system, its requirement satisfactions and arch
 * :open_book: [Architectural Requirements](https://www.overleaf.com/read/cxcxhxdqwvcm )
 * :open_book: [Coding Quality Document](https://www.overleaf.com/read/nnvdgdcnctyk)
 * :open_book: [Testing Policy](https://www.overleaf.com/read/rnpmsnsvbnjh)
-* 
+
 For a detailed description of how to install and use the service, see the resources below.
 * :open_book: [Installation Manual](https://www.overleaf.com/read/wqzgbdtyczry)
 * :open_book: [User Manual](https://www.overleaf.com/read/qvwdczpqtwmk)
