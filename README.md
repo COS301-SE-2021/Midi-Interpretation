@@ -46,9 +46,9 @@ Such that novices and experts alike can find some value in the resultant musicol
 
 ### Notes and Resources ###
 For a detailed description of the system, its requirement satisfactions and architecture, consult the following resources.
-* :open_book: [Software Requirements Specification](https://www.overleaf.com/read/qsxnfqfpwsjx)
+* :open_book: [Software Requirements Specification](https://drive.google.com/file/d/1-uB6QjMzsa-PsbdcI5JS7PDiQWJxOzsO/view?usp=sharing)
 * :open_book: [Architectural Requirements](https://drive.google.com/file/d/1qJESp1gj6fBHrqoPGWT24EIHQ_9VGvDL/view?usp=sharing )
-* :open_book: [Coding Quality Document](https://www.overleaf.com/read/nnvdgdcnctyk)
+* :open_book: [Coding Quality Document](https://drive.google.com/file/d/16rN8yASDKNaBQbjThKOdFaLa5fBSvPOE/view?usp=sharing)
 * :open_book: [Testing Policy](https://drive.google.com/file/d/133imQBbwgno3LWMEDwUKvRmF4CTsVs7U/view?usp=sharing)
 
 For a detailed description of how to install and use the service, see the resources below.
